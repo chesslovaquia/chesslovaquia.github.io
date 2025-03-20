@@ -47,7 +47,7 @@ func httpHandler(w http.ResponseWriter, r *http.Request) {
 
 	// serve static files
 
-	filePath := filepath.Join(".", reqPath)
+	filePath := filepath.Join(".", "static", reqPath)
 	if _, err := os.Stat(filePath); os.IsNotExist(err) {
 		log.Printf("404 %s - %v", r.URL.Path, err)
 		http.Error(w, "404 - not found", http.StatusNotFound)
