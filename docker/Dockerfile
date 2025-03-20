@@ -36,6 +36,17 @@ RUN groupadd -o -g ${DEVEL_GID} devel \
 RUN printf 'umask %s\n' '027' >>/home/devel/.profile
 RUN printf "export PS1='%s '\n" '\u@\h:\W\$' >>/home/devel/.profile
 
+RUN install -v -m 0750 -o devel -g devel -d /home/devel/src
+RUN install -v -m 0750 -o devel -g devel -d /home/devel/src/cmd
+RUN install -v -m 0750 -o devel -g devel -d /home/devel/src/cmd/clvq
+
+COPY build/go.mod build/chesslovaquia.go /home/devel/src
+COPY build/cmd/clvq/clvq*.* /home/devel/src/cmd/clvq
+
+RUN chown -v -R devel:devel /home/devel/src
+
+RUN install -v -m 0755 /home/devel/src/cmd/clvq/clvq.sh /usr/local/bin/clvq
+
 USER devel:devel
 WORKDIR /home/devel
 
@@ -46,4 +57,8 @@ ENV GOPATH /home/devel/go
 
 RUN go version
 
+WORKDIR /home/devel/src
+RUN go install ./cmd/clvq
+
+WORKDIR /home/devel
 CMD /bin/bash -i -l
