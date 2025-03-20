@@ -19,10 +19,7 @@ func main() {
 	}
 
 	if *input != "" && *output != "" {
-		log.Printf("render: %s -> %s", *input, *output)
-		if err := renderFile(*input, *output); err != nil {
-			log.Fatalf("[ERROR] render %s -> %s: %v", *input, *output, err)
-		}
+		tplMain(*input, *output)
 		return
 	}
 

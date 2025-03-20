@@ -14,10 +14,10 @@ import (
 )
 
 var (
-	tmplMutex sync.Mutex
+	tplMutex sync.Mutex
 )
 
-func getTemplateData(tpl string) map[string]string {
+func tplGetData(tpl string) map[string]string {
 	var data map[string]string
 	path := tpl[:len(tpl)-5]+".json"
 	blob, err := ioutil.ReadFile(path)
@@ -34,29 +34,29 @@ func getTemplateData(tpl string) map[string]string {
 	return data
 }
 
-func loadTemplate(path string) (*template.Template, error) {
+func tplLoad(path string) (*template.Template, error) {
 	return template.ParseFiles("tpl/base.html", path)
 }
 
-func getTemplate(path string) (*template.Template, error) {
-	tmplMutex.Lock()
-	defer tmplMutex.Unlock()
+func tplGet(path string) (*template.Template, error) {
+	tplMutex.Lock()
+	defer tplMutex.Unlock()
 
 	// Always reload template
-	newTmpl, err := loadTemplate(path)
+	newTmpl, err := tplLoad(path)
 	if err != nil {
 		return nil, err
 	}
 	return newTmpl, nil
 }
 
-func renderFile(input, output string) error {
-	tmpl, err := loadTemplate(input)
+func tplRender(input, output string) error {
+	tmpl, err := tplLoad(input)
 	if err != nil {
 		return err
 	}
 
-	data := getTemplateData(input)
+	data := tplGetData(input)
 
 	outputFile, err := os.Create(output)
 	if err != nil {
@@ -65,4 +65,11 @@ func renderFile(input, output string) error {
 	defer outputFile.Close()
 
 	return tmpl.Execute(outputFile, data)
+}
+
+func tplMain(input, output string) {
+	log.Printf("render: %s -> %s", input, output)
+	if err := tplRender(input, output); err != nil {
+		log.Fatalf("[ERROR] render %s -> %s: %v", input, output, err)
+	}
 }
