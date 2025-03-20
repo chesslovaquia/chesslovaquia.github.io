@@ -4,8 +4,11 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
+	"fmt"
 	"html/template"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -16,6 +19,23 @@ import (
 var (
 	tmplMutex sync.Mutex
 )
+
+func getTemplateData(tpl string) map[string]string {
+	var data map[string]string
+	path := tpl[:len(tpl)-5]+".json"
+	blob, err := ioutil.ReadFile(path)
+	if err != nil {
+		x := fmt.Errorf("%s failed to read file: %w", path, err)
+		log.Print(x)
+		return data
+	}
+	if err := json.Unmarshal(blob, &data); err != nil {
+		x := fmt.Errorf("%s failed to parse file: %w", path, err)
+		log.Print(x)
+		return data
+	}
+	return data
+}
 
 func loadTemplate(path string) (*template.Template, error) {
 	return template.ParseFiles("tpl/base.html", path)
@@ -51,10 +71,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data := map[string]string{
-		"Title":   "Live Reloading Go Server",
-		"Message": "Modify the template file and refresh!",
-	}
+	data := getTemplateData(templatePath)
 
 	if err := tmpl.Execute(w, data); err != nil {
 		log.Printf("500 %s - %v", r.URL.Path, err)
@@ -69,10 +86,7 @@ func renderFile(input, output string) error {
 		return err
 	}
 
-	data := map[string]string{
-		"Title":   "Rendered Template Output",
-		"Message": "This was generated from a template file!",
-	}
+	data := getTemplateData(input)
 
 	outputFile, err := os.Create(output)
 	if err != nil {
