@@ -3,4 +3,6 @@ set -eu
 exec docker run -it --rm -u devel \
 	--name clvq \
 	--hostname clvq.local \
+	-v ${PWD}:/home/devel/src \
+	--workdir /home/devel/src \
 	chesslovaquia/devel
