@@ -15,7 +15,6 @@ import (
 
 var (
 	tmplMutex sync.Mutex
-	tmplCache *template.Template
 )
 
 func loadTemplate(path string) (*template.Template, error) {
@@ -64,9 +63,43 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func renderFile(input, output string) error {
+	tmpl, err := loadTemplate(input)
+	if err != nil {
+		return err
+	}
+
+	data := map[string]string{
+		"Title":   "Rendered Template Output",
+		"Message": "This was generated from a template file!",
+	}
+
+	outputFile, err := os.Create(output)
+	if err != nil {
+		return err
+	}
+	defer outputFile.Close()
+
+	return tmpl.Execute(outputFile, data)
+}
+
 func main() {
 	port := flag.String("port", "8044", "HTTP server port")
+	input := flag.String("input", "", "template file path")
+	output := flag.String("output", "", "html file path")
 	flag.Parse()
+
+	if *input != "" && *output == "" {
+		log.Fatal("[ERROR] no html template output path")
+	}
+
+	if *input != "" && *output != "" {
+		log.Printf("render: %s -> %s", *input, *output)
+		if err := renderFile(*input, *output); err != nil {
+			log.Fatalf("[ERROR] render %s -> %s: %v", *input, *output, err)
+		}
+		return
+	}
 
 	http.HandleFunc("/", handler)
 	log.Printf("Starting server on :%s", *port)
