@@ -37,11 +37,13 @@ RUN printf 'umask %s\n' '027' >>/home/devel/.profile
 RUN printf "export PS1='%s '\n" '\u@\h:\W\$' >>/home/devel/.profile
 
 RUN install -v -m 0750 -o devel -g devel -d /home/devel/src
-RUN install -v -m 0750 -o devel -g devel -d /home/devel/src/cmd
-RUN install -v -m 0750 -o devel -g devel -d /home/devel/src/cmd/clvq
+###RUN install -v -m 0750 -o devel -g devel -d /home/devel/src/cmd
+###RUN install -v -m 0750 -o devel -g devel -d /home/devel/src/cmd/clvq
 
-COPY build/go.mod build/chesslovaquia.go /home/devel/src
-COPY build/cmd/clvq/clvq*.* /home/devel/src/cmd/clvq
+###COPY build/go.mod build/chesslovaquia.go /home/devel/src
+###COPY build/cmd/clvq/clvq*.* /home/devel/src/cmd/clvq
+
+COPY . /home/devel/src
 
 RUN chown -v -R devel:devel /home/devel/src
 
