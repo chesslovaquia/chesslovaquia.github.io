@@ -36,18 +36,17 @@ RUN groupadd -o -g ${DEVEL_GID} devel \
 RUN printf 'umask %s\n' '027' >>/home/devel/.profile
 RUN printf "export PS1='%s '\n" '\u@\h:\W\$' >>/home/devel/.profile
 
-RUN install -v -m 0750 -o devel -g devel -d /home/devel/src
-###RUN install -v -m 0750 -o devel -g devel -d /home/devel/src/cmd
-###RUN install -v -m 0750 -o devel -g devel -d /home/devel/src/cmd/clvq
+RUN install -v -m 0750 -o devel -g devel -d /opt/clvq
+RUN install -v -m 0750 -o devel -g devel -d /opt/clvq/src
+RUN install -v -m 0750 -o devel -g devel -d /opt/clvq/src/base
 
-###COPY build/go.mod build/chesslovaquia.go /home/devel/src
-###COPY build/cmd/clvq/clvq*.* /home/devel/src/cmd/clvq
+COPY . /opt/clvq/src/base
 
-COPY . /home/devel/src
+ENV SRCD /opt/clvq/src/base
 
-RUN chown -v -R devel:devel /home/devel/src
+RUN chown -R devel:devel ${SRCD}
 
-RUN install -v -m 0755 /home/devel/src/cmd/clvq/clvq.sh /usr/local/bin/clvq
+RUN install -v -m 0755 ${SRCD}/cmd/clvq/clvq.sh /usr/local/bin/clvq
 
 USER devel:devel
 WORKDIR /home/devel
@@ -55,12 +54,12 @@ WORKDIR /home/devel
 ENV USER devel
 ENV HOME /home/devel
 
-ENV GOPATH /home/devel/go
+ENV GOPATH /opt/clvq
 
 RUN go version
 
-WORKDIR /home/devel/src
+WORKDIR ${SRCD}
 RUN go install ./cmd/clvq
 
-WORKDIR /home/devel
+WORKDIR ${SRCD}
 CMD /bin/bash -i -l
