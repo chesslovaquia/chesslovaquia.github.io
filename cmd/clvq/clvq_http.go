@@ -14,17 +14,20 @@ import (
 
 func httpHandler(w http.ResponseWriter, r *http.Request) {
 	reqPath := filepath.Clean(r.URL.Path)
-
-	templatePath := filepath.Join("tpl", reqPath)
-	if templatePath == "tpl" {
-		templatePath = "tpl/index.html"
+	if strings.HasSuffix(reqPath, "/") {
+		reqPath = "/index.html"
 	}
 
-	ext := filepath.Ext(templatePath)
+	ext := filepath.Ext(reqPath)
+	if ext == "" {
+		reqPath = reqPath+"/index.html"
+		ext = ".html"
+	}
 
 	// parse html templates
 
 	if ext == ".html" {
+		templatePath := filepath.Join("tpl", reqPath)
 		if _, err := os.Stat(templatePath); os.IsNotExist(err) {
 			log.Printf("404 %s - %v", reqPath, err)
 			http.Error(w, "404 - not found", http.StatusNotFound)
