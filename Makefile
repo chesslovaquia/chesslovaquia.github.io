@@ -1,3 +1,5 @@
+# host targets
+
 .PHONY: devel
 
 devel: docker
@@ -6,8 +8,10 @@ devel: docker
 docker:
 	./docker/build.sh
 
+# container targets
+
 .PHONY: all
-all: build wasm
+all: build wasm html
 
 .PHONY: build
 build:
@@ -19,6 +23,10 @@ wasm:
 	@rm -vf "static/`go env GOVERSION`/wasm_exec.js"
 	@install -v -m 0640 -t "static/`go env GOVERSION`" \
 		"`go env GOROOT`/lib/wasm/wasm_exec.js"
+
+.PHONY: html
+html:
+	./tpl/build.sh
 
 .PHONY: upgrade
 upgrade:
