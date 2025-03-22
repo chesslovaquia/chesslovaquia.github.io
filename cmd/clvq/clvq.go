@@ -8,10 +8,16 @@ import (
 	"log"
 )
 
+var (
+	// flags
+	optPort string
+)
+
 func main() {
-	port := flag.String("port", "8044", "HTTP server port")
+	flag.StringVar(&optPort, "port", "8044", "HTTP server port")
 	input := flag.String("input", "", "template file path")
 	output := flag.String("output", "", "html file path")
+
 	flag.Parse()
 
 	if *input != "" && *output == "" {
@@ -23,5 +29,5 @@ func main() {
 		return
 	}
 
-	httpMain(*port)
+	httpMain()
 }

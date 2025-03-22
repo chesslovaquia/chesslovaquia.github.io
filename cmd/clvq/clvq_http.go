@@ -68,10 +68,10 @@ func httpHandler(w http.ResponseWriter, r *http.Request) {
 	log.Printf("200 %s", reqPath)
 }
 
-func httpMain(port string) {
+func httpMain() {
 	http.HandleFunc("/", httpHandler)
-	log.Printf("Starting server on :%s", port)
-	if err := http.ListenAndServe(":"+port, nil); err != nil {
+	log.Printf("Starting server on :%s", optPort)
+	if err := http.ListenAndServe(":"+optPort, nil); err != nil {
 		log.Fatalf("Failed to start server: %v", err)
 	}
 }
