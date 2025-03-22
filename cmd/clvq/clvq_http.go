@@ -45,7 +45,7 @@ func httpHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "500 - Failed to render template", http.StatusInternalServerError)
 			return
 		}
-		log.Printf("200 %s", reqPath)
+		log.Printf("200 %s - %s", reqPath, templatePath)
 		return
 	}
 
@@ -65,7 +65,7 @@ func httpHandler(w http.ResponseWriter, r *http.Request) {
 	mimeType := mime.TypeByExtension(ext)
 	w.Header().Set("Content-Type", mimeType)
 	http.ServeFile(w, r, filePath)
-	log.Printf("200 %s", reqPath)
+	log.Printf("200 %s - %s", reqPath, filePath)
 }
 
 func httpMain() {
