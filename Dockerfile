@@ -59,7 +59,7 @@ ENV GOPATH /opt/clvq
 RUN go version
 
 WORKDIR ${SRCD}
-RUN go install ./cmd/clvq
+RUN make build
 
 WORKDIR ${SRCD}
 CMD /bin/bash -i -l
