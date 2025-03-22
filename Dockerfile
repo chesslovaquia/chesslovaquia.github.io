@@ -1,7 +1,7 @@
 FROM debian:trixie-20250317-slim
 
 LABEL maintainer="Jeremías Casteglione <jrmsdev@gmail.com>"
-LABEL version="250319"
+LABEL version="250322"
 
 USER root:root
 WORKDIR /root
@@ -11,7 +11,7 @@ ENV HOME /root
 
 ENV DEBIAN_FRONTEND noninteractive
 
-ENV APT_INSTALL bash openssl ca-certificates build-essential golang
+ENV APT_INSTALL bash openssl ca-certificates build-essential golang less wget
 
 RUN apt-get clean \
 	&& apt-get update -yy \
