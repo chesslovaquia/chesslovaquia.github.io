@@ -6,9 +6,19 @@ devel: docker
 docker:
 	./docker/build.sh
 
+.PHONY: all
+all: build wasm
+
 .PHONY: build
 build:
 	go install ./cmd/clvq
+
+.PHONY: wasm
+wasm:
+	@install -v -m 0750 -d "static/`go env GOVERSION`"
+	@rm -vf "static/`go env GOVERSION`/wasm_exec.js"
+	@install -v -m 0640 -t "static/`go env GOVERSION`" \
+		"`go env GOROOT`/lib/wasm/wasm_exec.js"
 
 .PHONY: upgrade
 upgrade:
