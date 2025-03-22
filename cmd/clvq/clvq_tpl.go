@@ -73,6 +73,7 @@ func tplRender(input, output string) error {
 }
 
 func tplMain(input, output string) {
+	log.SetFlags(0)
 	log.Printf("render: %s -> %s", input, output)
 	if err := tplRender(input, output); err != nil {
 		log.Fatalf("[ERROR] render %s -> %s: %v", input, output, err)
