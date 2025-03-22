@@ -1,0 +1,54 @@
+name: publish
+
+on:
+  push:
+    branches: [ "main" ]
+#  pull_request:
+#    branches: [ "main" ]
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+
+      - name: golang
+        uses: actions/setup-go@v5
+        with:
+          check-latest: true
+          go-version-file: './go.mod'
+#          cache-dependency-path: './go.sum'
+
+      - name: build
+        run: python3 ./.github/cleanenv.py make all
+
+      - name: setup
+        uses: actions/configure-pages@v5
+
+      - name: upload
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './static'
+
+      - name: deploy
+        id: deployment
+        uses: actions/deploy-pages@v4
