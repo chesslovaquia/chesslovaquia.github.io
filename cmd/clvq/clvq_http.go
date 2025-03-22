@@ -8,6 +8,7 @@ import (
 	"mime"
 	"net/http"
 	"os"
+	"path"
 	"path/filepath"
 	"strings"
 )
@@ -15,19 +16,19 @@ import (
 func httpHandler(w http.ResponseWriter, r *http.Request) {
 	reqPath := filepath.Clean(r.URL.Path)
 	if strings.HasSuffix(reqPath, "/") {
-		reqPath = "/index.html"
+		reqPath = path.Join(reqPath, optTplIndex)
 	}
 
 	ext := filepath.Ext(reqPath)
 	if ext == "" {
-		reqPath = reqPath+"/index.html"
+		reqPath = path.Join(reqPath, optTplIndex)
 		ext = ".html"
 	}
 
 	// parse html templates
 
 	if ext == ".html" {
-		templatePath := filepath.Join("tpl", reqPath)
+		templatePath := filepath.Join(optTplDir, reqPath)
 		if _, err := os.Stat(templatePath); os.IsNotExist(err) {
 			log.Printf("404 %s - %v", reqPath, err)
 			http.Error(w, "404 - not found", http.StatusNotFound)
@@ -55,7 +56,7 @@ func httpHandler(w http.ResponseWriter, r *http.Request) {
 	if strings.HasPrefix(reqPath, "/.base/") {
 		filePath = filepath.Join("/opt/clvq/src/base/static", strings.TrimPrefix(reqPath, "/.base/"))
 	} else {
-		filePath = filepath.Join(".", "static", reqPath)
+		filePath = filepath.Join(optStaticDir, reqPath)
 	}
 	if _, err := os.Stat(filePath); os.IsNotExist(err) {
 		log.Printf("404 %s - %v", reqPath, err)
@@ -70,7 +71,8 @@ func httpHandler(w http.ResponseWriter, r *http.Request) {
 
 func httpMain() {
 	http.HandleFunc("/", httpHandler)
-	log.Printf("Starting server on :%s", optPort)
+	log.Printf("starting http server on port: %s", optPort)
+	log.Printf("html template base: %s", tplBaseFile())
 	if err := http.ListenAndServe(":"+optPort, nil); err != nil {
 		log.Fatalf("Failed to start server: %v", err)
 	}

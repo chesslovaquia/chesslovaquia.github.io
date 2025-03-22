@@ -10,6 +10,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"path/filepath"
 	"sync"
 )
 
@@ -34,8 +35,12 @@ func tplGetData(tpl string) map[string]string {
 	return data
 }
 
+func tplBaseFile() string {
+	return filepath.Join(optTplDir, optTplBase)
+}
+
 func tplLoad(path string) (*template.Template, error) {
-	return template.ParseFiles("tpl/base.html", path)
+	return template.ParseFiles(tplBaseFile(), path)
 }
 
 func tplGet(path string) (*template.Template, error) {
