@@ -17,3 +17,8 @@ upgrade:
 	go get -u all
 	go mod tidy -v
 #	go mod vendor
+
+.PHONY: vendor
+vendor:
+	./vendor/w3css.sh 4
+	./vendor/w3css.sh 5
