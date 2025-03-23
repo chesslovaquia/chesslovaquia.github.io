@@ -47,6 +47,7 @@ ENV SRCD /opt/clvq/src/base
 RUN chown -R devel:devel ${SRCD}
 
 RUN install -v -m 0755 ${SRCD}/cmd/clvq/clvq.sh /usr/local/bin/clvq
+RUN install -v -m 0755 ${SRCD}/docker/user-login.sh /usr/local/bin/user-login.sh
 
 USER devel:devel
 WORKDIR /home/devel
@@ -62,4 +63,4 @@ WORKDIR ${SRCD}
 RUN make all
 
 WORKDIR ${SRCD}
-CMD /bin/bash -i -l
+ENTRYPOINT /usr/local/bin/user-login.sh
