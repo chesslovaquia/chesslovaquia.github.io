@@ -71,8 +71,15 @@ func httpHandler(w http.ResponseWriter, r *http.Request) {
 
 func httpMain() {
 	http.HandleFunc("/", httpHandler)
+
 	log.Printf("starting http server on port: %s", optPort)
 	log.Printf("html template base: %s", tplBaseFile())
+	log.Printf("config filename: %s", optConfigFile)
+
+	if err := configLoad(optConfigFile); err != nil {
+		log.Fatalf("[ERROR] %v", err)
+	}
+
 	if err := http.ListenAndServe(":"+optPort, nil); err != nil {
 		log.Fatalf("Failed to start server: %v", err)
 	}

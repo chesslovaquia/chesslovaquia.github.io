@@ -34,10 +34,6 @@ func main() {
 
 	flag.Parse()
 
-	if err := configLoad(optConfigFile); err != nil {
-		log.Fatalf("[ERROR] %v", err)
-	}
-
 	if *input != "" && *output == "" {
 		log.Fatal("[ERROR] no html template output path")
 	}
