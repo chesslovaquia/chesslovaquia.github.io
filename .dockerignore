@@ -1,5 +1,11 @@
-.git
-*.md
+/.git
+/.github
+/.gitignore
+/LICENSE
+/*.md
+/docs
+/index.html
 
+/clvq
 /static/go1.*
 /static/*.html

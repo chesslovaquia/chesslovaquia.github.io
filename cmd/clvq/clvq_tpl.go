@@ -18,6 +18,16 @@ var (
 	tplMutex sync.Mutex
 )
 
+type Tpl struct {
+	Root string
+}
+
+func newTpl() *Tpl {
+	return &Tpl{
+		Root: "",
+	}
+}
+
 func tplGetData(tpl string) map[string]string {
 	var data map[string]string
 	path := tpl[:len(tpl)-5] + ".json"
