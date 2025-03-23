@@ -1,2 +1,5 @@
 .git
 *.md
+
+/static/go1.*
+/static/*.html
