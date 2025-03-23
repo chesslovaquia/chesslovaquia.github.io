@@ -20,7 +20,7 @@ var (
 
 func tplGetData(tpl string) map[string]string {
 	var data map[string]string
-	path := tpl[:len(tpl)-5]+".json"
+	path := tpl[:len(tpl)-5] + ".json"
 	blob, err := ioutil.ReadFile(path)
 	if err != nil {
 		x := fmt.Errorf("%s failed to read file: %w", path, err)

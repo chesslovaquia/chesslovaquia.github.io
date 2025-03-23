@@ -10,6 +10,10 @@ docker:
 
 # container targets
 
+.PHONY: fmt
+fmt:
+	@gofmt -l -s -w .
+
 .PHONY: all
 all: build wasm html
 
