@@ -22,7 +22,7 @@ func httpHandler(w http.ResponseWriter, r *http.Request) {
 	ext := filepath.Ext(reqPath)
 	if ext == "" {
 		reqPath = path.Join(reqPath, optTplIndex)
-		ext = ".html"
+		ext = filepath.Ext(reqPath)
 	}
 
 	// parse html templates
