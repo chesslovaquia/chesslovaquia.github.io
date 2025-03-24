@@ -41,8 +41,13 @@ func (d *TplData) Project() string {
 	return cfg.Project
 }
 
+func (d *TplData) Pages() map[string]*Page {
+	return cfg.Pages
+}
+
 type Tpl struct {
 	path string
+	inc  string
 	Dir  string
 	Base string
 }
@@ -50,6 +55,7 @@ type Tpl struct {
 func newAdminTpl(path string) *Tpl {
 	return &Tpl{
 		path: path,
+		inc:  "inc",
 		Dir:  "/opt/clvq/src/base/admin",
 		Base: "base.html",
 	}
@@ -58,6 +64,7 @@ func newAdminTpl(path string) *Tpl {
 func newTpl(path string) *Tpl {
 	return &Tpl{
 		path: path,
+		inc:  optTplInc,
 		Dir:  optTplDir,
 		Base: optTplBase,
 	}
@@ -71,14 +78,26 @@ func (t *Tpl) BaseFile() string {
 	return filepath.Join(t.Dir, t.Base)
 }
 
+func (t *Tpl) Inc(path string) string {
+	return filepath.Join(t.Dir, t.inc, path)
+}
+
 func (t *Tpl) Load() (*template.Template, error) {
-	return template.ParseFiles(t.BaseFile(), t.Path())
+	tpl, err := template.ParseFiles(t.BaseFile(), t.Path())
+	if err != nil {
+		return nil, err
+	}
+	// TODO: Tpl.Load check inc dir exists and not empty
+	tpl, err = tpl.ParseGlob(t.Inc("*.html"))
+	if err != nil {
+		return nil, err
+	}
+	return tpl, nil
 }
 
 func (t *Tpl) Get() (*template.Template, error) {
 	tplMutex.Lock()
 	defer tplMutex.Unlock()
-
 	// Always reload template
 	newTmpl, err := t.Load()
 	if err != nil {

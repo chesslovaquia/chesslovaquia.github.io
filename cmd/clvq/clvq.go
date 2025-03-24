@@ -27,6 +27,7 @@ var (
 	optTplDir     string
 	optTplBase    string
 	optTplIndex   string
+	optTplInc     string
 	optStaticDir  string
 	optConfigFile string
 )
@@ -40,6 +41,7 @@ func Main() {
 	flag.StringVar(&optTplDir, "tpl", "tpl", "html template dir path")
 	flag.StringVar(&optTplBase, "tpl.base", "base.html", "base html template")
 	flag.StringVar(&optTplIndex, "tpl.index", "index.html", "index html filename")
+	flag.StringVar(&optTplInc, "tpl.inc", "inc", "template include dirname")
 
 	flag.StringVar(&optStaticDir, "static", "static", "static dir path")
 
