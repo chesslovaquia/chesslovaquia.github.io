@@ -41,7 +41,7 @@ func httpHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "500 - Failed to load template", http.StatusInternalServerError)
 			return
 		}
-		data := tplGetData(t.Path)
+		data := t.GetData()
 		if err := tmpl.Execute(w, data); err != nil {
 			log.Printf("500 %s - %v", reqPath, err)
 			http.Error(w, "500 - Failed to render template", http.StatusInternalServerError)

@@ -28,21 +28,10 @@ func newTplData() *TplData {
 	}
 }
 
-func tplGetData(tpl string) map[string]string {
-	var data map[string]string
-	path := tpl[:len(tpl)-5] + ".json"
-	blob, err := ioutil.ReadFile(path)
-	if err != nil {
-		x := fmt.Errorf("%s failed to read file: %w", path, err)
-		log.Print(x)
-		return data
+func (d *TplData) Dup() *TplData {
+	return &TplData{
+		Root: d.Root,
 	}
-	if err := json.Unmarshal(blob, &data); err != nil {
-		x := fmt.Errorf("%s failed to parse file: %w", path, err)
-		log.Print(x)
-		return data
-	}
-	return data
 }
 
 type Tpl struct {
@@ -79,20 +68,34 @@ func (t *Tpl) Get() (*template.Template, error) {
 	return newTmpl, nil
 }
 
+func (t *Tpl) GetData() *TplData {
+	data := cfg.Tpl.Dup()
+	path := t.Path[:len(t.Path)-5] + ".json"
+	blob, err := ioutil.ReadFile(path)
+	if err != nil {
+		x := fmt.Errorf("%s failed to read file: %w", path, err)
+		log.Print(x)
+		return data
+	}
+	if err := json.Unmarshal(blob, data); err != nil {
+		x := fmt.Errorf("%s failed to parse file: %w", path, err)
+		log.Print(x)
+		return data
+	}
+	return data
+}
+
 func (t *Tpl) Render(output string) error {
 	tmpl, err := t.Load()
 	if err != nil {
 		return err
 	}
-
-	data := tplGetData(t.Path)
-
+	data := t.GetData()
 	outputFile, err := os.Create(output)
 	if err != nil {
 		return err
 	}
 	defer outputFile.Close()
-
 	return tmpl.Execute(outputFile, data)
 }
 
