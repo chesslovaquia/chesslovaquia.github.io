@@ -19,18 +19,21 @@ var (
 )
 
 type TplData struct {
-	Root string
+	Project string
+	Root    string
 }
 
 func newTplData() *TplData {
 	return &TplData{
-		Root: "",
+		Project: "clvq",
+		Root:    "",
 	}
 }
 
 func (d *TplData) Dup() *TplData {
 	return &TplData{
-		Root: d.Root,
+		Project: d.Project,
+		Root:    d.Root,
 	}
 }
 
