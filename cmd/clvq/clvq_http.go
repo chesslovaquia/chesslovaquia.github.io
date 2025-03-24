@@ -28,13 +28,18 @@ func httpHandler(w http.ResponseWriter, r *http.Request) {
 	// parse html templates
 
 	if ext == ".html" {
-		templatePath := filepath.Join(optTplDir, reqPath)
-		if _, err := os.Stat(templatePath); os.IsNotExist(err) {
+		var t *Tpl
+		if strings.HasPrefix(reqPath, "/_/") {
+			// admin
+			t = newAdminTpl(strings.TrimPrefix(reqPath, "/_/"))
+		} else {
+			t = newTpl(reqPath)
+		}
+		if _, err := os.Stat(t.Path()); os.IsNotExist(err) {
 			log.Printf("404 %s - %v", reqPath, err)
 			http.Error(w, "404 - not found", http.StatusNotFound)
 			return
 		}
-		t := newTpl(templatePath)
 		tmpl, err := t.Get()
 		if err != nil {
 			log.Printf("500 %s - %v", reqPath, err)
@@ -47,7 +52,7 @@ func httpHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "500 - Failed to render template", http.StatusInternalServerError)
 			return
 		}
-		log.Printf("200 %s - %s %s", reqPath, t.BaseFile(), t.Path)
+		log.Printf("200 %s - %s %s", reqPath, t.BaseFile(), t.Path())
 		return
 	}
 

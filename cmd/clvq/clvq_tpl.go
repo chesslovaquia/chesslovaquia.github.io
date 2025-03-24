@@ -35,17 +35,29 @@ func (d *TplData) Dup() *TplData {
 }
 
 type Tpl struct {
-	Path string
+	path string
 	Dir  string
 	Base string
 }
 
+func newAdminTpl(path string) *Tpl {
+	return &Tpl{
+		path: path,
+		Dir:  "/opt/clvq/src/base/admin",
+		Base: "base.html",
+	}
+}
+
 func newTpl(path string) *Tpl {
 	return &Tpl{
-		Path: path,
+		path: path,
 		Dir:  optTplDir,
 		Base: optTplBase,
 	}
+}
+
+func (t *Tpl) Path() string {
+	return filepath.Join(t.Dir, t.path)
 }
 
 func (t *Tpl) BaseFile() string {
@@ -53,7 +65,7 @@ func (t *Tpl) BaseFile() string {
 }
 
 func (t *Tpl) Load() (*template.Template, error) {
-	return template.ParseFiles(t.BaseFile(), t.Path)
+	return template.ParseFiles(t.BaseFile(), t.Path())
 }
 
 func (t *Tpl) Get() (*template.Template, error) {
@@ -70,7 +82,8 @@ func (t *Tpl) Get() (*template.Template, error) {
 
 func (t *Tpl) GetData() *TplData {
 	data := cfg.Tpl.Dup()
-	path := t.Path[:len(t.Path)-5] + ".json"
+	p := t.Path()
+	path := p[:len(p)-5] + ".json"
 	blob, err := ioutil.ReadFile(path)
 	if err != nil {
 		x := fmt.Errorf("%s failed to read file: %w", path, err)
@@ -105,8 +118,8 @@ func tplMain(input, output string) {
 		log.Fatalf("[ERROR] %v", err)
 	}
 	t := newTpl(input)
-	log.Printf("render: %s %s -> %s", t.BaseFile(), t.Path, output)
+	log.Printf("render: %s %s -> %s", t.BaseFile(), t.Path(), output)
 	if err := t.Render(output); err != nil {
-		log.Fatalf("[ERROR] render %s: %v", t.Path, err)
+		log.Fatalf("[ERROR] render %s: %v", t.Path(), err)
 	}
 }
