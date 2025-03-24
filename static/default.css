@@ -3,6 +3,7 @@ body {
 }
 
 a {
+	font-family: monospace;
 	color: #0000dd;
 }
 
@@ -11,5 +12,9 @@ a:hover {
 }
 
 h1, h2, h3, h4, h5, h6 {
+	font-family: monospace;
+}
+
+p, pre {
 	font-family: monospace;
 }
