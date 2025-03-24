@@ -61,6 +61,8 @@ func httpHandler(w http.ResponseWriter, r *http.Request) {
 	var filePath string
 	if strings.HasPrefix(reqPath, "/.base/") {
 		filePath = filepath.Join("/opt/clvq/src/base/static", strings.TrimPrefix(reqPath, "/.base/"))
+	} else if strings.HasPrefix(reqPath, "/_/") {
+		filePath = filepath.Join("/opt/clvq/src/base/admin", strings.TrimPrefix(reqPath, "/_/"))
 	} else {
 		filePath = filepath.Join(optStaticDir, reqPath)
 	}
