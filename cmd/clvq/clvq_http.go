@@ -76,6 +76,8 @@ func httpHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func httpMain() {
+	http.HandleFunc("/_/config.json", adminConfigJSONHandler)
+
 	http.HandleFunc("/", httpHandler)
 
 	log.Printf("starting http server on port: %s", optPort)
