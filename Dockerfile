@@ -11,12 +11,23 @@ ENV HOME /root
 
 ENV DEBIAN_FRONTEND noninteractive
 
-ENV APT_INSTALL bash openssl ca-certificates build-essential golang less wget
+ENV APT_INSTALL bash openssl ca-certificates build-essential golang
 
 RUN apt-get clean \
 	&& apt-get update -yy \
 	&& apt-get dist-upgrade -yy --purge \
 	&& apt-get install -yy --no-install-recommends ${APT_INSTALL} \
+	&& apt-get clean \
+	&& apt-get autoremove -yy --purge \
+	&& rm -rf /var/lib/apt/lists/* \
+		/var/cache/apt/archives/*.deb \
+		/var/cache/apt/*cache.bin
+
+ENV APT_INSTALL_EXTRA media-types less wget
+
+RUN apt-get clean \
+	&& apt-get update -yy \
+	&& apt-get install -yy --no-install-recommends ${APT_INSTALL_EXTRA} \
 	&& apt-get clean \
 	&& apt-get autoremove -yy --purge \
 	&& rm -rf /var/lib/apt/lists/* \
