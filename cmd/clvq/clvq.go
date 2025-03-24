@@ -33,6 +33,7 @@ var (
 
 func Main() {
 	loadEnv()
+	newConfig()
 
 	flag.StringVar(&optPort, "port", "8044", "HTTP server port")
 

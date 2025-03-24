@@ -84,6 +84,7 @@ func httpMain() {
 
 	log.Printf("starting http server on port: %s", optPort)
 	log.Printf("config filename: %s", optConfigFile)
+	log.Printf("go version: %s", envGoVersion)
 
 	if err := configLoad(optConfigFile); err != nil {
 		log.Fatalf("[ERROR] %v", err)

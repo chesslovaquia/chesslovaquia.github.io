@@ -11,10 +11,6 @@ import (
 
 var cfg *Config
 
-func init() {
-	newConfig()
-}
-
 type Config struct {
 	Project string
 	Tpl     *TplData
