@@ -82,15 +82,41 @@ func (t *Tpl) Inc(path string) string {
 	return filepath.Join(t.Dir, t.inc, path)
 }
 
+func (t *Tpl) incNotEmpty(path string) bool {
+	info, err := os.Stat(path)
+	if err == nil {
+		if info.IsDir() {
+			if dir, err := os.Open(path); err != nil {
+				log.Printf("templates include: %v", err)
+				return false
+			} else {
+				defer dir.Close()
+				// read the first entry
+				_, err = dir.Readdir(1)
+				if err != nil {
+					log.Printf("templates include: %v", err)
+					return false
+				} else {
+					return true
+				}
+			}
+		}
+	} else {
+		log.Printf("templates include: %v", err)
+	}
+	return false
+}
+
 func (t *Tpl) Load() (*template.Template, error) {
 	tpl, err := template.ParseFiles(t.BaseFile(), t.Path())
 	if err != nil {
 		return nil, err
 	}
-	// TODO: Tpl.Load check inc dir exists and not empty
-	tpl, err = tpl.ParseGlob(t.Inc("*.html"))
-	if err != nil {
-		return nil, err
+	if t.incNotEmpty(t.Inc(".")) {
+		tpl, err = tpl.ParseGlob(t.Inc("*.html"))
+		if err != nil {
+			return nil, err
+		}
 	}
 	return tpl, nil
 }
