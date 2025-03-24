@@ -6,7 +6,20 @@ package main
 import (
 	"flag"
 	"log"
+	"os"
 )
+
+var (
+	// os env
+	envGoVersion string
+)
+
+func loadEnv() {
+	envGoVersion = os.Getenv("GOVERSION")
+	if envGoVersion == "" {
+		panic("GOVERSION env var not set")
+	}
+}
 
 var (
 	// flags
@@ -18,7 +31,9 @@ var (
 	optConfigFile string
 )
 
-func main() {
+func Main() {
+	loadEnv()
+
 	flag.StringVar(&optPort, "port", "8044", "HTTP server port")
 
 	flag.StringVar(&optTplDir, "tpl", "tpl", "html template dir path")
@@ -44,4 +59,8 @@ func main() {
 	}
 
 	httpMain()
+}
+
+func main() {
+	Main()
 }

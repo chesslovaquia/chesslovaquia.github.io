@@ -19,12 +19,14 @@ var (
 )
 
 type TplData struct {
-	Root    string
+	GoVersion string
+	Root      string
 }
 
 func newTplData() *TplData {
 	return &TplData{
-		Root:    "",
+		GoVersion: envGoVersion,
+		Root:      "",
 	}
 }
 
