@@ -14,12 +14,12 @@ import (
 )
 
 func httpHandler(w http.ResponseWriter, r *http.Request) {
-	reqPath := filepath.Clean(r.URL.Path)
+	reqPath := path.Clean(r.URL.Path)
 	if strings.HasSuffix(reqPath, "/") {
 		reqPath = path.Join(reqPath, optTplIndex)
 	}
 
-	ext := filepath.Ext(reqPath)
+	ext := path.Ext(reqPath)
 	if ext == "" {
 		reqPath = path.Join(reqPath, optTplIndex)
 		ext = filepath.Ext(reqPath)
