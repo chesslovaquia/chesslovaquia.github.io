@@ -18,12 +18,12 @@ var (
 	tplMutex sync.Mutex
 )
 
-type Tpl struct {
+type TplData struct {
 	Root string
 }
 
-func newTpl() *Tpl {
-	return &Tpl{
+func newTplData() *TplData {
+	return &TplData{
 		Root: "",
 	}
 }
@@ -45,33 +45,47 @@ func tplGetData(tpl string) map[string]string {
 	return data
 }
 
-func tplBaseFile() string {
-	return filepath.Join(optTplDir, optTplBase)
+type Tpl struct {
+	Path string
+	Dir  string
+	Base string
 }
 
-func tplLoad(path string) (*template.Template, error) {
-	return template.ParseFiles(tplBaseFile(), path)
+func newTpl(path string) *Tpl {
+	return &Tpl{
+		Path: path,
+		Dir:  optTplDir,
+		Base: optTplBase,
+	}
 }
 
-func tplGet(path string) (*template.Template, error) {
+func (t *Tpl) BaseFile() string {
+	return filepath.Join(t.Dir, t.Base)
+}
+
+func (t *Tpl) Load() (*template.Template, error) {
+	return template.ParseFiles(t.BaseFile(), t.Path)
+}
+
+func (t *Tpl) Get() (*template.Template, error) {
 	tplMutex.Lock()
 	defer tplMutex.Unlock()
 
 	// Always reload template
-	newTmpl, err := tplLoad(path)
+	newTmpl, err := t.Load()
 	if err != nil {
 		return nil, err
 	}
 	return newTmpl, nil
 }
 
-func tplRender(input, output string) error {
-	tmpl, err := tplLoad(input)
+func (t *Tpl) Render(output string) error {
+	tmpl, err := t.Load()
 	if err != nil {
 		return err
 	}
 
-	data := tplGetData(input)
+	data := tplGetData(t.Path)
 
 	outputFile, err := os.Create(output)
 	if err != nil {
@@ -87,8 +101,9 @@ func tplMain(input, output string) {
 	if err := configLoad(optConfigFile); err != nil {
 		log.Fatalf("[ERROR] %v", err)
 	}
-	log.Printf("render: %s -> %s", input, output)
-	if err := tplRender(input, output); err != nil {
-		log.Fatalf("[ERROR] render %s -> %s: %v", input, output, err)
+	t := newTpl(input)
+	log.Printf("render: %s %s -> %s", t.BaseFile(), t.Path, output)
+	if err := t.Render(output); err != nil {
+		log.Fatalf("[ERROR] render %s: %v", t.Path, err)
 	}
 }

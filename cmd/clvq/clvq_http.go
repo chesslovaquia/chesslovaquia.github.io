@@ -34,19 +34,20 @@ func httpHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "404 - not found", http.StatusNotFound)
 			return
 		}
-		tmpl, err := tplGet(templatePath)
+		t := newTpl(templatePath)
+		tmpl, err := t.Get()
 		if err != nil {
 			log.Printf("500 %s - %v", reqPath, err)
 			http.Error(w, "500 - Failed to load template", http.StatusInternalServerError)
 			return
 		}
-		data := tplGetData(templatePath)
+		data := tplGetData(t.Path)
 		if err := tmpl.Execute(w, data); err != nil {
 			log.Printf("500 %s - %v", reqPath, err)
 			http.Error(w, "500 - Failed to render template", http.StatusInternalServerError)
 			return
 		}
-		log.Printf("200 %s - %s", reqPath, templatePath)
+		log.Printf("200 %s - %s %s", reqPath, t.BaseFile(), t.Path)
 		return
 	}
 
@@ -73,7 +74,6 @@ func httpMain() {
 	http.HandleFunc("/", httpHandler)
 
 	log.Printf("starting http server on port: %s", optPort)
-	log.Printf("html template base: %s", tplBaseFile())
 	log.Printf("config filename: %s", optConfigFile)
 
 	if err := configLoad(optConfigFile); err != nil {

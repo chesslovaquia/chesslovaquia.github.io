@@ -17,13 +17,13 @@ func init() {
 
 type Config struct {
 	Project string
-	Tpl     *Tpl
+	Tpl     *TplData
 }
 
 func newConfig() {
 	cfg = &Config{
 		Project: "clvq",
-		Tpl:     newTpl(),
+		Tpl:     newTplData(),
 	}
 }
 
