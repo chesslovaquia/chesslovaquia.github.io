@@ -32,7 +32,8 @@ func newTplData() *TplData {
 
 func (d *TplData) Dup() *TplData {
 	return &TplData{
-		Root:    d.Root,
+		GoVersion: d.GoVersion,
+		Root:      d.Root,
 	}
 }
 
