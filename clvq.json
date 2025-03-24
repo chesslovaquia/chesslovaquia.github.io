@@ -1,1 +1,8 @@
-{}
+{
+	"Pages": {
+		"/index.html": {
+			"In":  "index.html",
+			"Out": "static/index.html"
+		}
+	}
+}

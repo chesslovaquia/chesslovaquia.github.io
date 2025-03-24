@@ -14,12 +14,14 @@ var cfg *Config
 type Config struct {
 	Project string
 	Tpl     *TplData
+	Pages   map[string]*Page
 }
 
 func newConfig() {
 	cfg = &Config{
 		Project: "clvq",
 		Tpl:     newTplData(),
+		Pages:   make(map[string]*Page),
 	}
 }
 
@@ -37,4 +39,9 @@ func configLoad(filename string) error {
 		}
 	}
 	return nil
+}
+
+type Page struct {
+	In  string
+	Out string
 }
