@@ -11,12 +11,15 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strings"
 	"sync"
 )
 
 var (
 	tplMutex sync.Mutex
 )
+
+// TplData
 
 type TplData struct {
 	GoVersion string
@@ -44,6 +47,8 @@ func (d *TplData) Project() string {
 func (d *TplData) Pages() map[string]*Page {
 	return cfg.Pages
 }
+
+// Tpl
 
 type Tpl struct {
 	path string
@@ -164,6 +169,8 @@ func (t *Tpl) Render(output string) error {
 	return tmpl.Execute(outputFile, data)
 }
 
+// Main
+
 func tplMain(input, output string) {
 	log.SetFlags(0)
 	if err := configLoad(optConfigFile); err != nil {
@@ -174,4 +181,16 @@ func tplMain(input, output string) {
 	if err := t.Render(output); err != nil {
 		log.Fatalf("[ERROR] render %s: %v", t.Path(), err)
 	}
+}
+
+// Utils
+
+func tplBuildScript() string {
+	sh := make([]string, 0)
+	for _, uri := range cfg.PagesList() {
+		page := cfg.Pages[uri]
+		sh = append(sh, fmt.Sprintf("# %s", uri))
+		sh = append(sh, fmt.Sprintf("clvq -i %s -o %s", page.In, page.Out))
+	}
+	return strings.Join(sh, "\n")
 }

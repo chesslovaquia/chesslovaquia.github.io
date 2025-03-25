@@ -79,6 +79,7 @@ func httpHandler(w http.ResponseWriter, r *http.Request) {
 
 func httpMain() {
 	http.HandleFunc("/_/config.json", adminConfigJSONHandler)
+	http.HandleFunc("/_/tpl/build.sh", adminTplBuildScriptHandler)
 
 	http.HandleFunc("/", httpHandler)
 

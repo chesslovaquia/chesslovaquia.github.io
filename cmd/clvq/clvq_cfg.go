@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"os"
+	"sort"
 )
 
 var cfg *Config
@@ -39,6 +40,15 @@ func configLoad(filename string) error {
 		}
 	}
 	return nil
+}
+
+func (c *Config) PagesList() []string {
+	l := make([]string, 0, len(c.Pages))
+	for k := range c.Pages {
+		l = append(l, k)
+	}
+	sort.Strings(l)
+	return l
 }
 
 type Page struct {
