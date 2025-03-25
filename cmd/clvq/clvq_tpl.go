@@ -183,6 +183,18 @@ func tplMain(input, output string) {
 	}
 }
 
+func tplMake() {
+	log.SetFlags(0)
+	if err := configLoad(optConfigFile); err != nil {
+		log.Fatalf("[ERROR] %v", err)
+	}
+	fn := filepath.Join(optTplDir, optTplBuild)
+	if err := tplWriteBuildScript(); err != nil {
+		log.Fatalf("[ERROR] make %s: %v", fn, err)
+	}
+	log.Printf("%s done!", fn)
+}
+
 // Utils
 
 func tplBuildScript() string {
@@ -193,4 +205,34 @@ func tplBuildScript() string {
 		sh = append(sh, fmt.Sprintf("clvq -i %s -o %s", page.In, page.Out))
 	}
 	return strings.Join(sh, "\n")
+}
+
+func tplWriteBuildScript() error {
+	fn := filepath.Join(optTplDir, optTplBuild)
+	fh, err := os.Create(fn)
+	if err != nil {
+		return err
+	}
+	defer fh.Close()
+	_, err = fh.WriteString("#!/bin/sh\n")
+	if err != nil {
+		return err
+	}
+	_, err = fh.WriteString("# AUTO GENERATED FILE - DO NOT EDIT!!\n")
+	if err != nil {
+		return err
+	}
+	_, err = fh.WriteString("set -e\n")
+	if err != nil {
+		return err
+	}
+	_, err = fh.WriteString(tplBuildScript())
+	if err != nil {
+		return err
+	}
+	_, err = fh.WriteString("\nexit 0\n")
+	if err != nil {
+		return err
+	}
+	return nil
 }

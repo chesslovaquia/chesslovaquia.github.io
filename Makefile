@@ -30,6 +30,7 @@ wasm:
 
 .PHONY: html
 html:
+	@clvq -tpl.make
 	./tpl/build.sh
 
 .PHONY: upgrade

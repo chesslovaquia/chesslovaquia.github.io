@@ -78,18 +78,22 @@ func httpHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func httpMain() {
-	http.HandleFunc("/_/config.json", adminConfigJSONHandler)
-	http.HandleFunc("/_/tpl/build.sh", adminTplBuildScriptHandler)
-
-	http.HandleFunc("/", httpHandler)
-
 	log.Printf("starting http server on port: %s", optPort)
 	log.Printf("config filename: %s", optConfigFile)
-	log.Printf("go version: %s", envGoVersion)
+	log.Printf("system go version: %s", envGoVersion)
 
 	if err := configLoad(optConfigFile); err != nil {
 		log.Fatalf("[ERROR] %v", err)
 	}
+
+	if err := tplWriteBuildScript(); err != nil {
+		log.Fatalf("[ERROR] %v", err)
+	}
+
+	http.HandleFunc("/_/config.json", adminConfigJSONHandler)
+	http.HandleFunc("/_/tpl/build.sh", adminTplBuildScriptHandler)
+
+	http.HandleFunc("/", httpHandler)
 
 	if err := http.ListenAndServe(":"+optPort, nil); err != nil {
 		log.Fatalf("Failed to start server: %v", err)
