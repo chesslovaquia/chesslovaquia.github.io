@@ -39,7 +39,7 @@ jobs:
 #          cache-dependency-path: './go.sum'
 
       - name: build
-        run: python3 ./.github/cleanenv.py make all
+        run: ./.github/build.sh
 
       - name: setup
         uses: actions/configure-pages@v5
