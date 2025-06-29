@@ -1,0 +1,19 @@
+name = 'clvq'
+license = 'BSD-3'
+licenselink = 'https://github.com/chesslovaquia/play/LICENSE'
+description = 'Custom theme'
+
+# The home page of the theme, where the source can be found
+homepage = 'https://github.com/chesslovaquia/play'
+
+# If you have a running demo of the theme
+demosite = 'https://chesslovaquia.github.io/play/'
+
+# Taxonomy terms
+##tags = ['blog', 'company']
+##features = ['some', 'awesome', 'features']
+
+# If the theme has a single author
+[author]
+  name = 'Jeremías Casteglione'
+  homepage = 'https://github.com/jrmsdev'
