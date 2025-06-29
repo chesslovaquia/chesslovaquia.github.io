@@ -1,3 +1,5 @@
 #!/bin/sh
 exec hugo \
-	--environment production
+	--environment production \
+	--baseURL http://localhost:8000/ \
+	--logLevel warning
