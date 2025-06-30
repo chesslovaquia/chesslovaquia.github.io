@@ -60,6 +60,8 @@ ENV USER devel
 ENV HOME /home/devel
 
 RUN go version
+RUN npm version
+RUN npx --version
 RUN tsc --version
 RUN hugo version
 
