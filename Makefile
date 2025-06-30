@@ -15,5 +15,4 @@ all: build
 
 .PHONY: build
 build:
-	rm -rf public
 	./hugo/build.sh
