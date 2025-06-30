@@ -4,8 +4,12 @@ title = 'chesslovaquia'
 theme = 'clvq'
 
 disableKinds = [
+	"section",
+	"RSS",
 	"taxonomy",
 ]
+
+enableRobotsTXT = true
 
 [caches]
 [caches.modules]
