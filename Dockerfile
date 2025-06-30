@@ -11,7 +11,7 @@ ENV HOME /root
 
 ENV DEBIAN_FRONTEND noninteractive
 
-ENV APT_INSTALL bash openssl ca-certificates media-types less wget golang node-typescript
+ENV APT_INSTALL bash openssl ca-certificates media-types less wget golang npm
 
 RUN apt-get clean \
 	&& apt-get update -yy \
@@ -23,7 +23,7 @@ RUN apt-get clean \
 		/var/cache/apt/archives/*.deb \
 		/var/cache/apt/*cache.bin
 
-ENV APT_INSTALL_EXTRA make hugo
+ENV APT_INSTALL_EXTRA make hugo node-typescript
 
 RUN apt-get clean \
 	&& apt-get update -yy \
