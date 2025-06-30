@@ -8,6 +8,8 @@
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "outDir": "./public",
+    "noImplicitAny": true,
+    "noImplicitOverride": true,
     "skipLibCheck": true
   }
 }
