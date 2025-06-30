@@ -1,13 +1,11 @@
+<link rel="stylesheet" href='{{ "/w3css/4/w3.css" | absURL }}'>
+
 {{- with resources.Get "css/main.css" }}
   {{- if eq hugo.Environment "devel" }}
-    <link rel="stylesheet" href="{{ .RelPermalink }}">
+    <link rel="stylesheet" href="{{ .Permalink }}">
   {{- else }}
     {{- with . | minify | fingerprint }}
-      <link rel="stylesheet" href="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}" crossorigin="anonymous">
+      <link rel="stylesheet" href="{{ .Permalink }}" integrity="{{ .Data.Integrity }}" crossorigin="anonymous">
     {{- end }}
   {{- end }}
-{{- end }}
-
-{{- with resources.Get "w3css/4/w3.css" }}
-  <link rel="stylesheet" href="{{ .RelPermalink }}">
 {{- end }}

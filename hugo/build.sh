@@ -5,7 +5,7 @@ rm -rf ./public
 
 hugo \
 	--environment production \
-	--baseURL http://localhost:8000/ \
+	--baseURL "${CLVQ_ROOT}" \
 	--logLevel warning
 
 echo "Site files:"
