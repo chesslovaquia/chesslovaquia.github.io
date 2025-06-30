@@ -2,3 +2,17 @@ baseURL = 'http://localhost:8045/'
 languageCode = 'en-us'
 title = 'chesslovaquia'
 theme = 'clvq'
+
+disableKinds = [
+	"taxonomy",
+]
+
+[caches]
+[caches.modules]
+dir = ":cacheDir/modules"
+maxAge = "15m"
+
+[module]
+[[module.mounts]]
+source="ts"
+target="ts"
