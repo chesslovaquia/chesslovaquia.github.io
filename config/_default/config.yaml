@@ -1,0 +1,4 @@
+# default config
+params:
+  sitemap: true
+  cdn: http://localhost:8045

@@ -1,12 +1,20 @@
-{{- with resources.Get "js/main.ts" }}
-  {{- if eq hugo.Environment "devel" }}
-    {{- with . | js.Build }}
-      <script src="{{ .Permalink }}"></script>
-    {{- end }}
-  {{- else }}
-    {{- $opts := dict "minify" true }}
-    {{- with . | js.Build $opts | fingerprint }}
-      <script src="{{ .Permalink }}" integrity="{{- .Data.Integrity }}" crossorigin="anonymous"></script>
+{{ $cdn := .Site.Params.cdn }}
+
+{{ $js_load := slice "js/main.ts" }}
+
+{{- range $resource := $js_load }}
+  {{- with resources.Get $resource }}
+    {{- if eq hugo.Environment "devel" }}
+      {{- with . | js.Build }}
+        <script src="{{ $cdn }}{{ .RelPermalink }}"></script>
+      {{- end }}
+    {{- else }}
+      {{- $opts := dict "minify" true }}
+      {{- with . | js.Build $opts | fingerprint }}
+        <script src="{{ $cdn }}{{ .RelPermalink }}"
+          integrity="{{- .Data.Integrity }}"
+          crossorigin="anonymous"></script>
+      {{- end }}
     {{- end }}
   {{- end }}
 {{- end }}

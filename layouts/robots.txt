@@ -2,6 +2,6 @@ User-agent: *
 {{- range .Pages }}
 Disallow: {{ .RelPermalink }}
 {{- end }}
-{{- if .Site.Params.Sitemap }}
+{{- if .Site.Params.sitemap }}
 Sitemap: {{ "sitemap.xml" | absURL }}
 {{- end }}

@@ -1,4 +1,4 @@
-name: chesslovaquia deploy
+name: deploy
 
 on:
   # Runs on pushes targeting the default branch
@@ -33,7 +33,8 @@ jobs:
     env:
       HUGO_VERSION: 0.147.9
       HUGO_ENVIRONMENT: production
-      CLVQ_ROOT: https://chesslovaquia.github.io/play/
+      CLVQ_ROOT: https://chesslovaquia.github.io/play
+      HUGO_PARAMS_CDN: https://chesslovaquia.github.io/play
       TZ: UTC
     steps:
       - name: Install Hugo CLI
@@ -47,8 +48,6 @@ jobs:
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v5
-      - name: Install Node.js dependencies
-        run: "[[ -f package-lock.json || -f npm-shrinkwrap.json ]] && npm ci || true"
       - name: Cache Restore
         id: cache-restore
         uses: actions/cache/restore@v4

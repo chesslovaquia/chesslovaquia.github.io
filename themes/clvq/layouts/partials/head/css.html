@@ -1,11 +1,20 @@
-<link rel="stylesheet" href="{{ .Site.BaseURL }}w3css/4/w3.css">
+{{ $cdn := .Site.Params.cdn }}
 
-{{- with resources.Get "css/main.css" }}
-  {{- if eq hugo.Environment "devel" }}
-    <link rel="stylesheet" href="{{ .Permalink }}">
-  {{- else }}
-    {{- with . | minify | fingerprint }}
-      <link rel="stylesheet" href="{{ .Permalink }}" integrity="{{ .Data.Integrity }}" crossorigin="anonymous">
+{{ $css_load := slice "css/main.css" }}
+
+<link rel="stylesheet" href="{{ $cdn }}/w3css/4/w3.css">
+
+{{- range $resource := $css_load }}
+  {{- with resources.Get $resource }}
+    {{- if eq hugo.Environment "devel" }}
+      <link rel="stylesheet" href="{{ $cdn }}{{ .RelPermalink }}">
+    {{- else }}
+      {{- with . | minify | fingerprint }}
+        <link rel="stylesheet"
+          href="{{ $cdn }}{{ .RelPermalink }}"
+          integrity="{{ .Data.Integrity }}"
+          crossorigin="anonymous">
+      {{- end }}
     {{- end }}
   {{- end }}
 {{- end }}
