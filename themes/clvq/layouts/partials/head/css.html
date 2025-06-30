@@ -1,4 +1,4 @@
-<link rel="stylesheet" href='{{ "/w3css/4/w3.css" | absURL }}'>
+<link rel="stylesheet" href="{{ .Site.BaseURL }}w3css/4/w3.css">
 
 {{- with resources.Get "css/main.css" }}
   {{- if eq hugo.Environment "devel" }}
