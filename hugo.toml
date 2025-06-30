@@ -1,7 +1,7 @@
-baseURL = 'http://localhost:8045/'
-languageCode = 'en-us'
-title = 'chesslovaquia'
-theme = 'clvq'
+baseURL = "http://localhost:8045/"
+languageCode = "en-us"
+title = "chesslovaquia"
+theme = "clvq"
 
 disableKinds = [
 	"section",
@@ -15,6 +15,8 @@ enableRobotsTXT = true
 [caches.modules]
 dir = ":cacheDir/modules"
 maxAge = "15m"
+[caches.images]
+dir = ":cacheDir/images"
 
 [module]
 [[module.mounts]]

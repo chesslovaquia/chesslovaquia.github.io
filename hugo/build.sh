@@ -6,7 +6,8 @@ rm -rf ./public
 hugo \
 	--environment production \
 	--baseURL "${CLVQ_ROOT}" \
-	--logLevel warning
+	--logLevel warning \
+	"$@"
 
 echo "Site files:"
 find ./public -type f | sort
