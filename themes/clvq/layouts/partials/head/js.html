@@ -1,4 +1,4 @@
-{{- with resources.Get "js/main.js" }}
+{{- with resources.Get "js/main.ts" }}
   {{- if eq hugo.Environment "devel" }}
     {{- with . | js.Build }}
       <script src="{{ .Permalink }}"></script>
