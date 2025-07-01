@@ -11,21 +11,28 @@ Renders a menu for the given menu ID.
 {{- $menuID := .menuID }}
 
 {{- with index site.Menus $menuID }}
-  <nav>
-    <ul>
-      {{- partial "inline/menu/walk.html" (dict "page" $page "menuEntries" .) }}
-    </ul>
-  </nav>
+<nav>
+	<div class="w3-bar">
+	{{- partial "inline/menu/walk.html" (dict "page" $page "menuEntries" . "hide" "w3-hide-small") }}
+	</div>
+</nav>
 {{- end }}
 
 {{- define "partials/inline/menu/walk.html" }}
+  {{- $hide := .hide }}
+  {{- $btnActive := "clvq-bg2" }}
+  {{- $btnClass := printf "%s %s" "w3-bar-item w3-button" $hide }}
+  {{- $btnClassActive := printf "%s %s %s" $btnClass $btnActive $hide }}
+  {{- $btnClassAncestor := printf "%s %s %s" $btnClass $btnActive $hide }}
   {{- $page := .page }}
   {{- range .menuEntries }}
     {{- $attrs := dict "href" .URL }}
     {{- if $page.IsMenuCurrent .Menu . }}
-      {{- $attrs = merge $attrs (dict "class" "active" "aria-current" "page") }}
-    {{- else if $page.HasMenuCurrent .Menu .}}
-      {{- $attrs = merge $attrs (dict "class" "ancestor" "aria-current" "true") }}
+      {{- $attrs = merge $attrs (dict "class" $btnClassActive "aria-current" "page") }}
+    {{- else if $page.HasMenuCurrent .Menu . }}
+      {{- $attrs = merge $attrs (dict "class" $btnClassAncestor "aria-current" "true") }}
+    {{- else }}
+      {{- $attrs = merge $attrs (dict "class" $btnClass) }}
     {{- end }}
     {{- $name := .Name }}
     {{- with .Identifier }}
@@ -33,7 +40,6 @@ Renders a menu for the given menu ID.
         {{- $name = . }}
       {{- end }}
     {{- end }}
-    <li>
       <a
         {{- range $k, $v := $attrs }}
           {{- with $v }}
@@ -41,11 +47,5 @@ Renders a menu for the given menu ID.
           {{- end }}
         {{- end -}}
       >{{ $name }}</a>
-      {{- with .Children }}
-        <ul>
-          {{- partial "inline/menu/walk.html" (dict "page" $page "menuEntries" .) }}
-        </ul>
-      {{- end }}
-    </li>
   {{- end }}
 {{- end }}
