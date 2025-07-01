@@ -1,21 +1,8 @@
 {{- $cdn := .Site.Params.cdn }}
-{{- $css_load := slice "css/main.css" }}
+{{- $css_load := slice "w3css/4/w3.css" "css/main.css" "css/clvq.css" }}
 
 {{- if eq .Params.gamePage "load" }}
   {{- $css_load = $css_load | append "css/game.css" }}
-{{- end }}
-
-{{- with resources.Get "w3css/4/w3.css" }}
-  {{- if eq hugo.Environment "devel" }}
-    <link rel="stylesheet" href="{{ $cdn }}{{ .RelPermalink }}">
-  {{- else }}
-    {{- with . | minify | fingerprint }}
-      <link rel="stylesheet"
-        href="{{ $cdn }}{{ .RelPermalink }}"
-        integrity="{{ .Data.Integrity }}"
-        crossorigin="anonymous">
-    {{- end }}
-  {{- end }}
 {{- end }}
 
 {{- range $resource := $css_load }}

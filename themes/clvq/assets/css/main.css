@@ -1,4 +1,9 @@
 body {
-  font-family: monospace;
-  line-height: 1.5;
+	font-family: monospace;
+	line-height: 1em;
+}
+
+h1, h2, h3, h4, h5 {
+	font-family: monospace;
+	line-height: 1.5em;
 }
