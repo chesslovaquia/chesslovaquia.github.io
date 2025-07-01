@@ -4,7 +4,6 @@ set -eu
 rm -rf ./public
 
 hugo \
-	--environment production \
 	--baseURL "${CLVQ_ROOT}" \
 	--logLevel warning \
 	"$@"
