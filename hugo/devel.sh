@@ -1,4 +1,6 @@
 #!/bin/sh
+set -eu
+hugo/build-deps.sh
 exec hugo server \
 	--bind 0.0.0.0 \
 	--port 8045 \
