@@ -1,6 +1,6 @@
 baseURL = "http://localhost:8045"
 languageCode = "en-us"
-title = "chesslovaquia"
+title = "Chesslovaquia"
 theme = "clvq"
 
 disableKinds = [

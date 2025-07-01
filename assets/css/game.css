@@ -1,0 +1,148 @@
+.chess-container {
+	max-width: 800px;
+	margin: 0 auto;
+	padding: 20px;
+}
+
+.board-container {
+	position: relative;
+	width: 512px;
+	height: 512px;
+	margin: 0 auto;
+	border: 2px solid #8b4513;
+	box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+.chess-board {
+	width: 100%;
+	height: 100%;
+	display: grid;
+	grid-template-columns: repeat(8, 1fr);
+	grid-template-rows: repeat(8, 1fr);
+}
+
+.chess-square {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	transition: background-color 0.2s;
+}
+
+.chess-square.light {
+	background-color: #f0d9b5;
+}
+
+.chess-square.dark {
+	background-color: #b58863;
+}
+
+.chess-square.selected {
+	background-color: #7dd3fc !important;
+	box-shadow: inset 0 0 0 3px #0ea5e9;
+}
+
+.chess-square.possible-move {
+	background-color: #86efac !important;
+}
+
+.chess-square.last-move {
+	background-color: #fbbf24 !important;
+}
+
+.chess-piece {
+	width: 90%;
+	height: 90%;
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: center;
+	cursor: pointer;
+	transition: transform 0.1s;
+}
+
+.chess-piece:hover {
+	transform: scale(1.05);
+}
+
+.game-info {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 20px;
+	padding: 10px;
+	background: white;
+	border-radius: 8px;
+	box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.clock {
+	font-size: 1.5em;
+	font-weight: bold;
+	padding: 10px 15px;
+	background: #333;
+	color: white;
+	border-radius: 6px;
+	min-width: 100px;
+	text-align: center;
+}
+
+.clock.active {
+	background: #22c55e;
+}
+
+.provider-selection {
+	text-align: center;
+	padding: 40px;
+	background: white;
+	border-radius: 12px;
+	box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.provider-btn {
+	margin: 10px;
+	padding: 15px 25px;
+	font-size: 1.1em;
+	border: none;
+	border-radius: 8px;
+	cursor: pointer;
+	transition: all 0.3s;
+}
+
+.provider-btn:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+.status-bar {
+	text-align: center;
+	padding: 15px;
+	background: white;
+	border-radius: 8px;
+	margin-top: 20px;
+	box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.hidden {
+	display: none;
+}
+
+.loading {
+	text-align: center;
+	padding: 40px;
+}
+
+.spinner {
+	border: 4px solid #f3f3f3;
+	border-top: 4px solid #3498db;
+	border-radius: 50%;
+	width: 40px;
+	height: 40px;
+	animation: spin 1s linear infinite;
+	margin: 0 auto 20px;
+}
+
+@keyframes spin {
+	0% { transform: rotate(0deg); }
+	100% { transform: rotate(360deg); }
+}

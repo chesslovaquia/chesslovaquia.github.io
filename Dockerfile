@@ -65,6 +65,7 @@ RUN npx --version
 RUN tsc --version
 RUN hugo version
 
+ENV HUGO_ENVIRONMENT devel
 ENV CLVQ_ROOT http://localhost:8000
 
 ENTRYPOINT /usr/local/bin/user-login.sh

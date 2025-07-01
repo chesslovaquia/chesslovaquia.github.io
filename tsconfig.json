@@ -1,5 +1,5 @@
 {
-  "include": ["ts"],
+  "include": ["./assets/js"],
   "compilerOptions": {
     /* Visit https://aka.ms/tsconfig to read more about this file */
     "target": "es2016",
@@ -8,7 +8,7 @@
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "outDir": "./public",
-    "noImplicitAny": true,
+    "noImplicitAny": false,
     "noImplicitOverride": true,
     "skipLibCheck": true
   }

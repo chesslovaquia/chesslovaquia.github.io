@@ -1,2 +1,3 @@
 # devel config
 params:
+  debug: true

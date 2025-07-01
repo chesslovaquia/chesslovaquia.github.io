@@ -1,6 +1,6 @@
-{{ $cdn := .Site.Params.cdn }}
+{{- $cdn := .Site.Params.cdn }}
 
-{{ $js_load := slice "js/main.ts" }}
+{{- $js_load := slice "js/main.ts" }}
 
 {{- range $resource := $js_load }}
   {{- with resources.Get $resource }}

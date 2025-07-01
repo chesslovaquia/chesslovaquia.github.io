@@ -1,6 +1,9 @@
-{{ $cdn := .Site.Params.cdn }}
+{{- $cdn := .Site.Params.cdn }}
+{{- $css_load := slice "css/main.css" }}
 
-{{ $css_load := slice "css/main.css" }}
+{{- if eq .Params.gamePage "load" }}
+  {{- $css_load = $css_load | append "css/game.css" }}
+{{- end }}
 
 <link rel="stylesheet" href="{{ $cdn }}/w3css/4/w3.css">
 
