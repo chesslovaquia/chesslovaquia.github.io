@@ -3,3 +3,12 @@ params:
   sitemap: true
   debug: false
   cdn: http://localhost:8045
+
+menus:
+  main:
+    - name: Home
+      pageref: /
+      weight: 1
+    - name: Game
+      pageref: /game/
+      weight: 2

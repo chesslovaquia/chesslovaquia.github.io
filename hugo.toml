@@ -17,8 +17,3 @@ dir = ":cacheDir/modules"
 maxAge = "15m"
 [caches.images]
 dir = ":cacheDir/images"
-
-[module]
-[[module.mounts]]
-source="ts"
-target="ts"

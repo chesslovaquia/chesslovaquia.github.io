@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html lang="{{ or site.Language.LanguageCode }}" dir="{{ or site.Language.LanguageDirection `ltr` }}">
 <head>
-  {{ partial "head.html" . }}
+  {{- partial "head.html" . }}
 </head>
 <body class="w3-black clvq-bg">
   <header class="w3-black clvq-bg2">
-    {{ partial "header.html" . }}
+    {{- partial "header.html" . }}
   </header>
   <main class="w3-black clvq-bg1">
-    {{ block "main" . }}{{ end }}
+    {{- block "main" . }}{{ end }}
   </main>
   <footer class="w3-black clvq-bg2">
-    {{ partial "footer.html" . }}
+    {{- partial "footer.html" . }}
   </footer>
 </body>
 </html>

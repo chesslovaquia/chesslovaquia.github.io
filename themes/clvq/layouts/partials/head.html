@@ -1,6 +1,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width">
+
 <!--title>{{ if .IsHome }}{{ site.Title }}{{ else }}{{ printf "%s | %s" .Title site.Title }}{{ end }}</title-->
 <title>{{ printf "%s | %s" .Title site.Title }}</title>
+
+<base href="{{ .Site.BaseURL }}">
+
 {{ partial "head/css.html" . }}
 {{ partial "head/js.html" . }}
