@@ -1,6 +1,4 @@
-{{ define "main" }}
-	{{- $cdn := .Site.Params.cdn }}
-	{{- $js_load := slice "js/game.ts" }}
+{{- define "main" }}
 	<div class="chess-container">
 		<!-- Provider Selection Screen -->
 		<div id="provider-selection" class="provider-selection">
@@ -37,6 +35,9 @@
 		</div>
 	</div>
 
+	{{- $cdn := .Site.Params.cdn }}
+	{{- $js_load := slice "js/game.ts" }}
+
 	{{- range $resource := $js_load }}
 	  {{- with resources.Get $resource }}
 		{{- if eq hugo.Environment "devel" }}
@@ -53,5 +54,4 @@
 		{{- end }}
 	  {{- end }}
 	{{- end }}
-
-{{ end }}
+{{- end }}

@@ -34,7 +34,7 @@ jobs:
       HUGO_VERSION: 0.147.9
       HUGO_ENVIRONMENT: production
       CLVQ_ROOT: https://chesslovaquia.github.io/play
-      HUGO_PARAMS_CDN: https://chesslovaquia.github.io/play
+      HUGO_PARAMS_CDN: https://chesslovaquia.github.io
       TZ: UTC
     steps:
       - name: Install Hugo CLI
