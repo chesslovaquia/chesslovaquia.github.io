@@ -1,5 +1,3 @@
-console.log('Chesslovaquia game board.');
-
 import { ChessGame } from './lib/ChessGame.js';
 
 // Initialize when DOM is loaded

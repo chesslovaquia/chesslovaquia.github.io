@@ -16,6 +16,7 @@ class ChessGame {
 	private resetButton?: HTMLElement;
 
 	constructor(config: ChessGameConfig) {
+		console.log('Chesslovaquia game board.');
 		this.game = new Chess();
 		this.statusElement = config.statusElement;
 		this.resetButton = config.resetButton;
