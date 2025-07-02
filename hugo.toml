@@ -17,3 +17,11 @@ dir = ":cacheDir/modules"
 maxAge = "15m"
 [caches.images]
 dir = ":cacheDir/images"
+
+[module]
+[[module.mounts]]
+source = "ts"
+target = "assets/js"
+[[module.mounts]]
+source = "node_modules/chessground"
+target = "assets/chessground"

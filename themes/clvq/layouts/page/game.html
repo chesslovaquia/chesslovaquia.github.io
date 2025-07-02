@@ -1,40 +1,9 @@
 {{- define "main" }}
-	<div class="chess-container">
-		<!-- Provider Selection Screen -->
-		<div id="provider-selection" class="provider-selection">
-			<h1 class="w3-text-grey">Clean Chess</h1>
-			<p class="w3-text-grey">Choose your chess provider:</p>
-			<button class="provider-btn w3-blue" onclick="selectProvider('lichess')">Lichess.org</button>
-			<button class="provider-btn w3-green" onclick="selectProvider('chess.com')">Chess.com</button>
-			<button class="provider-btn w3-purple" onclick="selectProvider('random')">Random Provider</button>
-		</div>
-
-		<!-- Loading Screen -->
-		<div id="loading-screen" class="loading hidden">
-			<div class="spinner"></div>
-			<p>Connecting to game...</p>
-		</div>
-
-		<!-- Game Screen -->
-		<div id="game-screen" class="hidden">
-			<div class="game-info">
-				<div class="clock" id="white-clock">10:00</div>
-				<div id="game-status">Your turn</div>
-				<div class="clock" id="black-clock">10:00</div>
-			</div>
-
-			<div class="board-container">
-				<div class="chess-board" id="chess-board"></div>
-			</div>
-
-			<div class="status-bar">
-				<span id="provider-info">Provider: Lichess</span>
-				<button class="w3-btn w3-red w3-small" onclick="resignGame()" style="margin-left: 20px;">Resign</button>
-				<button class="w3-btn w3-grey w3-small" onclick="newGame()" style="margin-left: 10px;">New Game</button>
-			</div>
-		</div>
+	<div class="w3-container">
+		<div id="chessboard" class="game-board"></div>
 	</div>
 
+	<!-- Load game -->
 	{{- $cdn := .Site.Params.cdn }}
 	{{- $js_load := slice "js/game.ts" }}
 
