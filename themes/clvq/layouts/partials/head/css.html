@@ -14,7 +14,7 @@
     {{- if eq hugo.Environment "devel" }}
       <link rel="stylesheet" href="{{ $cdn }}{{ .RelPermalink }}">
     {{- else }}
-      {{- with . | resources.ExecuteAsTemplate | minify | fingerprint }}
+      {{- with . | minify | fingerprint }}
         <link rel="stylesheet"
           href="{{ $cdn }}{{ .RelPermalink }}"
           integrity="{{ .Data.Integrity }}"
