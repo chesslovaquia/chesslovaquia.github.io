@@ -1,17 +1,21 @@
 <!DOCTYPE html>
-<html lang="{{ or site.Language.LanguageCode }}" dir="{{ or site.Language.LanguageDirection `ltr` }}">
+<html lang="{{ or site.Language.LanguageCode }}"
+      dir="{{ or site.Language.LanguageDirection `ltr` }}">
 <head>
-  {{- partial "head.html" . }}
+	{{- partial "head.html" . }}
 </head>
 <body class="w3-black clvq-bg">
-  <header class="w3-container w3-black clvq-bg">
-    {{- partial "header.html" . }}
-  </header>
-  <main class="w3-container w3-black clvq-bg2">
-    {{- block "main" . }}{{ end }}
-  </main>
-  <footer class="w3-container w3-black clvq-bg">
-    {{- partial "footer.html" . }}
-  </footer>
+	<header class="w3-container w3-black clvq-bg">
+		{{- partial "header.html" . }}
+	</header>
+	<div class="w3-container w3-black clvq-bg">
+		<div id="status" class="w3-right"></div>
+	</div>
+	<main class="w3-container w3-black clvq-bg2">
+		{{- block "main" . }}{{ end }}
+	</main>
+	<footer class="w3-container w3-black clvq-bg">
+		{{- partial "footer.html" . }}
+	</footer>
 </body>
 </html>
