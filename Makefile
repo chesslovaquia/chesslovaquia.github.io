@@ -21,3 +21,7 @@ build:
 .PHONY: check
 check:
 	npm audit
+
+.PHONY: vendor
+vendor:
+	./vendor.sh
