@@ -44,7 +44,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Hugo Install
-        run: hugo/install.sh
+        run: sudo hugo/install.sh
       - name: Cache Restore
         id: cache-restore
         uses: actions/cache/restore@v4
