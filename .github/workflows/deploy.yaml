@@ -59,7 +59,9 @@ jobs:
             hugo-
       - name: Configure Git
         run: git config core.quotepath false
-      - name: Build with Hugo
+      - name: Hugo build deps
+        run: hugo/build-deps.sh
+      - name: Hugo build
         run: |
           hugo/build.sh \
             --cacheDir "${{ runner.temp }}/hugo_cache"

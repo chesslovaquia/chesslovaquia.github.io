@@ -3,8 +3,6 @@ set -eu
 
 rm -rf ./public
 
-hugo/build-deps.sh
-
 hugo \
 	--baseURL "${CLVQ_ROOT}" \
 	--logLevel warning \

@@ -15,4 +15,9 @@ all: build
 
 .PHONY: build
 build:
-	./hugo/build.sh
+	hugo/build-deps.sh
+	hugo/build.sh
+
+.PHONY: check
+check:
+	npm audit
