@@ -4,6 +4,6 @@
 {{- if eq hugo.Environment "devel" }}
 <pre class="w3-tiny w3-text-grey">
 .Page.Layout:     {{ .Page.Layout }}
-.Params.gamePage: {{ default "disabled" .Params.gamePage }}
+.Params.gamePage: {{ .Params.gamePage | default "disabled" }}
 </pre>
 {{- end }}

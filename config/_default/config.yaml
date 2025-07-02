@@ -12,3 +12,6 @@ menus:
     - name: Game
       pageref: /game/
       weight: 2
+    - name: About
+      pageref: /about/
+      weight: 9
