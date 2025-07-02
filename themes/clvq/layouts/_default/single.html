@@ -1,6 +1,6 @@
 {{ define "main" }}
-  {{ .Content }}
-<pre class="w3-small">
-Built: {{ now }}
-</pre>
+	{{ .Content }}
+	<p class="w3-small">
+		Built: {{ now | time.Format "Jan 2 15:04:05 MST 2006" }}
+	</p>
 {{ end }}
