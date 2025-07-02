@@ -1,4 +1,9 @@
 {
+  "name": "chesslovaquia",
+  "scripts": {
+    "build": "hugo/build.sh",
+    "dev": "hugo/devel.sh"
+  },
   "dependencies": {
     "chess.js": "^1.4.0",
     "chessground": "^9.2.1"
