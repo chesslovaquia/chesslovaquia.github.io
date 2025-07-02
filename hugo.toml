@@ -20,6 +20,9 @@ dir = ":cacheDir/images"
 
 [module]
 [[module.mounts]]
+source = "clvq"
+target = "assets/clvq"
+[[module.mounts]]
 source = "game"
 target = "assets/game"
 [[module.mounts]]
