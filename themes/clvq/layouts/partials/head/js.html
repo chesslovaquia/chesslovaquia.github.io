@@ -2,6 +2,11 @@
 
 {{- $js_load := slice "js/main.ts" }}
 
+<!-- Game assets -->
+{{- if eq .Params.gamePage "load" }}
+  {{- $js_load = $js_load | append "game/game.ts" }}
+{{- end }}
+
 {{- range $resource := $js_load }}
   {{- with resources.Get $resource }}
     {{- if eq hugo.Environment "devel" }}

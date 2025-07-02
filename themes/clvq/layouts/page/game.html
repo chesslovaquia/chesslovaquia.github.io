@@ -4,25 +4,4 @@
 		<div id="chessboard" class="game-board"></div>
 		<div class="w3-container">White</div>
 	</div>
-
-	<!-- Load game -->
-	{{- $cdn := .Site.Params.cdn }}
-	{{- $js_load := slice "js/game.ts" }}
-
-	{{- range $resource := $js_load }}
-	  {{- with resources.Get $resource }}
-		{{- if eq hugo.Environment "devel" }}
-		  {{- with . | js.Build }}
-			<script src="{{ $cdn }}{{ .RelPermalink }}"></script>
-		  {{- end }}
-		{{- else }}
-		  {{- $opts := dict "minify" true }}
-		  {{- with . | js.Build $opts | fingerprint }}
-			<script src="{{ $cdn }}{{ .RelPermalink }}"
-			  integrity="{{- .Data.Integrity }}"
-			  crossorigin="anonymous"></script>
-		  {{- end }}
-		{{- end }}
-	  {{- end }}
-	{{- end }}
 {{- end }}

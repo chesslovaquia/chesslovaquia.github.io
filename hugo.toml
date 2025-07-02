@@ -20,11 +20,8 @@ dir = ":cacheDir/images"
 
 [module]
 [[module.mounts]]
-source = "ts"
-target = "assets/js"
-[[module.mounts]]
-source = "css"
-target = "assets/css"
+source = "game"
+target = "assets/game"
 [[module.mounts]]
 source = "node_modules/chessground"
 target = "assets/chessground"
