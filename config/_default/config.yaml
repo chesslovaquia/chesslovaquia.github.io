@@ -3,6 +3,7 @@ params:
   sitemap: true
   debug: false
   cdn: http://localhost:8045
+  btnClass: w3-button w3-round w3-hover-lime w3-hover-opacity
 
 menus:
   main:

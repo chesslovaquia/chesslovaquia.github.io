@@ -1,5 +1,6 @@
 {{- $page := .page }}
 {{- $menuID := .menuID }}
+{{- $siteBtnClass := .siteBtnClass }}
 
 {{- with index site.Menus $menuID }}
 <nav>
@@ -7,21 +8,22 @@
 	<div class="w3-bar">
 		<div class="w3-bar-item" id="status"></div>
 		<!-- Toggle Button -->
-		<a class="w3-bar-item w3-button w3-right"
+		<a class="w3-bar-item {{ $siteBtnClass }} w3-right"
 		   href="javascript:void(0)"
 		   onclick="toggleGameMenu()">&#9776;</a>
 	</div>
 	<!-- Dropdown Menu -->
 	<div id="gameMenu" class="w3-bar-block w3-hide">
-		<div class="w3-bar-item w3-button" id="reset">Reset</div>
-		{{- partial "inline/menu/walk.html" (dict "page" $page "menuEntries" .) }}
+		<div class="w3-bar-item {{ $siteBtnClass }}" id="reset">Reset</div>
+		{{- partial "inline/menu/walk.html" (dict "page" $page "siteBtnClass" $siteBtnClass "menuEntries" .) }}
 	</div>
 </nav>
 {{- end }}
 
 {{- define "partials/inline/menu/walk.html" }}
+  {{- $siteBtnClass := .siteBtnClass }}
   {{- $btnActive := "" }}
-  {{- $btnClass := "w3-bar-item w3-button w3-round w3-hover-lime w3-hover-opacity" }}
+  {{- $btnClass := printf "w3-bar-item %s" $siteBtnClass }}
   {{- $btnClassActive := printf "%s %s" $btnClass $btnActive }}
   {{- $btnClassAncestor := printf "%s %s" $btnClass $btnActive }}
   {{- $page := .page }}

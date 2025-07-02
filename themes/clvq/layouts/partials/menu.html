@@ -9,28 +9,30 @@ Renders a menu for the given menu ID.
 
 {{- $page := .page }}
 {{- $menuID := .menuID }}
+{{- $siteBtnClass := .siteBtnClass }}
 
 {{- with index site.Menus $menuID }}
 <nav>
 	<!-- Top Navigation Bar -->
 	<div class="w3-bar">
-		{{- partial "inline/menu/walk.html" (dict "page" $page "menuEntries" . "hide" "w3-hide-small") }}
+		{{- partial "inline/menu/walk.html" (dict "page" $page "menuEntries" . "hide" "w3-hide-small" "siteBtnClass" $siteBtnClass) }}
 		<!-- Toggle Button for Mobile -->
-		<a class="w3-bar-item w3-button w3-right w3-hide-large w3-hide-medium"
+		<a class="w3-bar-item {{ $siteBtnClass }} w3-right w3-hide-large w3-hide-medium"
 		   href="javascript:void(0)"
 		   onclick="toggleMenu()">&#9776;</a>
 	</div>
 	<!-- Dropdown Menu for Small Screens -->
 	<div id="mobileMenu" class="w3-bar-block w3-hide w3-hide-large w3-hide-medium">
-		{{- partial "inline/menu/walk.html" (dict "page" $page "menuEntries" . "hide" "") }}
+		{{- partial "inline/menu/walk.html" (dict "page" $page "menuEntries" . "hide" "" "siteBtnClass" $siteBtnClass) }}
 	</div>
 </nav>
 {{- end }}
 
 {{- define "partials/inline/menu/walk.html" }}
   {{- $hide := .hide }}
+  {{- $siteBtnClass := .siteBtnClass }}
   {{- $btnActive := "" }}
-  {{- $btnClass := printf "%s %s" "w3-bar-item w3-button w3-round w3-hover-lime w3-hover-opacity" $hide }}
+  {{- $btnClass := printf "w3-bar-item %s %s" $siteBtnClass $hide }}
   {{- $btnClassActive := printf "%s %s %s" $btnClass $btnActive $hide }}
   {{- $btnClassAncestor := printf "%s %s %s" $btnClass $btnActive $hide }}
   {{- $page := .page }}

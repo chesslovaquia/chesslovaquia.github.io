@@ -1,5 +1,5 @@
 {{- define "main" }}
-	{{ partial "game-menu.html" (dict "menuID" "game" "page" .) }}
+	{{ partial "game-menu.html" (dict "menuID" "game" "siteBtnClass" .Site.Params.btnClass "page" .) }}
 	{{ partial "page/main-head.html" . }}
 	<div>
 		<div class="w3-bar">
