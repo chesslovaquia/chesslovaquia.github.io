@@ -1,9 +1,18 @@
 {{- define "main" }}
+	{{ partial "game-menu.html" . }}
 	{{ partial "page/main-head.html" . }}
-	<div class="w3-container">
-		<div class="w3-container">Black</div>
+	<div>
+		<div class="w3-bar">
+			<p class="w3-bar-item">
+				Black
+			</p>
+		</div>
 		<div id="chessboard" class="game-board"></div>
-		<div class="w3-container">White</div>
+		<div class="w3-bar">
+			<p class="w3-bar-item">
+				White
+			</p>
+		</div>
 	</div>
 	{{ partial "page/main-tail.html" . }}
 {{- end }}
