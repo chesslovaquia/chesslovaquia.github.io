@@ -6,50 +6,53 @@
 <nav>
 	<!-- Top Navigation Bar -->
 	<div class="w3-bar">
+		<!-- Game Status -->
 		<div class="w3-bar-item" id="status"></div>
 		<!-- Toggle Button -->
 		<a class="w3-bar-item {{ $siteBtnClass }} w3-right"
-		   href="javascript:void(0)"
-		   onclick="toggleGameMenu()">&#9776;</a>
+		href="javascript:void(0)"
+		onclick="toggleGameMenu()">&#9776;</a>
 	</div>
 	<!-- Dropdown Menu -->
 	<div id="gameMenu" class="w3-bar-block w3-hide">
-		<div class="w3-bar-item {{ $siteBtnClass }}" id="reset">Reset</div>
+		<!-- Game Reset -->
+		<a id="reset" class="w3-bar-item {{ $siteBtnClass }} w3-right"
+			href="javascript:void(0)" onclick="toggleGameMenu()">Reset</a>
 		{{- partial "inline/menu/walk.html" (dict "page" $page "siteBtnClass" $siteBtnClass "menuEntries" .) }}
 	</div>
 </nav>
 {{- end }}
 
 {{- define "partials/inline/menu/walk.html" }}
-  {{- $siteBtnClass := .siteBtnClass }}
-  {{- $btnActive := "" }}
-  {{- $btnClass := printf "w3-bar-item %s" $siteBtnClass }}
-  {{- $btnClassActive := printf "%s %s" $btnClass $btnActive }}
-  {{- $btnClassAncestor := printf "%s %s" $btnClass $btnActive }}
-  {{- $page := .page }}
-  {{- range .menuEntries }}
-    {{- $attrs := dict "href" .URL }}
-    {{- if $page.IsMenuCurrent .Menu . }}
-      {{- $attrs = merge $attrs (dict "class" $btnClassActive "aria-current" "page") }}
-    {{- else if $page.HasMenuCurrent .Menu . }}
-      {{- $attrs = merge $attrs (dict "class" $btnClassAncestor "aria-current" "true") }}
-    {{- else }}
-      {{- $attrs = merge $attrs (dict "class" $btnClass) }}
-    {{- end }}
-    {{- $name := .Name }}
-    {{- with .Identifier }}
-      {{- with T . }}
-        {{- $name = . }}
-      {{- end }}
-    {{- end }}
-      <a
-        {{- range $k, $v := $attrs }}
-          {{- with $v }}
-            {{- printf " %s=%q" $k $v | safeHTMLAttr }}
-          {{- end }}
-        {{- end -}}
-      >{{ $name }}</a>
-  {{- end }}
+	{{- $siteBtnClass := .siteBtnClass }}
+	{{- $btnActive := "" }}
+	{{- $btnClass := printf "w3-bar-item %s" $siteBtnClass }}
+	{{- $btnClassActive := printf "%s %s" $btnClass $btnActive }}
+	{{- $btnClassAncestor := printf "%s %s" $btnClass $btnActive }}
+	{{- $page := .page }}
+	{{- range .menuEntries }}
+		{{- $attrs := dict "href" .URL }}
+		{{- if $page.IsMenuCurrent .Menu . }}
+			{{- $attrs = merge $attrs (dict "class" $btnClassActive "aria-current" "page") }}
+		{{- else if $page.HasMenuCurrent .Menu . }}
+			{{- $attrs = merge $attrs (dict "class" $btnClassAncestor "aria-current" "true") }}
+		{{- else }}
+			{{- $attrs = merge $attrs (dict "class" $btnClass) }}
+		{{- end }}
+		{{- $name := .Name }}
+		{{- with .Identifier }}
+			{{- with T . }}
+				{{- $name = . }}
+			{{- end }}
+		{{- end }}
+			<a
+				{{- range $k, $v := $attrs }}
+					{{- with $v }}
+						{{- printf " %s=%q" $k $v | safeHTMLAttr }}
+					{{- end }}
+				{{- end -}}
+			>{{ $name }}</a>
+	{{- end }}
 {{- end }}
 
 <script>
