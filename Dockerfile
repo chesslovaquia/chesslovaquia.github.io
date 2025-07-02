@@ -23,7 +23,7 @@ RUN apt-get clean \
 		/var/cache/apt/archives/*.deb \
 		/var/cache/apt/*cache.bin
 
-ENV APT_INSTALL_EXTRA make hugo node-typescript
+ENV APT_INSTALL_EXTRA make node-typescript
 
 RUN apt-get clean \
 	&& apt-get update -yy \
@@ -33,6 +33,9 @@ RUN apt-get clean \
 	&& rm -rf /var/lib/apt/lists/* \
 		/var/cache/apt/archives/*.deb \
 		/var/cache/apt/*cache.bin
+
+COPY ./hugo/install.sh /tmp/hugo-install.sh
+RUN /bin/sh /tmp/hugo-install.sh && rm -f /tmp/hugo-install.sh
 
 ARG DEVEL_UID=1000
 ARG DEVEL_GID=1000

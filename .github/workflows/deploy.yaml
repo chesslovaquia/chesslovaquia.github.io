@@ -31,16 +31,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      HUGO_VERSION: 0.147.9
-      HUGO_ENVIRONMENT: production
-      CLVQ_ROOT: https://chesslovaquia.github.io/play
-      HUGO_PARAMS_CDN: https://chesslovaquia.github.io
       TZ: UTC
+      CLVQ_ROOT: https://chesslovaquia.github.io/play
+      HUGO_ENVIRONMENT: production
+      HUGO_PARAMS_CDN: https://chesslovaquia.github.io
     steps:
-      - name: Install Hugo CLI
-        run: |
-          wget -O ${{ runner.temp }}/hugo.deb https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_extended_${HUGO_VERSION}_linux-amd64.deb \
-          && sudo dpkg -i ${{ runner.temp }}/hugo.deb
+      - name: Hugo Install
+        run: hugo/install.sh
       - name: Checkout
         uses: actions/checkout@v4
         with:
@@ -59,9 +56,9 @@ jobs:
             hugo-
       - name: Configure Git
         run: git config core.quotepath false
-      - name: Hugo build deps
+      - name: Hugo Build Deps
         run: hugo/build-deps.sh
-      - name: Hugo build
+      - name: Hugo Build
         run: |
           hugo/build.sh \
             --cacheDir "${{ runner.temp }}/hugo_cache"
@@ -72,7 +69,7 @@ jobs:
           path: |
             ${{ runner.temp }}/hugo_cache
           key: ${{ steps.cache-restore.outputs.cache-primary-key }}
-      - name: Upload artifact
+      - name: Upload Artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./public
