@@ -29,8 +29,8 @@ Renders a menu for the given menu ID.
 
 {{- define "partials/inline/menu/walk.html" }}
   {{- $hide := .hide }}
-  {{- $btnActive := "clvq-bg2" }}
-  {{- $btnClass := printf "%s %s" "w3-bar-item w3-button" $hide }}
+  {{- $btnActive := "" }}
+  {{- $btnClass := printf "%s %s" "w3-bar-item w3-button w3-round w3-hover-lime w3-hover-opacity" $hide }}
   {{- $btnClassActive := printf "%s %s %s" $btnClass $btnActive $hide }}
   {{- $btnClassAncestor := printf "%s %s %s" $btnClass $btnActive $hide }}
   {{- $page := .page }}
