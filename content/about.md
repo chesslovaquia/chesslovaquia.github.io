@@ -7,3 +7,5 @@ layout: "about"
 ---
 
 ## Chesslovaquia
+
+One board to play them all.
