@@ -22,15 +22,40 @@ class ChessGame {
 		this.resetButton = config.resetButton;
 
 		this.board = Chessground(config.boardElement, {
+			disableContextMenu: true,
+			coordinates: false,
 			fen: this.game.fen(),
+			orientation: 'white',
+			turnColor: 'white',
 			movable: {
 				color: 'white',
 				free: false,
-				dests: this.possibleMoves()
+				dests: this.possibleMoves(),
+				showDests: true,
+				rookCastle: true,
 			},
 			events: {
 				move: (orig: Key, dest: Key, metadata?: any) => this.onMove(orig, dest, metadata)
-			}
+			},
+			highlight: {
+				lastMove: true,
+				check: true,
+			},
+			selectable: {
+				enabled: true,
+			},
+			premovable: {
+				enabled: false,
+			},
+			animation: {
+				enabled: false,
+			},
+			drawable: {
+				enabled: false,
+			},
+			draggable: {
+				enabled: false,
+			},
 		});
 
 		this.setupEventListeners();
