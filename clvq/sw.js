@@ -1,12 +1,13 @@
 {{- $clvq_prefix := .Site.Params.prefix | default "" -}}
+{{- $clvq_root := .Site.Params.cdn -}}
 
 const CACHE_NAME = 'clvq{{ getenv "HUGO_CLVQ_BUILD" | default "UNSET" }}';
-const FALLBACK_URL = '{{ $clvq_prefix }}/';
+const FALLBACK_URL = '{{ $clvq_root }}{{ $clvq_prefix }}/';
 
 const CACHE_URLS = [
 {{- with index site.Menus "main" }}
 	{{- range . }}
-	'{{ $clvq_prefix }}{{ .URL }}',
+	'{{ $clvq_root }}{{ .URL }}',
 	{{- end }}
 {{- end }}
 ];

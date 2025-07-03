@@ -33,8 +33,9 @@ jobs:
     env:
       TZ: UTC
       CLVQ_ROOT: https://chesslovaquia.github.io/play
-      HUGO_ENVIRONMENT: production
+      HUGO_PARAMS_PREFIX: /play
       HUGO_PARAMS_CDN: https://equally-capital-python.global.ssl.fastly.net
+      HUGO_ENVIRONMENT: production
     steps:
       - name: Setup Pages
         id: pages
