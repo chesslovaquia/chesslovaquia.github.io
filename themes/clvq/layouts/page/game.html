@@ -1,7 +1,6 @@
 {{- define "main" }}
 	{{ partial "game-menu.html" (dict "menuID" "game" "siteBtnClass" .Site.Params.btnClass "page" .) }}
-	{{ partial "page/main-head.html" . }}
-	<div>
+	<main class="w3-black clvq-bg1">
 		<div class="w3-bar">
 			<p class="w3-bar-item">
 				Black
@@ -13,6 +12,5 @@
 				White
 			</p>
 		</div>
-	</div>
-	{{ partial "page/main-tail.html" . }}
+	</main>
 {{- end }}

@@ -2,7 +2,7 @@
 	{{- $buildID := getenv "HUGO_CLVQ_BUILD" | default "UNSET" }}
 	{{ partial "header.html" . }}
 	{{ partial "page/main-head.html" . }}
-	<div class="w3-center">
+	<div class="w3-container w3-center">
 		{{ .Content }}
 		<div class="w3-small">
 			<p>Build: {{ $buildID }}</p>

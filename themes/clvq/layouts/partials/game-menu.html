@@ -3,24 +3,22 @@
 {{- $siteBtnClass := .siteBtnClass }}
 
 {{- with index site.Menus $menuID }}
-<nav>
-	<!-- Top Navigation Bar -->
-	<div class="w3-bar">
-		<!-- Game Status -->
-		<div class="w3-bar-item" id="status"></div>
-		<!-- Toggle Button -->
-		<a class="w3-bar-item {{ $siteBtnClass }} w3-right"
-		href="javascript:void(0)"
-		onclick="toggleGameMenu()">&#9776;</a>
-	</div>
-	<!-- Dropdown Menu -->
-	<div id="gameMenu" class="w3-bar-block w3-hide">
-		<!-- Game Reset -->
-		<a id="reset" class="w3-bar-item {{ $siteBtnClass }} w3-right"
-			href="javascript:void(0)" onclick="toggleGameMenu()">Reset</a>
-		{{- partial "inline/menu/walk.html" (dict "page" $page "siteBtnClass" $siteBtnClass "menuEntries" .) }}
-	</div>
-</nav>
+<!-- Top Navigation Bar -->
+<div class="w3-bar">
+	<!-- Game Status -->
+	<div class="w3-bar-item w3-text-lime" id="status"></div>
+	<!-- Toggle Button -->
+	<a class="w3-bar-item {{ $siteBtnClass }} w3-right"
+	href="javascript:void(0)"
+	onclick="toggleGameMenu()">&#9776;</a>
+</div>
+<!-- Dropdown Menu -->
+<div id="gameMenu" class="w3-bar-block w3-hide">
+	<!-- Game Reset -->
+	<a id="reset" class="w3-bar-item {{ $siteBtnClass }} w3-right"
+		href="javascript:void(0)" onclick="toggleGameMenu()">Reset</a>
+	{{- partial "inline/menu/walk.html" (dict "page" $page "siteBtnClass" $siteBtnClass "menuEntries" .) }}
+</div>
 {{- end }}
 
 {{- define "partials/inline/menu/walk.html" }}
