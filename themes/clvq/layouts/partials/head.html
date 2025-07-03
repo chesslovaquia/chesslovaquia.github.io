@@ -1,10 +1,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width">
 
-<!--title>{{ if .IsHome }}{{ site.Title }}{{ else }}{{ printf "%s | %s" .Title site.Title }}{{ end }}</title-->
-<title>{{ printf "%s | %s" .Title site.Title }}</title>
-
 <base href="{{ .Site.BaseURL }}">
+
+{{- if .IsHome }}
+	<link rel="manifest" href="/manifest.json">
+	<title>{{ site.Title }}</title>
+{{- else }}
+	<title>{{ printf "%s | %s" .Title site.Title }}</title>
+{{- end }}
 
 {{ partial "head/css.html" . }}
 {{ partial "head/js.html" . }}

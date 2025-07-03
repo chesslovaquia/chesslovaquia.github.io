@@ -8,13 +8,13 @@
 /* For smaller screens */
 @media (max-width: 768px) {
 	.game-board {
-		max-width: 90vw; /* 90% of viewport width on mobile */
+		max-width: 100vw; /* 90% of viewport width on mobile */
 	}
 }
 
 /* Ensure the board stays square on all screen sizes */
 @media (max-width: 480px) {
 	.game-board {
-		max-width: 95vw;
+		max-width: 100vw;
 	}
 }
