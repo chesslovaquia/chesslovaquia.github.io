@@ -1,5 +1,4 @@
 # production config
 params:
   debug: false
-  prefix: /public
   cdn: http://localhost:8000
