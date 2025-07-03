@@ -1,6 +1,11 @@
 #!/bin/sh
 set -eu
+
+HUGO_CLVQ_BUILD=$(date '+%Y%m%d%Z%H%M%S')
+export HUGO_CLVQ_BUILD
+
 hugo/build-deps.sh
+
 exec hugo server \
 	--bind 0.0.0.0 \
 	--port 8045 \
@@ -8,6 +13,5 @@ exec hugo server \
 	--gc \
 	--noHTTPCache \
 	--watch \
-	--environment devel \
 	--logLevel debug \
 	--renderToMemory

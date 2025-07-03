@@ -1,6 +1,9 @@
 #!/bin/sh
 set -eu
 
+HUGO_CLVQ_BUILD=$(date '+%Y%m%d%Z%H%M%S')
+export HUGO_CLVQ_BUILD
+
 rm -rf ./public
 
 hugo \

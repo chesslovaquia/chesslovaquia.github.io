@@ -1,6 +1,6 @@
 {{- $clvq_prefix := .Site.Params.prefix | default "" -}}
 
-const CACHE_NAME = '{{ getenv "HUGO_CLVQ_CACHE_VERSION" | default "unset" }}';
+const CACHE_NAME = 'clvq{{ getenv "HUGO_CLVQ_BUILD" | default "unset" }}';
 const FALLBACK_URL = '{{ $clvq_prefix }}/';
 
 const CACHE_URLS = [
