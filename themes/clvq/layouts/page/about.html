@@ -1,0 +1,11 @@
+{{ define "main" }}
+	{{- $buildID := getenv "HUGO_CLVQ_BUILD" | default "UNSET" }}
+	{{ partial "header.html" . }}
+	{{ partial "page/main-head.html" . }}
+		{{ .Content }}
+		<p class="w3-small">
+			Build: {{ $buildID }}
+			- Date: {{ now | time.Format "Jan 2 15:04:05 MST 2006" }}
+		</p>
+	{{ partial "page/main-tail.html" . }}
+{{ end }}
