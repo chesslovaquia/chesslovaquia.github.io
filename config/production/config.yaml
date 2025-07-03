@@ -1,4 +1,5 @@
 # production config
 params:
   debug: false
-  prefix: /play
+  prefix: /public
+  cdn: http://localhost:8000

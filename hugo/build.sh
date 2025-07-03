@@ -9,6 +9,7 @@ rm -rf ./public
 hugo \
 	--baseURL "${CLVQ_ROOT}" \
 	--logLevel warning \
+	--environment production \
 	"$@"
 
 echo "Site files:"

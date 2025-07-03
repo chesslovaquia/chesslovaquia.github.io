@@ -14,4 +14,5 @@ exec hugo server \
 	--noHTTPCache \
 	--watch \
 	--logLevel debug \
-	--renderToMemory
+	--renderToMemory \
+	--environment devel
