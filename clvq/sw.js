@@ -1,10 +1,12 @@
-const CACHE_NAME = 'v1';
+const CACHE_NAME = '{{ getenv "HUGO_CLVQ_CACHE_VERSION" | default "unset" }}';
 const CACHE_URLS = [
 	'/',
 	'/game/',
 	'/about/'
 ];
 const FALLBACK_URL = '/';
+
+console.log('Service Worker, CACHE_NAME:', CACHE_NAME);
 
 // Install event - cache resources
 self.addEventListener('install', event => {
@@ -59,9 +61,15 @@ async function fetchHandler(request) {
 		const cachedResponse = await caches.match(request);
 
 		if (cachedResponse) {
+		{{- if eq hugo.Environment "devel" }}
+			console.log('Cache HIT IGNORE:', request.url);
+		}
+		{{- else }}
+		if (cachedResponse) {
 			console.log('Cache HIT:', request.url);
 			return cachedResponse;
 		}
+		{{- end }}
 
 		// If not in cache, fetch from network
 		console.log('Cache MISS:', request.url);
@@ -69,8 +77,13 @@ async function fetchHandler(request) {
 
 		// Optionally cache successful responses for future use
 		if (networkResponse.ok && request.method === 'GET') {
+		{{- if eq hugo.Environment "devel" }}
+			console.log('Cache PUT IGNORE:', request.url);
+		{{- else }}
+			console.log('Cache PUT:', request.url);
 			const cache = await caches.open(CACHE_NAME);
 			cache.put(request, networkResponse.clone());
+		{{- end }}
 		}
 
 		return networkResponse;

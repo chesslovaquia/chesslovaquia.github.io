@@ -3,4 +3,13 @@
 	{{ partial "page/main-head.html" . }}
 		{{ .Content }}
 	{{ partial "page/main-tail.html" . }}
+	<script>
+	function setupWPA() {
+		if ('serviceWorker' in navigator) {
+			console.log('Service Worker Setup.');
+			navigator.serviceWorker.register('./clvq/sw.js');
+		}
+	}
+	setupWPA();
+	</script>
 {{- end }}
