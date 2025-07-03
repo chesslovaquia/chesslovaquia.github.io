@@ -23,7 +23,7 @@ RUN apt-get clean \
 		/var/cache/apt/archives/*.deb \
 		/var/cache/apt/*cache.bin
 
-ENV APT_INSTALL_EXTRA make node-typescript
+ENV APT_INSTALL_EXTRA make shellcheck node-typescript
 
 RUN apt-get clean \
 	&& apt-get update -yy \

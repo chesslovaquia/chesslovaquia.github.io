@@ -20,6 +20,7 @@ build:
 
 .PHONY: check
 check:
+	shellcheck hugo/*.sh
 	npm audit
 
 .PHONY: vendor
