@@ -1,10 +1,15 @@
+{{- $clvq_prefix := .Site.Params.prefix | default "" -}}
+
 const CACHE_NAME = '{{ getenv "HUGO_CLVQ_CACHE_VERSION" | default "unset" }}';
+const FALLBACK_URL = '{{ $clvq_prefix }}/';
+
 const CACHE_URLS = [
-	'/',
-	'/game/',
-	'/about/'
+{{- with index site.Menus "main" }}
+	{{- range . }}
+	'{{ $clvq_prefix }}{{ .URL }}',
+	{{- end }}
+{{- end }}
 ];
-const FALLBACK_URL = '/';
 
 console.log('Service Worker, CACHE_NAME:', CACHE_NAME);
 
