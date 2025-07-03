@@ -32,8 +32,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       TZ: UTC
-      CLVQ_ROOT: https://chesslovaquia.github.io/play
-      HUGO_PARAMS_PREFIX: /play
+      CLVQ_ROOT: https://chesslovaquia.github.io
       HUGO_PARAMS_CDN: https://equally-capital-python.global.ssl.fastly.net
       HUGO_ENVIRONMENT: production
     steps:

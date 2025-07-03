@@ -1,13 +1,13 @@
 name = 'clvq'
 license = 'BSD-3'
-licenselink = 'https://github.com/chesslovaquia/play/LICENSE'
-description = 'Custom theme'
+licenselink = 'https://github.com/chesslovaquia/LICENSE'
+description = 'Chesslovaquia custom theme'
 
 # The home page of the theme, where the source can be found
-homepage = 'https://github.com/chesslovaquia/play'
+homepage = 'https://github.com/chesslovaquia/chesslovaquia.github.io'
 
 # If you have a running demo of the theme
-demosite = 'https://chesslovaquia.github.io/play/'
+demosite = 'https://chesslovaquia.github.io/'
 
 # Taxonomy terms
 ##tags = ['blog', 'company']

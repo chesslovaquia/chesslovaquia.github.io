@@ -54,7 +54,7 @@ COPY ./docker/user-login.sh /usr/local/bin/user-login.sh
 RUN chmod -v 0755 /usr/local/bin/user-login.sh
 
 RUN install -v -m 0750 -o devel -g devel -d /opt/clvq
-RUN install -v -m 0750 -o devel -g devel -d /opt/clvq/play
+RUN install -v -m 0750 -o devel -g devel -d /opt/clvq/site
 
 USER devel:devel
 WORKDIR /home/devel
