@@ -196,12 +196,18 @@ class ChessGame {
 
 	// Pawn Promotion
 
-	public pawnPromotionHide(side) {
+	public pawnPromotionHide(side: string): void {
 		document.getElementById(`${side}PawnPromotion`).style.display='none';
 	}
 
-	public pawnPromotionShow(side) {
+	public pawnPromotionShow(side: string): void {
 		document.getElementById(`${side}PawnPromotion`).style.display='block';
+	}
+
+	public whitePawnPromotion(piece: string): void {
+	}
+
+	public blackPawnPromotion(piece: string): void {
 	}
 
 }

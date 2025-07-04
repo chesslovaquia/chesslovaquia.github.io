@@ -7,10 +7,12 @@ document.addEventListener('DOMContentLoaded', () => {
 	const resetButton = document.getElementById('reset');
 
 	if (boardElement) {
-		(window as any).Clvq.Game = new ChessGame({
+		const game = new ChessGame({
 			boardElement,
 			statusElement: statusElement || undefined,
 			resetButton: resetButton || undefined
 		});
+		//~ game.pawnPromotionShow('white');
+		(window as any).Clvq.Game = game;
 	}
 });
