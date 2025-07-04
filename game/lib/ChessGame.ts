@@ -193,6 +193,17 @@ class ChessGame {
 			this.resetButton.addEventListener('click', () => this.reset());
 		}
 	}
+
+	// Pawn Promotion
+
+	public pawnPromotionHide(side) {
+		document.getElementById(`${side}PawnPromotion`).style.display='none';
+	}
+
+	public pawnPromotionShow(side) {
+		document.getElementById(`${side}PawnPromotion`).style.display='block';
+	}
+
 }
 
 export { ChessGame };

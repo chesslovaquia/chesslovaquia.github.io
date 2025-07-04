@@ -1,16 +1,16 @@
 {{- $page := .page }}
 
-<div id="whitePawnPromotion" class="w3-modal">
+<div id="whitePawnPromotion" class="w3-modal" style="display: block;">
 	<div class="w3-modal-content w3-black clvq-bg2 w3-round">
 		<div class="w3-container w3-center">
 	        <span class="{{ $page.Site.Params.btnClass }} w3-display-topright"
-				onclick="pawnPromotionHide('white')">&times;</span>
+				onclick="Clvq.Game.pawnPromotionHide('white')">&times;</span>
 			<p>Pawn promotion</p>
 			<div class="cg-wrap" style="display: grid; grid-template-columns: repeat(4, 50px); grid-template-rows: repeat(1, 50px);">
-				<piece class="queen white" style="grid-column: 1; grid-row: 1; width: 50px; height: 50px;"></piece>
-				<piece class="rook white" style="grid-column: 2; grid-row: 1; width: 50px; height: 50px;"></piece>
-				<piece class="knight white" style="grid-column: 3; grid-row: 1; width: 50px; height: 50px;"></piece>
-				<piece class="bishop white" style="grid-column: 4; grid-row: 1; width: 50px; height: 50px;"></piece>
+				<piece class="queen white" style="grid-column: 1; grid-row: 1; width: 50px; height: 50px;" onclick="Clvq.Game.whitePawnPromotion('q')"></piece>
+				<piece class="rook white" style="grid-column: 2; grid-row: 1; width: 50px; height: 50px;" onclick="Clvq.Game.whitePawnPromotion('r')"></piece>
+				<piece class="knight white" style="grid-column: 3; grid-row: 1; width: 50px; height: 50px;" onclick="Clvq.Game.whitePawnPromotion('n')"></piece>
+				<piece class="bishop white" style="grid-column: 4; grid-row: 1; width: 50px; height: 50px;" onclick="Clvq.Game.whitePawnPromotion('b')"></piece>
 			</div>
 		</div>
 		<br>
@@ -23,13 +23,13 @@
 	<div class="w3-modal-content w3-black clvq-bg2 w3-round">
 		<div class="w3-container w3-center">
 	        <span class="{{ $page.Site.Params.btnClass }} w3-display-topright"
-				onclick="pawnPromotionHide('black')">&times;</span>
+				onclick="Clvq.pawnPromotionHide('black')">&times;</span>
 			<p>Pawn promotion</p>
 			<div class="cg-wrap" style="display: grid; grid-template-columns: repeat(4, 50px); grid-template-rows: repeat(1, 50px);">
-				<piece class="queen black" style="grid-column: 1; grid-row: 1; width: 50px; height: 50px;"></piece>
-				<piece class="rook black" style="grid-column: 2; grid-row: 1; width: 50px; height: 50px;"></piece>
-				<piece class="knight black" style="grid-column: 3; grid-row: 1; width: 50px; height: 50px;"></piece>
-				<piece class="bishop black" style="grid-column: 4; grid-row: 1; width: 50px; height: 50px;"></piece>
+				<piece class="queen black" style="grid-column: 1; grid-row: 1; width: 50px; height: 50px;" onclick="Clvq.Game.blackPawnPromotion('q')"></piece>
+				<piece class="rook black" style="grid-column: 2; grid-row: 1; width: 50px; height: 50px;" onclick="Clvq.Game.blackPawnPromotion('r')"></piece>
+				<piece class="knight black" style="grid-column: 3; grid-row: 1; width: 50px; height: 50px;" onclick="Clvq.Game.blackPawnPromotion('n')"></piece>
+				<piece class="bishop black" style="grid-column: 4; grid-row: 1; width: 50px; height: 50px;" onclick="Clvq.Game.blackPawnPromotion('b')"></piece>
 			</div>
 		</div>
 		<br>
@@ -37,13 +37,3 @@
 		<br>
 	</div>
 </div>
-
-<script>
-	function pawnPromotionHide(side) {
-		document.getElementById(`${side}PawnPromotion`).style.display='none';
-	}
-	function pawnPromotionShow(side) {
-		document.getElementById(`${side}PawnPromotion`).style.display='block';
-	}
-	//~ pawnPromotionShow('black');
-</script>
