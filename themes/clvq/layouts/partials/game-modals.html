@@ -1,10 +1,10 @@
 {{- $page := .page }}
 
-<div id="gamePromotion" class="w3-modal">
+<div id="whitePawnPromotion" class="w3-modal">
 	<div class="w3-modal-content w3-black clvq-bg2 w3-round">
 		<div class="w3-container w3-center">
 	        <span class="{{ $page.Site.Params.btnClass }} w3-display-topright"
-				onclick="gamePromotionHide()">&times;</span>
+				onclick="pawnPromotionHide('white')">&times;</span>
 			<p>Pawn promotion</p>
 			<div class="cg-wrap" style="display: grid; grid-template-columns: repeat(4, 50px); grid-template-rows: repeat(1, 50px);">
 				<piece class="queen white" style="grid-column: 1; grid-row: 1; width: 50px; height: 50px;"></piece>
@@ -19,12 +19,32 @@
 	</div>
 </div>
 
+<div id="blackPawnPromotion" class="w3-modal">
+	<div class="w3-modal-content w3-black clvq-bg2 w3-round">
+		<div class="w3-container w3-center">
+	        <span class="{{ $page.Site.Params.btnClass }} w3-display-topright"
+				onclick="pawnPromotionHide('black')">&times;</span>
+			<p>Pawn promotion</p>
+			<div class="cg-wrap" style="display: grid; grid-template-columns: repeat(4, 50px); grid-template-rows: repeat(1, 50px);">
+				<piece class="queen black" style="grid-column: 1; grid-row: 1; width: 50px; height: 50px;"></piece>
+				<piece class="rook black" style="grid-column: 2; grid-row: 1; width: 50px; height: 50px;"></piece>
+				<piece class="knight black" style="grid-column: 3; grid-row: 1; width: 50px; height: 50px;"></piece>
+				<piece class="bishop black" style="grid-column: 4; grid-row: 1; width: 50px; height: 50px;"></piece>
+			</div>
+		</div>
+		<br>
+		<br>
+		<br>
+	</div>
+</div>
+
 <script>
-	function gamePromotionHide() {
-		document.getElementById('gamePromotion').style.display='none';
+	console.log('ChessGame:', window.chessGame);
+	function pawnPromotionHide(side) {
+		document.getElementById(`${side}PawnPromotion`).style.display='none';
 	}
-	function gamePromotionShow() {
-		document.getElementById('gamePromotion').style.display='block';
+	function pawnPromotionShow(side) {
+		document.getElementById(`${side}PawnPromotion`).style.display='block';
 	}
-	//~ gamePromotionShow();
+	//~ pawnPromotionShow('black');
 </script>
