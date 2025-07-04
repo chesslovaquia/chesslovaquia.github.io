@@ -1,0 +1,21 @@
+{{- $page := .page }}
+{{- $side := .side }}
+
+<div id="{{ $side }}PawnPromotion" class="w3-modal">
+	<div class="w3-modal-content w3-black clvq-bg2 w3-round w3-card-4">
+		<div class="w3-container w3-center">
+	        <!--span class="{{ $page.Site.Params.btnClass }} w3-display-topright"
+				onclick="Clvq.Game.pawnPromotionHide('{{ $side }}')">&times;</span-->
+			<p>Pawn promotion</p>
+			<div class="cg-wrap" style="display: grid; grid-template-columns: repeat(4, 50px); grid-template-rows: repeat(1, 50px);">
+				<a href="javascript:void(0)" onclick="Clvq.Game.pawnPromotion('{{ $side }}', 'q')"><piece class="queen {{ $side }}" style="grid-column: 1; grid-row: 1; width: 50px; height: 50px;"></piece></a>
+				<a href="javascript:void(0)" onclick="Clvq.Game.pawnPromotion('{{ $side }}', 'r')"><piece class="rook {{ $side }}" style="grid-column: 2; grid-row: 1; width: 50px; height: 50px;"></piece></a>
+				<a href="javascript:void(0)" onclick="Clvq.Game.pawnPromotion('{{ $side }}', 'n')"><piece class="knight {{ $side }}" style="grid-column: 3; grid-row: 1; width: 50px; height: 50px;"></piece></a>
+				<a href="javascript:void(0)" onclick="Clvq.Game.pawnPromotion('{{ $side }}', 'b')"><piece class="bishop {{ $side }}" style="grid-column: 4; grid-row: 1; width: 50px; height: 50px;"></piece></a>
+			</div>
+		</div>
+		<br>
+		<br>
+		<br>
+	</div>
+</div>
