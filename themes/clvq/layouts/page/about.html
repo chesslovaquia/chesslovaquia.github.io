@@ -4,9 +4,11 @@
 	{{ partial "page/main-head.html" . }}
 	<div class="w3-container w3-center">
 		{{ .Content }}
-		<div class="w3-small">
-			<p>Build: {{ $buildID }}</p>
-			<p>Date: {{ now | time.Format "Jan 2 15:04:05 MST 2006" }}</p>
+		<div class="clvq-text-x-small">
+			<p>
+				Build: {{ $buildID }}
+				<br>Date: {{ now | time.Format "Jan 2 15:04:05 MST 2006" }}
+			</p>
 		</div>
 	</div>
 	{{ partial "page/main-tail.html" . }}

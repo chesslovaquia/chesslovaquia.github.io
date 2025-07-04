@@ -6,4 +6,4 @@ type: "page"
 layout: "home"
 ---
 
-Chesslovaquia
+# Chesslovaquia

@@ -6,6 +6,6 @@ type: "page"
 layout: "about"
 ---
 
-## Chesslovaquia
+# Chesslovaquia
 
 One board to play them all.
