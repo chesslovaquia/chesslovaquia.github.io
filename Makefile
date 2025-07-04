@@ -15,7 +15,7 @@ all: build
 
 .PHONY: build
 build:
-	hugo/build-deps.sh
+	hugo/mkdeps.sh
 	hugo/build.sh
 
 .PHONY: check

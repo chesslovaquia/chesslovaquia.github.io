@@ -55,7 +55,7 @@ jobs:
           restore-keys:
             hugo-
       - name: Hugo Build Deps
-        run: hugo/build-deps.sh
+        run: hugo/mkdeps.sh
       - name: Hugo Build
         run: |
           hugo/build.sh \
