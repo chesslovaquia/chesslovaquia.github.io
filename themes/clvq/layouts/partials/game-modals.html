@@ -3,14 +3,14 @@
 <div id="whitePawnPromotion" class="w3-modal">
 	<div class="w3-modal-content w3-black clvq-bg2 w3-round w3-card-4">
 		<div class="w3-container w3-center">
-	        <span class="{{ $page.Site.Params.btnClass }} w3-display-topright"
-				onclick="Clvq.Game.pawnPromotionHide('white')">&times;</span>
+	        <!--span class="{{ $page.Site.Params.btnClass }} w3-display-topright"
+				onclick="Clvq.Game.pawnPromotionHide('white')">&times;</span-->
 			<p>Pawn promotion</p>
 			<div class="cg-wrap" style="display: grid; grid-template-columns: repeat(4, 50px); grid-template-rows: repeat(1, 50px);">
-				<piece class="queen white" style="grid-column: 1; grid-row: 1; width: 50px; height: 50px;" onclick="Clvq.Game.whitePawnPromotion('q')"></piece>
-				<piece class="rook white" style="grid-column: 2; grid-row: 1; width: 50px; height: 50px;" onclick="Clvq.Game.whitePawnPromotion('r')"></piece>
-				<piece class="knight white" style="grid-column: 3; grid-row: 1; width: 50px; height: 50px;" onclick="Clvq.Game.whitePawnPromotion('n')"></piece>
-				<piece class="bishop white" style="grid-column: 4; grid-row: 1; width: 50px; height: 50px;" onclick="Clvq.Game.whitePawnPromotion('b')"></piece>
+				<a href="javascript:void(0)" onclick="Clvq.Game.whitePawnPromotion('q')"><piece class="queen white" style="grid-column: 1; grid-row: 1; width: 50px; height: 50px;"></piece></a>
+				<a href="javascript:void(0)" onclick="Clvq.Game.whitePawnPromotion('r')"><piece class="rook white" style="grid-column: 2; grid-row: 1; width: 50px; height: 50px;"></piece></a>
+				<a href="javascript:void(0)" onclick="Clvq.Game.whitePawnPromotion('n')"><piece class="knight white" style="grid-column: 3; grid-row: 1; width: 50px; height: 50px;"></piece></a>
+				<a href="javascript:void(0)" onclick="Clvq.Game.whitePawnPromotion('b')"><piece class="bishop white" style="grid-column: 4; grid-row: 1; width: 50px; height: 50px;"></piece></a>
 			</div>
 		</div>
 		<br>
@@ -22,14 +22,14 @@
 <div id="blackPawnPromotion" class="w3-modal">
 	<div class="w3-modal-content w3-black clvq-bg2 w3-round w3-card-4">
 		<div class="w3-container w3-center">
-	        <span class="{{ $page.Site.Params.btnClass }} w3-display-topright"
-				onclick="Clvq.Game.pawnPromotionHide('black')">&times;</span>
+	        <!--span class="{{ $page.Site.Params.btnClass }} w3-display-topright"
+				onclick="Clvq.Game.pawnPromotionHide('black')">&times;</span-->
 			<p>Pawn promotion</p>
 			<div class="cg-wrap" style="display: grid; grid-template-columns: repeat(4, 50px); grid-template-rows: repeat(1, 50px);">
-				<piece class="queen black" style="grid-column: 1; grid-row: 1; width: 50px; height: 50px;" onclick="Clvq.Game.blackPawnPromotion('q')"></piece>
-				<piece class="rook black" style="grid-column: 2; grid-row: 1; width: 50px; height: 50px;" onclick="Clvq.Game.blackPawnPromotion('r')"></piece>
-				<piece class="knight black" style="grid-column: 3; grid-row: 1; width: 50px; height: 50px;" onclick="Clvq.Game.blackPawnPromotion('n')"></piece>
-				<piece class="bishop black" style="grid-column: 4; grid-row: 1; width: 50px; height: 50px;" onclick="Clvq.Game.blackPawnPromotion('b')"></piece>
+				<a href="javascript:void(0)" onclick="Clvq.Game.blackPawnPromotion('q')"><piece class="queen black" style="grid-column: 1; grid-row: 1; width: 50px; height: 50px;"></piece></a>
+				<a href="javascript:void(0)" onclick="Clvq.Game.blackPawnPromotion('r')"><piece class="rook black" style="grid-column: 2; grid-row: 1; width: 50px; height: 50px;"></piece></a>
+				<a href="javascript:void(0)" onclick="Clvq.Game.blackPawnPromotion('n')"><piece class="knight black" style="grid-column: 3; grid-row: 1; width: 50px; height: 50px;"></piece></a>
+				<a href="javascript:void(0)" onclick="Clvq.Game.blackPawnPromotion('b')"><piece class="bishop black" style="grid-column: 4; grid-row: 1; width: 50px; height: 50px;"></piece></a>
 			</div>
 		</div>
 		<br>

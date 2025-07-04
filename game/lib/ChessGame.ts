@@ -205,9 +205,13 @@ class ChessGame {
 	}
 
 	public whitePawnPromotion(piece: string): void {
+		console.log('White Pawn Promotion:', piece);
+		this.pawnPromotionHide('white');
 	}
 
 	public blackPawnPromotion(piece: string): void {
+		console.log('Black Pawn Promotion:', piece);
+		this.pawnPromotionHide('black');
 	}
 
 }
