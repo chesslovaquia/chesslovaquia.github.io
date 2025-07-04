@@ -1,5 +1,5 @@
 {
-  "include": ["assets/js"],
+  "include": ["./clvq", "./game"],
   "exclude": [
     "public",
     "node_modules"
@@ -13,11 +13,8 @@
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "baseUrl": ".",
-    "rootDir": "./assets",
+    "rootDir": ".",
     "outDir": "./public",
-    "paths": {
-      "@/*": ["./assets/*"],
-    },
     "noImplicitAny": false,
     "noImplicitOverride": true,
     "declaration": false,

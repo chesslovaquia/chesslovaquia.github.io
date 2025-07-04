@@ -3,11 +3,7 @@ import { Api as ChessgroundApi } from 'chessground/api';
 import { Chess, Square, Move } from 'chess.js';
 import { Key } from 'chessground/types';
 
-interface ChessGameConfig {
-	boardElement: HTMLElement;
-	statusElement?: HTMLElement;
-	resetButton?: HTMLElement;
-}
+import { ChessGameError, ChessGameConfig } from './types';
 
 class ChessGame {
 	private game: Chess;
@@ -193,22 +189,6 @@ class ChessGame {
 			this.resetButton.addEventListener('click', () => this.reset());
 		}
 	}
-
-	// Pawn Promotion
-
-	public pawnPromotionHide(side: string): void {
-		document.getElementById(`${side}PawnPromotion`).style.display='none';
-	}
-
-	public pawnPromotionShow(side: string): void {
-		document.getElementById(`${side}PawnPromotion`).style.display='block';
-	}
-
-	public pawnPromotion(side: string, piece: string): void {
-		console.log('Pawn Promotion:', side, piece);
-		this.pawnPromotionHide(side);
-	}
-
 }
 
 export { ChessGame };

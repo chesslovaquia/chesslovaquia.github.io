@@ -11,13 +11,13 @@
 	<!-- Toggle Button -->
 	<a class="w3-bar-item {{ $siteBtnClass }} w3-right"
 	href="javascript:void(0)"
-	onclick="Clvq.Lib.w3ToggleMenu('gameMenu')">&#9776;</a>
+	onclick="Clvq.w3ToggleMenu('gameMenu')">&#9776;</a>
 </div>
 <!-- Dropdown Menu -->
 <div id="gameMenu" class="w3-bar-block w3-hide">
 	<!-- Game Reset -->
 	<a id="reset" class="w3-bar-item {{ $siteBtnClass }} w3-right"
-		href="javascript:void(0)" onclick="Clvq.Lib.w3ToggleMenu('gameMenu')">Reset</a>
+		href="javascript:void(0)" onclick="Clvq.w3ToggleMenu('gameMenu')">Reset</a>
 	{{- partial "inline/menu/walk.html" (dict "page" $page "siteBtnClass" $siteBtnClass "menuEntries" .) }}
 </div>
 {{- end }}
