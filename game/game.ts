@@ -7,13 +7,10 @@ document.addEventListener('DOMContentLoaded', () => {
 	const resetButton = document.getElementById('reset');
 
 	if (boardElement) {
-		const chessGame = new ChessGame({
+		(window as any).Clvq.Game = new ChessGame({
 			boardElement,
 			statusElement: statusElement || undefined,
 			resetButton: resetButton || undefined
 		});
-
-		// Make the chess game instance globally available for debugging
-		(window as any).chessGame = chessGame;
 	}
 });

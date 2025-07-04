@@ -4,7 +4,8 @@ import { Clvq } from './../clvq/Clvq.js';
 
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-	const clvq = new Clvq();
-	// Make instance globally available for debugging
-	(window as any).clvq = clvq;
+	(window as any).Clvq = {
+		Lib: new Clvq(),
+		Game: {},
+	}
 });
