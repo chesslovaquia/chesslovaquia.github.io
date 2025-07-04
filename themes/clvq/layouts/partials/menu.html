@@ -9,7 +9,8 @@ Renders a menu for the given menu ID.
 
 {{- $page := .page }}
 {{- $menuID := .menuID }}
-{{- $siteBtnClass := .siteBtnClass }}
+
+{{- $siteBtnClass := $page.Site.Params.btnClass }}
 
 {{- with index site.Menus $menuID }}
 <!-- Top Navigation Bar -->
