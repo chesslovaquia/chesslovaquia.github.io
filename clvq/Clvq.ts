@@ -12,10 +12,14 @@ class Clvq {
 
 	public w3ToggleMenu(id: string): void {
 		var x = document.getElementById(id);
-		if (x.className.indexOf("w3-show") === -1) {
-			x.className += " w3-show";
+		if (x) {
+			if (x.className.indexOf("w3-show") === -1) {
+				x.className += " w3-show";
+			} else {
+				x.className = x.className.replace(" w3-show", "");
+			}
 		} else {
-			x.className = x.className.replace(" w3-show", "");
+			console.log('Clvq w3ToggleMenu ERROR:', id, 'not found');
 		}
 	}
 

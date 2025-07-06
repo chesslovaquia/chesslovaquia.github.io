@@ -1,5 +1,6 @@
 {{- $page := .page }}
 {{- $side := .side }}
+{{- $piece_size := "width: 50px; heigh: 50px;" }}
 
 <div id="{{ $side }}PawnPromotion" class="w3-modal">
 	<div class="w3-modal-content w3-black clvq-bg2 w3-round w3-card-4">
@@ -8,10 +9,26 @@
 				onclick="Clvq.game.pawnPromotionHide('{{ $side }}')">&times;</span-->
 			<p>Pawn promotion</p>
 			<div class="cg-wrap" style="display: grid; grid-template-columns: repeat(4, 50px); grid-template-rows: repeat(1, 50px);">
-				<a href="javascript:void(0)" onclick="Clvq.game.pawnPromotion('{{ $side }}', 'q')"><piece class="queen {{ $side }}" style="grid-column: 1; grid-row: 1; width: 50px; height: 50px;"></piece></a>
-				<a href="javascript:void(0)" onclick="Clvq.game.pawnPromotion('{{ $side }}', 'r')"><piece class="rook {{ $side }}" style="grid-column: 2; grid-row: 1; width: 50px; height: 50px;"></piece></a>
-				<a href="javascript:void(0)" onclick="Clvq.game.pawnPromotion('{{ $side }}', 'n')"><piece class="knight {{ $side }}" style="grid-column: 3; grid-row: 1; width: 50px; height: 50px;"></piece></a>
-				<a href="javascript:void(0)" onclick="Clvq.game.pawnPromotion('{{ $side }}', 'b')"><piece class="bishop {{ $side }}" style="grid-column: 4; grid-row: 1; width: 50px; height: 50px;"></piece></a>
+				<a href="javascript:void(0)"><piece
+					data-piece="queen"
+					class="clvq-promotion-piece queen {{ $side }}"
+					style="grid-column: 1; grid-row: 1; {{ $piece_size }}">
+				</piece></a>
+				<a href="javascript:void(0)"><piece
+					data-piece="rook"
+					class="clvq-promotion-piece rook {{ $side }}"
+					style="grid-column: 2; grid-row: 1; {{ $piece_size }}">
+				</piece></a>
+				<a href="javascript:void(0)"><piece
+					data-piece="knight"
+					class="clvq-promotion-piece knight {{ $side }}"
+					style="grid-column: 3; grid-row: 1; {{ $piece_size }}">
+				</piece></a>
+				<a href="javascript:void(0)"><piece
+					data-piece="bishop"
+					class="clvq-promotion-piece bishop {{ $side }}"
+					style="grid-column: 4; grid-row: 1; {{ $piece_size }}">
+				</piece></a>
 			</div>
 		</div>
 		<br>

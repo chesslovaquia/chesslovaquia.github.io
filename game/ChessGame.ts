@@ -3,6 +3,7 @@ import { Api as ChessgroundApi } from 'chessground/api';
 import { Chess, Square, Move } from 'chess.js';
 import { Key } from 'chessground/types';
 
+import { ChessGamePromotion } from './ChessGamePromotion';
 import { ChessGameError, ChessGameConfig } from './types';
 
 class ChessGame {
@@ -11,13 +12,26 @@ class ChessGame {
 	private statusElement?: HTMLElement;
 	private resetButton?: HTMLElement;
 
-	constructor(config: ChessGameConfig) {
-		console.log('Chesslovaquia game board.');
-		this.game = new Chess();
-		this.statusElement = config.statusElement;
-		this.resetButton = config.resetButton;
+	public promotion: ChessGamePromotion;
 
-		this.board = Chessground(config.boardElement, {
+	constructor(config: ChessGameConfig) {
+		console.log('Game board.');
+		this.game = new Chess();
+		this.board = this.newBoard(config);
+		this.promotion = new ChessGamePromotion(this.board);
+		if (this.board) {
+			this.statusElement = config.statusElement;
+			this.resetButton = config.resetButton;
+			this.setupEventListeners();
+			this.updateStatus();
+		}
+	}
+
+	private newBoard(config: ChessGameConfig): ChessgroundApi {
+		if (!config.boardElement) {
+			throw new ChessGameError('Game init ERROR: board element not found.');
+		}
+		return Chessground(config.boardElement, {
 			disableContextMenu: true,
 			coordinates: false,
 			fen: this.game.fen(),
@@ -29,6 +43,14 @@ class ChessGame {
 				dests: this.possibleMoves(),
 				showDests: true,
 				rookCastle: true,
+				events: {
+					after: (orig: Key, dest: Key, metadata?: any) => {
+						// Pawn promotion.
+						if (this.promotion.check(orig, dest)) {
+							this.promotion.handle(orig, dest);
+						}
+					},
+				},
 			},
 			events: {
 				move: (orig: Key, dest: Key, metadata?: any) => this.onMove(orig, dest, metadata)
@@ -44,7 +66,8 @@ class ChessGame {
 				enabled: false,
 			},
 			animation: {
-				enabled: false,
+				enabled: true,
+				duration: 200,
 			},
 			drawable: {
 				enabled: false,
@@ -53,9 +76,6 @@ class ChessGame {
 				enabled: false,
 			},
 		});
-
-		this.setupEventListeners();
-		this.updateStatus();
 	}
 
 	private possibleMoves(): Map<Key, Key[]> {
