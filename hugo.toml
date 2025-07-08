@@ -20,10 +20,10 @@ dir = ":cacheDir/images"
 
 [module]
 [[module.mounts]]
-source = "clvq"
+source = "ts/clvq"
 target = "assets/clvq"
 [[module.mounts]]
-source = "game"
+source = "ts/game"
 target = "assets/game"
 [[module.mounts]]
 source = "node_modules/chessground"
