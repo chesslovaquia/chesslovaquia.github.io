@@ -24,17 +24,9 @@ class ChessGamePromotion {
 	}
 
 	public handle(orig: Key, dest: Key): void {
+		console.log('Pawn promotion handle:', orig, dest);
 		const piece: Piece = (this.board.state.pieces.get(dest) as Piece);
-		console.log('Pawn promotion handle:', orig, dest, piece);
-		// store current state
-		const curPieces = new Map(this.board.state.pieces);
-		curPieces.delete(dest);
-		curPieces.set(orig, piece);
-
-		// revert move temporarily
-		//~ this.board.set({pieces: curPieces});
-
-		// show promotion modal
+		this.board.state.pieces.delete(dest);
 		console.log('Pawn promotion show modal:', piece.color);
 		this.showModal(piece.color, (selectedPiece) => {
 			this.exec(orig, dest, piece.color, selectedPiece);
@@ -61,14 +53,12 @@ class ChessGamePromotion {
 	}
 
 	private exec(orig: Key, dest: Key, side: Color, piece: Role): void {
-		const newPieces = new Map(this.board.state.pieces);
-		newPieces.delete(orig);
-		newPieces.set(dest, {
+		this.board.state.pieces.delete(orig);
+		this.board.state.pieces.set(dest, {
 			color: side,
 			role: piece,
 		});
 		this.board.set({
-			//~ pieces: newPieces,
 			lastMove: [orig, dest],
 		});
 		this.finish(orig, dest, side, piece);
