@@ -21,7 +21,7 @@ build:
 .PHONY: check
 check:
 	shellcheck hugo/*.sh
-	tsc --noEmit
+	ts/check.sh
 	npm audit
 
 .PHONY: vendor

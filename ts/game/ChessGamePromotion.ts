@@ -44,9 +44,11 @@ class ChessGamePromotion {
 			modal.addEventListener('click', (evt: MouseEvent) => {
 				if (evt.target) {
 					const elem = (evt.target as HTMLElement);
-					const piece = elem.dataset.piece;
-					callback(piece);
-					modal.style.display='none';
+					if (elem.classList.contains('clvq-promotion-piece')) {
+						const piece = elem.dataset.piece;
+						callback(piece);
+						modal.style.display='none';
+					}
 				}
 			});
 		} else {
