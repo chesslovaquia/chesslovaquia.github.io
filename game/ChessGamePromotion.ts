@@ -1,5 +1,10 @@
 import { Api as ChessgroundApi } from 'chessground/api';
-import { Key, Role, Piece } from 'chessground/types';
+import {
+	Color,
+	Key,
+	Piece,
+	Role,
+} from 'chessground/types';
 
 class ChessGamePromotion {
 	private readonly board: ChessgroundApi;
@@ -33,12 +38,13 @@ class ChessGamePromotion {
 		});
 	}
 
-	private showModal(side: string, callback: any): void {
+	private showModal(side: Color, callback: any): void {
 		const modal = document.getElementById(`${side}PawnPromotion`);
 		if (modal) {
-			modal.addEventListener('click', (elem: HTMLElement) => {
-				if (elem.target.classList.contains('clvq-promotion-piece')) {
-					const piece = elem.target.dataset.piece;
+			modal.addEventListener('click', (evt: MouseEvent) => {
+				if (evt.target) {
+					const elem = (evt.target as HTMLElement);
+					const piece = elem.dataset.piece;
 					callback(piece);
 					modal.style.display='none';
 				}
@@ -48,7 +54,7 @@ class ChessGamePromotion {
 		}
 	}
 
-	private exec(orig: Key, dest: Key, side: string, piece: Role): void {
+	private exec(orig: Key, dest: Key, side: Color, piece: Role): void {
 		const newPieces = new Map(this.board.state.pieces);
 		newPieces.delete(orig);
 		newPieces.set(dest, {
@@ -56,13 +62,13 @@ class ChessGamePromotion {
 			role: piece,
 		});
 		this.board.set({
-			pieces: newPieces,
+			//~ pieces: newPieces,
 			lastMove: [orig, dest],
 		});
 		this.finish(orig, dest, side, piece);
 	}
 
-	private finish(orig: Key, dest: Key, side: string, piece: string): void {
+	private finish(orig: Key, dest: Key, side: Color, piece: string): void {
 		console.log('Pawn promotion done:', orig, dest, side, piece);
 	}
 }
