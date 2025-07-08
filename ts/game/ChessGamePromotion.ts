@@ -24,7 +24,7 @@ class ChessGamePromotion {
 	}
 
 	public handle(orig: Key, dest: Key): void {
-		const piece = this.board.state.pieces.get(dest);
+		const piece: Piece = (this.board.state.pieces.get(dest) as Piece);
 		console.log('Pawn promotion handle:', orig, dest, piece);
 		// store current state
 		const curPieces = new Map(this.board.state.pieces);
