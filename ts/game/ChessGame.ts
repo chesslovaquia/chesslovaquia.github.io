@@ -45,8 +45,10 @@ class ChessGame {
 				rookCastle: true,
 				events: {
 					after: (orig: Key, dest: Key, metadata?: any) => {
+						console.log('Game move:', orig, dest)
 						// Pawn promotion.
-						if (this.promotion.check(orig, dest)) {
+						if (this.promotion.check(dest)) {
+							console.log('Game move is pawn promotion.')
 							this.promotion.handle(orig, dest);
 						}
 					},

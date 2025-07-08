@@ -13,9 +13,10 @@ class ChessGamePromotion {
 		this.board = board;
 	}
 
-	public check(orig: Key, dest: Key): boolean {
+	public check(dest: Key): boolean {
 		const piece = this.board.state.pieces.get(dest);
-		if (!piece || piece.role !== 'pawn') {
+		console.log('Pawn promotion check:', dest, piece);
+		if (!piece || piece.role !== 'queen') {
 			return false;
 		}
 		const promRank = piece.color === 'white' ? '8' : '1';
