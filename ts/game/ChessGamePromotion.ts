@@ -24,7 +24,8 @@ class ChessGamePromotion {
 	}
 
 	public handle(orig: Key, dest: Key): void {
-		const piece: Piece = (this.board.state.pieces.get(dest) as Piece);
+		const piece = this.board.state.pieces.get(dest);
+		console.log('Pawn promotion handle:', orig, dest, piece);
 		// store current state
 		const curPieces = new Map(this.board.state.pieces);
 		curPieces.delete(dest);
@@ -34,6 +35,7 @@ class ChessGamePromotion {
 		//~ this.board.set({pieces: curPieces});
 
 		// show promotion modal
+		console.log('Pawn promotion show modal:', piece.color);
 		this.showModal(piece.color, (selectedPiece) => {
 			this.exec(orig, dest, piece.color, selectedPiece);
 		});
@@ -42,6 +44,7 @@ class ChessGamePromotion {
 	private showModal(side: Color, callback: any): void {
 		const modal = document.getElementById(`${side}PawnPromotion`);
 		if (modal) {
+			modal.style.display='block';
 			modal.addEventListener('click', (evt: MouseEvent) => {
 				if (evt.target) {
 					const elem = (evt.target as HTMLElement);
