@@ -1,5 +1,5 @@
 {
-  "include": ["./clvq", "./game"],
+  "include": ["./ts"],
   "exclude": [
     "public",
     "node_modules"
@@ -12,8 +12,6 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
-    "baseUrl": ".",
-    "rootDir": ".",
     "outDir": "./public",
     "noImplicitAny": false,
     "noImplicitOverride": true,
