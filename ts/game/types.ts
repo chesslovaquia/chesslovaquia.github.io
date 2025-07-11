@@ -1,6 +1,6 @@
 class ChessGameError extends Error {
 	constructor(msg) {
-		super(msg);
+		super(`Game ERROR: ${msg}`);
 	}
 }
 

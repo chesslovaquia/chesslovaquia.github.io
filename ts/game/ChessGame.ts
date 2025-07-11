@@ -48,7 +48,7 @@ class ChessGame {
 
 	private newBoard(config: ChessGameConfig): ChessgroundApi {
 		if (!config.boardElement) {
-			throw new ChessGameError('Game init ERROR: board element not found.');
+			throw new ChessGameError('Init board element not found.');
 		}
 		return Chessground(config.boardElement, {
 			disableContextMenu: true,

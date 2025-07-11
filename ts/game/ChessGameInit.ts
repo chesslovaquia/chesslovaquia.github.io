@@ -9,7 +9,7 @@ class ChessGameInit {
 	public init(): void {
 		console.log('Game init.');
 		if (this.initDone) {
-			throw new ChessGameError('Game ERROR: already initialized.');
+			throw new ChessGameError('Already initialized.');
 		}
 		const boardElement = document.getElementById('chessboard');
 		if (boardElement) {
