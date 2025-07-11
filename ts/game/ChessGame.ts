@@ -75,7 +75,7 @@ class ChessGame {
 				},
 			},
 			events: {
-				move: (orig: Key, dest: Key, metadata?: any) => this.onMove(orig, dest, metadata)
+				move: (orig: Key, dest: Key, capturedPiece?: Piece) => this.onMove(orig, dest, capturedPiece)
 			},
 			highlight: {
 				lastMove: true,
@@ -128,7 +128,7 @@ class ChessGame {
 		}
 	}
 
-	private onMove(orig: Key, dest: Key, metadata?: any): void {
+	private onMove(orig: Key, dest: Key, capturedPiece?: Piece): void {
 		this.doMove(orig, dest, 'q');
 	}
 
