@@ -38,6 +38,7 @@ class ChessGamePromotion {
 		if (modal) {
 			modal.style.display='block';
 			modal.addEventListener('click', (evt: MouseEvent) => {
+				console.log('Pawn promotion select:', evt.target);
 				if (evt.target) {
 					const elem = (evt.target as HTMLElement);
 					if (elem.classList.contains('clvq-promotion-piece')) {

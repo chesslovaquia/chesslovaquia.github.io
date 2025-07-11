@@ -8,7 +8,7 @@ class ChessGameAction {
 
 	public init(): void {
 		console.log('Game init.');
-		if (this.game) {
+		if (this.initDone) {
 			throw new ChessGameError('Game ERROR: already initialized.');
 		}
 		const boardElement = document.getElementById('chessboard');
