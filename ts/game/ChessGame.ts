@@ -190,6 +190,10 @@ class ChessGame {
 
 			if (this.game.inCheck()) {
 				statusText += ' (in check)';
+			} else if (this.curMove) {
+				if (this.curMove.isPromotion()) {
+					statusText += ' (pawn promotion)';
+				}
 			}
 		}
 
@@ -246,11 +250,12 @@ class ChessGame {
 
 	private handlePromotion(orig: Key, dest: Key): void {
 		console.log('Pawn promotion handle:', orig, dest);
-		const piece: Piece = (this.board.state.pieces.get(dest) as Piece);
+		this.updateStatus();
 		this.undo();
-		console.log('Pawn promotion show modal:', piece.color);
-		this.promotion.showModal(piece.color, (selectedPiece) => {
-			this.execPromotion(orig, dest, piece.color, selectedPiece);
+		const side: Color = this.turnColor();
+		console.log('Pawn promotion show modal:', side);
+		this.promotion.showModal(side, (selectedPiece) => {
+			this.execPromotion(orig, dest, side, selectedPiece);
 		});
 	}
 
