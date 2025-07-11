@@ -5,6 +5,8 @@ import * as board from 'chessground/types';
 import * as game  from 'chess.js';
 
 import { ChessGamePromotion } from './ChessGamePromotion';
+import { ChessGameState } from './ChessGameState';
+
 import { ChessGameError, ChessGameConfig } from './types';
 
 class ChessGame {
@@ -13,16 +15,19 @@ class ChessGame {
 	private statusElement?: HTMLElement;
 
 	private promotion: ChessGamePromotion;
+	private state: ChessGameState;
+
 	private curMove: game.Move | null;
 	private prevMove: game.Move | null;
 
 	constructor(config: ChessGameConfig) {
 		console.log('Game board.');
-		this.game = this.newGame();
-		this.board = this.newBoard(config);
 		this.curMove = null;
 		this.prevMove = null;
+		this.game = this.newGame();
+		this.board = this.newBoard(config);
 		this.promotion = new ChessGamePromotion(this.board);
+		this.state = new ChessGameState();
 		if (this.board) {
 			this.statusElement = config.statusElement;
 			this.setupEventListeners(config);
