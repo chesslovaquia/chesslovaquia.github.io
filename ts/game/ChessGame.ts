@@ -1,14 +1,14 @@
 import { Chessground } from 'chessground';
 import { Api as ChessgroundApi } from 'chessground/api';
 import { Chess, Square, Move } from 'chess.js';
-import { Key } from 'chessground/types';
+import { Color, Key, Piece, Role } from 'chessground/types';
 
 import { ChessGamePromotion } from './ChessGamePromotion';
 import { ChessGameError, ChessGameConfig } from './types';
 
 class ChessGame {
-	private game: Chess;
-	private board: ChessgroundApi;
+	private readonly game: Chess;
+	private readonly board: ChessgroundApi;
 	private statusElement?: HTMLElement;
 	private resetButton?: HTMLElement;
 
@@ -49,7 +49,8 @@ class ChessGame {
 						// Pawn promotion.
 						if (this.promotion.check(dest)) {
 							console.log('Game move is pawn promotion.')
-							this.promotion.handle(orig, dest);
+							this.handlePromotion(orig, dest);
+							this.updateStatus();
 						}
 					},
 				},
@@ -68,7 +69,7 @@ class ChessGame {
 				enabled: false,
 			},
 			animation: {
-				enabled: true,
+				enabled: false,
 				duration: 200,
 			},
 			drawable: {
@@ -104,13 +105,16 @@ class ChessGame {
 	}
 
 	private onMove(orig: Key, dest: Key, metadata?: any): void {
+		this.doMove(orig, dest, 'q');
+	}
+
+	private doMove(orig: Key, dest: Key, promotion: string): void {
 		try {
 			const move = this.game.move({
 				from: orig as Square,
 				to: dest as Square,
-				promotion: 'q' // Always promote to queen for simplicity
+				promotion: promotion,
 			});
-
 			if (move) {
 				this.board.set({
 					fen: this.game.fen(),
@@ -210,6 +214,33 @@ class ChessGame {
 		if (this.resetButton) {
 			this.resetButton.addEventListener('click', () => this.reset());
 		}
+	}
+
+	private handlePromotion(orig: Key, dest: Key): void {
+		console.log('Pawn promotion handle:', orig, dest);
+		const piece: Piece = (this.board.state.pieces.get(dest) as Piece);
+		this.game.undo();
+		this.board.set({
+			fen: this.game.fen(),
+			turnColor: piece.color,
+			movable: {
+				color: piece.color,
+				dests: this.possibleMoves()
+			}
+		});
+		console.log('Pawn promotion show modal:', piece.color);
+		this.promotion.showModal(piece.color, (selectedPiece) => {
+			this.execPromotion(orig, dest, piece.color, selectedPiece);
+		});
+	}
+
+	private execPromotion(orig: Key, dest: Key, side: Color, piece: Role): void {
+		console.log('Pawn promotion exec:', orig, dest, side, piece);
+		this.doMove(orig, dest, piece);
+		this.board.set({
+			lastMove: [orig, dest],
+		});
+		this.promotion.finish(orig, dest, side, piece);
 	}
 }
 
