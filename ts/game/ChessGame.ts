@@ -1,7 +1,14 @@
 import { Chessground } from 'chessground';
 import { Api as ChessgroundApi } from 'chessground/api';
-import { Chess, Square, Move } from 'chess.js';
 import { Color, Key, Piece, Role } from 'chessground/types';
+
+import {
+	DEFAULT_POSITION,
+	SQUARES,
+	Chess,
+	Move,
+	Square,
+} from 'chess.js';
 
 import { ChessGamePromotion } from './ChessGamePromotion';
 import { ChessGameError, ChessGameConfig } from './types';
@@ -11,7 +18,7 @@ class ChessGame {
 	private readonly board: ChessgroundApi;
 	private statusElement?: HTMLElement;
 
-	public promotion: ChessGamePromotion;
+	private promotion: ChessGamePromotion;
 
 	constructor(config: ChessGameConfig) {
 		console.log('Game board.');
@@ -25,6 +32,18 @@ class ChessGame {
 		}
 	}
 
+	private setupEventListeners(cfg: ChessGameConfig): void {
+		if (cfg.resetButton) {
+			cfg.resetButton.addEventListener('click', () => this.reset());
+		}
+		if (cfg.undoButton) {
+			cfg.undoButton.addEventListener('click', () => this.undo());
+		}
+		if (cfg.redoButton) {
+			cfg.redoButton.addEventListener('click', () => this.redo());
+		}
+	}
+
 	private newBoard(config: ChessGameConfig): ChessgroundApi {
 		if (!config.boardElement) {
 			throw new ChessGameError('Game init ERROR: board element not found.');
@@ -32,7 +51,7 @@ class ChessGame {
 		return Chessground(config.boardElement, {
 			disableContextMenu: true,
 			coordinates: false,
-			fen: this.game.fen(),
+			fen: DEFAULT_POSITION,
 			orientation: 'white',
 			turnColor: 'white',
 			movable: {
@@ -81,25 +100,17 @@ class ChessGame {
 
 	private possibleMoves(): Map<Key, Key[]> {
 		const dests = new Map<Key, Key[]>();
-		const squares: Square[] = [
-			'a1', 'a2', 'a3', 'a4', 'a5', 'a6', 'a7', 'a8',
-			'b1', 'b2', 'b3', 'b4', 'b5', 'b6', 'b7', 'b8',
-			'c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8',
-			'd1', 'd2', 'd3', 'd4', 'd5', 'd6', 'd7', 'd8',
-			'e1', 'e2', 'e3', 'e4', 'e5', 'e6', 'e7', 'e8',
-			'f1', 'f2', 'f3', 'f4', 'f5', 'f6', 'f7', 'f8',
-			'g1', 'g2', 'g3', 'g4', 'g5', 'g6', 'g7', 'g8',
-			'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'h7', 'h8'
-		];
-
-		squares.forEach((square: Square) => {
+		SQUARES.forEach((square: Square) => {
 			const moves = this.game.moves({ square, verbose: true }) as Move[];
 			if (moves.length > 0) {
 				dests.set(square as Key, moves.map((move: Move) => move.to as Key));
 			}
 		});
-
 		return dests;
+	}
+
+	private turnColor(): Color {
+		return this.game.turn() === 'w' ? 'white' : 'black';
 	}
 
 	private onMove(orig: Key, dest: Key, metadata?: any): void {
@@ -116,9 +127,9 @@ class ChessGame {
 			if (move) {
 				this.board.set({
 					fen: this.game.fen(),
-					turnColor: this.game.turn() === 'w' ? 'white' : 'black',
+					turnColor: this.turnColor(),
 					movable: {
-						color: this.game.turn() === 'w' ? 'white' : 'black',
+						color: this.turnColor(),
 						dests: this.possibleMoves()
 					}
 				});
@@ -165,14 +176,16 @@ class ChessGame {
 	}
 
 	public reset(): void {
+		console.log('Game reset!');
 		this.game.reset();
 		this.board.set({
 			fen: this.game.fen(),
 			turnColor: 'white',
 			movable: {
 				color: 'white',
-				dests: this.possibleMoves()
-			}
+				dests: this.possibleMoves(),
+			},
+			lastMove: [],
 		});
 		this.updateStatus();
 	}
@@ -182,9 +195,9 @@ class ChessGame {
 			this.game.load(fen);
 			this.board.set({
 				fen: this.game.fen(),
-				turnColor: this.game.turn() === 'w' ? 'white' : 'black',
+				turnColor: this.turnColor(),
 				movable: {
-					color: this.game.turn() === 'w' ? 'white' : 'black',
+					color: this.turnColor(),
 					dests: this.possibleMoves()
 				}
 			});
@@ -208,11 +221,7 @@ class ChessGame {
 		return this.game.history();
 	}
 
-	private setupEventListeners(cfg: ChessGameConfig): void {
-		if (cfg.resetButton) {
-			cfg.resetButton.addEventListener('click', () => this.reset());
-		}
-	}
+	// Pawn promotion.
 
 	private handlePromotion(orig: Key, dest: Key): void {
 		console.log('Pawn promotion handle:', orig, dest);
@@ -239,6 +248,27 @@ class ChessGame {
 			lastMove: [orig, dest],
 		});
 		this.promotion.finish(orig, dest, side, piece);
+	}
+
+	// Moves undo/redo.
+
+	private undo(): void {
+		console.log('Move undo.');
+		this.game.undo();
+		this.board.set({
+			fen: this.game.fen(),
+			turnColor: this.turnColor(),
+			movable: {
+				color: this.turnColor(),
+				dests: this.possibleMoves(),
+			},
+			lastMove: ['a2', 'a3'], // FIXME
+		});
+		this.updateStatus();
+	}
+
+	private redo(): void {
+		console.log('Move redo.');
 	}
 }
 

@@ -15,8 +15,10 @@ class ChessGameInit {
 		if (boardElement) {
 			this.game = new ChessGame({
 				boardElement: (boardElement as HTMLElement),
-				statusElement: document.getElementById('status') || undefined,
-				resetButton: document.getElementById('reset') || undefined
+				statusElement: document.getElementById('gameStatus') || undefined,
+				resetButton: document.getElementById('gameReset') || undefined,
+				undoButton: document.getElementById('gameUndo') || undefined,
+				redoButton: document.getElementById('gameRedo') || undefined,
 			});
 			this.initDone = true;
 		}

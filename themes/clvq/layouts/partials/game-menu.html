@@ -7,7 +7,7 @@
 <!-- Top Navigation Bar -->
 <div class="w3-bar">
 	<!-- Game Status -->
-	<div class="w3-bar-item w3-text-lime" id="status"></div>
+	<div class="w3-bar-item w3-text-lime" id="gameStatus"></div>
 	<!-- Toggle Button -->
 	<a class="w3-bar-item {{ $siteBtnClass }} w3-right"
 	href="javascript:void(0)"
@@ -16,8 +16,21 @@
 <!-- Dropdown Menu -->
 <div id="gameMenu" class="w3-bar-block w3-hide">
 	<!-- Game Reset -->
-	<a id="reset" class="w3-bar-item {{ $siteBtnClass }} w3-right"
-		href="javascript:void(0)" onclick="Clvq.w3ToggleMenu('gameMenu')">Reset</a>
+	<a id="gameReset" href="javascript:void(0)"
+		class="w3-bar-item {{ $siteBtnClass }}"
+		onclick="Clvq.w3ToggleMenu('gameMenu')">
+		Reset
+	</a>
+	<!-- Move Undo -->
+	<a id="gameUndo" href="javascript:void(0)"
+		class="w3-bar-item {{ $siteBtnClass }}">
+		Undo
+	</a>
+	<!-- Move Redo -->
+	<a id="gameRedo" href="javascript:void(0)"
+		class="w3-bar-item {{ $siteBtnClass }}">
+		Redo
+	</a>
 	{{- partial "inline/menu/walk.html" (dict "page" $page "siteBtnClass" $siteBtnClass "menuEntries" .) }}
 </div>
 {{- end }}
