@@ -273,17 +273,20 @@ class ChessGame {
 			lastMove[0] = this.prevMove.from;
 			lastMove[1] = this.prevMove.to;
 		}
-		this.game.undo();
-		this.board.set({
-			fen: this.game.fen(),
-			turnColor: this.turnColor(),
-			movable: {
-				color: this.turnColor(),
-				dests: this.possibleMoves(),
-			},
-			lastMove: lastMove,
-		});
-		this.updateStatus();
+		if (this.game.undo()) {
+			this.board.set({
+				fen: this.game.fen(),
+				turnColor: this.turnColor(),
+				movable: {
+					color: this.turnColor(),
+					dests: this.possibleMoves(),
+				},
+				lastMove: lastMove,
+			});
+			this.updateStatus();
+		} else {
+			console.log('No move to undo!');
+		}
 	}
 
 	private redo(): void {
