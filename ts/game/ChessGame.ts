@@ -20,12 +20,14 @@ class ChessGame {
 
 	private promotion: ChessGamePromotion;
 	private curMove: Move | null;
+	private prevMove: Move | null;
 
 	constructor(config: ChessGameConfig) {
 		console.log('Game board.');
 		this.game = this.newGame();
 		this.board = this.newBoard(config);
 		this.curMove = null;
+		this.prevMove = null;
 		this.promotion = new ChessGamePromotion(this.board);
 		if (this.board) {
 			this.statusElement = config.statusElement;
@@ -124,7 +126,6 @@ class ChessGame {
 			this.handlePromotion(orig, dest);
 			this.updateStatus();
 		}
-		this.curMove = null;
 	}
 
 	private onMove(orig: Key, dest: Key, metadata?: any): void {
@@ -133,6 +134,10 @@ class ChessGame {
 
 	private doMove(orig: Key, dest: Key, promotion: string): void {
 		try {
+			if (this.curMove) {
+				this.prevMove = null;
+				this.prevMove = this.curMove;
+			}
 			this.curMove = null;
 			const move = this.game.move({
 				from: orig as Square,
@@ -263,9 +268,9 @@ class ChessGame {
 	private undo(): void {
 		console.log('Move undo.');
 		var lastMove: Key[] = [];
-		if (this.curMove) {
-			lastMove[0] = this.curMove.from;
-			lastMove[1] = this.curMove.to;
+		if (this.prevMove) {
+			lastMove[0] = this.prevMove.from;
+			lastMove[1] = this.prevMove.to;
 		}
 		this.game.undo();
 		this.board.set({
