@@ -226,15 +226,7 @@ class ChessGame {
 	private handlePromotion(orig: Key, dest: Key): void {
 		console.log('Pawn promotion handle:', orig, dest);
 		const piece: Piece = (this.board.state.pieces.get(dest) as Piece);
-		this.game.undo();
-		this.board.set({
-			fen: this.game.fen(),
-			turnColor: piece.color,
-			movable: {
-				color: piece.color,
-				dests: this.possibleMoves()
-			}
-		});
+		this.undo();
 		console.log('Pawn promotion show modal:', piece.color);
 		this.promotion.showModal(piece.color, (selectedPiece) => {
 			this.execPromotion(orig, dest, piece.color, selectedPiece);
