@@ -1,26 +1,20 @@
 import { Chessground } from 'chessground';
 import { Api as ChessgroundApi } from 'chessground/api';
-import { Color, Key, Piece, Role } from 'chessground/types';
 
-import {
-	DEFAULT_POSITION,
-	SQUARES,
-	Chess,
-	Move,
-	Square,
-} from 'chess.js';
+import * as board from 'chessground/types';
+import * as game  from 'chess.js';
 
 import { ChessGamePromotion } from './ChessGamePromotion';
 import { ChessGameError, ChessGameConfig } from './types';
 
 class ChessGame {
-	private readonly game: Chess;
+	private readonly game: game.Chess;
 	private readonly board: ChessgroundApi;
 	private statusElement?: HTMLElement;
 
 	private promotion: ChessGamePromotion;
-	private curMove: Move | null;
-	private prevMove: Move | null;
+	private curMove: game.Move | null;
+	private prevMove: game.Move | null;
 
 	constructor(config: ChessGameConfig) {
 		console.log('Game board.');
@@ -48,8 +42,8 @@ class ChessGame {
 		}
 	}
 
-	private newGame(): Chess {
-		return new Chess(DEFAULT_POSITION);
+	private newGame(): game.Chess {
+		return new game.Chess(game.DEFAULT_POSITION);
 	}
 
 	private newBoard(config: ChessGameConfig): ChessgroundApi {
@@ -69,13 +63,15 @@ class ChessGame {
 				showDests: true,
 				rookCastle: true,
 				events: {
-					after: (orig: Key, dest: Key, metadata?: any) => {
+					after: (orig: board.Key, dest: board.Key, metadata?: any) => {
 						this.afterMove(orig, dest);
 					},
 				},
 			},
 			events: {
-				move: (orig: Key, dest: Key, capturedPiece?: Piece) => this.onMove(orig, dest, capturedPiece)
+				move: (orig: board.Key, dest: board.Key, capturedPiece?: board.Piece) => {
+					this.onMove(orig, dest, capturedPiece);
+				},
 			},
 			highlight: {
 				lastMove: true,
@@ -100,22 +96,22 @@ class ChessGame {
 		});
 	}
 
-	private possibleMoves(): Map<Key, Key[]> {
-		const dests = new Map<Key, Key[]>();
-		SQUARES.forEach((square: Square) => {
-			const moves = this.game.moves({ square, verbose: true }) as Move[];
+	private possibleMoves(): Map<board.Key, board.Key[]> {
+		const dests = new Map<board.Key, board.Key[]>();
+		game.SQUARES.forEach((square: game.Square) => {
+			const moves = this.game.moves({ square, verbose: true }) as game.Move[];
 			if (moves.length > 0) {
-				dests.set(square as Key, moves.map((move: Move) => move.to as Key));
+				dests.set(square as board.Key, moves.map((move: game.Move) => move.to as board.Key));
 			}
 		});
 		return dests;
 	}
 
-	private turnColor(): Color {
+	private turnColor(): board.Color {
 		return this.game.turn() === 'w' ? 'white' : 'black';
 	}
 
-	private afterMove(orig: Key, dest: Key): void {
+	private afterMove(orig: board.Key, dest: board.Key): void {
 		console.log('Game move was:', orig, dest)
 		if (!this.curMove) {
 			return;
@@ -128,11 +124,11 @@ class ChessGame {
 		}
 	}
 
-	private onMove(orig: Key, dest: Key, capturedPiece?: Piece): void {
+	private onMove(orig: board.Key, dest: board.Key, capturedPiece?: board.Piece): void {
 		this.doMove(orig, dest, 'q');
 	}
 
-	private doMove(orig: Key, dest: Key, promotion: string): void {
+	private doMove(orig: board.Key, dest: board.Key, promotion: string): void {
 		try {
 			if (this.curMove) {
 				this.prevMove = null;
@@ -140,8 +136,8 @@ class ChessGame {
 			}
 			this.curMove = null;
 			const move = this.game.move({
-				from: orig as Square,
-				to: dest as Square,
+				from: orig as game.Square,
+				to: dest as game.Square,
 				promotion: promotion,
 			});
 			if (move) {
@@ -248,18 +244,18 @@ class ChessGame {
 
 	// Pawn promotion.
 
-	private handlePromotion(orig: Key, dest: Key): void {
+	private handlePromotion(orig: board.Key, dest: board.Key): void {
 		console.log('Pawn promotion handle:', orig, dest);
 		this.updateStatus();
 		this.undo();
-		const side: Color = this.turnColor();
+		const side: board.Color = this.turnColor();
 		console.log('Pawn promotion show modal:', side);
 		this.promotion.showModal(side, (selectedPiece) => {
 			this.execPromotion(orig, dest, side, selectedPiece);
 		});
 	}
 
-	private execPromotion(orig: Key, dest: Key, side: Color, piece: Role): void {
+	private execPromotion(orig: board.Key, dest: board.Key, side: board.Color, piece: board.Role): void {
 		console.log('Pawn promotion exec:', orig, dest, side, piece);
 		this.doMove(orig, dest, piece);
 		this.board.set({
@@ -272,7 +268,7 @@ class ChessGame {
 
 	private undo(): void {
 		console.log('Move undo.');
-		var lastMove: Key[] = [];
+		var lastMove: board.Key[] = [];
 		if (this.prevMove) {
 			lastMove[0] = this.prevMove.from;
 			lastMove[1] = this.prevMove.to;

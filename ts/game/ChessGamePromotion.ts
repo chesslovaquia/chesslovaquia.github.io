@@ -1,19 +1,14 @@
 import { Api as ChessgroundApi } from 'chessground/api';
-import {
-	Color,
-	Key,
-	Piece,
-	Role,
-} from 'chessground/types';
+import * as board from 'chessground/types';
 
 class ChessGamePromotion {
 	private readonly board: ChessgroundApi;
 
-	constructor(board: ChessgroundApi) {
-		this.board = board;
+	constructor(b: ChessgroundApi) {
+		this.board = b;
 	}
 
-	public showModal(side: Color, callback: any): void {
+	public showModal(side: board.Color, callback: any): void {
 		const modal = document.getElementById(`${side}PawnPromotion`);
 		if (modal) {
 			modal.style.display='block';
@@ -33,7 +28,7 @@ class ChessGamePromotion {
 		}
 	}
 
-	public finish(orig: Key, dest: Key, side: Color, piece: string): void {
+	public finish(orig: board.Key, dest: board.Key, side: board.Color, piece: string): void {
 		console.log('Pawn promotion done:', orig, dest, side, piece);
 	}
 }
