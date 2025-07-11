@@ -273,7 +273,7 @@ class ChessGame {
 
 	private undo(): void {
 		console.log('Move undo.');
-		var lastMove: board.Key[] = [];
+		let lastMove: board.Key[] = [];
 		if (this.prevMove) {
 			lastMove[0] = this.prevMove.from;
 			lastMove[1] = this.prevMove.to;

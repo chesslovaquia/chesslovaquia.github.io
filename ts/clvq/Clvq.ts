@@ -11,7 +11,7 @@ class Clvq {
 	// Utils
 
 	public w3ToggleMenu(id: string): void {
-		var x = document.getElementById(id);
+		let x = document.getElementById(id);
 		if (x) {
 			if (x.className.indexOf("w3-show") === -1) {
 				x.className += " w3-show";
