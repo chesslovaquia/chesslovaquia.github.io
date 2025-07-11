@@ -262,6 +262,11 @@ class ChessGame {
 
 	private undo(): void {
 		console.log('Move undo.');
+		var lastMove: Key[] = [];
+		if (this.curMove) {
+			lastMove[0] = this.curMove.from;
+			lastMove[1] = this.curMove.to;
+		}
 		this.game.undo();
 		this.board.set({
 			fen: this.game.fen(),
@@ -270,7 +275,7 @@ class ChessGame {
 				color: this.turnColor(),
 				dests: this.possibleMoves(),
 			},
-			lastMove: ['a2', 'a3'], // FIXME
+			lastMove: lastMove,
 		});
 		this.updateStatus();
 	}
