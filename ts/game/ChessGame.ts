@@ -19,11 +19,13 @@ class ChessGame {
 	private statusElement?: HTMLElement;
 
 	private promotion: ChessGamePromotion;
+	private curMove: Move | null;
 
 	constructor(config: ChessGameConfig) {
 		console.log('Game board.');
-		this.game = new Chess();
+		this.game = this.newGame();
 		this.board = this.newBoard(config);
+		this.curMove = null;
 		this.promotion = new ChessGamePromotion(this.board);
 		if (this.board) {
 			this.statusElement = config.statusElement;
@@ -44,6 +46,10 @@ class ChessGame {
 		}
 	}
 
+	private newGame(): Chess {
+		return new Chess(DEFAULT_POSITION);
+	}
+
 	private newBoard(config: ChessGameConfig): ChessgroundApi {
 		if (!config.boardElement) {
 			throw new ChessGameError('Game init ERROR: board element not found.');
@@ -51,7 +57,7 @@ class ChessGame {
 		return Chessground(config.boardElement, {
 			disableContextMenu: true,
 			coordinates: false,
-			fen: DEFAULT_POSITION,
+			fen: this.game.fen(),
 			orientation: 'white',
 			turnColor: 'white',
 			movable: {
@@ -62,13 +68,7 @@ class ChessGame {
 				rookCastle: true,
 				events: {
 					after: (orig: Key, dest: Key, metadata?: any) => {
-						console.log('Game move:', orig, dest)
-						// Pawn promotion.
-						if (this.promotion.check(dest)) {
-							console.log('Game move is pawn promotion.')
-							this.handlePromotion(orig, dest);
-							this.updateStatus();
-						}
+						this.afterMove(orig, dest);
 					},
 				},
 			},
@@ -113,12 +113,27 @@ class ChessGame {
 		return this.game.turn() === 'w' ? 'white' : 'black';
 	}
 
+	private afterMove(orig: Key, dest: Key): void {
+		console.log('Game move was:', orig, dest)
+		if (!this.curMove) {
+			return;
+		}
+		// Pawn promotion.
+		if (this.curMove.isPromotion()) {
+			console.log('Game move was pawn promotion.')
+			this.handlePromotion(orig, dest);
+			this.updateStatus();
+		}
+		this.curMove = null;
+	}
+
 	private onMove(orig: Key, dest: Key, metadata?: any): void {
 		this.doMove(orig, dest, 'q');
 	}
 
 	private doMove(orig: Key, dest: Key, promotion: string): void {
 		try {
+			this.curMove = null;
 			const move = this.game.move({
 				from: orig as Square,
 				to: dest as Square,
@@ -134,6 +149,7 @@ class ChessGame {
 					}
 				});
 				this.updateStatus();
+				this.curMove = move;
 			} else {
 				// Invalid move - reset position
 				this.board.set({ fen: this.game.fen() });
