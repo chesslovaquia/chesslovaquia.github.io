@@ -10,7 +10,6 @@ class ChessGame {
 	private readonly game: Chess;
 	private readonly board: ChessgroundApi;
 	private statusElement?: HTMLElement;
-	private resetButton?: HTMLElement;
 
 	public promotion: ChessGamePromotion;
 
@@ -21,8 +20,7 @@ class ChessGame {
 		this.promotion = new ChessGamePromotion(this.board);
 		if (this.board) {
 			this.statusElement = config.statusElement;
-			this.resetButton = config.resetButton;
-			this.setupEventListeners();
+			this.setupEventListeners(config);
 			this.updateStatus();
 		}
 	}
@@ -210,9 +208,9 @@ class ChessGame {
 		return this.game.history();
 	}
 
-	private setupEventListeners(): void {
-		if (this.resetButton) {
-			this.resetButton.addEventListener('click', () => this.reset());
+	private setupEventListeners(cfg: ChessGameConfig): void {
+		if (cfg.resetButton) {
+			cfg.resetButton.addEventListener('click', () => this.reset());
 		}
 	}
 

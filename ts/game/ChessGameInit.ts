@@ -1,7 +1,7 @@
 import { ChessGame } from './ChessGame';
 import { ChessGameError } from './types';
 
-class ChessGameAction {
+class ChessGameInit {
 	private game: ChessGame | null = null;
 
 	public initDone: boolean = false;
@@ -23,4 +23,4 @@ class ChessGameAction {
 	}
 }
 
-export { ChessGameAction };
+export { ChessGameInit };

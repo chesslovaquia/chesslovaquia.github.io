@@ -1,11 +1,11 @@
-import { ChessGameAction } from '../game/ChessGameAction';
+import { ChessGameInit } from '../game/ChessGameInit';
 
 class Clvq {
-	public readonly game: ChessGameAction;
+	public readonly game: ChessGameInit;
 
 	constructor() {
 		console.log('Welcome to Chesslovaquia.');
-		this.game = new ChessGameAction();
+		this.game = new ChessGameInit();
 	}
 
 	// Utils
