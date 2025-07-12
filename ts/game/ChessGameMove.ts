@@ -18,6 +18,10 @@ class ChessGameMove {
 		})
 		return dests
 	}
+
+	public turnColor(): board.Color {
+		return this.game.turn() === 'w' ? 'white' : 'black'
+	}
 }
 
 export { ChessGameMove }

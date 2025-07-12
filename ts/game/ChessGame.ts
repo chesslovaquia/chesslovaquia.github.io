@@ -67,9 +67,9 @@ class ChessGame {
 			coordinates: false,
 			fen: this.game.fen(),
 			orientation: 'white',
-			turnColor: this.turnColor(),
+			turnColor: this.move.turnColor(),
 			movable: {
-				color: this.turnColor(),
+				color: this.move.turnColor(),
 				free: false,
 				dests: this.move.possibleDests(),
 				showDests: true,
@@ -108,10 +108,6 @@ class ChessGame {
 		})
 	}
 
-	private turnColor(): board.Color {
-		return this.game.turn() === 'w' ? 'white' : 'black'
-	}
-
 	private afterMove(orig: board.Key, dest: board.Key): void {
 		console.log('Game move was:', orig, dest)
 		if (!this.curMove) {
@@ -145,9 +141,9 @@ class ChessGame {
 			if (move) {
 				this.board.set({
 					fen: this.game.fen(),
-					turnColor: this.turnColor(),
+					turnColor: this.move.turnColor(),
 					movable: {
-						color: this.turnColor(),
+						color: this.move.turnColor(),
 						dests: this.move.possibleDests()
 					}
 				})
@@ -169,9 +165,9 @@ class ChessGame {
 		this.game.reset()
 		this.board.set({
 			fen: this.game.fen(),
-			turnColor: this.turnColor(),
+			turnColor: this.move.turnColor(),
 			movable: {
-				color: this.turnColor(),
+				color: this.move.turnColor(),
 				dests: this.move.possibleDests(),
 			},
 			lastMove: [],
@@ -184,9 +180,9 @@ class ChessGame {
 			this.game.load(fen)
 			this.board.set({
 				fen: this.game.fen(),
-				turnColor: this.turnColor(),
+				turnColor: this.move.turnColor(),
 				movable: {
-					color: this.turnColor(),
+					color: this.move.turnColor(),
 					dests: this.move.possibleDests()
 				}
 			})
@@ -216,7 +212,7 @@ class ChessGame {
 		console.log('Pawn promotion handle:', orig, dest)
 		this.updateStatus()
 		this.undo()
-		const side: board.Color = this.turnColor()
+		const side: board.Color = this.move.turnColor()
 		console.log('Pawn promotion show modal:', side)
 		this.promotion.showModal(side, (selectedPiece) => {
 			this.execPromotion(orig, dest, side, selectedPiece)
@@ -244,9 +240,9 @@ class ChessGame {
 		if (this.game.undo()) {
 			this.board.set({
 				fen: this.game.fen(),
-				turnColor: this.turnColor(),
+				turnColor: this.move.turnColor(),
 				movable: {
-					color: this.turnColor(),
+					color: this.move.turnColor(),
 					dests: this.move.possibleDests(),
 				},
 				lastMove: lastMove,
