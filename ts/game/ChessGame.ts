@@ -5,6 +5,7 @@ import * as board from 'chessground/types'
 import * as game  from 'chess.js'
 
 import { ChessGameConfig }    from './ChessGameConfig'
+import { ChessGameDisplay }   from './ChessGameDisplay'
 import { ChessGameError }     from './ChessGameError'
 import { ChessGameMove }      from './ChessGameMove'
 import { ChessGamePromotion } from './ChessGamePromotion'
@@ -16,23 +17,22 @@ class ChessGame {
 	private readonly move: ChessGameMove
 	private readonly promotion: ChessGamePromotion
 	private readonly state: ChessGameState
-
-	private statusElement: HTMLElement | undefined
+	private readonly display: ChessGameDisplay
 
 	private curMove: game.Move | null
 	private prevMove: game.Move | null
 
 	constructor(config: ChessGameConfig) {
 		console.log('Game board.')
-		this.curMove = null
-		this.prevMove = null
-		this.game = this.newGame()
-		this.board = this.newBoard(config)
-		this.move = new ChessGameMove(this.game, this.board)
+		this.curMove   = null
+		this.prevMove  = null
+		this.game      = this.newGame()
+		this.board     = this.newBoard(config)
+		this.display   = new ChessGameDisplay(this.game, config)
+		this.move      = new ChessGameMove(this.game, this.board)
 		this.promotion = new ChessGamePromotion(this.board)
-		this.state = new ChessGameState(this.game.fen())
+		this.state     = new ChessGameState(this.game.fen())
 		if (this.board) {
-			this.statusElement = config.statusElement
 			this.setupEventListeners(config)
 			this.updateStatus()
 		}
@@ -48,6 +48,10 @@ class ChessGame {
 		if (cfg.redoButton) {
 			cfg.redoButton.addEventListener('click', () => this.redo())
 		}
+	}
+
+	private updateStatus(): void {
+		this.display.status(this.curMove)
 	}
 
 	private newGame(): game.Chess {
@@ -169,40 +173,6 @@ class ChessGame {
 			// Reset board to current position
 			this.board.set({ fen: this.game.fen() })
 		}
-	}
-
-	private updateStatus(): void {
-		if (!this.statusElement) return
-
-		let statusText = ''
-
-		if (this.game.isGameOver()) {
-			if (this.game.isCheckmate()) {
-				const winner = this.game.turn() === 'w' ? 'Black' : 'White'
-				statusText = `Checkmate! ${winner} wins.`
-			} else if (this.game.isDraw()) {
-				statusText = 'Draw!'
-			} else if (this.game.isStalemate()) {
-				statusText = 'Stalemate!'
-			} else if (this.game.isThreefoldRepetition()) {
-				statusText = 'Draw by threefold repetition!'
-			} else if (this.game.isInsufficientMaterial()) {
-				statusText = 'Draw by insufficient material!'
-			}
-		} else {
-			const currentPlayer = this.game.turn() === 'w' ? 'White' : 'Black'
-			statusText = `${currentPlayer} to move`
-
-			if (this.game.inCheck()) {
-				statusText += ' (in check)'
-			} else if (this.curMove) {
-				if (this.curMove.isPromotion()) {
-					statusText += ' (pawn promotion)'
-				}
-			}
-		}
-
-		this.statusElement.textContent = statusText
 	}
 
 	public reset(): void {
