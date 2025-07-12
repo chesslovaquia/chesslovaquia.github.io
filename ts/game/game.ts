@@ -1,5 +1,6 @@
-import { ChessGame } from './ChessGame'
-import { ChessGameError } from './ChessGameError'
+import { ChessGame }       from './ChessGame'
+import { ChessGameConfig } from './ChessGameConfig'
+import { ChessGameError }  from './ChessGameError'
 
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
