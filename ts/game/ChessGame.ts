@@ -207,9 +207,9 @@ class ChessGame {
 		this.game.reset()
 		this.board.set({
 			fen: this.game.fen(),
-			turnColor: 'white',
+			turnColor: this.turnColor(),
 			movable: {
-				color: 'white',
+				color: this.turnColor(),
 				dests: this.possibleMoves(),
 			},
 			lastMove: [],
