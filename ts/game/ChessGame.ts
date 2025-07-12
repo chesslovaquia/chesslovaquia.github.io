@@ -21,8 +21,9 @@ class ChessGame {
 
 	constructor(config: ChessGameConfig) {
 		console.log('Game board.')
-		this.board     = this.newBoard(config)
+		// Respect the order.
 		this.game      = this.newGame()
+		this.board     = this.newBoard(config)
 		this.state     = new ChessGameState(this.game.fen())
 		this.move      = new ChessGameMove(this.game, this.board, this.state)
 		this.display   = new ChessGameDisplay(config, this.game, this.move)
@@ -58,12 +59,12 @@ class ChessGame {
 			coordinates: false,
 			fen: this.game.fen(),
 			orientation: 'white',
-			turnColor: this.move.turnColor(),
+			turnColor: 'white',
 			movable: {
-				color: this.move.turnColor(),
+				color: 'white',
 				free: false,
-				dests: this.move.possibleDests(),
-				showDests: true,
+				dests: [],
+				showDests: false,
 				rookCastle: true,
 				events: {
 					after: (orig: board.Key, dest: board.Key, meta?: board.MoveMetadata) => {

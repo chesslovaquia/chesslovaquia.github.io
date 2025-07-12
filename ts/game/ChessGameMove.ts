@@ -19,6 +19,18 @@ class ChessGameMove {
 		this.state    = s
 		this.curMove  = null
 		this.prevMove = null
+		this.setupBoard()
+	}
+
+	private setupBoard(): void {
+		this.board.set({
+			turnColor: this.turnColor(),
+			movable: {
+				color: this.turnColor(),
+				dests: this.possibleDests(),
+				showDests: true,
+			},
+		})
 	}
 
 	public possibleDests(): Map<board.Key, board.Key[]> {
