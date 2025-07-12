@@ -1,5 +1,4 @@
 class Clvq {
-
 	constructor() {
 		console.log('Welcome to Chesslovaquia.')
 	}
@@ -16,7 +15,6 @@ class Clvq {
 			console.log('Clvq w3ToggleMenu ERROR:', id, 'not found')
 		}
 	}
-
 }
 
 export { Clvq }

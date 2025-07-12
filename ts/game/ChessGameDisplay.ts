@@ -1,18 +1,21 @@
 import { Chess, Move } from 'chess.js'
 
 import { ChessGameConfig } from './ChessGameConfig'
+import { ChessGameMove }   from './ChessGameMove'
 
 class ChessGameDisplay {
 	private readonly game: Chess
+	private readonly move: ChessGameMove
 
 	private statusElement: HTMLElement | undefined
 
-	constructor(game: Chess, config: ChessGameConfig) {
-		this.game = game
-		this.statusElement = config.statusElement
+	constructor(cfg: ChessGameConfig, g: Chess, m: ChessGameMove) {
+		this.game          = g
+		this.move          = m
+		this.statusElement = cfg.statusElement
 	}
 
-	public updateStatus(move: Move | null): void {
+	public updateStatus(): void {
 		if (!this.statusElement) {
 			return
 		}
@@ -35,8 +38,8 @@ class ChessGameDisplay {
 			statusText = `${currentPlayer} to move`
 			if (this.game.inCheck()) {
 				statusText += ' (in check)'
-			} else if (move) {
-				if (move.isPromotion()) {
+			} else if (this.move.curMove) {
+				if (this.move.curMove.isPromotion()) {
 					statusText += ' (pawn promotion)'
 				}
 			}

@@ -19,22 +19,17 @@ class ChessGame {
 	private readonly state: ChessGameState
 	private readonly display: ChessGameDisplay
 
-	private curMove: game.Move | null
-	private prevMove: game.Move | null
-
 	constructor(config: ChessGameConfig) {
 		console.log('Game board.')
-		this.curMove   = null
-		this.prevMove  = null
-		this.game      = this.newGame()
-		this.move      = new ChessGameMove(this.game)
 		this.board     = this.newBoard(config)
-		this.display   = new ChessGameDisplay(this.game, config)
-		this.promotion = new ChessGamePromotion(this.board)
+		this.game      = this.newGame()
 		this.state     = new ChessGameState(this.game.fen())
+		this.move      = new ChessGameMove(this.game, this.board, this.state)
+		this.display   = new ChessGameDisplay(config, this.game, this.move)
+		this.promotion = new ChessGamePromotion(this.move)
 		if (this.board) {
 			this.setupEventListeners(config)
-			this.updateStatus()
+			this.display.updateStatus()
 		}
 	}
 
@@ -48,10 +43,6 @@ class ChessGame {
 		if (cfg.redoButton) {
 			cfg.redoButton.addEventListener('click', () => this.redo())
 		}
-	}
-
-	private updateStatus(): void {
-		this.display.updateStatus(this.curMove)
 	}
 
 	private newGame(): game.Chess {
@@ -75,14 +66,14 @@ class ChessGame {
 				showDests: true,
 				rookCastle: true,
 				events: {
-					after: (orig: board.Key, dest: board.Key, metadata?: any) => {
+					after: (orig: board.Key, dest: board.Key, meta?: board.MoveMetadata) => {
 						this.afterMove(orig, dest)
 					},
 				},
 			},
 			events: {
-				move: (orig: board.Key, dest: board.Key, capturedPiece?: board.Piece) => {
-					this.onMove(orig, dest, capturedPiece)
+				move: (orig: board.Key, dest: board.Key, gotPiece?: board.Piece) => {
+					this.onMove(orig, dest, gotPiece)
 				},
 			},
 			highlight: {
@@ -108,55 +99,21 @@ class ChessGame {
 		})
 	}
 
-	private afterMove(orig: board.Key, dest: board.Key): void {
+	private onMove(orig: board.Key, dest: board.Key, gotPiece?: board.Piece): void {
+		this.move.exec(orig, dest, 'q')
+		this.display.updateStatus()
+	}
+
+	private afterMove(orig: board.Key, dest: board.Key) {
 		console.log('Game move was:', orig, dest)
-		if (!this.curMove) {
+		if (!this.move.curMove) {
 			return
 		}
 		// Pawn promotion.
-		if (this.curMove.isPromotion()) {
+		if (this.move.curMove.isPromotion()) {
 			console.log('Game move was pawn promotion.')
-			this.handlePromotion(orig, dest)
-			this.updateStatus()
-		}
-		this.state.push(this.game.fen())
-	}
-
-	private onMove(orig: board.Key, dest: board.Key, capturedPiece?: board.Piece): void {
-		this.doMove(orig, dest, 'q')
-	}
-
-	private doMove(orig: board.Key, dest: board.Key, promotion: string): void {
-		try {
-			if (this.curMove) {
-				this.prevMove = null
-				this.prevMove = this.curMove
-			}
-			this.curMove = null
-			const move = this.game.move({
-				from: orig as game.Square,
-				to: dest as game.Square,
-				promotion: promotion,
-			})
-			if (move) {
-				this.board.set({
-					fen: this.game.fen(),
-					turnColor: this.move.turnColor(),
-					movable: {
-						color: this.move.turnColor(),
-						dests: this.move.possibleDests()
-					}
-				})
-				this.updateStatus()
-				this.curMove = move
-			} else {
-				// Invalid move - reset position
-				this.board.set({ fen: this.game.fen() })
-			}
-		} catch (error) {
-			console.error('Invalid move:', error)
-			// Reset board to current position
-			this.board.set({ fen: this.game.fen() })
+			this.promotion.handle(orig, dest)
+			this.display.updateStatus()
 		}
 	}
 
@@ -172,90 +129,23 @@ class ChessGame {
 			},
 			lastMove: [],
 		})
-		this.updateStatus()
+		this.display.updateStatus()
 	}
-
-	public loadFen(fen: string): boolean {
-		try {
-			this.game.load(fen)
-			this.board.set({
-				fen: this.game.fen(),
-				turnColor: this.move.turnColor(),
-				movable: {
-					color: this.move.turnColor(),
-					dests: this.move.possibleDests()
-				}
-			})
-			this.updateStatus()
-			return true
-		} catch (error) {
-			console.error('Invalid FEN:', error)
-			return false
-		}
-	}
-
-	public getFen(): string {
-		return this.game.fen()
-	}
-
-	public getPgn(): string {
-		return this.game.pgn()
-	}
-
-	public getHistory(): string[] {
-		return this.game.history()
-	}
-
-	// Pawn promotion.
-
-	private handlePromotion(orig: board.Key, dest: board.Key): void {
-		console.log('Pawn promotion handle:', orig, dest)
-		this.updateStatus()
-		this.undo()
-		const side: board.Color = this.move.turnColor()
-		console.log('Pawn promotion show modal:', side)
-		this.promotion.showModal(side, (selectedPiece) => {
-			this.execPromotion(orig, dest, side, selectedPiece)
-		})
-	}
-
-	private execPromotion(orig: board.Key, dest: board.Key, side: board.Color, piece: board.Role): void {
-		console.log('Pawn promotion exec:', orig, dest, side, piece)
-		this.doMove(orig, dest, piece)
-		this.board.set({
-			lastMove: [orig, dest],
-		})
-		this.promotion.finish(orig, dest, side, piece)
-	}
-
-	// Moves undo/redo.
 
 	private undo(): void {
 		console.log('Move undo.')
-		let lastMove: board.Key[] = []
-		if (this.prevMove) {
-			lastMove[0] = this.prevMove.from
-			lastMove[1] = this.prevMove.to
-		}
-		if (this.game.undo()) {
-			this.board.set({
-				fen: this.game.fen(),
-				turnColor: this.move.turnColor(),
-				movable: {
-					color: this.move.turnColor(),
-					dests: this.move.possibleDests(),
-				},
-				lastMove: lastMove,
-			})
-			this.updateStatus()
-		} else {
-			console.log('No move to undo!')
+		if (this.move.undo()) {
+			this.display.updateStatus()
 		}
 	}
 
 	private redo(): void {
 		console.log('Move redo.')
+		if (this.move.redo()) {
+			this.display.updateStatus()
+		}
 	}
+
 }
 
 export { ChessGame }
