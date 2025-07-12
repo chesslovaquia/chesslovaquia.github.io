@@ -1,8 +1,18 @@
+import { ChessGame } from './ChessGame'
+import { ChessGameError } from './types'
+
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-	if ((window as any).Clvq) {
-		(window as any).Clvq.game.init()
+	const boardElement = document.getElementById('chessboard')
+	if (boardElement) {
+		new ChessGame({
+			boardElement: (boardElement as HTMLElement),
+			statusElement: document.getElementById('gameStatus') || undefined,
+			resetButton: document.getElementById('gameReset') || undefined,
+			undoButton: document.getElementById('gameUndo') || undefined,
+			redoButton: document.getElementById('gameRedo') || undefined,
+		})
 	} else {
-		console.log('Game init failed: Clvq not found')
+		throw new ChessGameError('board not found!')
 	}
-});
+})

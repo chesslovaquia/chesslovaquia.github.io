@@ -1,14 +1,8 @@
-import { ChessGameInit } from '../game/ChessGameInit'
-
 class Clvq {
-	public readonly game: ChessGameInit
 
 	constructor() {
 		console.log('Welcome to Chesslovaquia.')
-		this.game = new ChessGameInit()
 	}
-
-	// Utils
 
 	public w3ToggleMenu(id: string): void {
 		let x = document.getElementById(id)
