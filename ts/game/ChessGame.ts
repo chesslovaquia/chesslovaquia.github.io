@@ -27,9 +27,9 @@ class ChessGame {
 		this.curMove   = null
 		this.prevMove  = null
 		this.game      = this.newGame()
+		this.move      = new ChessGameMove(this.game)
 		this.board     = this.newBoard(config)
 		this.display   = new ChessGameDisplay(this.game, config)
-		this.move      = new ChessGameMove(this.game, this.board)
 		this.promotion = new ChessGamePromotion(this.board)
 		this.state     = new ChessGameState(this.game.fen())
 		if (this.board) {
@@ -71,7 +71,7 @@ class ChessGame {
 			movable: {
 				color: this.turnColor(),
 				free: false,
-				dests: this.possibleMoves(),
+				dests: this.move.possibleDests(),
 				showDests: true,
 				rookCastle: true,
 				events: {
@@ -106,17 +106,6 @@ class ChessGame {
 				enabled: false,
 			},
 		})
-	}
-
-	private possibleMoves(): Map<board.Key, board.Key[]> {
-		const dests = new Map<board.Key, board.Key[]>()
-		game.SQUARES.forEach((square: game.Square) => {
-			const moves = this.game.moves({ square, verbose: true }) as game.Move[]
-			if (moves.length > 0) {
-				dests.set(square as board.Key, moves.map((move: game.Move) => move.to as board.Key))
-			}
-		})
-		return dests
 	}
 
 	private turnColor(): board.Color {
@@ -159,7 +148,7 @@ class ChessGame {
 					turnColor: this.turnColor(),
 					movable: {
 						color: this.turnColor(),
-						dests: this.possibleMoves()
+						dests: this.move.possibleDests()
 					}
 				})
 				this.updateStatus()
@@ -183,7 +172,7 @@ class ChessGame {
 			turnColor: this.turnColor(),
 			movable: {
 				color: this.turnColor(),
-				dests: this.possibleMoves(),
+				dests: this.move.possibleDests(),
 			},
 			lastMove: [],
 		})
@@ -198,7 +187,7 @@ class ChessGame {
 				turnColor: this.turnColor(),
 				movable: {
 					color: this.turnColor(),
-					dests: this.possibleMoves()
+					dests: this.move.possibleDests()
 				}
 			})
 			this.updateStatus()
@@ -258,7 +247,7 @@ class ChessGame {
 				turnColor: this.turnColor(),
 				movable: {
 					color: this.turnColor(),
-					dests: this.possibleMoves(),
+					dests: this.move.possibleDests(),
 				},
 				lastMove: lastMove,
 			})
