@@ -12,7 +12,7 @@ class ChessGameDisplay {
 		this.statusElement = config.statusElement
 	}
 
-	public status(move: Move | null): void {
+	public updateStatus(move: Move | null): void {
 		if (!this.statusElement) {
 			return
 		}

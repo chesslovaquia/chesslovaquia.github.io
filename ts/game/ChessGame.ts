@@ -51,7 +51,7 @@ class ChessGame {
 	}
 
 	private updateStatus(): void {
-		this.display.status(this.curMove)
+		this.display.updateStatus(this.curMove)
 	}
 
 	private newGame(): game.Chess {
