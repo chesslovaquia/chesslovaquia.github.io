@@ -1,17 +1,12 @@
 import { ChessGame } from './ChessGame'
-import { ChessGameError } from './types'
+import { ChessGameError } from './ChessGameError'
 
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
 	const boardElement = document.getElementById('chessboard')
 	if (boardElement) {
-		new ChessGame({
-			boardElement: (boardElement as HTMLElement),
-			statusElement: document.getElementById('gameStatus') || undefined,
-			resetButton: document.getElementById('gameReset') || undefined,
-			undoButton: document.getElementById('gameUndo') || undefined,
-			redoButton: document.getElementById('gameRedo') || undefined,
-		})
+		const cfg = new ChessGameConfig(boardElement)
+		new ChessGame(cfg)
 	} else {
 		throw new ChessGameError('board not found!')
 	}

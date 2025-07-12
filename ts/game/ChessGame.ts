@@ -1,14 +1,14 @@
-import { Chessground } from 'chessground'
+import { Chessground }           from 'chessground'
 import { Api as ChessgroundApi } from 'chessground/api'
 
 import * as board from 'chessground/types'
 import * as game  from 'chess.js'
 
-import { ChessGameMove } from './ChessGameMove'
+import { ChessGameConfig }    from './ChessGameConfig'
+import { ChessGameError }     from './ChessGameError'
+import { ChessGameMove }      from './ChessGameMove'
 import { ChessGamePromotion } from './ChessGamePromotion'
-import { ChessGameState } from './ChessGameState'
-
-import { ChessGameError, ChessGameConfig } from './types'
+import { ChessGameState }     from './ChessGameState'
 
 class ChessGame {
 	private readonly game: game.Chess
@@ -17,7 +17,7 @@ class ChessGame {
 	private readonly promotion: ChessGamePromotion
 	private readonly state: ChessGameState
 
-	private statusElement?: HTMLElement
+	private statusElement: HTMLElement | undefined
 
 	private curMove: game.Move | null
 	private prevMove: game.Move | null
