@@ -66,13 +66,11 @@ async function fetchHandler(request) {
 		if (cachedResponse) {
 		{{- if eq hugo.Environment "devel" }}
 			console.log('Cache HIT IGNORE:', request.url);
-		}
 		{{- else }}
-		if (cachedResponse) {
 			console.log('Cache HIT:', request.url);
 			return cachedResponse;
-		}
 		{{- end }}
+		}
 
 		// If not in cache, fetch from network
 		console.log('Cache MISS:', request.url);
