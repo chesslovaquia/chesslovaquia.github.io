@@ -1,36 +1,36 @@
-import { Api as ChessgroundApi } from 'chessground/api';
-import * as board from 'chessground/types';
+import { Api as ChessgroundApi } from 'chessground/api'
+import * as board from 'chessground/types'
 
 class ChessGamePromotion {
-	private readonly board: ChessgroundApi;
+	private readonly board: ChessgroundApi
 
 	constructor(b: ChessgroundApi) {
-		this.board = b;
+		this.board = b
 	}
 
 	public showModal(side: board.Color, callback: any): void {
-		const modal = document.getElementById(`${side}PawnPromotion`);
+		const modal = document.getElementById(`${side}PawnPromotion`)
 		if (modal) {
-			modal.style.display='block';
+			modal.style.display='block'
 			modal.addEventListener('click', (evt: MouseEvent) => {
-				console.log('Pawn promotion select:', evt.target);
+				console.log('Pawn promotion select:', evt.target)
 				if (evt.target) {
-					const elem = (evt.target as HTMLElement);
+					const elem = (evt.target as HTMLElement)
 					if (elem.classList.contains('clvq-promotion-piece')) {
-						const piece = elem.dataset.piece;
-						callback(piece);
-						modal.style.display='none';
+						const piece = elem.dataset.piece
+						callback(piece)
+						modal.style.display='none'
 					}
 				}
-			});
+			})
 		} else {
-			console.log('Pawn promotion ERROR:', side, 'modal not found.');
+			console.log('Pawn promotion ERROR:', side, 'modal not found.')
 		}
 	}
 
 	public finish(orig: board.Key, dest: board.Key, side: board.Color, piece: string): void {
-		console.log('Pawn promotion done:', orig, dest, side, piece);
+		console.log('Pawn promotion done:', orig, dest, side, piece)
 	}
 }
 
-export { ChessGamePromotion };
+export { ChessGamePromotion }

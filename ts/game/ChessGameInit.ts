@@ -1,17 +1,17 @@
-import { ChessGame } from './ChessGame';
-import { ChessGameError } from './types';
+import { ChessGame } from './ChessGame'
+import { ChessGameError } from './types'
 
 class ChessGameInit {
-	private game: ChessGame | null = null;
+	private game: ChessGame | null = null
 
-	public initDone: boolean = false;
+	public initDone: boolean = false
 
 	public init(): void {
-		console.log('Game init.');
+		console.log('Game init.')
 		if (this.initDone) {
-			throw new ChessGameError('Already initialized.');
+			throw new ChessGameError('Already initialized.')
 		}
-		const boardElement = document.getElementById('chessboard');
+		const boardElement = document.getElementById('chessboard')
 		if (boardElement) {
 			this.game = new ChessGame({
 				boardElement: (boardElement as HTMLElement),
@@ -19,10 +19,10 @@ class ChessGameInit {
 				resetButton: document.getElementById('gameReset') || undefined,
 				undoButton: document.getElementById('gameUndo') || undefined,
 				redoButton: document.getElementById('gameRedo') || undefined,
-			});
-			this.initDone = true;
+			})
+			this.initDone = true
 		}
 	}
 }
 
-export { ChessGameInit };
+export { ChessGameInit }
