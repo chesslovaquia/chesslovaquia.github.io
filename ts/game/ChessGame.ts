@@ -27,7 +27,7 @@ class ChessGame {
 		this.game = this.newGame();
 		this.board = this.newBoard(config);
 		this.promotion = new ChessGamePromotion(this.board);
-		this.state = new ChessGameState();
+		this.state = new ChessGameState(this.game.fen());
 		if (this.board) {
 			this.statusElement = config.statusElement;
 			this.setupEventListeners(config);
@@ -60,9 +60,9 @@ class ChessGame {
 			coordinates: false,
 			fen: this.game.fen(),
 			orientation: 'white',
-			turnColor: 'white',
+			turnColor: this.turnColor(),
 			movable: {
-				color: 'white',
+				color: this.turnColor(),
 				free: false,
 				dests: this.possibleMoves(),
 				showDests: true,
@@ -119,14 +119,15 @@ class ChessGame {
 	private afterMove(orig: board.Key, dest: board.Key): void {
 		console.log('Game move was:', orig, dest)
 		if (!this.curMove) {
-			return;
+			return
 		}
 		// Pawn promotion.
 		if (this.curMove.isPromotion()) {
 			console.log('Game move was pawn promotion.')
-			this.handlePromotion(orig, dest);
-			this.updateStatus();
+			this.handlePromotion(orig, dest)
+			this.updateStatus()
 		}
+		this.state.push(this.game.fen())
 	}
 
 	private onMove(orig: board.Key, dest: board.Key, capturedPiece?: board.Piece): void {
