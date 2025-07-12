@@ -3,8 +3,7 @@ import { ChessGameError } from './types'
 
 class ChessGameInit {
 	private game: ChessGame | null = null
-
-	public initDone: boolean = false
+	private initDone: boolean = false
 
 	public init(): void {
 		console.log('Game init.')

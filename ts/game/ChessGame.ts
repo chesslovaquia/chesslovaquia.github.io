@@ -4,6 +4,7 @@ import { Api as ChessgroundApi } from 'chessground/api'
 import * as board from 'chessground/types'
 import * as game  from 'chess.js'
 
+import { ChessGameMove } from './ChessGameMove'
 import { ChessGamePromotion } from './ChessGamePromotion'
 import { ChessGameState } from './ChessGameState'
 
@@ -12,10 +13,11 @@ import { ChessGameError, ChessGameConfig } from './types'
 class ChessGame {
 	private readonly game: game.Chess
 	private readonly board: ChessgroundApi
-	private statusElement?: HTMLElement
+	private readonly move: ChessGameMove
+	private readonly promotion: ChessGamePromotion
+	private readonly state: ChessGameState
 
-	private promotion: ChessGamePromotion
-	private state: ChessGameState
+	private statusElement?: HTMLElement
 
 	private curMove: game.Move | null
 	private prevMove: game.Move | null
@@ -26,6 +28,7 @@ class ChessGame {
 		this.prevMove = null
 		this.game = this.newGame()
 		this.board = this.newBoard(config)
+		this.move = new ChessGameMove(this.game, this.board)
 		this.promotion = new ChessGamePromotion(this.board)
 		this.state = new ChessGameState(this.game.fen())
 		if (this.board) {
