@@ -1,13 +1,20 @@
 // Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com>
 // See LICENSE file.
 
+import { ClvqLocalStorage } from '../clvq/ClvqLocalStorage'
+
+const stateID: string = 'clvqChessGameState'
+
 class ChessGameState {
+	private readonly storage: ClvqLocalStorage
+
 	private state: string[]
-	private idx: number
+	private idx:   number
 
 	constructor(fen: string) {
-		this.state = []
-		this.idx = -1
+		this.storage = new ClvqLocalStorage()
+		this.state   = []
+		this.idx     = -1
 		this.push(fen)
 	}
 
@@ -17,14 +24,35 @@ class ChessGameState {
 		// Save state.
 		this.state.push(fen)
 		this.idx++
+		this.saveState()
 	}
 
 	public pop(): boolean {
 		if (this.state.pop()) {
 			this.idx--
+			this.saveState()
 			return true
 		}
 		return false
+	}
+
+	public last(): string {
+		return this.state[-1]
+	}
+
+	public hasGame(): boolean {
+		if (this.storage.getItem(stateID, "")) {
+			return true
+		}
+		return false
+	}
+
+	public getGame(): string {
+		return this.storage.getItem(stateID, "")
+	}
+
+	private saveState(): void {
+		this.storage.setItem(stateID, this.last())
 	}
 }
 
