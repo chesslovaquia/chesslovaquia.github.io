@@ -16,6 +16,14 @@ class ChessGameState {
 		this.idx++
 		console.log(this.idx, fen)
 	}
+
+	public pop(): boolean {
+		if (this.state.pop()) {
+			this.idx--
+			return true
+		}
+		return false
+	}
 }
 
 export { ChessGameState }

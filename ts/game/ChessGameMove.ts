@@ -90,6 +90,9 @@ class ChessGameMove {
 			lastMove[1] = this.prevMove.to
 		}
 		if (this.game.undo()) {
+			this.curMove = null
+			this.curMove = this.prevMove
+			this.state.pop()
 			this.board.set({
 				fen: this.game.fen(),
 				turnColor: this.turnColor(),
