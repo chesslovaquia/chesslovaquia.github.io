@@ -104,11 +104,6 @@ class ChessGameMove {
 		console.log('No move to undo!')
 		return false
 	}
-
-	public redo(): boolean {
-		console.log('FIXME No move to redo!')
-		return false
-	}
 }
 
 export { ChessGameMove }

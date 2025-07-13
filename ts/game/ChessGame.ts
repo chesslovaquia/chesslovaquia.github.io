@@ -38,12 +38,6 @@ class ChessGame {
 		if (cfg.resetButton) {
 			cfg.resetButton.addEventListener('click', () => this.reset())
 		}
-		if (cfg.undoButton) {
-			cfg.undoButton.addEventListener('click', () => this.undo())
-		}
-		if (cfg.redoButton) {
-			cfg.redoButton.addEventListener('click', () => this.redo())
-		}
 	}
 
 	private newGame(): game.Chess {
@@ -132,21 +126,6 @@ class ChessGame {
 		})
 		this.display.updateStatus()
 	}
-
-	private undo(): void {
-		console.log('Move undo.')
-		if (this.move.undo()) {
-			this.display.updateStatus()
-		}
-	}
-
-	private redo(): void {
-		console.log('Move redo.')
-		if (this.move.redo()) {
-			this.display.updateStatus()
-		}
-	}
-
 }
 
 export { ChessGame }

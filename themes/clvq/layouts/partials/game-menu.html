@@ -21,16 +21,6 @@
 		onclick="Clvq.w3ToggleMenu('gameMenu')">
 		Reset
 	</a>
-	<!-- Move Undo -->
-	<a id="gameUndo" href="javascript:void(0)"
-		class="w3-bar-item {{ $siteBtnClass }}">
-		Undo
-	</a>
-	<!-- Move Redo -->
-	<a id="gameRedo" href="javascript:void(0)"
-		class="w3-bar-item {{ $siteBtnClass }}">
-		Redo
-	</a>
 	{{- partial "inline/menu/walk.html" (dict "page" $page "siteBtnClass" $siteBtnClass "menuEntries" .) }}
 </div>
 {{- end }}
