@@ -17,7 +17,10 @@ class ClvqLocalStorage {
 	public getItem(key: string, defaultValue: string = ""): string {
 		try {
 			const val: string | null = localStorage.getItem(key)
-			return val !== null ? val : defaultValue
+			if (val) {
+				return val
+			}
+			return defaultValue
 		} catch(err) {
 			console.error(`ClvqLocalStorage getItem ${key}:`, err)
 			return defaultValue
