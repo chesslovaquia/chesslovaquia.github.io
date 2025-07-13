@@ -2,6 +2,7 @@ const CACHE_NAME = 'clvq{{ getenv "HUGO_CLVQ_BUILD" | default "UNSET" }}';
 const FALLBACK_URL = '/';
 
 const CACHE_URLS = [
+	'/',
 {{- with index site.Menus "main" }}
 	{{- range . }}
 	'{{ .URL }}',
