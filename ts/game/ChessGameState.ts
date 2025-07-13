@@ -14,7 +14,6 @@ class ChessGameState {
 		// Save state.
 		this.state.push(fen)
 		this.idx++
-		console.log(this.idx, fen)
 	}
 
 	public pop(): boolean {

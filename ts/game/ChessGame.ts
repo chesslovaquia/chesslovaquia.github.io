@@ -94,19 +94,17 @@ class ChessGame {
 	}
 
 	private onMove(orig: board.Key, dest: board.Key, gotPiece?: board.Piece): void {
-		console.log('Game move:', orig, dest)
 		this.move.exec(orig, dest, 'q')
 		this.display.updateStatus()
 	}
 
 	private afterMove(orig: board.Key, dest: board.Key) {
-		console.log('Game move was:', orig, dest)
 		if (!this.move.curMove) {
 			return
 		}
 		// Pawn promotion.
 		if (this.move.curMove.isPromotion()) {
-			console.log('Game move was pawn promotion.')
+			console.log('Move was pawn promotion.')
 			this.promotion.handle(orig, dest)
 			this.display.updateStatus()
 		}

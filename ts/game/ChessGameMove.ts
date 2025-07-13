@@ -61,6 +61,7 @@ class ChessGameMove {
 				promotion: promotion,
 			})
 			if (move) {
+				console.log('Move:', move.san)
 				this.board.set({
 					fen: this.game.fen(),
 					turnColor: this.turnColor(),
@@ -84,12 +85,16 @@ class ChessGameMove {
 	}
 
 	public undo(): boolean {
-		let lastMove: board.Key[] = []
-		if (this.prevMove) {
-			lastMove[0] = this.prevMove.from
-			lastMove[1] = this.prevMove.to
+		if (this.curMove) {
+			console.log('Move undo:', this.curMove.san)
 		}
 		if (this.game.undo()) {
+			let lastMove: board.Key[] = []
+			if (this.prevMove) {
+				console.log('Move previous:', this.prevMove.san)
+				lastMove[0] = this.prevMove.from
+				lastMove[1] = this.prevMove.to
+			}
 			this.curMove = null
 			this.curMove = this.prevMove
 			this.state.pop()
@@ -102,6 +107,7 @@ class ChessGameMove {
 				},
 				lastMove: lastMove,
 			})
+			console.log('Move back to:', this.curMove.san)
 			return true
 		}
 		console.log('No move to undo!')
