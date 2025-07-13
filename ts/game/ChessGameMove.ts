@@ -107,7 +107,9 @@ class ChessGameMove {
 				},
 				lastMove: lastMove,
 			})
-			console.log('Move back to:', this.curMove.san)
+			if (this.curMove) {
+				console.log('Move back to:', this.curMove.san)
+			}
 			return true
 		}
 		console.log('No move to undo!')
