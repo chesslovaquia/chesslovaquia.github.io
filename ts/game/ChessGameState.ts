@@ -40,6 +40,10 @@ class ChessGameState {
 		return this.state[-1]
 	}
 
+	public clear(): void {
+		this.storage.removeItem(stateID)
+	}
+
 	public hasGame(): boolean {
 		if (this.storage.getItem(stateID, "")) {
 			return true

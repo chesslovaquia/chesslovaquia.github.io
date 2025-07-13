@@ -24,6 +24,14 @@ class ClvqLocalStorage {
 		}
 	}
 
+	public removeItem(key: string): void {
+		try {
+			localStorage.removeItem(key)
+		} catch(err) {
+			console.error(`ClvqLocalStorage removeItem ${key}:`, err)
+		}
+	}
+
 }
 
 export { ClvqLocalStorage }
