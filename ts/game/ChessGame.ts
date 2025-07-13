@@ -101,6 +101,7 @@ class ChessGame {
 	}
 
 	private onMove(orig: board.Key, dest: board.Key, gotPiece?: board.Piece): void {
+		console.log('Game move:', orig, dest)
 		this.move.exec(orig, dest, 'q')
 		this.display.updateStatus()
 	}

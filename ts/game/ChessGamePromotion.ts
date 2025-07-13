@@ -13,7 +13,6 @@ class ChessGamePromotion {
 		console.log('Pawn promotion handle:', orig, dest)
 		this.move.undo()
 		const side: board.Color = this.move.turnColor()
-		console.log('Pawn promotion show modal:', side)
 		this.showModal(side, (selectedPiece) => {
 			this.exec(orig, dest, side, selectedPiece)
 		})
@@ -26,6 +25,7 @@ class ChessGamePromotion {
 	}
 
 	private showModal(side: board.Color, callback: any): void {
+		console.log('Pawn promotion show modal:', side)
 		const modal = document.getElementById(`${side}PawnPromotion`)
 		if (modal) {
 			modal.style.display='block'
