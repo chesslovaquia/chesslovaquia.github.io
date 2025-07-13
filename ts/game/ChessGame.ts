@@ -1,3 +1,6 @@
+// Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com>
+// See LICENSE file.
+
 import { Chessground }           from 'chessground'
 import { Api as ChessgroundApi } from 'chessground/api'
 

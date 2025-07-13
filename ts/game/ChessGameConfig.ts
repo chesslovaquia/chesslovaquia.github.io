@@ -1,3 +1,6 @@
+// Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com>
+// See LICENSE file.
+
 class ChessGameConfig {
 	public boardElement:  HTMLElement
 	public statusElement: HTMLElement | undefined

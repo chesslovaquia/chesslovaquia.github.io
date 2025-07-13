@@ -1,3 +1,6 @@
+// Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com>
+// See LICENSE file.
+
 import { ChessGame }       from './ChessGame'
 import { ChessGameConfig } from './ChessGameConfig'
 import { ChessGameError }  from './ChessGameError'

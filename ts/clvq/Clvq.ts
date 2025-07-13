@@ -1,3 +1,6 @@
+// Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com>
+// See LICENSE file.
+
 class Clvq {
 	constructor() {
 		console.log('Clvq loaded.')

@@ -1,3 +1,6 @@
+// Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com>
+// See LICENSE file.
+
 const CACHE_NAME = 'clvq{{ getenv "HUGO_CLVQ_BUILD" | default "UNSET" }}';
 const FALLBACK_URL = '/';
 

@@ -1,3 +1,6 @@
+// Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com>
+// See LICENSE file.
+
 import * as board from 'chessground/types'
 
 import { ChessGameMove } from './ChessGameMove'

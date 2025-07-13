@@ -1,3 +1,6 @@
+// Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com>
+// See LICENSE file.
+
 import { Chess, Move } from 'chess.js'
 
 import { ChessGameConfig } from './ChessGameConfig'
