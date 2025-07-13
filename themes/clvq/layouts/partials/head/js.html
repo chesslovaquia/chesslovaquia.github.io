@@ -26,6 +26,16 @@
   {{- end }}
 {{- end }}
 
-<!-- WPA Service Worker -->
+<!-- Publish lib files. -->
+
+{{- $opts := dict
+  "minify" hugo.IsProduction
+  "targetPath" "clvq/ClvqServiceWorker.js"
+}}
+{{- $jslib := resources.Get "clvq/ClvqServiceWorker.ts" | js.Build $opts }}
+{{- $jslib.Publish }}
+
+<!-- PWA Service Worker -->
+
 {{- $sw_js := resources.Get "clvq/sw.js" | resources.ExecuteAsTemplate "clvq/sw.js" . -}}
 {{- $sw_js.Publish -}}
