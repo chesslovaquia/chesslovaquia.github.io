@@ -1,6 +1,6 @@
 class Clvq {
 	constructor() {
-		console.log('Welcome to Chesslovaquia.')
+		console.log('Clvq loaded.')
 	}
 
 	public w3ToggleMenu(id: string): void {

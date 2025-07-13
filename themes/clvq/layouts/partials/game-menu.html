@@ -14,16 +14,20 @@
 	onclick="Clvq.w3ToggleMenu('gameMenu')">&#9776;</a>
 </div>
 <!-- Dropdown Menu -->
-<div id="gameMenu" class="w3-bar-block w3-hide">
-	<!-- Game Reset -->
-	<a id="gameReset" href="javascript:void(0)"
-		class="w3-bar-item {{ $siteBtnClass }}"
-		onclick="Clvq.w3ToggleMenu('gameMenu')">
-		Reset
-	</a>
-{{- with index site.Menus $menuID }}
-	{{- partial "inline/menu/walk.html" (dict "page" $page "siteBtnClass" $siteBtnClass "menuEntries" .) }}
-{{- end }}
+<div id="gameMenu" class="w3-modal w3-hide">
+	<div class="w3-modal-content w3-bar-block w3-black clvq-bg2 w3-center">
+		<span class="w3-bar-item {{ $siteBtnClass }}"
+			onclick="Clvq.w3ToggleMenu('gameMenu')">&times</span>
+		<!-- Game Reset -->
+		<a id="gameReset" href="javascript:void(0)"
+			class="w3-bar-item {{ $siteBtnClass }}"
+			onclick="Clvq.w3ToggleMenu('gameMenu')">
+			Reset
+		</a>
+		{{- with index site.Menus $menuID }}
+			{{- partial "inline/menu/walk.html" (dict "page" $page "siteBtnClass" $siteBtnClass "menuEntries" .) }}
+		{{- end }}
+	</div>
 </div>
 
 {{- define "partials/inline/menu/walk.html" }}

@@ -12,12 +12,13 @@ import { ChessGamePromotion } from './ChessGamePromotion'
 import { ChessGameState }     from './ChessGameState'
 
 class ChessGame {
-	private readonly game: game.Chess
-	private readonly board: ChessgroundApi
-	private readonly move: ChessGameMove
+	private readonly game:      game.Chess
+	private readonly board:     ChessgroundApi
+	private readonly move:      ChessGameMove
 	private readonly promotion: ChessGamePromotion
-	private readonly state: ChessGameState
-	private readonly display: ChessGameDisplay
+	private readonly state:     ChessGameState
+	private readonly display:   ChessGameDisplay
+	private readonly clvq:      Clvq
 
 	constructor(config: ChessGameConfig) {
 		console.log('Game board.')
