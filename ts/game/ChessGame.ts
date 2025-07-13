@@ -63,7 +63,6 @@ class ChessGame {
 			movable: {
 				color: 'white',
 				free: false,
-				dests: [],
 				showDests: false,
 				rookCastle: true,
 				events: {
