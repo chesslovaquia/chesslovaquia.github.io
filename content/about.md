@@ -9,3 +9,8 @@ layout: "about"
 # Chesslovaquia
 
 One board to play them all.
+
+Built with:
+: [Hugo](https://gohugo.io/)
+: [Chessground](https://www.npmjs.com/package/chessground)
+: [Chess.js](https://www.npmjs.com/package/chess.js)
