@@ -3,7 +3,7 @@
 
 import { ClvqLocalStorage } from '../clvq/ClvqLocalStorage'
 
-const stateID: string = 'clvqChessGameState'
+const stateID: string = 'clvqChessGameState2'
 
 class ChessGameState {
 	private readonly storage: ClvqLocalStorage
@@ -11,11 +11,14 @@ class ChessGameState {
 	private state: string[]
 	private idx:   number
 
-	constructor(fen: string) {
+	constructor() {
 		this.storage = new ClvqLocalStorage()
 		this.state   = []
 		this.idx     = -1
-		this.push(fen)
+	}
+
+	private saveState(): void {
+		this.storage.setItem(stateID, this.last())
 	}
 
 	public push(fen: string): void {
@@ -37,7 +40,7 @@ class ChessGameState {
 	}
 
 	public last(): string {
-		return this.state[-1]
+		return this.state[this.state.length - 1]
 	}
 
 	public clear(): void {
@@ -53,10 +56,6 @@ class ChessGameState {
 
 	public getGame(): string {
 		return this.storage.getItem(stateID, "")
-	}
-
-	private saveState(): void {
-		this.storage.setItem(stateID, this.last())
 	}
 }
 

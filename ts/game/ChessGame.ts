@@ -27,12 +27,13 @@ class ChessGame {
 		// Respect the order.
 		this.game      = this.newGame()
 		this.board     = this.newBoard(config)
-		this.state     = new ChessGameState(this.game.fen())
+		this.state     = new ChessGameState()
 		this.move      = new ChessGameMove(this.game, this.board, this.state)
 		this.display   = new ChessGameDisplay(config, this.game, this.move)
 		this.promotion = new ChessGamePromotion(this.move)
 		if (this.board) {
 			this.setupEventListeners(config)
+			this.loadGame()
 			this.display.updateStatus()
 		}
 	}
@@ -40,6 +41,27 @@ class ChessGame {
 	private setupEventListeners(cfg: ChessGameConfig): void {
 		if (cfg.resetButton) {
 			cfg.resetButton.addEventListener('click', () => this.reset())
+		}
+	}
+
+	private loadGame(): void {
+		if (this.state.hasGame()) {
+			const fen = this.state.getGame()
+			console.log('Game load from saved state:', fen)
+			this.game.reset()
+			this.game.load(fen)
+			this.board.set({
+				fen: this.game.fen(),
+				turnColor: this.move.turnColor(),
+				movable: {
+					color: this.move.turnColor(),
+					dests: this.move.possibleDests(),
+				},
+				lastMove: [], // FIXME get last move info from saved state
+			})
+			this.state.push(fen)
+		} else {
+			this.state.push(this.game.fen())
 		}
 	}
 
@@ -125,6 +147,7 @@ class ChessGame {
 			},
 			lastMove: [],
 		})
+		this.state.push(this.game.fen())
 		this.display.updateStatus()
 	}
 }
