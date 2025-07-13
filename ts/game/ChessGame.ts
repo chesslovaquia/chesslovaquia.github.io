@@ -18,7 +18,6 @@ class ChessGame {
 	private readonly promotion: ChessGamePromotion
 	private readonly state:     ChessGameState
 	private readonly display:   ChessGameDisplay
-	private readonly clvq:      Clvq
 
 	constructor(config: ChessGameConfig) {
 		console.log('Game board.')
