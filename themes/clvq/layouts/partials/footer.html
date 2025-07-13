@@ -1,8 +1,9 @@
-<p class="clvq-text-x-small">
-	Copyright {{ now.Year }}. All rights reserved.
+<p class="w3-small">
+	Copyright {{ now.Year }}.
+	<a href="https://github.com/chesslovaquia/chesslovaquia.github.io/blob/main/LICENSE" target="_blank">All rights reserved.</a>
 </p>
 {{- if eq hugo.Environment "devel" }}
-<pre class="clvq-text-x-small w3-text-grey">
+<pre class="w3-tiny">
 .Page.Layout:     {{ .Page.Layout }}
 .Params.gamePage: {{ .Params.gamePage | default "disabled" }}
 </pre>

@@ -4,7 +4,7 @@
 	{{ partial "page/main-head.html" . }}
 	<div class="w3-container">
 		{{ .Content }}
-		<p class="clvq-text-x-small">
+		<p class="w3-small">
 			{{ $buildID }}
 			<br>{{ now | time.Format "Jan 2 15:04:05 MST 2006" }}
 		</p>
