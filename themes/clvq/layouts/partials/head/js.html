@@ -26,6 +26,6 @@
   {{- end }}
 {{- end }}
 
-<!-- WPA Service Worker -->
+<!-- PWA Service Worker -->
 {{- $sw_js := resources.Get "clvq/sw.js" | resources.ExecuteAsTemplate "clvq/sw.js" . -}}
 {{- $sw_js.Publish -}}

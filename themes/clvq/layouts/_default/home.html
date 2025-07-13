@@ -6,12 +6,12 @@
 	</div>
 	{{ partial "page/main-tail.html" . }}
 	<script>
-	function setupWPA() {
-		if ('serviceWorker' in navigator) {
-			console.log('Service Worker Setup.');
-			navigator.serviceWorker.register('/clvq/sw.js');
+		function setupPWA() {
+			if ('serviceWorker' in navigator) {
+				console.log('Service Worker Setup.');
+				navigator.serviceWorker.register('/clvq/sw.js');
+			}
 		}
-	}
-	setupWPA();
+		setupPWA();
 	</script>
 {{- end }}
