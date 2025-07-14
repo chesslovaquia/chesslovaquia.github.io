@@ -1,0 +1,21 @@
+.game-board {
+  position: relative;
+  width: 100%;
+  max-width: 100vh; /* Maximum size */
+  aspect-ratio: 1; /* Keeps it square */
+  margin: auto; /* Centers the board */
+}
+
+/* For smaller screens */
+@media (max-width: 768px) {
+  .game-board {
+    max-width: 100vh;
+  }
+}
+
+/* Ensure the board stays square on all screen sizes */
+@media (max-width: 480px) {
+  .game-board {
+    max-width: 100vh;
+  }
+}

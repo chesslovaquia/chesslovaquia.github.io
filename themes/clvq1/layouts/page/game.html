@@ -1,0 +1,17 @@
+{{- define "main" }}
+  {{ partial "game-menu.html" (dict "menuID" "game" "page" .) }}
+  <main class="w3-black clvq-bg1">
+    <div class="w3-bar">
+      <p class="w3-bar-item">
+        Black
+      </p>
+    </div>
+    <div id="chessboard" class="game-board"></div>
+    <div class="w3-bar">
+      <p class="w3-bar-item">
+        White
+      </p>
+    </div>
+    {{ partial "game-modals.html" (dict "page" .)}}
+  </main>
+{{- end }}

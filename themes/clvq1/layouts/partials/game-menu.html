@@ -1,0 +1,77 @@
+{{- $page := .page }}
+{{- $menuID := .menuID }}
+
+{{- $siteBtnClass := $page.Site.Params.btnClass }}
+
+<!-- Top Navigation Bar -->
+<div class="w3-bar">
+  <a class="w3-bar-item {{ $siteBtnClass }}" href="/">&#9004</a>
+
+  <!-- Game Status -->
+  <div class="w3-bar-item w3-text-lime" id="gameStatus"></div>
+
+  <!-- Toggle Button -->
+  <a class="w3-bar-item {{ $siteBtnClass }} w3-right"
+  href="javascript:void(0)"
+  onclick="Clvq.w3ToggleMenu('gameMenu')">&#9776;</a>
+</div>
+
+<!-- Dropdown Menu -->
+<div id="gameMenu" class="w3-modal w3-hide">
+  <div class="w3-modal-content w3-bar-block w3-black w3-center w3-round">
+
+    <span class="w3-bar-item {{ $siteBtnClass }}"
+      onclick="Clvq.w3ToggleMenu('gameMenu')">&times</span>
+
+    <!-- Game Reset -->
+    <a id="gameReset" href="javascript:void(0)"
+      class="w3-bar-item {{ $siteBtnClass }}"
+      onclick="Clvq.w3ToggleMenu('gameMenu')">
+      Reset
+    </a>
+
+    {{- with index site.Menus $menuID }}
+      {{- partial "inline/menu/walk.html" (dict "page" $page "siteBtnClass" $siteBtnClass "menuEntries" .) }}
+    {{- end }}
+
+  </div>
+</div>
+
+{{- define "partials/inline/menu/walk.html" }}
+  {{- $page := .page }}
+  {{- $siteBtnClass := .siteBtnClass }}
+
+  {{- $btnActive := "" }}
+  {{- $btnClass := printf "w3-bar-item %s" $siteBtnClass }}
+  {{- $btnClassActive := printf "%s %s" $btnClass $btnActive }}
+  {{- $btnClassAncestor := printf "%s %s" $btnClass $btnActive }}
+
+  {{- range .menuEntries }}
+
+    {{- $attrs := dict "href" .URL }}
+
+    {{- if $page.IsMenuCurrent .Menu . }}
+      {{- $attrs = merge $attrs (dict "class" $btnClassActive "aria-current" "page") }}
+    {{- else if $page.HasMenuCurrent .Menu . }}
+      {{- $attrs = merge $attrs (dict "class" $btnClassAncestor "aria-current" "true") }}
+    {{- else }}
+      {{- $attrs = merge $attrs (dict "class" $btnClass) }}
+    {{- end }}
+
+    {{- $name := .Name }}
+    {{- with .Identifier }}
+      {{- with T . }}
+        {{- $name = . }}
+      {{- end }}
+    {{- end }}
+
+    <a
+      {{- range $k, $v := $attrs }}
+        {{- with $v }}
+          {{- printf " %s=%q" $k $v | safeHTMLAttr }}
+        {{- end }}
+      {{- end -}}
+    >{{ $name }}</a>
+
+  {{- end }}
+{{- end }}
