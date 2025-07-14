@@ -57,9 +57,24 @@ class ChessGameMove {
 		this.state.saveMoves(this.game.history())
 	}
 
+	public updateBoard(lastMove: board.Key[]): void {
+		this.board.set({
+			fen: this.game.fen(),
+			turnColor: this.turnColor(),
+			movable: {
+				color: this.turnColor(),
+				dests: this.possibleDests()
+			},
+			lastMove: lastMove,
+		})
+		this.saveState()
+	}
+
 	public isPromotion(): boolean {
 		if (this.curMove) {
-			return this.curMove.isPromotion()
+			if (this.game.turn() === this.curMove.color) {
+				return this.curMove.isPromotion()
+			}
 		}
 		return false
 	}
@@ -88,17 +103,8 @@ class ChessGameMove {
 			})
 			if (move) {
 				console.log('Move:', move.san)
-				this.board.set({
-					fen: this.game.fen(),
-					turnColor: this.turnColor(),
-					movable: {
-						color: this.turnColor(),
-						dests: this.possibleDests()
-					},
-					lastMove: [orig, dest],
-				})
 				this.setCurMove(move)
-				this.saveState()
+				this.updateBoard([orig, dest])
 			} else {
 				// Invalid move - reset position
 				console.error('Invalid move, reset position:', move)
@@ -122,23 +128,19 @@ class ChessGameMove {
 				lastMove = [(this.prevMove.from as board.Key), (this.prevMove.to as board.Key)]
 			}
 			this.undoCurMove()
-			this.board.set({
-				fen: this.game.fen(),
-				turnColor: this.turnColor(),
-				movable: {
-					color: this.turnColor(),
-					dests: this.possibleDests(),
-				},
-				lastMove: lastMove,
-			})
 			if (this.curMove) {
 				console.log('Move back to:', this.curMove.san)
 			}
-			this.saveState()
+			this.updateBoard(lastMove)
 			return true
 		}
 		console.log('No move to undo!')
 		return false
+	}
+
+	public reset(): void {
+		this.prevMove = null
+		this.curMove  = null
 	}
 
 	public getLastMove(): board.Key[] {
@@ -146,6 +148,13 @@ class ChessGameMove {
 			return [this.curMove.from, this.curMove.from]
 		}
 		return []
+	}
+
+	public loadMoves(curMove: game.Move | null, prevMove: game.Move | null): void {
+		this.reset()
+		this.prevMove = prevMove
+		this.curMove = curMove
+		this.updateBoard(this.getLastMove())
 	}
 }
 
