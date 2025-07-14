@@ -1,18 +1,21 @@
 // Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com>
 // See LICENSE file.
 
-import { DEFAULT_POSITION } from 'chess.js'
+import {
+	DEFAULT_POSITION,
+	Move,
+} from 'chess.js'
 
 import { ClvqLocalStorage } from '../clvq/ClvqLocalStorage'
 
 import { ChessGameData } from './ChessGameData'
 
-const stateID: string = 'clvqChessGameState3'
+const stateID: string = 'clvqChessGameState4'
 
 class ChessGameState {
 	private readonly storage: ClvqLocalStorage
 
-	private state: string[]
+	private state: ChessGameData[]
 	private idx:   number
 
 	constructor() {
@@ -21,26 +24,32 @@ class ChessGameState {
 		this.idx     = -1
 	}
 
-	private saveState(): void {
-		this.storage.setItem(stateID, JSON.stringify(this.newData()))
+	private last(): ChessGameData {
+		return this.state[this.state.length - 1]
 	}
 
-	private newData(): ChessGameData {
-		const data = {
-			fen:      this.last(),
+	private saveState(): void {
+		this.storage.setItem(stateID, JSON.stringify(this.last()))
+	}
+
+	private newData(fen: string, curMove: Move | null): ChessGameData {
+		if (curMove !== null) {
+			return {
+				fen: fen,
+				lastMove: [curMove.from, curMove.to],
+			}
+		}
+		return {
+			fen: fen,
 			lastMove: [],
 		}
-		if (!data.fen) {
-			data.fen = DEFAULT_POSITION
-		}
-		return data
 	}
 
-	public push(fen: string): void {
+	public push(fen: string, curMove: Move): void {
 		// Remove any future states if we're not at the end.
 		this.state = this.state.slice(0, this.idx + 1)
 		// Save state.
-		this.state.push(fen)
+		this.state.push(this.newData(fen, curMove))
 		this.idx++
 		this.saveState()
 	}
@@ -54,11 +63,9 @@ class ChessGameState {
 		return false
 	}
 
-	public last(): string {
-		return this.state[this.state.length - 1]
-	}
-
-	public clear(): void {
+	public reset(): void {
+		this.state = []
+		this.idx   = -1
 		this.storage.removeItem(stateID)
 	}
 
@@ -73,7 +80,7 @@ class ChessGameState {
 		const data = JSON.parse(this.storage.getItem(stateID, "{}"))
 		if (!data) {
 			console.error('Game state invalid data:', data)
-			return this.newData()
+			return this.newData(DEFAULT_POSITION, null)
 		}
 		return data
 	}

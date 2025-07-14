@@ -57,10 +57,9 @@ class ChessGame {
 					color: this.move.turnColor(),
 					dests: this.move.possibleDests(),
 				},
-				lastMove: [], // FIXME get last move info from saved state
+				lastMove: g.lastMove,
 			})
 		}
-		this.state.push(this.game.fen())
 	}
 
 	private newGame(): game.Chess {
@@ -145,7 +144,7 @@ class ChessGame {
 			},
 			lastMove: [],
 		})
-		this.state.push(this.game.fen())
+		this.state.reset()
 		this.display.updateStatus()
 	}
 }
