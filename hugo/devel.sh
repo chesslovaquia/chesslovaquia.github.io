@@ -15,5 +15,4 @@ exec hugo server \
 	--watch \
 	--logLevel debug \
 	--renderToMemory \
-	--environment devel \
-	"$@"
+	--environment devel

@@ -1,13 +1,12 @@
 baseURL = "http://localhost:8045"
 languageCode = "en-us"
 title = "Chesslovaquia"
-
 theme = "clvq"
 
 disableKinds = [
-  "section",
-  "RSS",
-  "taxonomy",
+	"section",
+	"RSS",
+	"taxonomy",
 ]
 
 enableRobotsTXT = true
@@ -26,9 +25,6 @@ target = "assets/clvq"
 [[module.mounts]]
 source = "ts/game"
 target = "assets/game"
-[[module.mounts]]
-source = "ts/v1"
-target = "assets/v1"
 [[module.mounts]]
 source = "node_modules/chessground"
 target = "assets/chessground"
