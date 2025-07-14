@@ -57,7 +57,7 @@ class ChessGame {
 					color: this.move.turnColor(),
 					dests: this.move.possibleDests(),
 				},
-				lastMove: g.lastMove,
+				lastMove: [(g.curMove.from as board.Key), (g.curMove.to as board.Key)],
 			})
 		}
 	}
@@ -121,11 +121,8 @@ class ChessGame {
 	}
 
 	private afterMove(orig: board.Key, dest: board.Key) {
-		if (!this.move.curMove) {
-			return
-		}
 		// Pawn promotion.
-		if (this.move.curMove.isPromotion()) {
+		if (this.move.curMove.isPromotion) {
 			console.log('Move was pawn promotion.')
 			this.promotion.handle(orig, dest)
 			this.display.updateStatus()

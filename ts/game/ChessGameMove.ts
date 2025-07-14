@@ -6,23 +6,49 @@ import { Api as ChessgroundApi } from 'chessground/api'
 import * as board from 'chessground/types'
 import * as game  from 'chess.js'
 
-import { ChessGameState } from './ChessGameState'
+import { ChessGameDataMove } from './ChessGameData'
+import { ChessGameState }    from './ChessGameState'
 
 class ChessGameMove {
 	private readonly game:  game.Chess
 	private readonly board: ChessgroundApi
 	private readonly state: ChessGameState
 
-	public curMove:  game.Move | null
-	public prevMove: game.Move | null
+	public readonly curMove:  ChessGameDataMove
+	public readonly prevMove: ChessGameDataMove
 
 	constructor(g: game.Chess, b: ChessgroundApi, s: ChessGameState) {
 		this.game     = g
 		this.board    = b
 		this.state    = s
-		this.curMove  = null
-		this.prevMove = null
+		this.curMove  = this.newMoveData()
+		this.prevMove = this.newMoveData()
 		this.setupBoard()
+	}
+
+	private newMoveData(): ChessGameDataMove {
+		return {from: "", to: "", isPromotion: false, san: ""}
+	}
+
+	private setPrevMove(): void {
+		this.prevMove.from        = this.curMove.from
+		this.prevMove.to          = this.curMove.to
+		this.prevMove.isPromotion = this.curMove.isPromotion
+		this.prevMove.san         = this.curMove.san
+	}
+
+	private setCurMove(move: game.Move): void {
+		this.curMove.from        = move.from
+		this.curMove.to          = move.to
+		this.curMove.isPromotion = move.isPromotion()
+		this.curMove.san         = move.san
+	}
+
+	private undoCurMove(): void {
+		this.curMove.from        = this.prevMove.from
+		this.curMove.to          = this.prevMove.to
+		this.curMove.isPromotion = this.prevMove.isPromotion
+		this.curMove.san         = this.prevMove.san
 	}
 
 	private setupBoard(): void {
@@ -53,11 +79,7 @@ class ChessGameMove {
 
 	public exec(orig: board.Key, dest: board.Key, promotion: string): void {
 		try {
-			if (this.curMove) {
-				this.prevMove = null
-				this.prevMove = this.curMove
-			}
-			this.curMove = null
+			this.setPrevMove()
 			const move = this.game.move({
 				from: orig as game.Square,
 				to: dest as game.Square,
@@ -74,8 +96,8 @@ class ChessGameMove {
 					},
 					lastMove: [orig, dest],
 				})
-				this.curMove = move
-				this.state.push(this.game.fen(), this.curMove)
+				this.setCurMove(move)
+				this.state.push(this.game.fen(), this.curMove, this.prevMove)
 			} else {
 				// Invalid move - reset position
 				this.board.set({ fen: this.game.fen() })
@@ -88,18 +110,16 @@ class ChessGameMove {
 	}
 
 	public undo(): boolean {
-		if (this.curMove) {
+		if (this.curMove.san !== "") {
 			console.log('Move undo:', this.curMove.san)
 		}
 		if (this.game.undo()) {
 			let lastMove: board.Key[] = []
-			if (this.prevMove) {
+			if (this.prevMove.san !== "") {
 				console.log('Move previous:', this.prevMove.san)
-				lastMove[0] = this.prevMove.from
-				lastMove[1] = this.prevMove.to
+				lastMove = [(this.prevMove.from as board.Key), (this.prevMove.to as board.Key)]
 			}
-			this.curMove = null
-			this.curMove = this.prevMove
+			this.undoCurMove()
 			this.state.pop()
 			this.board.set({
 				fen: this.game.fen(),
@@ -110,7 +130,7 @@ class ChessGameMove {
 				},
 				lastMove: lastMove,
 			})
-			if (this.curMove) {
+			if (this.curMove.san !== "") {
 				console.log('Move back to:', this.curMove.san)
 			}
 			return true

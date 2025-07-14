@@ -8,9 +8,9 @@ import {
 
 import { ClvqLocalStorage } from '../clvq/ClvqLocalStorage'
 
-import { ChessGameData } from './ChessGameData'
+import { ChessGameData, ChessGameDataMove } from './ChessGameData'
 
-const stateID: string = 'clvqChessGameState4'
+const stateID: string = 'clvqChessGameState5'
 
 class ChessGameState {
 	private readonly storage: ClvqLocalStorage
@@ -32,24 +32,19 @@ class ChessGameState {
 		this.storage.setItem(stateID, JSON.stringify(this.last()))
 	}
 
-	private newData(fen: string, curMove: Move | null): ChessGameData {
-		if (curMove !== null) {
-			return {
-				fen: fen,
-				lastMove: [curMove.from, curMove.to],
-			}
-		}
+	private newData(fen: string, c: ChessGameDataMove, p: ChessGameDataMove): ChessGameData {
 		return {
 			fen: fen,
-			lastMove: [],
+			curMove: c,
+			prevMove: p,
 		}
 	}
 
-	public push(fen: string, curMove: Move): void {
+	public push(fen: string, cur: ChessGameDataMove, prev: ChessGameDataMove): void {
 		// Remove any future states if we're not at the end.
 		this.state = this.state.slice(0, this.idx + 1)
 		// Save state.
-		this.state.push(this.newData(fen, curMove))
+		this.state.push(this.newData(fen, cur, prev))
 		this.idx++
 		this.saveState()
 	}
@@ -77,12 +72,7 @@ class ChessGameState {
 	}
 
 	public getGame(): ChessGameData {
-		const data = JSON.parse(this.storage.getItem(stateID, "{}"))
-		if (!data) {
-			console.error('Game state invalid data:', data)
-			return this.newData(DEFAULT_POSITION, null)
-		}
-		return data
+		return JSON.parse(this.storage.getItem(stateID, "{}"))
 	}
 }
 

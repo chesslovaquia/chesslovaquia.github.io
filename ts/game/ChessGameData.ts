@@ -3,9 +3,20 @@
 
 import { Key } from 'chessground/types'
 
-interface ChessGameData {
-	fen:      string
-	lastMove: Key[]
+interface ChessGameDataMove {
+	from:        string
+	to:          string
+	isPromotion: boolean
+	san:         string
 }
 
-export { ChessGameData }
+interface ChessGameData {
+	fen:      string
+	curMove:  ChessGameDataMove
+	prevMove: ChessGameDataMove
+}
+
+export {
+	ChessGameData,
+	ChessGameDataMove,
+}

@@ -41,8 +41,8 @@ class ChessGameDisplay {
 			statusText = `${currentPlayer} to move`
 			if (this.game.inCheck()) {
 				statusText += ' (in check)'
-			} else if (this.move.curMove) {
-				if (this.move.curMove.isPromotion()) {
+			} else {
+				if (this.move.curMove.isPromotion) {
 					statusText += ' (pawn promotion)'
 				}
 			}
