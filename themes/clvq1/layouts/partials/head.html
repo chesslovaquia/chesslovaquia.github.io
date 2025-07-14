@@ -4,7 +4,7 @@
 <base href="{{ .Site.BaseURL }}">
 
 {{- if .IsHome }}
-  <link rel="manifest" href="/manifest.json">
+  <link rel="manifest" href="/v1/manifest.json">
   <title>{{ site.Title }}</title>
 {{- else }}
   <title>{{ printf "%s | %s" .Title site.Title }}</title>

@@ -2,7 +2,7 @@
 
 {{- $cdn := .Site.Params.cdn -}}
 
-{{- $js_load := slice "js/main.ts" -}}
+{{- $js_load := slice "v1/clvq/main.ts" -}}
 
 <!-- Game assets -->
 {{- if eq .Params.gamePage "load" }}
@@ -27,5 +27,5 @@
 {{- end }}
 
 <!-- PWA Service Worker -->
-{{- $sw_js := resources.Get "clvq/sw.js" | resources.ExecuteAsTemplate "clvq/sw.js" . -}}
+{{- $sw_js := resources.Get "v1/clvq/service-worker.js" | resources.ExecuteAsTemplate "v1/clvq/service-worker.js" . -}}
 {{- $sw_js.Publish -}}
