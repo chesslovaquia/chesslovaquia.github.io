@@ -136,7 +136,7 @@ class ChessGame {
 				this.move.updateBoard(this.move.getLastMove())
 			}
 		} else {
-			console.info('No saved pgn to load.')
+			console.info('No saved moves to load.')
 		}
 		this.display.updateStatus()
 	}
