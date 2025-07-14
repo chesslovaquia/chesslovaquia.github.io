@@ -34,6 +34,7 @@ class ChessGame {
 		if (this.board) {
 			this.setupEventListeners(config)
 			this.loadGame()
+			this.move.updateBoard(this.move.getLastMove())
 			this.display.updateStatus()
 		}
 	}
@@ -114,8 +115,9 @@ class ChessGame {
 	private reset(): void {
 		console.log('Game reset!')
 		this.game.reset()
-		this.move.updateBoard([])
+		this.move.reset()
 		this.state.reset()
+		this.move.updateBoard([])
 		this.display.updateStatus()
 	}
 
@@ -123,46 +125,18 @@ class ChessGame {
 		const moves = this.state.getMoves()
 		if (moves) {
 			console.debug('Game load from saved moves:', moves)
-			this.game.reset()
-			this.move.reset()
-			this.state.reset()
 			try {
-				this.loadMoves(moves)
+				this.move.loadMoves(moves)
 			} catch(err) {
 				console.error('Game moves load failed:', err)
 				this.game.reset()
 				this.move.reset()
 				this.state.reset()
-				this.move.updateBoard(this.move.getLastMove())
 			}
 		} else {
 			console.info('No saved moves to load.')
 		}
 		this.display.updateStatus()
-	}
-
-	private loadMoves(moves: string[]): void {
-		let prevMove: game.Move | null = null
-		let curMove: game.Move | null = null
-		let gotError = ''
-		moves.every(san => {
-			console.debug('Load move:', san)
-			prevMove = null
-			prevMove = curMove
-			curMove = null
-			curMove = this.game.move(san, { strict: true })
-			if (curMove) {
-				return true
-			} else {
-				gotError = san
-				return false
-			}
-		})
-		if (gotError !== '') {
-			throw new ChessGameError(`Invalid move: ${gotError}`)
-		} else {
-			this.move.loadMoves(curMove, prevMove)
-		}
 	}
 }
 

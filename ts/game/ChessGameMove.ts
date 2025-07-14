@@ -6,7 +6,8 @@ import { Api as ChessgroundApi } from 'chessground/api'
 import * as board from 'chessground/types'
 import * as game  from 'chess.js'
 
-import { ChessGameState }    from './ChessGameState'
+import { ChessGameError } from './ChessGameError'
+import { ChessGameState } from './ChessGameState'
 
 class ChessGameMove {
 	private readonly game:  game.Chess
@@ -150,12 +151,26 @@ class ChessGameMove {
 		return []
 	}
 
-	public loadMoves(curMove: game.Move | null, prevMove: game.Move | null): void {
+	public loadMoves(moves: string[]): void {
 		this.reset()
-		this.prevMove = prevMove
-		this.curMove = curMove
-		this.updateBoard(this.getLastMove())
+		this.game.reset()
+		let gotError = ''
+		moves.every(san => {
+			console.debug('Game load move:', san)
+			const curMove = this.game.move(san, { strict: true })
+			if (curMove) {
+				this.setCurMove(curMove)
+				return true
+			} else {
+				gotError = san
+				return false
+			}
+		})
+		if (gotError !== '') {
+			throw new ChessGameError(`Invalid move: ${gotError}`)
+		}
 	}
+
 }
 
 export { ChessGameMove }
