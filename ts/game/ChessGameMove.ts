@@ -97,7 +97,7 @@ class ChessGameMove {
 					lastMove: [orig, dest],
 				})
 				this.setCurMove(move)
-				this.state.push(this.game.fen(), this.curMove, this.prevMove)
+				this.state.push(this.curMove.san)
 			} else {
 				// Invalid move - reset position
 				this.board.set({ fen: this.game.fen() })

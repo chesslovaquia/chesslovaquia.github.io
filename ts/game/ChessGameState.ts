@@ -10,18 +10,29 @@ import { ClvqLocalStorage } from '../clvq/ClvqLocalStorage'
 
 import { ChessGameData, ChessGameDataMove } from './ChessGameData'
 
-const stateID: string = 'clvqChessGameState5'
+const stateIDPrefix: string = 'clvqChessGameState'
+const stateVersion:  number = 7
+const stateID:       string = `${stateIDPrefix}${stateVersion}`
 
 class ChessGameState {
 	private readonly storage: ClvqLocalStorage
 
-	private state: ChessGameData[]
+	private state: string[]
 	private idx:   number
 
 	constructor() {
 		this.storage = new ClvqLocalStorage()
 		this.state   = []
 		this.idx     = -1
+		this.cleanup()
+	}
+
+	private cleanup(): void {
+		this.storage.removeItem(stateIDPrefix)
+		for (let v = 0; v < stateVersion; v++) {
+			const sid = `${stateIDPrefix}${stateVersion}`
+			this.storage.removeItem(sid)
+		}
 	}
 
 	private last(): ChessGameData {
