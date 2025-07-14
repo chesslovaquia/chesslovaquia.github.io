@@ -1,12 +1,13 @@
 baseURL = "http://localhost:8045"
 languageCode = "en-us"
 title = "Chesslovaquia"
+
 theme = "clvq"
 
 disableKinds = [
-	"section",
-	"RSS",
-	"taxonomy",
+  "section",
+  "RSS",
+  "taxonomy",
 ]
 
 enableRobotsTXT = true
