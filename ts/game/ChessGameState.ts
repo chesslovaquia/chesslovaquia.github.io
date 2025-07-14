@@ -1,9 +1,13 @@
 // Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com>
 // See LICENSE file.
 
+import { DEFAULT_POSITION } from 'chess.js'
+
 import { ClvqLocalStorage } from '../clvq/ClvqLocalStorage'
 
-const stateID: string = 'clvqChessGameState2'
+import { ChessGameData } from './ChessGameData'
+
+const stateID: string = 'clvqChessGameState3'
 
 class ChessGameState {
 	private readonly storage: ClvqLocalStorage
@@ -18,7 +22,18 @@ class ChessGameState {
 	}
 
 	private saveState(): void {
-		this.storage.setItem(stateID, this.last())
+		this.storage.setItem(stateID, JSON.stringify(this.newData()))
+	}
+
+	private newData(): ChessGameData {
+		const data = {
+			fen:      this.last(),
+			lastMove: [],
+		}
+		if (!data.fen) {
+			data.fen = DEFAULT_POSITION
+		}
+		return data
 	}
 
 	public push(fen: string): void {
@@ -54,8 +69,13 @@ class ChessGameState {
 		return false
 	}
 
-	public getGame(): string {
-		return this.storage.getItem(stateID, "")
+	public getGame(): ChessGameData {
+		const data = JSON.parse(this.storage.getItem(stateID, "{}"))
+		if (!data) {
+			console.error('Game state invalid data:', data)
+			return this.newData()
+		}
+		return data
 	}
 }
 

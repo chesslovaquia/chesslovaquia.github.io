@@ -46,10 +46,10 @@ class ChessGame {
 
 	private loadGame(): void {
 		if (this.state.hasGame()) {
-			const fen = this.state.getGame()
-			console.log('Game load from saved state:', fen)
+			const g = this.state.getGame()
+			console.log('Game load from saved state:', g)
 			this.game.reset()
-			this.game.load(fen)
+			this.game.load(g.fen)
 			this.board.set({
 				fen: this.game.fen(),
 				turnColor: this.move.turnColor(),
@@ -59,10 +59,8 @@ class ChessGame {
 				},
 				lastMove: [], // FIXME get last move info from saved state
 			})
-			this.state.push(fen)
-		} else {
-			this.state.push(this.game.fen())
 		}
+		this.state.push(this.game.fen())
 	}
 
 	private newGame(): game.Chess {
