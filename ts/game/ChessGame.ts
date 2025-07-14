@@ -44,30 +44,6 @@ class ChessGame {
 		}
 	}
 
-	private loadGame(): void {
-		const pgn = this.state.getPgn()
-		if (pgn) {
-			console.log('Game load from saved pgn:', pgn)
-			this.game.reset()
-			try {
-				this.game.loadPgn(pgn, { strict: true })
-			} catch(err) {
-				console.error('Game pgn load failed:', err)
-			}
-			this.board.set({
-				fen: this.game.fen(),
-				turnColor: this.move.turnColor(),
-				movable: {
-					color: this.move.turnColor(),
-					dests: this.move.possibleDests(),
-				},
-				lastMove: [] // FIXME: get lastMove from chess.something?,
-			})
-		} else {
-			console.info('No saved pgn to load.')
-		}
-	}
-
 	private newGame(): game.Chess {
 		return new game.Chess(game.DEFAULT_POSITION)
 	}
@@ -135,7 +111,7 @@ class ChessGame {
 		}
 	}
 
-	public reset(): void {
+	private reset(): void {
 		console.log('Game reset!')
 		this.game.reset()
 		this.board.set({
@@ -149,6 +125,33 @@ class ChessGame {
 		})
 		this.state.reset()
 		this.display.updateStatus()
+	}
+
+	private loadGame(): void {
+		const moves = this.state.getMoves()
+		if (moves) {
+			console.debug('Game load from saved moves:', moves)
+			this.game.reset()
+			try {
+				this.loadMoves(moves)
+			} catch(err) {
+				console.error('Game moves load failed:', err)
+			}
+			this.board.set({
+				fen: this.game.fen(),
+				turnColor: this.move.turnColor(),
+				movable: {
+					color: this.move.turnColor(),
+					dests: this.move.possibleDests(),
+				},
+				lastMove: this.move.getLastMove(),
+			})
+		} else {
+			console.info('No saved pgn to load.')
+		}
+	}
+
+	private loadMoves(moves: string[]): void {
 	}
 }
 

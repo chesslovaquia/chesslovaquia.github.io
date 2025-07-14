@@ -53,6 +53,10 @@ class ChessGameMove {
 		})
 	}
 
+	private saveState(): void {
+		this.state.saveMoves(this.game.history())
+	}
+
 	public isPromotion(): boolean {
 		if (this.curMove) {
 			return this.curMove.isPromotion()
@@ -94,7 +98,7 @@ class ChessGameMove {
 					lastMove: [orig, dest],
 				})
 				this.setCurMove(move)
-				this.state.savePgn(this.game.pgn())
+				this.saveState()
 			} else {
 				// Invalid move - reset position
 				console.error('Invalid move, reset position:', move)
@@ -130,11 +134,18 @@ class ChessGameMove {
 			if (this.curMove) {
 				console.log('Move back to:', this.curMove.san)
 			}
-			this.state.savePgn(this.game.pgn())
+			this.saveState()
 			return true
 		}
 		console.log('No move to undo!')
 		return false
+	}
+
+	public getLastMove(): board.Key[] {
+		if (this.curMove) {
+			return [this.curMove.from, this.curMove.from]
+		}
+		return []
 	}
 }
 

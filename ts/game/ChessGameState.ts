@@ -9,13 +9,15 @@ import {
 import { ClvqLocalStorage } from '../clvq/ClvqLocalStorage'
 
 const stateIDPrefix: string = 'clvqChessGameState'
-const stateVersion:  number = 10
+const stateVersion:  number = 0
 const stateID:       string = `${stateIDPrefix}${stateVersion}`
 
 class ChessGameState {
 	private readonly storage: ClvqLocalStorage
+	private readonly sep:     string
 
 	constructor() {
+		this.sep = ';'
 		this.storage = new ClvqLocalStorage()
 		this.cleanupOld()
 	}
@@ -23,7 +25,8 @@ class ChessGameState {
 	private cleanupOld(): void {
 		this.storage.removeItem(stateIDPrefix)
 		for (let v = 0; v < stateVersion; v++) {
-			const sid = `${stateIDPrefix}${stateVersion}`
+			const sid = `${stateIDPrefix}${v}`
+			console.debug('Game state cleanup old:', sid)
 			this.storage.removeItem(sid)
 		}
 	}
@@ -32,16 +35,18 @@ class ChessGameState {
 		this.storage.removeItem(stateID)
 	}
 
-	public savePgn(pgn: string): void {
-		console.debug('Game state save pgn:', stateID)
-		this.storage.setItem(stateID, pgn)
+	public saveMoves(moves: string[]): void {
+		console.debug('Game state save moves:', moves)
+		this.storage.setItem(stateID, moves.join(this.sep))
 	}
 
-	public getPgn(): string {
-		console.debug('Game state get pgn:', stateID)
-		const pgn = this.storage.getItem(stateID, "")
-		console.debug('Game state got pgn:', pgn)
-		return pgn
+	public getMoves(): string[] {
+		const moves = this.storage.getItem(stateID, '')
+		console.debug('Game state got moves:', moves)
+		if (moves) {
+			return moves.split(this.sep)
+		}
+		return []
 	}
 }
 
