@@ -42,7 +42,7 @@ class ChessGameDisplay {
 			if (this.game.inCheck()) {
 				statusText += ' (in check)'
 			} else {
-				if (this.move.curMove.isPromotion) {
+				if (this.move.isPromotion()) {
 					statusText += ' (pawn promotion)'
 				}
 			}

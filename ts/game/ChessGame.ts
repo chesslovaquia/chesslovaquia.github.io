@@ -45,11 +45,15 @@ class ChessGame {
 	}
 
 	private loadGame(): void {
-		if (this.state.hasGame()) {
-			const g = this.state.getGame()
-			console.log('Game load from saved state:', g)
+		const pgn = this.state.getPgn()
+		if (pgn) {
+			console.log('Game load from saved pgn:', pgn)
 			this.game.reset()
-			this.game.load(g.fen)
+			try {
+				this.game.loadPgn(pgn, { strict: true })
+			} catch(err) {
+				console.error('Game pgn load failed:', err)
+			}
 			this.board.set({
 				fen: this.game.fen(),
 				turnColor: this.move.turnColor(),
@@ -57,8 +61,10 @@ class ChessGame {
 					color: this.move.turnColor(),
 					dests: this.move.possibleDests(),
 				},
-				lastMove: [(g.curMove.from as board.Key), (g.curMove.to as board.Key)],
+				lastMove: [] // FIXME: get lastMove from chess.something?,
 			})
+		} else {
+			console.info('No saved pgn to load.')
 		}
 	}
 
@@ -122,7 +128,7 @@ class ChessGame {
 
 	private afterMove(orig: board.Key, dest: board.Key) {
 		// Pawn promotion.
-		if (this.move.curMove.isPromotion) {
+		if (this.move.isPromotion()) {
 			console.log('Move was pawn promotion.')
 			this.promotion.handle(orig, dest)
 			this.display.updateStatus()

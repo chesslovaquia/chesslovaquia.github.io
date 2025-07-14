@@ -8,26 +8,19 @@ import {
 
 import { ClvqLocalStorage } from '../clvq/ClvqLocalStorage'
 
-import { ChessGameData, ChessGameDataMove } from './ChessGameData'
-
 const stateIDPrefix: string = 'clvqChessGameState'
-const stateVersion:  number = 7
+const stateVersion:  number = 10
 const stateID:       string = `${stateIDPrefix}${stateVersion}`
 
 class ChessGameState {
 	private readonly storage: ClvqLocalStorage
 
-	private state: string[]
-	private idx:   number
-
 	constructor() {
 		this.storage = new ClvqLocalStorage()
-		this.state   = []
-		this.idx     = -1
-		this.cleanup()
+		this.cleanupOld()
 	}
 
-	private cleanup(): void {
+	private cleanupOld(): void {
 		this.storage.removeItem(stateIDPrefix)
 		for (let v = 0; v < stateVersion; v++) {
 			const sid = `${stateIDPrefix}${stateVersion}`
@@ -35,55 +28,20 @@ class ChessGameState {
 		}
 	}
 
-	private last(): ChessGameData {
-		return this.state[this.state.length - 1]
-	}
-
-	private saveState(): void {
-		this.storage.setItem(stateID, JSON.stringify(this.last()))
-	}
-
-	private newData(fen: string, c: ChessGameDataMove, p: ChessGameDataMove): ChessGameData {
-		return {
-			fen: fen,
-			curMove: c,
-			prevMove: p,
-		}
-	}
-
-	public push(fen: string, cur: ChessGameDataMove, prev: ChessGameDataMove): void {
-		// Remove any future states if we're not at the end.
-		this.state = this.state.slice(0, this.idx + 1)
-		// Save state.
-		this.state.push(this.newData(fen, cur, prev))
-		this.idx++
-		this.saveState()
-	}
-
-	public pop(): boolean {
-		if (this.state.pop()) {
-			this.idx--
-			this.saveState()
-			return true
-		}
-		return false
-	}
-
 	public reset(): void {
-		this.state = []
-		this.idx   = -1
 		this.storage.removeItem(stateID)
 	}
 
-	public hasGame(): boolean {
-		if (this.storage.getItem(stateID, "")) {
-			return true
-		}
-		return false
+	public savePgn(pgn: string): void {
+		console.debug('Game state save pgn:', stateID)
+		this.storage.setItem(stateID, pgn)
 	}
 
-	public getGame(): ChessGameData {
-		return JSON.parse(this.storage.getItem(stateID, "{}"))
+	public getPgn(): string {
+		console.debug('Game state get pgn:', stateID)
+		const pgn = this.storage.getItem(stateID, "")
+		console.debug('Game state got pgn:', pgn)
+		return pgn
 	}
 }
 
