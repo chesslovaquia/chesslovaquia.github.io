@@ -3,16 +3,16 @@
 
 class ClvqIndexedDB {
 	private readonly name:    string
-	private readonly version: number
 	private readonly store:   string
+	private readonly version: number
 
 	private db
 	private promise
 
-	constructor(name: string, version: number, store: string) {
+	constructor(name: string, store: string, version: number) {
 		this.name    = name
-		this.version = version
 		this.store   = store
+		this.version = version
 		this.db      = null
 		this.promise = null
 	}
