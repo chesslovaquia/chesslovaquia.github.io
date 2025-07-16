@@ -21,7 +21,8 @@ function toggleBoardScreen(): void {
 			}, 3);
 		}
 	} else {
-		throw new ChessGameError(`Chess board not found: ${chessBoard}`);
+		const msg = `Toggle screen divs not found: board=${chessBoard} mobile=${mobileScreen} laptop=${laptopScreen}`;
+		throw new ChessGameError(msg);
 	}
 }
 
