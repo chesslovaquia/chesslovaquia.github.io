@@ -14,11 +14,11 @@ function toggleBoardScreen(): void {
 		if (window.innerWidth < 768) {
 			setTimeout(() => {
 				mobileScreen.appendChild(chessBoard);
-			}, 7);
+			}, 3);
 		} else {
 			setTimeout(() => {
 				laptopScreen.appendChild(chessBoard);
-			}, 7);
+			}, 3);
 		}
 	} else {
 		throw new ChessGameError(`Chess board not found: ${chessBoard}`);
