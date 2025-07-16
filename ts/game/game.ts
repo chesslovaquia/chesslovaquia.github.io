@@ -5,39 +5,13 @@ import { ChessGame }       from './ChessGame';
 import { ChessGameConfig } from './ChessGameConfig';
 import { ChessGameError }  from './ChessGameError';
 
-function toggleBoardScreen(): void {
-	console.debug('Toggle board screen.');
-	const mobileScreen = document.getElementById('chessBoardMobile');
-	const laptopScreen = document.getElementById('chessBoardLaptop');
-	const chessBoard = document.querySelector('.cg-wrap');
-	if (chessBoard && mobileScreen && laptopScreen) {
-		if (window.innerWidth < 768) {
-			setTimeout(() => {
-				mobileScreen.appendChild(chessBoard);
-			}, 3);
-		} else {
-			setTimeout(() => {
-				laptopScreen.appendChild(chessBoard);
-			}, 3);
-		}
-	} else {
-		const msg = `Toggle screen divs not found: board=${chessBoard} mobile=${mobileScreen} laptop=${laptopScreen}`;
-		throw new ChessGameError(msg);
-	}
-}
-
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
 	const board = document.getElementById('chessboard');
-	const mobileScreen = document.getElementById('chessBoardMobile');
-	const laptopScreen = document.getElementById('chessBoardLaptop');
-	if (board && mobileScreen && laptopScreen) {
+	if (board) {
 		const cfg = new ChessGameConfig(board);
-		const game = new ChessGame(cfg);
-		window.addEventListener('resize', toggleBoardScreen);
-		window.addEventListener('load', toggleBoardScreen);
+		new ChessGame(cfg);
 	} else {
-		const msg = `Screen divs not found: board=${board} mobile=${mobileScreen} laptop=${laptopScreen}`;
-		throw new ChessGameError(msg);
+		throw new ChessGameError('Chess board not found!');
 	}
 });
