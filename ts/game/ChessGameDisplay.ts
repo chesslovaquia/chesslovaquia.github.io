@@ -49,6 +49,10 @@ class ChessGameDisplay {
 		}
 		this.statusElement.textContent = statusText
 	}
+
+	public clear(): void {
+		this.statusElement.textContent = ''
+	}
 }
 
 export { ChessGameDisplay }

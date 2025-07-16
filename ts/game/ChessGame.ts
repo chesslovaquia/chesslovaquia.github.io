@@ -38,10 +38,12 @@ class ChessGame {
 	}
 
 	public init(): void {
+		this.disableBoard();
 		this.loadGame().then((result) => {
 			console.debug('Game load done:', result);
 			this.move.updateBoard(this.move.getLastMove());
 			this.display.updateStatus();
+			this.enableBoard();
 		});
 	}
 
@@ -144,6 +146,25 @@ class ChessGame {
 			console.info('No saved moves to load.');
 		}
 		return false;
+	}
+
+	private disableBoard(): void {
+		console.debug('Disable board.');
+		this.display.clear();
+		this.board.set({
+			selectable: {
+				enabled: false,
+			},
+		});
+	}
+
+	private enableBoard(): void {
+		console.debug('Enable board.');
+		this.board.set({
+			selectable: {
+				enabled: true,
+			},
+		});
 	}
 }
 
