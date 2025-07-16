@@ -42,7 +42,6 @@ class ChessGame {
 		this.loadGame().then((result) => {
 			console.debug('Game load done:', result);
 			this.move.updateBoard(this.move.getLastMove());
-			this.display.updateStatus();
 			this.enableBoard();
 		});
 	}
@@ -164,6 +163,7 @@ class ChessGame {
 				enabled: true,
 			},
 		});
+		this.display.updateStatus();
 	}
 }
 
