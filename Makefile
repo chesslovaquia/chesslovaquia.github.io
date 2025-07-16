@@ -6,11 +6,11 @@ docker:
 
 .PHONY: clean
 clean:
-	rm -rf public resources .hugo_build.lock
+	@rm -rf public resources .hugo_build.lock
 
 .PHONY: distclean
 distclean: clean
-	rm -rf node_modules
+	@rm -rf node_modules
 
 # container targets
 
