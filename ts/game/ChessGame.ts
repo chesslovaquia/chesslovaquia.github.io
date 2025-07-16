@@ -147,4 +147,4 @@ class ChessGame {
 	}
 }
 
-export { ChessGame }
+export { ChessGame };
