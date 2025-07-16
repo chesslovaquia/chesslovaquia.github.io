@@ -23,7 +23,7 @@ class ChessGame {
 	private readonly display:   ChessGameDisplay;
 
 	constructor(config: ChessGameConfig) {
-		console.log('Game board.');
+		console.debug('Game config:', config);
 		// Respect the order.
 		this.game      = this.newGame();
 		this.board     = this.newBoard(config);
@@ -35,9 +35,11 @@ class ChessGame {
 			this.setupEventListeners(config);
 			this.init();
 		}
+		console.debug('Game display:', this.display);
 	}
 
 	private init(): void {
+		console.debug('Game init.');
 		this.disableBoard();
 		this.loadGame().then((result) => {
 			console.debug('Game load done:', result);
@@ -47,6 +49,7 @@ class ChessGame {
 	}
 
 	private setupEventListeners(cfg: ChessGameConfig): void {
+		console.debug('Game setup event listeners.');
 		window.addEventListener('resize', this.display.toggleBoardScreen);
 		window.addEventListener('load',   this.display.toggleBoardScreen);
 		if (cfg.resetButton) {

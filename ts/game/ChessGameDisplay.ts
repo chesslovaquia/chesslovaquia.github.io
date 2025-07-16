@@ -12,17 +12,11 @@ class ChessGameDisplay {
 	private readonly move: ChessGameMove;
 
 	private statusElement: HTMLElement | undefined;
-	public  mobileScreen:  HTMLElement | undefined;
-	public  laptopScreen:  HTMLElement | undefined;
-	public  cgWrap:            Element | undefined;
 
 	constructor(cfg: ChessGameConfig, g: Chess, m: ChessGameMove) {
 		this.game          = g;
 		this.move          = m;
 		this.statusElement = cfg.statusElement;
-		this.mobileScreen  = cfg.mobileScreen;
-		this.laptopScreen  = cfg.laptopScreen;
-		this.cgWrap        = cfg.cgWrap;
 	}
 
 	public updateStatus(): void {
@@ -60,20 +54,23 @@ class ChessGameDisplay {
 	}
 
 	public toggleBoardScreen(): void {
-		if (this.cgWrap && this.mobileScreen && this.laptopScreen) {
+		const cgWrap       = document.getElementById('chessboard');
+		const mobileScreen = document.getElementById('chessBoardMobile');
+		const laptopScreen = document.getElementById('chessBoardLaptop');
+		if (cgWrap && mobileScreen && laptopScreen) {
 			if (window.innerWidth < 768) {
 				setTimeout(() => {
 					console.debug('Toggle board screen: mobile');
-					this.mobileScreen?.appendChild(this.cgWrap as Node);
+					mobileScreen?.appendChild(cgWrap as Node);
 				}, 0);
 			} else {
 				setTimeout(() => {
 					console.debug('Toggle board screen: laptop');
-					this.laptopScreen?.appendChild(this.cgWrap as Node);
+					laptopScreen?.appendChild(cgWrap as Node);
 				}, 0);
 			}
 		} else {
-			const msg = `Toggle screen divs not found: cg-wrap=${this.cgWrap} mobile=${this.mobileScreen} laptop=${this.laptopScreen}`;
+			const msg = `Toggle screen divs not found: cg-wrap=${cgWrap} mobile=${mobileScreen} laptop=${laptopScreen}`;
 			throw new ChessGameError(msg);
 		}
 	}
