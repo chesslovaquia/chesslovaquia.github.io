@@ -1,13 +1,16 @@
 {{- $page := .page }}
 {{- $menuID := .menuID }}
+{{- $screenMode := .screenMode }}
 
 {{- $siteBtnClass := $page.Site.Params.btnClass }}
 
 <!-- Top Navigation Bar -->
 <div class="w3-bar">
 	<a class="w3-bar-item {{ $siteBtnClass }}" href="/">&#9004</a>
+
 	<!-- Game Status -->
-	<div class="w3-bar-item w3-text-lime" id="gameStatus"></div>
+	<div class="w3-bar-item w3-text-lime" id="gameStatus{{ $screenMode }}"></div>
+
 	<!-- Toggle Button -->
 	<a class="w3-bar-item {{ $siteBtnClass }} w3-right"
 	href="javascript:void(0)"

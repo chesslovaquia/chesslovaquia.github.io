@@ -1,11 +1,18 @@
-<div class="w3-bar">
-	<p class="w3-bar-item">
-		Black
-	</p>
-</div>
-<div id="chessBoardLaptop"></div>
-<div class="w3-bar">
-	<p class="w3-bar-item">
-		White (laptop)
-	</p>
+<div class="w3-row">
+	<div class="w3-half">
+		<div id="chessBoardLaptop"></div>
+	</div>
+	<div class="w3-half">
+		{{ partial "game-menu.html" (dict "menuID" "game" "screenMode" "Laptop" "page" .) }}
+		<div class="w3-bar">
+			<p class="w3-bar-item">
+				Black
+			</p>
+		</div>
+		<div class="w3-bar">
+			<p class="w3-bar-item">
+				White (laptop)
+			</p>
+		</div>
+	</div>
 </div>
