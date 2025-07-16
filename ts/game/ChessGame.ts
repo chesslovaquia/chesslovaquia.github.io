@@ -37,7 +37,7 @@ class ChessGame {
 		}
 	}
 
-	public init(): void {
+	private init(): void {
 		this.disableBoard();
 		this.loadGame().then((result) => {
 			console.debug('Game load done:', result);
