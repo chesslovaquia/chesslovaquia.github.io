@@ -31,3 +31,7 @@ check:
 .PHONY: vendor
 vendor:
 	./vendor.sh
+
+.PHONY: upgrade
+upgrade:
+	ts/upgrade.sh

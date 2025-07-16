@@ -9,6 +9,7 @@
     "chessground": "^9.2.1"
   },
   "devDependencies": {
-    "@types/chess.js": "^0.13.7"
+    "@types/chess.js": "^0.13.7",
+    "npm-check-updates": "^18.0.1"
   }
 }
