@@ -6,16 +6,19 @@
 	margin: auto; /* Centers the board */
 }
 
-/* For smaller screens */
-@media (max-width: 768px) {
-	.game-board {
-		max-width: 100vh;
-	}
+.game-mobile {
+	display: block;
 }
 
-/* Ensure the board stays square on all screen sizes */
-@media (max-width: 480px) {
-	.game-board {
-		max-width: 100vh;
+.game-laptop {
+	display: none;
+}
+
+@media (min-width: 768px) {
+	.game-mobile {
+		display: none;
+	}
+	.game-laptop {
+		display: block;
 	}
 }
