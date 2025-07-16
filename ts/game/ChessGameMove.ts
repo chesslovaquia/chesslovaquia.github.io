@@ -54,8 +54,8 @@ class ChessGameMove {
 		});
 	}
 
-	private saveState(): void {
-		this.state.saveMoves(this.game.history());
+	private async saveState(): Promise<void> {
+		await this.state.saveMoves(this.game.history());
 	}
 
 	public updateBoard(lastMove: board.Key[]): void {

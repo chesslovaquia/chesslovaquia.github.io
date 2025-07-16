@@ -30,7 +30,7 @@ class ChessGameState {
 		this.db.removeItem(stateID);
 	}
 
-	public saveMoves(moves: string[]): void {
+	public async saveMoves(moves: string[]): Promise<void> {
 		const m = moves.join(this.sep);
 		if (m) {
 			console.debug('Game state save moves:', m);
