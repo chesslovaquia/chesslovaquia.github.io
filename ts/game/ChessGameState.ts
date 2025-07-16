@@ -6,44 +6,42 @@ import {
 	Move,
 } from 'chess.js'
 
+import { ClvqIndexedDB    } from '../clvq/ClvqIndexedDB'
 import { ClvqLocalStorage } from '../clvq/ClvqLocalStorage'
 
 const stateIDPrefix: string = 'clvqChessGameState'
-const stateVersion:  number = 0
+const stateVersion:  number = 15
 const stateID:       string = `${stateIDPrefix}${stateVersion}`
 
+const dbName    = 'clvqChessGame'
+const dbStore   = 'state'
+const dbVersion = 1
+
 class ChessGameState {
-	private readonly storage: ClvqLocalStorage
-	private readonly sep:     string
+	private readonly db:  ClvqIndexedDB
+	private readonly sep: string
 
 	constructor() {
+		this.db  = new ClvqIndexedDB(dbName, dbStore, dbVersion)
 		this.sep = ';'
-		this.storage = new ClvqLocalStorage()
-		this.cleanupOld()
-	}
-
-	private cleanupOld(): void {
-		this.storage.removeItem(stateIDPrefix)
-		for (let v = 0; v < stateVersion; v++) {
-			const sid = `${stateIDPrefix}${v}`
-			console.debug('Game state cleanup old:', sid)
-			this.storage.removeItem(sid)
-		}
 	}
 
 	public reset(): void {
-		this.storage.removeItem(stateID)
+		this.db.removeItem(stateID)
 	}
 
 	public saveMoves(moves: string[]): void {
-		console.debug('Game state save moves:', moves)
-		this.storage.setItem(stateID, moves.join(this.sep))
+		const m = moves.join(this.sep)
+		if (m) {
+			console.debug('Game state save moves:', m)
+			this.db.setItem('moves', m)
+		}
 	}
 
 	public async getMoves(): Promise<string[]> {
-		const moves = this.storage.getItem(stateID, '')
-		console.debug('Game state got moves:', moves)
+		const moves = await this.db.getItem('moves')
 		if (moves) {
+			console.debug('Game state got moves:', moves)
 			return moves.split(this.sep)
 		}
 		return []
