@@ -40,7 +40,7 @@ class ChessGameState {
 		this.storage.setItem(stateID, moves.join(this.sep))
 	}
 
-	public getMoves(): string[] {
+	public async getMoves(): Promise<string[]> {
 		const moves = this.storage.getItem(stateID, '')
 		console.debug('Game state got moves:', moves)
 		if (moves) {

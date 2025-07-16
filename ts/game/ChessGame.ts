@@ -33,10 +33,16 @@ class ChessGame {
 		this.promotion = new ChessGamePromotion(this.move)
 		if (this.board) {
 			this.setupEventListeners(config)
-			this.loadGame()
+			this.init()
+		}
+	}
+
+	public init(): void {
+		this.loadGame().then((result) => {
+			console.debug('Game load done:', result);
 			this.move.updateBoard(this.move.getLastMove())
 			this.display.updateStatus()
-		}
+		});
 	}
 
 	private setupEventListeners(cfg: ChessGameConfig): void {
@@ -121,12 +127,13 @@ class ChessGame {
 		this.display.updateStatus()
 	}
 
-	private loadGame(): void {
-		const moves = this.state.getMoves()
-		if (moves) {
+	private async loadGame(): Promise<boolean> {
+		const moves = await this.state.getMoves()
+		if (moves.length > 0) {
 			console.debug('Game load from saved moves:', moves)
 			try {
 				this.move.loadMoves(moves)
+				return true
 			} catch(err) {
 				console.error('Game moves load failed:', err)
 				this.game.reset()
@@ -136,7 +143,7 @@ class ChessGame {
 		} else {
 			console.info('No saved moves to load.')
 		}
-		this.display.updateStatus()
+		return false
 	}
 }
 
