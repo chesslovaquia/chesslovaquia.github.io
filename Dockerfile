@@ -1,7 +1,7 @@
-FROM debian:trixie-20250610-slim
+FROM debian:trixie-20250630-slim
 
 LABEL maintainer="Jeremías Casteglione <jrmsdev@gmail.com>"
-LABEL version="250628"
+LABEL version="250716"
 
 USER root:root
 WORKDIR /root
@@ -11,7 +11,7 @@ ENV HOME /root
 
 ENV DEBIAN_FRONTEND noninteractive
 
-ENV APT_INSTALL bash openssl ca-certificates media-types less wget golang npm
+ENV APT_INSTALL bash openssl ca-certificates media-types less wget npm
 
 RUN apt-get clean \
 	&& apt-get update -yy \
@@ -62,7 +62,6 @@ WORKDIR /home/devel
 ENV USER devel
 ENV HOME /home/devel
 
-RUN go version
 RUN npm version
 RUN npx --version
 RUN tsc --version
