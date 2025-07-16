@@ -30,7 +30,7 @@ class ChessGame {
 		this.state     = new ChessGameState();
 		this.move      = new ChessGameMove(this.game, this.board, this.state);
 		this.display   = new ChessGameDisplay(config, this.game, this.move);
-		this.promotion = new ChessGamePromotion(this.move);
+		this.promotion = new ChessGamePromotion(this.move, this.display);
 		if (this.board) {
 			this.setupEventListeners(config);
 			this.init();

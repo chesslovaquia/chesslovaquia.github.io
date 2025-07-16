@@ -3,13 +3,16 @@
 
 import * as board from 'chessground/types'
 
-import { ChessGameMove } from './ChessGameMove'
+import { ChessGameDisplay } from './ChessGameDisplay'
+import { ChessGameMove    } from './ChessGameMove'
 
 class ChessGamePromotion {
-	private readonly move: ChessGameMove
+	private readonly move:    ChessGameMove
+	private readonly display: ChessGameDisplay
 
-	constructor(m: ChessGameMove) {
-		this.move = m
+	constructor(m: ChessGameMove, d: ChessGameDisplay) {
+		this.move    = m
+		this.display = d
 	}
 
 	public handle(orig: board.Key, dest: board.Key): void {
@@ -50,6 +53,7 @@ class ChessGamePromotion {
 
 	private finish(orig: board.Key, dest: board.Key, side: board.Color, piece: string): void {
 		console.log('Pawn promotion done:', orig, dest, side, piece)
+		this.display.updateStatus()
 	}
 }
 
