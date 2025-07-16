@@ -14,36 +14,14 @@ class ChessGameMove {
 	private readonly board: ChessgroundApi;
 	private readonly state: ChessGameState;
 
-	private curMove:  game.Move | null;
-	private prevMove: game.Move | null;
-
 	constructor(g: game.Chess, b: ChessgroundApi, s: ChessGameState) {
 		this.game     = g;
 		this.board    = b;
 		this.state    = s;
-		this.curMove  = null;
-		this.prevMove = null;
-		this.setupBoard();
+		this.initBoard();
 	}
 
-	private setPrevMove(): void {
-		this.prevMove = null;
-		this.prevMove = this.curMove;
-	}
-
-	private setCurMove(move: game.Move): void {
-		this.setPrevMove();
-		this.curMove = null;
-		this.curMove = move;
-	}
-
-	private undoCurMove(): void {
-		this.curMove = null;
-		this.curMove = this.prevMove;
-		this.prevMove = null;
-	}
-
-	private setupBoard(): void {
+	private initBoard(): void {
 		this.board.set({
 			turnColor: this.turnColor(),
 			movable: {
@@ -58,7 +36,14 @@ class ChessGameMove {
 		await this.state.saveMoves(this.game.history());
 	}
 
-	public updateBoard(lastMove: board.Key[]): void {
+	private getBoardMove(m: game.Move | undefined): board.Key[] {
+		if (m) {
+			return [m.from as board.Key, m.to as board.Key];
+		}
+		return [];
+	}
+
+	public updateBoard(lastMove: game.Move | undefined): void {
 		this.board.set({
 			fen: this.game.fen(),
 			turnColor: this.turnColor(),
@@ -66,16 +51,15 @@ class ChessGameMove {
 				color: this.turnColor(),
 				dests: this.possibleDests()
 			},
-			lastMove: lastMove,
+			lastMove: this.getBoardMove(lastMove),
 		});
 		this.saveState();
 	}
 
 	public isPromotion(): boolean {
-		if (this.curMove) {
-			if (this.game.turn() === this.curMove.color) {
-				return this.curMove.isPromotion();
-			}
+		const lastMove = this.getLastMove();
+		if (lastMove) {
+			return lastMove.isPromotion();
 		}
 		return false;
 	}
@@ -104,8 +88,7 @@ class ChessGameMove {
 			});
 			if (move) {
 				console.log('Move:', move.san);
-				this.setCurMove(move);
-				this.updateBoard([orig, dest]);
+				this.updateBoard(move);
 			} else {
 				// Invalid move - reset position
 				console.error('Invalid move, reset position:', move);
@@ -119,20 +102,8 @@ class ChessGameMove {
 	}
 
 	public undo(): boolean {
-		if (this.curMove) {
-			console.log('Move undo:', this.curMove.san);
-		}
 		if (this.game.undo()) {
-			let lastMove: board.Key[] = [];
-			if (this.prevMove) {
-				console.log('Move previous:', this.prevMove.san);
-				lastMove = [(this.prevMove.from as board.Key), (this.prevMove.to as board.Key)];
-			}
-			this.undoCurMove();
-			if (this.curMove) {
-				console.log('Move back to:', this.curMove.san);
-			}
-			this.updateBoard(lastMove);
+			this.updateBoard(this.getLastMove());
 			return true;
 		}
 		console.log('No move to undo!');
@@ -140,15 +111,11 @@ class ChessGameMove {
 	}
 
 	public reset(): void {
-		this.prevMove = null;
-		this.curMove  = null;
 	}
 
-	public getLastMove(): board.Key[] {
-		if (this.curMove) {
-			return [this.curMove.from, this.curMove.from];
-		}
-		return [];
+	public getLastMove(): game.Move | undefined {
+		const lastMove = this.game.history({ verbose : true }).pop();
+		return lastMove;
 	}
 
 	public loadMoves(moves: string[]): void {
@@ -157,9 +124,8 @@ class ChessGameMove {
 		let gotError = '';
 		moves.every(san => {
 			console.debug('Game load move:', san);
-			const curMove = this.game.move(san, { strict: true });
-			if (curMove) {
-				this.setCurMove(curMove);
+			const move = this.game.move(san, { strict: true });
+			if (move) {
 				return true;
 			} else {
 				gotError = san;

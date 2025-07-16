@@ -124,7 +124,7 @@ class ChessGame {
 		this.game.reset();
 		this.move.reset();
 		this.state.reset();
-		this.move.updateBoard([]);
+		this.move.updateBoard(undefined);
 		this.display.updateStatus();
 	}
 
