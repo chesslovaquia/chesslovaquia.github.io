@@ -51,7 +51,9 @@ class ChessGameDisplay {
 	}
 
 	public clear(): void {
-		this.statusElement.textContent = ''
+		if (this.statusElement) {
+			this.statusElement.textContent = ''
+		}
 	}
 }
 

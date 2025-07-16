@@ -132,7 +132,6 @@ class ChessGame {
 	private async loadGame(): Promise<boolean> {
 		const moves = await this.state.getMoves();
 		if (moves.length > 0) {
-			console.debug('Game load from saved moves:', moves);
 			try {
 				this.move.loadMoves(moves);
 				return true;

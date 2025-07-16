@@ -9,10 +9,6 @@ import {
 import { ClvqIndexedDB    } from '../clvq/ClvqIndexedDB';
 import { ClvqLocalStorage } from '../clvq/ClvqLocalStorage';
 
-const stateIDPrefix: string = 'clvqChessGameState';
-const stateVersion:  number = 15;
-const stateID:       string = `${stateIDPrefix}${stateVersion}`;
-
 const dbName    = 'clvqChessGame';
 const dbStore   = 'state';
 const dbVersion = 1;
@@ -27,7 +23,7 @@ class ChessGameState {
 	}
 
 	public reset(): void {
-		this.db.removeItem(stateID);
+		this.db.removeItem('moves');
 	}
 
 	public async saveMoves(moves: string[]): Promise<void> {
