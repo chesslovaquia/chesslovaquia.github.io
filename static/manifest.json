@@ -2,7 +2,7 @@
   "name": "Chesslovaquia",
   "short_name": "Chesslo",
   "description": "One board to play them all.",
-  "start_url": "/",
+  "start_url": "/?pwa=1",
   "display": "standalone",
   "background_color": "#1a1a1a",
   "theme_color": "#000000",
