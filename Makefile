@@ -27,8 +27,7 @@ build:
 check: all
 	shellcheck ./*.sh docker/*.sh hugo/*.sh ts/*.sh
 	ts/check.sh
-	npm audit
-	nodejs -c public/clvq/sw.js
+	ts/build-check.sh
 
 .PHONY: vendor
 vendor:
@@ -37,3 +36,4 @@ vendor:
 .PHONY: upgrade
 upgrade:
 	ts/upgrade.sh
+	npm audit
