@@ -1,6 +1,18 @@
 #!/bin/sh
 set -eu
 
+#
+# Lila cleanup.
+#
+
+rm -f ./public/lila/COPYING.md \
+	./public/lila/LICENSE \
+	./public/lila/README.md
+
+#
+# Service worker urls.
+#
+
 sw_urls=$(mktemp /tmp/clvq.sw_urls.XXXXXXXX)
 
 echo "[" >"${sw_urls}"
