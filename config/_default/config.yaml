@@ -4,6 +4,14 @@ params:
   debug: false
   cdn: http://localhost:8045
   btnClass: w3-button w3-round w3-hover-lime w3-hover-opacity
+  css_load:
+    - w3css/4/w3.css
+    - css/main.css
+    - css/clvq.css
+    - chessground/assets/chessground.base.css
+    - chessground/assets/chessground.cburnett.css
+    - css/chessground.wood4.css
+    - css/game.css
 
 menus:
   main:

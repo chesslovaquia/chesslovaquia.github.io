@@ -1,15 +1,7 @@
 {{- $buildID := getenv "HUGO_CLVQ_BUILD" | default "UNSET" }}
 
 {{- $cdn := .Site.Params.cdn }}
-{{- $css_load := slice "w3css/4/w3.css" "css/main.css" "css/clvq.css" }}
-
-<!-- Game assets -->
-{{- if eq .Params.gamePage "load" }}
-  {{- $css_load = $css_load | append "chessground/assets/chessground.base.css" }}
-  {{- $css_load = $css_load | append "chessground/assets/chessground.cburnett.css" }}
-  {{- $css_load = $css_load | append "css/chessground.wood4.css" }}
-  {{- $css_load = $css_load | append "css/game.css" }}
-{{- end }}
+{{- $css_load := .Site.Params.css_load }}
 
 {{- range $resource := $css_load }}
   {{- with resources.Get $resource }}
