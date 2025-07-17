@@ -4,7 +4,17 @@
 const CACHE_NAME = 'clvq{{ getenv "HUGO_CLVQ_BUILD" | default "UNSET" }}';
 const FALLBACK_URL = '/';
 
-const CACHE_URLS = [
+let SW_URLS = [];
+
+fetch('/sw-urls.json')
+	.then(resp => resp.json())
+	.then(respArray => { SW_URLS = respArray });
+
+function mergeUnique(arr1, arr2) {
+	return [...new Set([...arr1, ...arr2])]
+}
+
+let CACHE_URLS = [
 	'/',
 {{- with index site.Menus "main" }}
 	{{- range . }}
@@ -12,6 +22,8 @@ const CACHE_URLS = [
 	{{- end }}
 {{- end }}
 ];
+
+CACHE_URLS = mergeUnique(CACHE_URLS, SW_URLS);
 
 console.log('Service Worker, CACHE_NAME:', CACHE_NAME);
 
