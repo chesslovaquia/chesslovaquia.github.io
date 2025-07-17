@@ -12,7 +12,4 @@ hugo \
 	--environment production \
 	"$@"
 
-echo "Site files:"
-find ./public -type f | sort
-
 exit 0
