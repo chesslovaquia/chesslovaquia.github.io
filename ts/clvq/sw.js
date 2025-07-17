@@ -4,17 +4,11 @@
 const CACHE_NAME = 'clvq{{ getenv "HUGO_CLVQ_BUILD" | default "UNSET" }}';
 const FALLBACK_URL = '/';
 
-let SW_URLS = [];
-
-fetch('/sw-urls.json')
-	.then(resp => resp.json())
-	.then(respArray => { SW_URLS = respArray });
-
 function mergeUnique(arr1, arr2) {
 	return [...new Set([...arr1, ...arr2])]
 }
 
-let CACHE_URLS = [
+const SITE_URLS = [
 	'/',
 {{- with index site.Menus "main" }}
 	{{- range . }}
@@ -22,8 +16,6 @@ let CACHE_URLS = [
 	{{- end }}
 {{- end }}
 ];
-
-CACHE_URLS = mergeUnique(CACHE_URLS, SW_URLS);
 
 console.log('Service Worker, CACHE_NAME:', CACHE_NAME);
 
@@ -35,8 +27,11 @@ self.addEventListener('install', event => {
 
 async function installHandler() {
 	try {
+		const sw_resp = await fetch('/sw-urls.json');
+		const sw_urls = sw_resp.json();
+		const cache_urls = mergeUnique(SITE_URLS, sw_urls);
 		const cache = await caches.open(CACHE_NAME);
-		await cache.addAll(CACHE_URLS);
+		await cache.addAll(cache_urls);
 		console.log('All resources cached successfully.');
 		// Force the waiting service worker to become the active service worker
 		self.skipWaiting();
