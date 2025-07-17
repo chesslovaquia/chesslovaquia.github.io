@@ -3,8 +3,10 @@
 
 <base href="{{ .Site.BaseURL }}">
 
+{{- $buildID := getenv "HUGO_CLVQ_BUILD" | default "UNSET" }}
+
 {{- if .IsHome }}
-	<link rel="manifest" href="/manifest.json">
+	<link rel="manifest" href="/manifest.json?v={{ $buildID }}">
 	<title>{{ site.Title }}</title>
 {{- else }}
 	<title>{{ printf "%s | %s" .Title site.Title }}</title>
