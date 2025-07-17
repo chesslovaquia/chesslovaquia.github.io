@@ -12,6 +12,10 @@ params:
     - chessground/assets/chessground.cburnett.css
     - css/chessground.wood4.css
     - css/game.css
+  js_load:
+    - clvq/main.ts
+  game_js: game/game.ts
+  sw_js: clvq/sw.js
 
 menus:
   main:

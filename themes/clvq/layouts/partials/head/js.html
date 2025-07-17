@@ -1,12 +1,13 @@
 {{- $buildID := getenv "HUGO_CLVQ_BUILD" | default "UNSET" -}}
 
 {{- $cdn := .Site.Params.cdn -}}
-
-{{- $js_load := slice "clvq/main.ts" -}}
+{{- $js_load := .Site.Params.js_load }}
+{{- $game_js := .Site.Params.game_js }}
+{{- $sw_js := .Site.Params.sw_js }}
 
 <!-- Game assets -->
 {{- if eq .Params.gamePage "load" }}
-  {{- $js_load = $js_load | append "game/game.ts" }}
+  {{- $js_load = $js_load | append $game_js }}
 {{- end }}
 
 {{- range $resource := $js_load }}
@@ -27,5 +28,5 @@
 {{- end }}
 
 <!-- PWA Service Worker -->
-{{- $sw_js := resources.Get "clvq/sw.js" | resources.ExecuteAsTemplate "clvq/sw.js" . -}}
+{{- $sw_js := resources.Get $sw_js | resources.ExecuteAsTemplate $sw_js . -}}
 {{- $sw_js.Publish -}}
