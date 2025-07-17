@@ -35,7 +35,6 @@ class ChessGame {
 			this.setupEventListeners(config);
 			this.init();
 		}
-		console.debug('Game display:', this.display);
 	}
 
 	private init(): void {

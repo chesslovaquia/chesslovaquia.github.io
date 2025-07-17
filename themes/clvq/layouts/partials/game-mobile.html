@@ -1,4 +1,6 @@
-{{ partial "game-menu.html" (dict "menuID" "game" "screenMode" "Mobile" "page" .) }}
+{{- $page := .page }}
+
+{{ partial "game-menu.html" (dict "menuID" "game" "screenMode" "Mobile" "page" $page) }}
 <div class="w3-bar">
 	<p class="w3-bar-item">
 		Black

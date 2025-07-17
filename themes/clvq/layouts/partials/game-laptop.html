@@ -1,15 +1,17 @@
-<div class="w3-row">
+{{- $page := .page }}
+
+<div class="w3-row w3-black clvq-bg">
 	<div class="w3-half">
 		<div id="chessBoardLaptop"></div>
 	</div>
 	<div class="w3-half">
-		{{ partial "game-menu.html" (dict "menuID" "game" "screenMode" "Laptop" "page" .) }}
-		<div class="w3-bar">
+		{{ partial "game-menu.html" (dict "menuID" "game" "screenMode" "Laptop" "page" $page) }}
+		<div class="w3-bar w3-black clvq-bg1">
 			<p class="w3-bar-item">
 				Black
 			</p>
 		</div>
-		<div class="w3-bar">
+		<div class="w3-bar w3-black clvq-bg1">
 			<p class="w3-bar-item">
 				White (laptop)
 			</p>
