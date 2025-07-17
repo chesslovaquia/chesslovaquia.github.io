@@ -24,10 +24,11 @@ build:
 	hugo/post-build.sh
 
 .PHONY: check
-check:
+check: all
 	shellcheck ./*.sh docker/*.sh hugo/*.sh ts/*.sh
 	ts/check.sh
 	npm audit
+	nodejs -c public/clvq/sw.js
 
 .PHONY: vendor
 vendor:
