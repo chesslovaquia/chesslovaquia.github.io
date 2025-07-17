@@ -28,7 +28,7 @@ self.addEventListener('install', event => {
 async function installHandler() {
 	try {
 		const sw_resp = await fetch('/sw-urls.json');
-		const sw_urls = sw_resp.json();
+		const sw_urls = await sw_resp.json();
 		const cache_urls = mergeUnique(SITE_URLS, sw_urls);
 		const cache = await caches.open(CACHE_NAME);
 		await cache.addAll(cache_urls);
