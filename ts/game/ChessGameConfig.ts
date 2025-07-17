@@ -4,18 +4,18 @@
 class ChessGameConfig {
 	public boardElement: HTMLElement;
 
-	public statusElement: HTMLElement | undefined;
+	public statusLaptop: HTMLElement | undefined;
+	public statusMobile: HTMLElement | undefined;
 
 	public resetButtonLaptop: HTMLElement | undefined;
 	public resetButtonMobile: HTMLElement | undefined;
 
-	public mobileScreen: HTMLElement | undefined;
-	public laptopScreen: HTMLElement | undefined;
-
 	constructor(boardElement: HTMLElement) {
 		this.boardElement  = boardElement;
-		this.statusElement = document.getElementById('gameStatus') || undefined;
-
+		// Game status.
+		this.statusLaptop = document.getElementById('gameStatusLaptop') || undefined;
+		this.statusMobile = document.getElementById('gameStatusMobile') || undefined;
+		// Reset buttons.
 		this.resetButtonLaptop = document.getElementById('gameResetLaptop')  || undefined;
 		this.resetButtonMobile = document.getElementById('gameResetMobile')  || undefined;
 	}

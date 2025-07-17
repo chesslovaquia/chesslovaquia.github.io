@@ -10,17 +10,16 @@ import { ChessGameMove   } from './ChessGameMove';
 class ChessGameDisplay {
 	private readonly game: Chess;
 	private readonly move: ChessGameMove;
-
-	private statusElement: HTMLElement | undefined;
+	private readonly cfg:  ChessGameConfig;
 
 	constructor(cfg: ChessGameConfig, g: Chess, m: ChessGameMove) {
-		this.game          = g;
-		this.move          = m;
-		this.statusElement = cfg.statusElement;
+		this.game = g;
+		this.move = m;
+		this.cfg  = cfg;
 	}
 
 	public updateStatus(): void {
-		if (!this.statusElement) {
+		if (!this.cfg.statusLaptop || !this.cfg.statusMobile) {
 			return;
 		}
 		let statusText = '';
@@ -44,12 +43,16 @@ class ChessGameDisplay {
 				statusText += ' (in check)';
 			}
 		}
-		this.statusElement.textContent = statusText;
+		this.cfg.statusLaptop.textContent = statusText;
+		this.cfg.statusMobile.textContent = statusText;
 	}
 
 	public clear(): void {
-		if (this.statusElement) {
-			this.statusElement.textContent = '';
+		if (this.cfg.statusLaptop) {
+			this.cfg.statusLaptop.textContent = '';
+		}
+		if (this.cfg.statusMobile) {
+			this.cfg.statusMobile.textContent = '';
 		}
 	}
 
