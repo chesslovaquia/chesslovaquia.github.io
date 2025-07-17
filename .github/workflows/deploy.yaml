@@ -60,6 +60,8 @@ jobs:
         run: |
           hugo/build.sh \
             --cacheDir "${{ runner.temp }}/hugo_cache"
+      - name: Hugo Build Post
+        run: hugo/post-build.sh
       - name: Cache Save
         id: cache-save
         uses: actions/cache/save@v4

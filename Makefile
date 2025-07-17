@@ -21,6 +21,7 @@ all: build
 build:
 	hugo/mkdeps.sh
 	hugo/build.sh
+	hugo/post-build.sh
 
 .PHONY: check
 check:
