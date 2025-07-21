@@ -146,7 +146,7 @@ class ChessGame {
 				this.state.reset();
 			}
 		} else {
-			console.info('No saved moves to load.');
+			console.debug('No saved moves to load.');
 		}
 		return false;
 	}

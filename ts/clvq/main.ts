@@ -7,6 +7,6 @@ import { Clvq } from './Clvq';
 document.addEventListener('DOMContentLoaded', () => {
 	(window as any).Clvq = new Clvq();
 	(window as any).Clvq.init().then(() => {
-		console.log('Clvq init done.');
+		console.debug('Clvq init done.');
 	});
 })

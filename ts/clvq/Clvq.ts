@@ -11,7 +11,7 @@ class Clvq {
 	private readonly db: ClvqIndexedDB;
 
 	constructor() {
-		console.log('Clvq loaded.');
+		console.debug('Clvq loaded.');
 		this.db = new ClvqIndexedDB(dbName, dbStore, dbVersion);
 	}
 
