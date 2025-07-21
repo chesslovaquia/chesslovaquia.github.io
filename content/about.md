@@ -12,5 +12,6 @@ One board to play them all.
 
 Built with:
 : [Hugo](https://gohugo.io/)
+: [w3.css](https://www.w3schools.com/w3css/)
 : [Chessground](https://www.npmjs.com/package/chessground)
 : [Chess.js](https://www.npmjs.com/package/chess.js)
