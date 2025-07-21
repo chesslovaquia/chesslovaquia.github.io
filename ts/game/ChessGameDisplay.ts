@@ -4,8 +4,9 @@
 import { Chess, Move } from 'chess.js';
 
 import { ChessGameConfig } from './ChessGameConfig';
-import { ChessGameError  } from './ChessGameError';
 import { ChessGameMove   } from './ChessGameMove';
+
+import { toggleScreen } from './screen';
 
 class ChessGameDisplay {
 	private readonly game: Chess;
@@ -57,24 +58,10 @@ class ChessGameDisplay {
 	}
 
 	public toggleBoardScreen(): void {
-		const cgWrap       = document.getElementById('chessboard');
-		const mobileScreen = document.getElementById('chessBoardMobile');
-		const laptopScreen = document.getElementById('chessBoardLaptop');
-		if (cgWrap && mobileScreen && laptopScreen) {
-			if (window.innerWidth < 768) {
-				setTimeout(() => {
-					console.debug('Toggle board screen: mobile');
-					mobileScreen?.appendChild(cgWrap as Node);
-				}, 0);
-			} else {
-				setTimeout(() => {
-					console.debug('Toggle board screen: laptop');
-					laptopScreen?.appendChild(cgWrap as Node);
-				}, 0);
-			}
+		if (window.innerWidth < 768) {
+			toggleScreen('mobile');
 		} else {
-			const msg = `Toggle screen divs not found: cg-wrap=${cgWrap} mobile=${mobileScreen} laptop=${laptopScreen}`;
-			throw new ChessGameError(msg);
+			toggleScreen('laptop');
 		}
 	}
 }
