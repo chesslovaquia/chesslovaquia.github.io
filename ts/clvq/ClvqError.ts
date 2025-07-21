@@ -3,8 +3,8 @@
 
 class ClvqError extends Error {
 	constructor(msg: string) {
-		super(msg)
+		super(msg);
 	}
 }
 
-export { ClvqError }
+export { ClvqError };
