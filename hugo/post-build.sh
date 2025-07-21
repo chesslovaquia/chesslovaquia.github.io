@@ -10,23 +10,23 @@ rm -f ./public/lila/COPYING.md \
 	./public/lila/README.md
 
 #
-# Service worker urls.
+# Assets URLs.
 #
 
-sw_urls=$(mktemp /tmp/clvq.sw_urls.XXXXXXXX)
+assets_urls=$(mktemp /tmp/clvq.assets.XXXXXXXX)
 
-echo "[" >"${sw_urls}"
+echo "[" >"${assets_urls}"
 
 echo "Site files:"
 find ./public -type f | sort | while read -r filename; do
 	echo "  ${filename}"
 	url=$(echo "${filename}" | sed 's#^\./public##')
-	echo "  \"${url}\"," >>"${sw_urls}"
+	echo "  \"${url}\"," >>"${assets_urls}"
 done
 
-echo "  \"/\"" >>"${sw_urls}"
-echo "]" >>"${sw_urls}"
+echo "  \"/\"" >>"${assets_urls}"
+echo "]" >>"${assets_urls}"
 
-mv -f "${sw_urls}" ./public/sw-urls.json
+mv -f "${assets_urls}" ./public/assets.json
 
 exit 0
