@@ -16,7 +16,6 @@ distclean: clean
 
 .PHONY: all
 all: build
-	@echo "node `node --version`"
 
 .PHONY: build
 build:
@@ -26,6 +25,7 @@ build:
 
 .PHONY: check
 check: all
+	@echo "node `node --version`"
 	shellcheck ./*.sh docker/*.sh hugo/*.sh ts/*.sh
 	ts/check.sh
 	ts/build-check.sh
