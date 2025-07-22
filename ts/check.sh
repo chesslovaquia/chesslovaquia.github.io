@@ -1,2 +1,2 @@
 #!/bin/sh
-exec tsc --noEmit
+exec npx tsc --noEmit

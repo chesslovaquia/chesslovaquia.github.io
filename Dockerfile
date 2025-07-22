@@ -1,7 +1,7 @@
 FROM debian:trixie-20250630-slim
 
 LABEL maintainer="Jeremías Casteglione <jrmsdev@gmail.com>"
-LABEL version="250716"
+LABEL version="250722"
 
 USER root:root
 WORKDIR /root
@@ -11,23 +11,12 @@ ENV HOME /root
 
 ENV DEBIAN_FRONTEND noninteractive
 
-ENV APT_INSTALL bash openssl ca-certificates media-types less wget npm
+ENV APT_INSTALL bash openssl ca-certificates media-types less wget npm make shellcheck
 
 RUN apt-get clean \
 	&& apt-get update -yy \
 	&& apt-get dist-upgrade -yy --purge \
 	&& apt-get install -yy --no-install-recommends ${APT_INSTALL} \
-	&& apt-get clean \
-	&& apt-get autoremove -yy --purge \
-	&& rm -rf /var/lib/apt/lists/* \
-		/var/cache/apt/archives/*.deb \
-		/var/cache/apt/*cache.bin
-
-ENV APT_INSTALL_EXTRA make shellcheck node-typescript
-
-RUN apt-get clean \
-	&& apt-get update -yy \
-	&& apt-get install -yy --no-install-recommends ${APT_INSTALL_EXTRA} \
 	&& apt-get clean \
 	&& apt-get autoremove -yy --purge \
 	&& rm -rf /var/lib/apt/lists/* \
@@ -64,7 +53,6 @@ ENV HOME /home/devel
 
 RUN npm version
 RUN npx --version
-RUN tsc --version
 RUN hugo version
 
 ENV CLVQ_ROOT http://localhost:8000
