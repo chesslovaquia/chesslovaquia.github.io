@@ -2,8 +2,8 @@
 set -eu
 
 find public/ -type f -name '*.js' | sort -u | while read -r filename; do
-	echo "  nodejs -c ${filename}"
-	nodejs -c "${filename}"
+	echo "  node --check ${filename}"
+	node --check "${filename}"
 done
 
 exit 0

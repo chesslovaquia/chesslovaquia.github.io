@@ -8,7 +8,7 @@ done
 
 find public/ -type f -name '*.json' | sort -u | while read -r filename; do
 	echo "  parse ${filename}"
-	nodejs -e "JSON.parse(require('fs').readFileSync('${filename}', 'utf8'))"
+	node -e "JSON.parse(require('fs').readFileSync('${filename}', 'utf8'))"
 done
 
 exit 0

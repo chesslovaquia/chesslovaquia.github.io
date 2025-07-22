@@ -16,6 +16,8 @@ distclean: clean
 
 .PHONY: all
 all: build
+	@hugo version
+	@echo "node `node --version`"
 
 .PHONY: build
 build:
