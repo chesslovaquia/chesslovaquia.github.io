@@ -10,7 +10,7 @@ hugo \
 	--baseURL "${CLVQ_ROOT}" \
 	--logLevel warning \
 	--environment production \
-	--cacheDir /var/tmp/clvq_hugo_cache \
+	--ignoreCache \
 	"$@"
 
 exit 0
