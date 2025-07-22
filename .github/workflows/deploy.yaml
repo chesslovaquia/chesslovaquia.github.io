@@ -50,8 +50,8 @@ jobs:
       - name: Hugo Install
         run: sudo hugo/install.sh
 
-      - name: Make all
-        run: make all
+      - name: Make check
+        run: make check
 
       - name: Upload Artifact
         uses: actions/upload-pages-artifact@v3
