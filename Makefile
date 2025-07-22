@@ -25,9 +25,9 @@ build:
 
 .PHONY: check
 check: all
-	@echo "node `node --version`"
 	shellcheck ./*.sh docker/*.sh hugo/*.sh ts/*.sh
 	ts/check.sh
+	@echo "node `node --version`"
 	ts/build-check.sh
 	hugo/check-build.sh
 
