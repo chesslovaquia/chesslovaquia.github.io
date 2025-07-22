@@ -22,33 +22,37 @@ defaults:
 jobs:
   check:
     runs-on: ubuntu-latest
+
     env:
       TZ: UTC
       CLVQ_ROOT: https://chesslovaquia.github.io
       HUGO_PARAMS_CDN: https://equally-capital-python.global.ssl.fastly.net
       HUGO_ENVIRONMENT: production
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
       - name: Hugo Install
         run: sudo hugo/install.sh
+
       - name: Cache Restore
         id: cache-restore
         uses: actions/cache/restore@v4
         with:
-          path: |
-            ${{ runner.temp }}/hugo_cache
+          path: /var/tmp/clvq_hugo_cache
           key: hugo-${{ github.run_id }}
           restore-keys:
             hugo-
+
       - name: Make check
         run: make check
+
       - name: Cache Save
         id: cache-save
         uses: actions/cache/save@v4
         with:
-          path: |
-            ${{ runner.temp }}/hugo_cache
+          path: /var/tmp/clvq_hugo_cache
           key: ${{ steps.cache-restore.outputs.cache-primary-key }}
