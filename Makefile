@@ -38,4 +38,3 @@ vendor:
 .PHONY: upgrade
 upgrade:
 	ts/upgrade.sh
-	npm audit
