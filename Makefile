@@ -28,6 +28,7 @@ check: all
 	shellcheck ./*.sh docker/*.sh hugo/*.sh ts/*.sh
 	ts/check.sh
 	ts/build-check.sh
+	hugo/check-build.sh
 
 .PHONY: vendor
 vendor:
