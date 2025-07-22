@@ -13,10 +13,13 @@ class ChessGameDisplay {
 	private readonly move: ChessGameMove;
 	private readonly cfg:  ChessGameConfig;
 
+	private curScreen: string;
+
 	constructor(cfg: ChessGameConfig, g: Chess, m: ChessGameMove) {
 		this.game = g;
 		this.move = m;
 		this.cfg  = cfg;
+		this.curScreen = 'mobile';
 	}
 
 	public updateStatus(): void {
@@ -59,9 +62,15 @@ class ChessGameDisplay {
 
 	public toggleBoardScreen(): void {
 		if (window.innerWidth < 768) {
-			toggleScreen('mobile');
+			if (this.curScreen !== 'mobile') {
+				toggleScreen('mobile');
+				this.curScreen = 'mobile';
+			}
 		} else {
-			toggleScreen('laptop');
+			if (this.curScreen !== 'laptop') {
+				toggleScreen('laptop');
+				this.curScreen = 'laptop';
+			}
 		}
 	}
 }
