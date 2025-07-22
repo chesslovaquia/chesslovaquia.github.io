@@ -6,4 +6,9 @@ find public/ -type f -name '*.html' | sort -u | while read -r filename; do
 	npx html-validate "${filename}"
 done
 
+find public/ -type f -name '*.json' | sort -u | while read -r filename; do
+	echo "  parse ${filename}"
+	nodejs -e "JSON.parse(require('fs').readFileSync('${filename}', 'utf8'))"
+done
+
 exit 0
