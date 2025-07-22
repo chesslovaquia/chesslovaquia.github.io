@@ -2,7 +2,7 @@
 
 .PHONY: docker
 docker:
-	./docker/build.sh
+	docker/build.sh
 
 .PHONY: clean
 clean:

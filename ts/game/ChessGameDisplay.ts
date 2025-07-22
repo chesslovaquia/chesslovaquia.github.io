@@ -6,7 +6,7 @@ import { Chess, Move } from 'chess.js';
 import { ChessGameConfig } from './ChessGameConfig';
 import { ChessGameMove   } from './ChessGameMove';
 
-import { toggleScreen } from './screen';
+//~ import { toggleScreen } from './screen';
 
 class ChessGameDisplay {
 	private readonly game: Chess;
@@ -60,17 +60,24 @@ class ChessGameDisplay {
 		}
 	}
 
-	public toggleBoardScreen(): void {
+	public toggleBoardScreen(event): void {
 		if (window.innerWidth < 768) {
-			if (this.curScreen !== 'mobile') {
-				toggleScreen('mobile');
-				this.curScreen = 'mobile';
-			}
+			this.replace('/game/mobile/');
 		} else {
-			if (this.curScreen !== 'laptop') {
-				toggleScreen('laptop');
-				this.curScreen = 'laptop';
+			this.replace('/game/desktop/');
+		}
+	}
+
+	private async replace(url: string): Promise<void> {
+		try {
+			const resp = await fetch(url, { method: 'HEAD' });
+			if (resp.ok) {
+				window.location.replace(url);
+			} else {
+				console.error('Screen redirect check failed!');
 			}
+		} catch (err) {
+			console.error('Screen redirect failed:', err);
 		}
 	}
 }
