@@ -1,0 +1,29 @@
+{{- define "main" }}
+
+	{{- $buildID := getenv "HUGO_CLVQ_BUILD" | default "UNSET" -}}
+	{{- $cdn := .Site.Params.cdn -}}
+
+	{{- partial "header.html" . }}
+
+	{{- partial "page/main-head.html" . }}
+		<div class="w3-container">
+			<p class="w3-center">Loading...</p>
+		</div>
+	{{- partial "page/main-tail.html" . }}
+
+	{{- with resources.Get "game/play.ts" }}
+		{{- if eq hugo.Environment "devel" }}
+			{{- with . | js.Build }}
+			<script src="{{ $cdn }}{{ .RelPermalink }}?v={{ $buildID }}"></script>
+			{{- end }}
+		{{- else }}
+			{{- $opts := dict "minify" true }}
+			{{- with . | js.Build $opts | fingerprint }}
+			<script src="{{ $cdn }}{{ .RelPermalink }}?v={{ $buildID }}"
+				integrity="{{- .Data.Integrity }}"
+				crossorigin="anonymous"></script>
+			{{- end }}
+		{{- end }}
+	{{- end }}
+
+{{- end }}
