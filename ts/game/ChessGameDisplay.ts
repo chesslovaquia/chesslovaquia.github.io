@@ -6,20 +6,15 @@ import { Chess, Move } from 'chess.js';
 import { ChessGameConfig } from './ChessGameConfig';
 import { ChessGameMove   } from './ChessGameMove';
 
-//~ import { toggleScreen } from './screen';
-
 class ChessGameDisplay {
 	private readonly game: Chess;
 	private readonly move: ChessGameMove;
 	private readonly cfg:  ChessGameConfig;
 
-	private curScreen: string;
-
 	constructor(cfg: ChessGameConfig, g: Chess, m: ChessGameMove) {
 		this.game = g;
 		this.move = m;
 		this.cfg  = cfg;
-		this.curScreen = 'mobile';
 	}
 
 	public updateStatus(): void {
@@ -57,27 +52,6 @@ class ChessGameDisplay {
 		}
 		if (this.cfg.statusMobile) {
 			this.cfg.statusMobile.textContent = '';
-		}
-	}
-
-	public toggleBoardScreen(event): void {
-		if (window.innerWidth < 768) {
-			this.replace('/game/mobile/');
-		} else {
-			this.replace('/game/desktop/');
-		}
-	}
-
-	private async replace(url: string): Promise<void> {
-		try {
-			const resp = await fetch(url, { method: 'HEAD' });
-			if (resp.ok) {
-				window.location.replace(url);
-			} else {
-				console.error('Screen redirect check failed!');
-			}
-		} catch (err) {
-			console.error('Screen redirect failed:', err);
 		}
 	}
 }

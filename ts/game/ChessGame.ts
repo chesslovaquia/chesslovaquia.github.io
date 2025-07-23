@@ -49,9 +49,6 @@ class ChessGame {
 
 	private setupEventListeners(cfg: ChessGameConfig): void {
 		console.debug('Game setup event listeners.');
-		// Toggle board screen.
-		window.addEventListener('resize', this.display.toggleBoardScreen.bind(this.display));
-		window.addEventListener('load',   this.display.toggleBoardScreen.bind(this.display));
 		// Game reset button.
 		cfg.resetButtonLaptop?.addEventListener('click', () => this.reset());
 		cfg.resetButtonMobile?.addEventListener('click', () => this.reset());
