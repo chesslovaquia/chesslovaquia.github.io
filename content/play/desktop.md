@@ -1,5 +1,5 @@
 ---
-date: "2025-07-01T01:06:00-03:00"
+date: "2025-07-23T18:56:00-03:00"
 draft: false
 title: "Play"
 type: "page"
