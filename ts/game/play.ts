@@ -19,12 +19,14 @@ function toggleScreen(): void {
 	console.debug('Screen:', path);
 	if (window.innerWidth < 768) {
 		if (path !== '/play/mobile/') {
+			console.debug('Screen change to mobile mode.');
 			replace('/play/mobile/');
 		} else {
 			console.debug('Screen already in mobile mode.');
 		}
 	} else {
 		if (path !== '/play/desktop/') {
+			console.debug('Screen change to desktop mode.');
 			replace('/play/desktop/');
 		} else {
 			console.debug('Screen already in desktop mode.');
