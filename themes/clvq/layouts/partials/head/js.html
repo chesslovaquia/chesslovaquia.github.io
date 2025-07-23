@@ -2,31 +2,36 @@
 
 {{- $cdn := .Site.Params.cdn -}}
 {{- $js_load := .Site.Params.js_load }}
-{{- $game_js := .Site.Params.game_js }}
-{{- $sw_js := .Site.Params.sw_js }}
+
+{{- $game_ts := .Site.Params.game_ts }}
+{{- $play_ts := .Site.Params.play_ts }}
 
 <!-- Game assets -->
 {{- if eq .Params.gamePage "load" }}
-  {{- $js_load = $js_load | append $game_js }}
+	{{- $js_load = $js_load | append $game_ts }}
+{{- end }}
+{{- if eq .Params.playPage "load" }}
+	{{- $js_load = $js_load | append $play_ts }}
 {{- end }}
 
 {{- range $resource := $js_load }}
-  {{- with resources.Get $resource }}
-    {{- if eq hugo.Environment "devel" }}
-      {{- with . | js.Build }}
-        <script src="{{ $cdn }}{{ .RelPermalink }}?v={{ $buildID }}"></script>
-      {{- end }}
-    {{- else }}
-      {{- $opts := dict "minify" true }}
-      {{- with . | js.Build $opts | fingerprint }}
-        <script src="{{ $cdn }}{{ .RelPermalink }}?v={{ $buildID }}"
-          integrity="{{- .Data.Integrity }}"
-          crossorigin="anonymous"></script>
-      {{- end }}
-    {{- end }}
-  {{- end }}
+	{{- with resources.Get $resource }}
+		{{- if eq hugo.Environment "devel" }}
+			{{- with . | js.Build }}
+				<script src="{{ $cdn }}{{ .RelPermalink }}?v={{ $buildID }}"></script>
+			{{- end }}
+		{{- else }}
+			{{- $opts := dict "minify" true }}
+			{{- with . | js.Build $opts | fingerprint }}
+				<script src="{{ $cdn }}{{ .RelPermalink }}?v={{ $buildID }}"
+					integrity="{{- .Data.Integrity }}"
+					crossorigin="anonymous"></script>
+			{{- end }}
+		{{- end }}
+	{{- end }}
 {{- end }}
 
 <!-- PWA Service Worker -->
-{{- $sw_js := resources.Get $sw_js | resources.ExecuteAsTemplate $sw_js . -}}
-{{- $sw_js.Publish -}}
+{{- $sw_js := .Site.Params.sw_js }}
+{{- $sw := resources.Get $sw_js | resources.ExecuteAsTemplate $sw_js . -}}
+{{- $sw.Publish -}}

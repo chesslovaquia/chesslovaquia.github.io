@@ -3,6 +3,6 @@ date: "2025-07-01T01:06:00-03:00"
 draft: false
 title: "Play"
 type: "page"
-layout: "play"
-playPage: "load"
+layout: "game"
+gamePage: "load"
 ---

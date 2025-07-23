@@ -14,14 +14,18 @@ params:
     - css/game.css
   js_load:
     - clvq/main.ts
-  game_js: game/game.ts
   sw_js: clvq/sw.js
+  game_ts: game/game.ts
+  play_ts: game/play.ts
 
 menus:
   main:
     - name: Game
       pageref: /game/
       weight: 1
+    - name: Play
+      pageref: /play/
+      weight: 2
     - name: About
       pageref: /about/
       weight: 9
