@@ -14,10 +14,23 @@ async function replace(url: string): Promise<void> {
 	}
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+function toggleScreen(): void {
+	const path = window.location.pathname;
+	console.debug('Screen:', path);
 	if (window.innerWidth < 768) {
-		replace('/play/mobile/');
+		if (path !== '/play/mobile/') {
+			replace('/play/mobile/');
+		} else {
+			console.debug('Screen already in mobile mode.');
+		}
 	} else {
-		replace('/play/desktop/');
+		if (path !== '/play/desktop/') {
+			replace('/play/desktop/');
+		} else {
+			console.debug('Screen already in desktop mode.');
+		}
 	}
-});
+}
+
+window.addEventListener('resize', toggleScreen);
+window.addEventListener('load', toggleScreen);
