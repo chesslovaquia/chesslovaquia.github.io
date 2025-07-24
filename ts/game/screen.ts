@@ -1,6 +1,8 @@
 // Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com>
 // See LICENSE file.
 
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
 async function replace(url: string): Promise<void> {
 	try {
 		const resp = await fetch(url, { method: 'HEAD' });
@@ -34,5 +36,22 @@ function toggleScreen(): void {
 	}
 }
 
-window.addEventListener('resize', toggleScreen);
-window.addEventListener('load', toggleScreen);
+async function screenResize(wait: number): Promise<void> {
+	console.debug('Screen resize, wait:', wait);
+	await sleep(wait);
+	toggleScreen();
+}
+
+window.addEventListener('resize', () => screenResize(30));
+
+async function screenLoad(wait: number): Promise<void> {
+	console.debug('Screen load, wait:', wait);
+	await sleep(wait);
+	toggleScreen();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+	if (window.location.pathname === '/play/') {
+		screenLoad(300);
+	}
+});
