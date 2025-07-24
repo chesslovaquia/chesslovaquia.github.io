@@ -1,11 +1,23 @@
 {{- define "main" }}
-	<main class="w3-black clvq-bg1">
-		<div class="game-laptop">
-			{{ partial "game-laptop.html" (dict "page" .)}}
+	<div class="w3-row w3-black clvq-bg">
+		<div class="w3-half">
+			<div id="chessboard" class="game-board"></div>
 		</div>
-		<div class="game-mobile">
-			{{ partial "game-mobile.html" (dict "page" .)}}
+		<div class="w3-half">
+			{{ partial "game-menu.html" (dict "menuID" "game" "page" .) }}
+			<div class="w3-container">
+				<div class="w3-bar w3-black clvq-bg1">
+					<p class="w3-bar-item">
+						Black
+					</p>
+				</div>
+				<div class="w3-bar w3-black clvq-bg1">
+					<p class="w3-bar-item">
+						White
+					</p>
+				</div>
+			</div>
 		</div>
-	</main>
+	</div>
 	{{ partial "game-modals.html" (dict "page" .)}}
 {{- end }}

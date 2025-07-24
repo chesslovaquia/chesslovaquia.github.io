@@ -4,20 +4,13 @@
 class ChessGameConfig {
 	public boardElement: HTMLElement;
 
-	public statusLaptop: HTMLElement | undefined;
-	public statusMobile: HTMLElement | undefined;
-
-	public resetButtonLaptop: HTMLElement | undefined;
-	public resetButtonMobile: HTMLElement | undefined;
+	public statusBar:   HTMLElement | undefined;
+	public resetButton: HTMLElement | undefined;
 
 	constructor(boardElement: HTMLElement) {
-		this.boardElement  = boardElement;
-		// Game status.
-		this.statusLaptop = document.getElementById('gameStatusLaptop') || undefined;
-		this.statusMobile = document.getElementById('gameStatusMobile') || undefined;
-		// Reset buttons.
-		this.resetButtonLaptop = document.getElementById('gameResetLaptop')  || undefined;
-		this.resetButtonMobile = document.getElementById('gameResetMobile')  || undefined;
+		this.boardElement = boardElement;
+		this.statusBar    = document.getElementById('gameStatus') || undefined;
+		this.resetButton  = document.getElementById('gameReset')  || undefined;
 	}
 }
 

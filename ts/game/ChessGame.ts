@@ -49,9 +49,7 @@ class ChessGame {
 
 	private setupEventListeners(cfg: ChessGameConfig): void {
 		console.debug('Game setup event listeners.');
-		// Game reset button.
-		cfg.resetButtonLaptop?.addEventListener('click', () => this.reset());
-		cfg.resetButtonMobile?.addEventListener('click', () => this.reset());
+		cfg.resetButton?.addEventListener('click', () => this.reset());
 	}
 
 	private newGame(): game.Chess {

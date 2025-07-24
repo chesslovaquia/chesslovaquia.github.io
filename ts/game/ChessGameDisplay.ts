@@ -18,7 +18,8 @@ class ChessGameDisplay {
 	}
 
 	public updateStatus(): void {
-		if (!this.cfg.statusLaptop || !this.cfg.statusMobile) {
+		if (!this.cfg.statusBar) {
+			console.debug('Game status bar not found.');
 			return;
 		}
 		let statusText = '';
@@ -42,16 +43,12 @@ class ChessGameDisplay {
 				statusText += ' (in check)';
 			}
 		}
-		this.cfg.statusLaptop.textContent = statusText;
-		this.cfg.statusMobile.textContent = statusText;
+		this.cfg.statusBar.textContent = statusText;
 	}
 
 	public clear(): void {
-		if (this.cfg.statusLaptop) {
-			this.cfg.statusLaptop.textContent = '';
-		}
-		if (this.cfg.statusMobile) {
-			this.cfg.statusMobile.textContent = '';
+		if (this.cfg.statusBar) {
+			this.cfg.statusBar.textContent = '';
 		}
 	}
 }

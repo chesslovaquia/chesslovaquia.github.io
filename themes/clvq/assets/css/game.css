@@ -5,20 +5,3 @@
 	aspect-ratio: 1; /* Keeps it square */
 	margin: auto; /* Centers the board */
 }
-
-.game-mobile {
-	display: block;
-}
-
-.game-laptop {
-	display: none;
-}
-
-@media (min-width: 768px) {
-	.game-mobile {
-		display: none;
-	}
-	.game-laptop {
-		display: block;
-	}
-}

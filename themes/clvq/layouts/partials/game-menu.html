@@ -1,6 +1,5 @@
 {{- $page := .page }}
 {{- $menuID := .menuID }}
-{{- $screenMode := .screenMode }}
 
 {{- $siteBtnClass := $page.Site.Params.btnClass }}
 
@@ -9,22 +8,22 @@
 	<a class="w3-bar-item {{ $siteBtnClass }}" href="/">&#9004</a>
 
 	<!-- Game Status -->
-	<div class="w3-bar-item w3-text-lime" id="gameStatus{{ $screenMode }}"></div>
+	<div id="gameStatus" class="w3-bar-item w3-text-lime"></div>
 
 	<!-- Toggle Button -->
 	<a class="w3-bar-item {{ $siteBtnClass }} w3-right"
-	href="javascript:void(0)"
-	onclick="Clvq.w3ToggleMenu('gameMenu{{ $screenMode }}')">&#9776;</a>
+		href="javascript:void(0)"
+		onclick="Clvq.w3ToggleMenu('gameMenu')">&#9776;</a>
 </div>
 <!-- Dropdown Menu -->
-<div id="gameMenu{{ $screenMode }}" class="w3-modal w3-hide">
+<div id="gameMenu" class="w3-modal w3-hide">
 	<div class="w3-modal-content w3-bar-block w3-black w3-center w3-round">
 		<span class="w3-bar-item {{ $siteBtnClass }}"
-			onclick="Clvq.w3ToggleMenu('gameMenu{{ $screenMode }}')">&times</span>
+			onclick="Clvq.w3ToggleMenu('gameMenu')">&times</span>
 		<!-- Game Reset -->
-		<a id="gameReset{{ $screenMode }}" href="javascript:void(0)"
+		<a id="gameReset" href="javascript:void(0)"
 			class="w3-bar-item {{ $siteBtnClass }}"
-			onclick="Clvq.w3ToggleMenu('gameMenu{{ $screenMode }}')">
+			onclick="Clvq.w3ToggleMenu('gameMenu')">
 			Reset
 		</a>
 		{{- with index site.Menus $menuID }}
