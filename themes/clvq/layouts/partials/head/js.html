@@ -31,6 +31,11 @@
 	{{- end }}
 {{- end }}
 
+<!-- Game assets loader -->
+{{- $gload_js := .Site.Params.game_loader_js }}
+{{- $gl := resources.Get $gload_js | resources.ExecuteAsTemplate $gload_js . -}}
+{{- $gl.Publish -}}
+
 <!-- PWA Service Worker -->
 {{- $sw_js := .Site.Params.sw_js }}
 {{- $sw := resources.Get $sw_js | resources.ExecuteAsTemplate $sw_js . -}}
