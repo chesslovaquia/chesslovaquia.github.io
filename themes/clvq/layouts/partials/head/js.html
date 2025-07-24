@@ -4,14 +4,14 @@
 {{- $js_load := .Site.Params.js_load }}
 
 {{- $game_ts := .Site.Params.game_ts }}
-{{- $play_ts := .Site.Params.play_ts }}
+{{- $screen_ts := .Site.Params.screen_ts }}
 
 <!-- Game assets -->
 {{- if eq .Params.gamePage "load" }}
 	{{- $js_load = $js_load | append $game_ts }}
 {{- end }}
 {{- if eq .Params.playPage "load" }}
-	{{- $js_load = $js_load | append $play_ts }}
+	{{- $js_load = $js_load | append $screen_ts }}
 {{- end }}
 
 {{- range $resource := $js_load }}

@@ -15,7 +15,7 @@ params:
   js_load:
     - clvq/main.ts
   sw_js: clvq/sw.js
-  play_ts: game/play.ts
+  screen_ts: game/screen.ts
   game_ts: game/game.ts
   game_loader_js: game/load.js
   game_assets:
