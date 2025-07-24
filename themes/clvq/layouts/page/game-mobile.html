@@ -1,0 +1,11 @@
+{{- define "main" }}
+	<main class="w3-black clvq-bg1">
+		<div class="game-laptop">
+			{{ partial "game-laptop.html" (dict "page" .)}}
+		</div>
+		<div class="game-mobile">
+			{{ partial "game-mobile.html" (dict "page" .)}}
+		</div>
+	</main>
+	{{ partial "game-modals.html" (dict "page" .)}}
+{{- end }}
