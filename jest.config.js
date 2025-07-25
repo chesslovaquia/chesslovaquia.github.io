@@ -5,4 +5,5 @@ module.exports = {
 	testMatch: ['<rootDir>/ts/testing/**/*_test.ts'],
 	collectCoverageFrom: ['<rootDir>/ts/**/*.ts'],
 	coverageReporters: ['html', 'text'],
+	silent: true,
 }
