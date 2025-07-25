@@ -10,9 +10,11 @@
   },
   "devDependencies": {
     "@types/chess.js": "^0.13.7",
+    "@types/jest": "^30.0.0",
     "csstree-validator": "^4.0.1",
     "html-validate": "^9.7.1",
-    "npm-check-updates": "^18.0.1",
+    "npm-check-updates": "^18.0.2",
+    "ts-jest": "^29.4.0",
     "typescript": "^5.8.3"
   }
 }
