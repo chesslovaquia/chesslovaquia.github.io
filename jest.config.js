@@ -4,6 +4,6 @@ module.exports = {
 	roots: ['<rootDir>/ts'],
 	testMatch: ['<rootDir>/ts/testing/**/*_test.ts'],
 	collectCoverageFrom: ['<rootDir>/ts/**/*.ts'],
-	coverageReporters: ['html', 'text'],
+	coverageReporters: ['html'],
 	silent: true,
 }
