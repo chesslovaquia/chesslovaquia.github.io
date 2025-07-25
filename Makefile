@@ -31,6 +31,10 @@ check: all
 	ts/build-check.sh
 	hugo/check-build.sh
 
+.PHONY: test
+test:
+	ts/test.sh
+
 .PHONY: vendor
 vendor:
 	./vendor.sh

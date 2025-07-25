@@ -1,7 +1,7 @@
 // Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com>
 // See LICENSE file.
 
-import { __screen } from '../game/screen';
+import { __screen } from '../../game/screen';
 
 __screen.sleep = jest.fn();
 
