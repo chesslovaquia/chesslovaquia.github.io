@@ -67,3 +67,9 @@ document.addEventListener('DOMContentLoaded', () => {
 		screenLoad(300);
 	}
 });
+
+// Testing exports.
+export const __screen = {
+	sleep,
+	screenLoad,
+};

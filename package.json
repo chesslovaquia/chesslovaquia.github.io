@@ -2,7 +2,9 @@
   "name": "chesslovaquia",
   "scripts": {
     "build": "hugo/build.sh",
-    "dev": "hugo/devel.sh"
+    "dev": "hugo/devel.sh",
+    "test": "jest",
+    "test:coverage": "jest --coverage"
   },
   "dependencies": {
     "chess.js": "^1.4.0",
@@ -13,6 +15,7 @@
     "@types/jest": "^30.0.0",
     "csstree-validator": "^4.0.1",
     "html-validate": "^9.7.1",
+    "jest-environment-jsdom": "^30.0.5",
     "npm-check-updates": "^18.0.2",
     "ts-jest": "^29.4.0",
     "typescript": "^5.8.3"
