@@ -16,10 +16,20 @@ async function replace(url: string): Promise<void> {
 	}
 }
 
-function toggleScreen(): void {
+type Mode = 'mobile' | 'desktop' | 'landscape';
+
+function toggleScreen(): Mode {
 	const path = window.location.pathname;
-	console.debug('Screen:', path);
-	if (window.innerWidth < 768) {
+	console.debug('Screen toggle:', path);
+	if (screen.orientation) {
+		const mode = screen.orientation.type;
+		if (mode.includes('landscape')) {
+			console.debug('Screen change to landscape mode.');
+			replace('/play/desktop/');
+			return 'landscape';
+		}
+	}
+	if (window.innerWidth < window.innerHeight) {
 		if (path !== '/play/mobile/') {
 			console.debug('Screen change to mobile mode.');
 			replace('/play/mobile/');
@@ -33,7 +43,9 @@ function toggleScreen(): void {
 		} else {
 			console.debug('Screen already in desktop mode.');
 		}
+		return 'desktop';
 	}
+	return 'mobile';
 }
 
 async function screenResize(wait: number): Promise<void> {
