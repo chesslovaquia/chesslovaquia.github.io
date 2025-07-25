@@ -32,7 +32,7 @@ check: all
 	hugo/check-build.sh
 
 .PHONY: test
-test:
+test: check
 	ts/test.sh
 
 .PHONY: vendor
