@@ -3,10 +3,33 @@
 
 import { __screen } from '../../game/screen';
 
-__screen.sleep = jest.fn();
+test('screenLoad', async () => {
+	await __screen.screenLoad(0);
+});
 
-describe('screen', () => {
-	test('load', async () => {
-		await __screen.screenLoad(300);
+test('screenResize', async () => {
+	await __screen.screenResize(0);
+});
+
+describe('toggleScreen', () => {
+	test('mobile', () => {
+		const width = window.innerWidth;
+		const height = window.innerHeight;
+		window.innerWidth = 360;
+		window.innerHeight = 640;
+		const mode = __screen.toggleScreen();
+		window.innerWidth = width;
+		window.innerHeight = height;
+		expect(mode).toBe('mobile');
+	});
+	test('desktop', () => {
+		const width = window.innerWidth;
+		const height = window.innerHeight;
+		window.innerWidth = 640;
+		window.innerHeight = 360;
+		const mode = __screen.toggleScreen();
+		window.innerWidth = width;
+		window.innerHeight = height;
+		expect(mode).toBe('desktop');
 	});
 });

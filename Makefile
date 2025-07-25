@@ -6,7 +6,7 @@ docker:
 
 .PHONY: clean
 clean:
-	@rm -rf public resources .hugo_build.lock
+	@rm -rf public resources .hugo_build.lock coverage
 
 .PHONY: distclean
 distclean: clean

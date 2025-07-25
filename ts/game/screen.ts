@@ -16,19 +16,13 @@ async function replace(url: string): Promise<void> {
 	}
 }
 
-type Mode = 'mobile' | 'desktop' | 'landscape';
+type Mode = 'mobile' | 'desktop';
 
 function toggleScreen(): Mode {
 	const path = window.location.pathname;
 	console.debug('Screen toggle:', path);
-	if (screen.orientation) {
-		const mode = screen.orientation.type;
-		if (mode.includes('landscape')) {
-			console.debug('Screen change to landscape mode.');
-			replace('/play/desktop/');
-			return 'landscape';
-		}
-	}
+	console.debug('Window width:', window.innerWidth);
+	console.debug('Window height:', window.innerHeight);
 	if (window.innerWidth < window.innerHeight) {
 		if (path !== '/play/mobile/') {
 			console.debug('Screen change to mobile mode.');
@@ -54,7 +48,7 @@ async function screenResize(wait: number): Promise<void> {
 	toggleScreen();
 }
 
-window.addEventListener('resize', () => screenResize(30));
+window.addEventListener('resize', () => screenResize(100));
 
 async function screenLoad(wait: number): Promise<void> {
 	console.debug('Screen load, wait:', wait);
@@ -70,6 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Testing exports.
 export const __screen = {
-	sleep,
 	screenLoad,
+	screenResize,
+	toggleScreen,
 };
