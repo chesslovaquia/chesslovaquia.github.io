@@ -52,6 +52,7 @@ class ChessGameMove {
 				dests: this.possibleDests()
 			},
 			lastMove: this.getBoardMove(lastMove),
+			check: this.game.inCheck(),
 		});
 		this.saveState();
 	}
@@ -136,7 +137,6 @@ class ChessGameMove {
 			throw new ChessGameError(`Invalid move: ${gotError}`);
 		}
 	}
-
 }
 
 export { ChessGameMove };

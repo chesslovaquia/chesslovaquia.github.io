@@ -113,7 +113,7 @@ class ChessGame {
 	private afterMove(orig: board.Key, dest: board.Key) {
 		// Pawn promotion.
 		if (this.move.isPromotion()) {
-			console.log('Move was pawn promotion.');
+			console.debug('Move was pawn promotion.');
 			this.promotion.handle(orig, dest);
 			this.display.updateStatus();
 		}
