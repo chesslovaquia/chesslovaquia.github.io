@@ -1,15 +1,7 @@
 {{- define "main" }}
 	{{ partial "game-menu.html" (dict "menuID" "game" "page" .) }}
-	<div class="w3-bar">
-		<p class="w3-bar-item">
-			Black
-		</p>
-	</div>
+	{{ partial "game-player.html" (dict "side" "Black" "page" .)}}
 	<div id="chessboard" class="game-board"></div>
-	<div class="w3-bar">
-		<p class="w3-bar-item">
-			White
-		</p>
-	</div>
+	{{ partial "game-player.html" (dict "side" "White" "page" .)}}
 	{{ partial "game-modals.html" (dict "page" .)}}
 {{- end }}

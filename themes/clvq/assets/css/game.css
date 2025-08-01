@@ -5,3 +5,13 @@
 	aspect-ratio: 1; /* Keeps it square */
 	margin: auto; /* Centers the board */
 }
+
+.game-player {
+	margin: 0;
+	padding: 0;
+}
+
+.game-clock {
+	margin: 0;
+	padding: 0;
+}
