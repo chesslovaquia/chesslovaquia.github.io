@@ -7,12 +7,13 @@ import { Api as ChessgroundApi } from 'chessground/api';
 import * as board from 'chessground/types';
 import * as game  from 'chess.js';
 
-import { ChessGameConfig }    from './ChessGameConfig';
-import { ChessGameDisplay }   from './ChessGameDisplay';
-import { ChessGameError }     from './ChessGameError';
-import { ChessGameMove }      from './ChessGameMove';
+import { ChessGameConfig    } from './ChessGameConfig';
+import { ChessGameDisplay   } from './ChessGameDisplay';
+import { ChessGameError     } from './ChessGameError';
+import { ChessGameMove      } from './ChessGameMove';
 import { ChessGamePromotion } from './ChessGamePromotion';
-import { ChessGameState }     from './ChessGameState';
+import { ChessGameState     } from './ChessGameState';
+import { ChessGamePlayer    } from './ChessGamePlayer';
 
 class ChessGame {
 	private readonly game:      game.Chess;
@@ -22,10 +23,15 @@ class ChessGame {
 	private readonly state:     ChessGameState;
 	private readonly display:   ChessGameDisplay;
 
+	private readonly p1: ChessGamePlayer;
+	private readonly p2: ChessGamePlayer;
+
 	constructor(config: ChessGameConfig) {
 		console.debug('Game config:', config);
 		// Respect the order.
 		this.game      = this.newGame();
+		this.p1        = new ChessGamePlayer("1");
+		this.p2        = new ChessGamePlayer("2");
 		this.board     = this.newBoard(config);
 		this.state     = new ChessGameState();
 		this.move      = new ChessGameMove(this.game, this.board, this.state);
