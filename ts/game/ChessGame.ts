@@ -26,9 +26,12 @@ class ChessGame {
 	private readonly p1: ChessGamePlayer;
 	private readonly p2: ChessGamePlayer;
 
+	private active: boolean;
+
 	constructor(config: ChessGameConfig) {
 		console.debug('Game config:', config);
 		// Respect the order.
+		this.active    = false;
 		this.game      = this.newGame();
 		this.p1        = new ChessGamePlayer("1");
 		this.p2        = new ChessGamePlayer("2");
@@ -50,6 +53,9 @@ class ChessGame {
 			console.debug('Game load done:', result);
 			this.move.updateBoard(this.move.getLastMove());
 			this.enableBoard();
+			if (result === true) {
+				this.start();
+			}
 		});
 	}
 
@@ -112,6 +118,9 @@ class ChessGame {
 	}
 
 	private onMove(orig: board.Key, dest: board.Key, gotPiece?: board.Piece): void {
+		if (!this.active) {
+			this.start();
+		}
 		this.move.exec(orig, dest, 'q');
 		this.display.updateStatus();
 	}
@@ -127,6 +136,7 @@ class ChessGame {
 
 	private reset(): void {
 		console.log('Game reset!');
+		this.stop();
 		this.game.reset();
 		this.move.reset();
 		this.state.reset();
@@ -170,6 +180,16 @@ class ChessGame {
 			},
 		});
 		this.display.updateStatus();
+	}
+
+	private start(): void {
+		console.debug('Game start.');
+		this.active = true;
+	}
+
+	private stop(): void {
+		console.debug('Game stop.');
+		this.active = false;
 	}
 }
 
