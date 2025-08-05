@@ -1,7 +1,7 @@
 {{- define "main" }}
 	{{ partial "game-menu.html" (dict "menuID" "game" "page" .) }}
-	{{ partial "game-player.html" (dict "side" "Black" "page" .)}}
+	{{ partial "game-player.html" (dict "id" "2" "page" .)}}
 	<div id="chessboard" class="game-board"></div>
-	{{ partial "game-player.html" (dict "side" "White" "page" .)}}
+	{{ partial "game-player.html" (dict "id" "1" "page" .)}}
 	{{ partial "game-modals.html" (dict "page" .)}}
 {{- end }}
