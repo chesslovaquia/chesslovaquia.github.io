@@ -72,7 +72,7 @@ class ChessGameClock {
 		return false;
 	}
 
-	private update(turn: Color): void {
+	private async update(turn: Color): Promise<void> {
 		if (this.side['w'].clock) {
 			this.side['w'].clock.textContent = this.format(this.time['w']);
 		}
