@@ -33,10 +33,10 @@ class ChessGame {
 	constructor(config: ChessGameConfig) {
 		console.debug('Game config:', config);
 		this.active    = false;
+		this.game      = this.newGame();
 		this.p1        = new ChessGamePlayer("1");
 		this.p2        = new ChessGamePlayer("2");
-		this.clock     = new ChessGameClock(600, 0);
-		this.game      = this.newGame();
+		this.clock     = new ChessGameClock(this.game, this.p1, this.p2, 600, 0);
 		this.board     = this.newBoard(config);
 		this.state     = new ChessGameState();
 		this.move      = new ChessGameMove(this.game, this.board, this.state);

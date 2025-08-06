@@ -7,8 +7,6 @@ class ChessGamePlayer {
 	private readonly info:  HTMLElement | undefined;
 	private readonly clock: HTMLElement | undefined;
 
-	private time: number;
-
 	constructor(id: "1" | "2") {
 		this.info  = document.getElementById(`gamePlayer${id}`) || undefined;
 		this.clock = document.getElementById(`gameClock${id}`) || undefined;
@@ -18,7 +16,6 @@ class ChessGamePlayer {
 		if (!this.clock) {
 			throw new ChessGameError(`gameClock${id}: element not found`);
 		}
-		this.time = 600;
 	}
 }
 
