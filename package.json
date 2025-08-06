@@ -17,8 +17,8 @@
     "html-validate": "^9.7.1",
     "jest-environment-jsdom": "^30.0.5",
     "npm-check-updates": "^18.0.2",
-    "ts-jest": "^29.4.0",
-    "typescript": "^5.8.3",
+    "ts-jest": "^29.4.1",
+    "typescript": "^5.9.2",
     "whatwg-fetch": "^3.6.20"
   }
 }
