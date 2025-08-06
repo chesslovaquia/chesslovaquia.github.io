@@ -40,21 +40,11 @@ class ChessGameClock {
 		this.increment   = increment;
 	}
 
-	public setTime(secs: number): void {
-		if (secs < 0) {
-			throw new ChessGameError(`Invalid clock time: ${secs}`);
+	public move(turn: Color): void {
+		if (this.increment > 0) {
+			this.time[turn] += this.increment;
 		}
-		this.time = {
-			'w': secs,
-			'b': secs,
-		};
-	}
-
-	public setIncrement(secs: number): void {
-		if (secs < 0) {
-			throw new ChessGameError(`Invalid clock increment: ${secs}`);
-		}
-		this.increment = secs;
+		this.update(turn);
 	}
 
 	public start(): boolean {
@@ -82,9 +72,12 @@ class ChessGameClock {
 		return false;
 	}
 
-	public update(turn: Color): void {
-		if (this.side[turn].clock) {
-			this.side[turn].clock.textContent = this.format(this.time[turn]);
+	private update(turn: Color): void {
+		if (this.side['w'].clock) {
+			this.side['w'].clock.textContent = this.format(this.time['w']);
+		}
+		if (this.side['b'].clock) {
+			this.side['b'].clock.textContent = this.format(this.time['b']);
 		}
 		this.side['w'].clock?.classList.toggle('active', turn === 'w');
 		this.side['b'].clock?.classList.toggle('active', turn === 'b');

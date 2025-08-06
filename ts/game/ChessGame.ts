@@ -36,7 +36,7 @@ class ChessGame {
 		this.game      = this.newGame();
 		this.p1        = new ChessGamePlayer("1");
 		this.p2        = new ChessGamePlayer("2");
-		this.clock     = new ChessGameClock(this.game, this.p1, this.p2, 600, 0);
+		this.clock     = new ChessGameClock(this.game, this.p1, this.p2, 900, 10);
 		this.board     = this.newBoard(config);
 		this.state     = new ChessGameState();
 		this.move      = new ChessGameMove(this.game, this.board, this.state);
@@ -135,7 +135,7 @@ class ChessGame {
 			this.display.updateStatus();
 		}
 		// Update clocks.
-		this.clock.update(this.game.turn());
+		this.clock.move(this.game.turn());
 	}
 
 	private reset(): void {
