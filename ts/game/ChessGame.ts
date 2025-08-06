@@ -1,7 +1,7 @@
 // Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com>
 // See LICENSE file.
 
-import { Chessground }           from 'chessground';
+import { Chessground           } from 'chessground';
 import { Api as ChessgroundApi } from 'chessground/api';
 
 import * as board from 'chessground/types';
@@ -14,6 +14,7 @@ import { ChessGameMove      } from './ChessGameMove';
 import { ChessGamePromotion } from './ChessGamePromotion';
 import { ChessGameState     } from './ChessGameState';
 import { ChessGamePlayer    } from './ChessGamePlayer';
+import { ChessGameClock     } from './ChessGameClock';
 
 class ChessGame {
 	private readonly game:      game.Chess;
@@ -22,6 +23,7 @@ class ChessGame {
 	private readonly promotion: ChessGamePromotion;
 	private readonly state:     ChessGameState;
 	private readonly display:   ChessGameDisplay;
+	private readonly clock:     ChessGameClock;
 
 	private readonly p1: ChessGamePlayer;
 	private readonly p2: ChessGamePlayer;
@@ -30,11 +32,11 @@ class ChessGame {
 
 	constructor(config: ChessGameConfig) {
 		console.debug('Game config:', config);
-		// Respect the order.
 		this.active    = false;
-		this.game      = this.newGame();
 		this.p1        = new ChessGamePlayer("1");
 		this.p2        = new ChessGamePlayer("2");
+		this.clock     = new ChessGameClock(600, 0);
+		this.game      = this.newGame();
 		this.board     = this.newBoard(config);
 		this.state     = new ChessGameState();
 		this.move      = new ChessGameMove(this.game, this.board, this.state);
@@ -184,11 +186,13 @@ class ChessGame {
 
 	private start(): void {
 		console.debug('Game start.');
+		this.clock.start();
 		this.active = true;
 	}
 
 	private stop(): void {
 		console.debug('Game stop.');
+		this.clock.stop();
 		this.active = false;
 	}
 }
