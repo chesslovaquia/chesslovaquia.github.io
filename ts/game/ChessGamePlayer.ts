@@ -5,7 +5,7 @@ import { ChessGameError } from './ChessGameError';
 
 class ChessGamePlayer {
 	private readonly info:  HTMLElement | undefined;
-	private readonly clock: HTMLElement | undefined;
+	public  readonly clock: HTMLElement | undefined;
 
 	constructor(id: "1" | "2") {
 		this.info  = document.getElementById(`gamePlayer${id}`) || undefined;

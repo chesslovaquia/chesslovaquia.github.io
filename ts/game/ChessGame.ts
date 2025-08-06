@@ -134,6 +134,8 @@ class ChessGame {
 			this.promotion.handle(orig, dest);
 			this.display.updateStatus();
 		}
+		// Update clocks.
+		this.clock.update(this.game.turn());
 	}
 
 	private reset(): void {
