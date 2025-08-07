@@ -1,9 +1,19 @@
 # To do list
 
-* Save and restore clocks state.
+Save and restore clocks state.
 
-* Game navigation.
+---
 
-* User preferences.
+Game navigation.
 
-* Fix service worker caching to use CDN as the real requests would be done later.
+---
+
+User preferences.
+
+---
+
+Fix service worker caching to use CDN as the real requests would be done later.
+
+---
+
+Game setup: user should choose time specs and click start.

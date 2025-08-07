@@ -17,8 +17,9 @@ class ChessGameClock {
 	private increment:   number;
 	private interval:    ReturnType<typeof setInterval> | null;
 
-	private side: Record<Color, ChessGamePlayer>;
-	private time: Record<Color, number>;
+	private side:      Record<Color, ChessGamePlayer>;
+	private time:      Record<Color, number>;
+	private firstMove: Record<Color, boolean>;
 
 	constructor(game: Chess, p1: ChessGamePlayer, p2: ChessGamePlayer, time: number, increment: number) {
 		if (time < 0 || increment < 0) {
@@ -35,14 +36,23 @@ class ChessGameClock {
 			'w': time,
 			'b': time,
 		};
+		this.firstMove = {
+			'w': true,
+			'b': true,
+		};
 		this.interval    = null;
 		this.initialTime = time;
 		this.increment   = increment;
+		this.reset(); // So the clock display shows proper time.
 	}
 
 	public move(turn: Color): void {
 		if (this.increment > 0) {
-			this.time[turn] += this.increment;
+			if (!this.firstMove[turn]) {
+				this.time[turn] += this.increment;
+			} else {
+				this.firstMove[turn] = false;
+			}
 		}
 		this.update(turn);
 	}
@@ -73,11 +83,8 @@ class ChessGameClock {
 	}
 
 	private async update(turn: Color): Promise<void> {
-		if (this.side['w'].clock) {
-			this.side['w'].clock.textContent = this.format(this.time['w']);
-		}
-		if (this.side['b'].clock) {
-			this.side['b'].clock.textContent = this.format(this.time['b']);
+		if (this.side[turn].clock) {
+			this.side[turn].clock.textContent = this.format(this.time[turn]);
 		}
 		this.side['w'].clock?.classList.toggle('active', turn === 'w');
 		this.side['b'].clock?.classList.toggle('active', turn === 'b');
@@ -94,9 +101,11 @@ class ChessGameClock {
 		this.time['b'] = this.initialTime;
 		if (this.side['w'].clock) {
 			this.side['w'].clock.textContent = this.format(this.initialTime);
+			this.side['w'].clock.classList.toggle('active', false);
 		}
 		if (this.side['b'].clock) {
 			this.side['b'].clock.textContent = this.format(this.initialTime);
+			this.side['b'].clock.classList.toggle('active', false);
 		}
 	}
 }
