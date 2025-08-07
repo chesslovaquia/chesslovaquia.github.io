@@ -51,7 +51,7 @@ class ClvqIndexedDB {
 		});
 	}
 
-	public async getItem(key: string): Promise<string> {
+	public async getItem(key: string): Promise<any> {
 		const db = await this.getDB();
 		const transaction = db.transaction([this.store], 'readonly');
 		const store = transaction.objectStore(this.store);
@@ -65,7 +65,7 @@ class ClvqIndexedDB {
 		});
 	}
 
-	public async setItem(key: string, val: string): Promise<void> {
+	public async setItem(key: string, val: any): Promise<void> {
 		const db = await this.getDB();
 		const transaction = db.transaction([this.store], 'readwrite');
 		const store = transaction.objectStore(this.store);

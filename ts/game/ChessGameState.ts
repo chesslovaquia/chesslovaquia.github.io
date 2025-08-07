@@ -7,18 +7,15 @@ import { ClvqIndexedDB } from '../clvq/ClvqIndexedDB';
 
 const dbName    = 'clvqChessGame';
 const dbStore   = 'state';
-const dbVersion = 1;
+const dbVersion = 2;
 
 class ChessGameState {
 	private readonly clock: ChessGameClock;
-
-	private readonly db:  ClvqIndexedDB;
-	private readonly sep: string;
+	private readonly db:    ClvqIndexedDB;
 
 	constructor(clock: ChessGameClock) {
 		this.clock = clock;
 		this.db    = new ClvqIndexedDB(dbName, dbStore, dbVersion);
-		this.sep   = ';';
 	}
 
 	public reset(): void {
@@ -26,18 +23,18 @@ class ChessGameState {
 	}
 
 	public async saveMoves(moves: string[]): Promise<void> {
-		const m = moves.join(this.sep);
-		if (m) {
-			console.debug('Game state save moves:', m);
-			this.db.setItem('moves', m);
+		if (moves) {
+			console.debug('Game state save moves:', moves);
+			this.db.setItem('moves', moves);
 		}
 	}
 
 	public async getMoves(): Promise<string[]> {
-		const moves = await this.db.getItem('moves');
-		if (moves) {
+		const found = await this.db.hasItem('moves');
+		if (found) {
+			const moves = await this.db.getItem('moves');
 			console.debug('Game state got moves:', moves);
-			return moves.split(this.sep);
+			return moves;
 		}
 		return [];
 	}
