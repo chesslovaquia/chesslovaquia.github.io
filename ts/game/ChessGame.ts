@@ -37,8 +37,8 @@ class ChessGame {
 		this.p1        = new ChessGamePlayer("1");
 		this.p2        = new ChessGamePlayer("2");
 		this.clock     = new ChessGameClock(this.game, this.p1, this.p2, 900, 10);
+		this.state     = new ChessGameState(this.clock);
 		this.board     = this.newBoard(config);
-		this.state     = new ChessGameState();
 		this.move      = new ChessGameMove(this.game, this.board, this.state);
 		this.display   = new ChessGameDisplay(config, this.game, this.move);
 		this.promotion = new ChessGamePromotion(this.move, this.display);
@@ -56,6 +56,7 @@ class ChessGame {
 			this.move.updateBoard(this.move.getLastMove());
 			this.enableBoard();
 			if (result === true) {
+				this.state.load();
 				this.start();
 			}
 		});
@@ -136,6 +137,8 @@ class ChessGame {
 		}
 		// Update clocks.
 		this.clock.move(this.game.turn());
+		// Save states.
+		this.state.save();
 	}
 
 	private reset(): void {

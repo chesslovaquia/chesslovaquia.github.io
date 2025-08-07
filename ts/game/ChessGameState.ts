@@ -1,25 +1,24 @@
 // Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com>
 // See LICENSE file.
 
-import {
-	DEFAULT_POSITION,
-	Move,
-} from 'chess.js';
+import { ChessGameClock } from './ChessGameClock';
 
-import { ClvqIndexedDB    } from '../clvq/ClvqIndexedDB';
-import { ClvqLocalStorage } from '../clvq/ClvqLocalStorage';
+import { ClvqIndexedDB } from '../clvq/ClvqIndexedDB';
 
 const dbName    = 'clvqChessGame';
 const dbStore   = 'state';
 const dbVersion = 1;
 
 class ChessGameState {
+	private readonly clock: ChessGameClock;
+
 	private readonly db:  ClvqIndexedDB;
 	private readonly sep: string;
 
-	constructor() {
-		this.db  = new ClvqIndexedDB(dbName, dbStore, dbVersion);
-		this.sep = ';';
+	constructor(clock: ChessGameClock) {
+		this.clock = clock;
+		this.db    = new ClvqIndexedDB(dbName, dbStore, dbVersion);
+		this.sep   = ';';
 	}
 
 	public reset(): void {
@@ -41,6 +40,12 @@ class ChessGameState {
 			return moves.split(this.sep);
 		}
 		return [];
+	}
+
+	public save(): void {
+	}
+
+	public load(): void {
 	}
 }
 

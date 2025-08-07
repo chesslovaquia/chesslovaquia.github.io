@@ -108,6 +108,9 @@ class ChessGameClock {
 			this.side['b'].clock.classList.toggle('active', false);
 		}
 	}
+
+	public saveState(): void {
+	}
 }
 
 export { ChessGameClock };
