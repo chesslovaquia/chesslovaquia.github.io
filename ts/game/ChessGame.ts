@@ -139,7 +139,7 @@ class ChessGame {
 		// Update clocks.
 		this.clock.move(this.game.turn());
 		// Save state.
-		this.state.save().then(() => {
+		this.state.save().finally(() => {
 			console.debug('Game state saved.');
 			this.enableMoves();
 		});
