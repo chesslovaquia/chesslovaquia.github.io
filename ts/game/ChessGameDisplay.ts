@@ -17,7 +17,7 @@ class ChessGameDisplay {
 		this.cfg  = cfg;
 	}
 
-	public updateStatus(): void {
+	public async updateStatus(): Promise<void> {
 		if (!this.cfg.statusBar) {
 			console.debug('Game status bar not found.');
 			return;

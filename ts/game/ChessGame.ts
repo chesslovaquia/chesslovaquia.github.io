@@ -37,9 +37,9 @@ class ChessGame {
 		this.p1        = new ChessGamePlayer("1");
 		this.p2        = new ChessGamePlayer("2");
 		this.clock     = new ChessGameClock(this.game, this.p1, this.p2, 900, 10);
-		this.state     = new ChessGameState(this.clock);
+		this.state     = new ChessGameState(this.game, this.clock);
 		this.board     = this.newBoard(config);
-		this.move      = new ChessGameMove(this.game, this.board, this.state);
+		this.move      = new ChessGameMove(this.game, this.board);
 		this.display   = new ChessGameDisplay(config, this.game, this.move);
 		this.promotion = new ChessGamePromotion(this.move, this.display);
 		if (this.board) {
@@ -51,15 +51,14 @@ class ChessGame {
 	private init(): void {
 		console.debug('Game init.');
 		this.disableBoard();
-		this.loadGame().then((result) => {
-			console.debug('Game load done:', result);
-			this.move.updateBoard(this.move.getLastMove());
-			this.enableBoard();
-			if (result === true) {
-				this.state.load();
+		this.state.load().then((done) => {
+			console.debug('Game load done:', done);
+			if (done) {
+				this.move.updateBoard(this.move.getLastMove());
 				this.start();
 			}
 		});
+		this.enableBoard();
 	}
 
 	private setupEventListeners(cfg: ChessGameConfig): void {
@@ -137,36 +136,19 @@ class ChessGame {
 		}
 		// Update clocks.
 		this.clock.move(this.game.turn());
-		// Save states.
-		this.state.save();
+		// Save state.
+		this.state.save().then(() => {
+			console.debug('Game state saved.');
+		});
 	}
 
 	private reset(): void {
 		console.log('Game reset!');
 		this.stop();
 		this.game.reset();
-		this.move.reset();
 		this.state.reset();
 		this.move.updateBoard(undefined);
 		this.display.updateStatus();
-	}
-
-	private async loadGame(): Promise<boolean> {
-		const moves = await this.state.getMoves();
-		if (moves.length > 0) {
-			try {
-				this.move.loadMoves(moves);
-				return true;
-			} catch(err) {
-				console.error('Game moves load failed:', err);
-				this.game.reset();
-				this.move.reset();
-				this.state.reset();
-			}
-		} else {
-			console.debug('No saved moves to load.');
-		}
-		return false;
 	}
 
 	private disableBoard(): void {

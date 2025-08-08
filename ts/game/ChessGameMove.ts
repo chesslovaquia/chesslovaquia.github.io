@@ -6,18 +6,13 @@ import { Api as ChessgroundApi } from 'chessground/api';
 import * as board from 'chessground/types';
 import * as game  from 'chess.js';
 
-import { ChessGameError } from './ChessGameError';
-import { ChessGameState } from './ChessGameState';
-
 class ChessGameMove {
 	private readonly game:  game.Chess;
 	private readonly board: ChessgroundApi;
-	private readonly state: ChessGameState;
 
-	constructor(g: game.Chess, b: ChessgroundApi, s: ChessGameState) {
-		this.game     = g;
-		this.board    = b;
-		this.state    = s;
+	constructor(g: game.Chess, b: ChessgroundApi) {
+		this.game  = g;
+		this.board = b;
 		this.initBoard();
 	}
 
@@ -32,10 +27,6 @@ class ChessGameMove {
 		});
 	}
 
-	private async saveState(): Promise<void> {
-		await this.state.saveMoves(this.game.history());
-	}
-
 	private getBoardMove(m: game.Move | undefined): board.Key[] {
 		if (m) {
 			return [m.from as board.Key, m.to as board.Key];
@@ -44,17 +35,17 @@ class ChessGameMove {
 	}
 
 	public updateBoard(lastMove: game.Move | undefined): void {
+		const turnColor = this.turnColor();
 		this.board.set({
 			fen: this.game.fen(),
-			turnColor: this.turnColor(),
+			turnColor: turnColor,
 			movable: {
-				color: this.turnColor(),
+				color: turnColor,
 				dests: this.possibleDests()
 			},
 			lastMove: this.getBoardMove(lastMove),
 			check: this.game.inCheck(),
 		});
-		this.saveState();
 	}
 
 	public isPromotion(): boolean {
@@ -111,31 +102,9 @@ class ChessGameMove {
 		return false;
 	}
 
-	public reset(): void {
-	}
-
 	public getLastMove(): game.Move | undefined {
 		const lastMove = this.game.history({ verbose : true }).pop();
 		return lastMove;
-	}
-
-	public loadMoves(moves: string[]): void {
-		this.reset();
-		this.game.reset();
-		let gotError = '';
-		moves.every(san => {
-			console.debug('Game load move:', san);
-			const move = this.game.move(san, { strict: true });
-			if (move) {
-				return true;
-			} else {
-				gotError = san;
-				return false;
-			}
-		})
-		if (gotError !== '') {
-			throw new ChessGameError(`Invalid move: ${gotError}`);
-		}
 	}
 }
 
