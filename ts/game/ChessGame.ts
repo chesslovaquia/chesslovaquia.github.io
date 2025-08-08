@@ -55,6 +55,7 @@ class ChessGame {
 			console.debug('Game load done:', done);
 			if (done) {
 				this.move.updateBoard(this.move.getLastMove());
+				this.display.updateStatus();
 				this.start();
 			}
 		});
@@ -120,6 +121,7 @@ class ChessGame {
 	}
 
 	private onMove(orig: board.Key, dest: board.Key, gotPiece?: board.Piece): void {
+		this.disableMoves();
 		if (!this.active) {
 			this.start();
 		}
@@ -139,6 +141,7 @@ class ChessGame {
 		// Save state.
 		this.state.save().then(() => {
 			console.debug('Game state saved.');
+			this.enableMoves();
 		});
 	}
 
@@ -151,10 +154,23 @@ class ChessGame {
 		this.display.updateStatus();
 	}
 
+	private disableMoves(): void {
+		console.debug('Disable moves.');
+		this.board.set({ movable: { color: null } });
+	}
+
+	private enableMoves(): void {
+		console.debug('Enable moves.');
+		this.board.set({ movable: { color: this.move.turnColor() } });
+	}
+
 	private disableBoard(): void {
 		console.debug('Disable board.');
 		this.display.clear();
 		this.board.set({
+			movable: {
+				color: null,
+			},
 			selectable: {
 				enabled: false,
 			},
@@ -164,6 +180,9 @@ class ChessGame {
 	private enableBoard(): void {
 		console.debug('Enable board.');
 		this.board.set({
+			movable: {
+				color: this.move.turnColor(),
+			},
 			selectable: {
 				enabled: true,
 			},
