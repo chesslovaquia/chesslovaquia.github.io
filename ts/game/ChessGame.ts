@@ -156,7 +156,7 @@ class ChessGame {
 
 	private disableMoves(): void {
 		console.debug('Disable moves.');
-		this.board.set({ movable: { color: null } });
+		this.board.set({ movable: { color: undefined } });
 	}
 
 	private enableMoves(): void {
@@ -169,7 +169,7 @@ class ChessGame {
 		this.display.clear();
 		this.board.set({
 			movable: {
-				color: null,
+				color: undefined,
 			},
 			selectable: {
 				enabled: false,
