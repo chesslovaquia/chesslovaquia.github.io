@@ -151,6 +151,7 @@ class ChessGame {
 		console.log('Game reset!');
 		this.stop();
 		this.game.reset();
+		this.clock.reset();
 		this.state.reset(this.id);
 		this.move.updateBoard(undefined);
 		this.display.updateStatus();

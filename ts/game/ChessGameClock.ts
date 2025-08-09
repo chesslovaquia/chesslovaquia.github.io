@@ -85,7 +85,7 @@ class ChessGameClock {
 			console.debug('Clock stop.');
 			clearInterval(this.interval);
 			this.interval = null;
-			this.reset();
+			this.update(this.game.turn());
 			return true;
 		}
 		return false;
@@ -115,7 +115,7 @@ class ChessGameClock {
 		return `${mins}:${secs.toString().padStart(2, '0')}`;
 	}
 
-	private reset(): void {
+	public reset(): void {
 		console.debug('Clock reset.');
 		if (this.side['w'].clock) {
 			this.side['w'].clock.textContent = this.format(this.initialTime);
