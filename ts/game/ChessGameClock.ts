@@ -27,7 +27,7 @@ class ChessGameClock {
 
 	private side:      Record<Color, ChessGamePlayer>;
 	private time:      Record<Color, number>;
-	private firstMove: Record<Color, boolean>;
+	private firstMove: boolean;
 
 	constructor(game: Chess, p1: ChessGamePlayer, p2: ChessGamePlayer, time: number, increment: number) {
 		console.debug('Clock init:', time, increment);
@@ -45,10 +45,7 @@ class ChessGameClock {
 			'w': time,
 			'b': time,
 		};
-		this.firstMove = {
-			'w': true,
-			'b': true,
-		};
+		this.firstMove   = true;
 		this.interval    = null;
 		this.initialTime = time;
 		this.increment   = increment;
@@ -56,12 +53,14 @@ class ChessGameClock {
 	}
 
 	public move(turn: Color): void {
+		if (this.firstMove && turn === 'b') {
+			return;
+		}
+		if (this.firstMove) {
+			this.firstMove = false;
+		}
 		if (this.increment > 0) {
-			if (!this.firstMove[turn]) {
-				this.time[turn] += this.increment;
-			} else {
-				this.firstMove[turn] = false;
-			}
+			this.time[turn] += this.increment;
 		}
 		this.update(turn);
 	}
@@ -74,6 +73,9 @@ class ChessGameClock {
 		console.debug('Clock start:', this.time);
 		this.interval = setInterval(() => {
 			const turn = this.game.turn();
+			if (this.firstMove) {
+				return;
+			}
 			this.time[turn]--;
 			this.update(turn);
 		}, 1000);
