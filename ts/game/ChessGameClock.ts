@@ -60,7 +60,8 @@ class ChessGameClock {
 			this.firstMove = false;
 		}
 		if (this.increment > 0) {
-			this.time[turn] += this.increment;
+			const other = turn === 'w' ? 'b' : 'w';
+			this.time[other] += this.increment;
 		}
 		this.update(turn);
 	}
@@ -94,21 +95,14 @@ class ChessGameClock {
 	}
 
 	private async update(turn: Color): Promise<void> {
-		if (this.side[turn].clock) {
-			this.side[turn].clock.textContent = this.format(this.time[turn]);
-		}
-		this.side['w'].clock?.classList.toggle('active', turn === 'w');
-		this.side['b'].clock?.classList.toggle('active', turn === 'b');
-	}
-
-	private updateAll(): void {
 		if (this.side['w'].clock) {
 			this.side['w'].clock.textContent = this.format(this.time['w']);
+			this.side['w'].clock.classList.toggle('active', turn === 'w');
 		}
 		if (this.side['b'].clock) {
 			this.side['b'].clock.textContent = this.format(this.time['b']);
+			this.side['b'].clock.classList.toggle('active', turn === 'b');
 		}
-		this.update(this.game.turn());
 	}
 
 	private format(seconds: number): string {
@@ -151,7 +145,7 @@ class ChessGameClock {
 		this.time        = s.time;
 		this.firstMove   = s.firstMove;
 		this.setTimeDiff(s.tstamp);
-		this.updateAll();
+		this.update(this.game.turn());
 	}
 
 	private setTimeDiff(tstamp: number): void {
