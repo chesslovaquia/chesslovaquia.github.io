@@ -23,8 +23,8 @@ class ChessGameState {
 		this.db    = new ClvqIndexedDB(dbName, dbStore, dbVersion);
 	}
 
-	public reset(): void {
-		this.db.removeItem('game');
+	public reset(id: string): void {
+		this.db.removeItem(id);
 	}
 
 	public async save(id: string): Promise<void> {

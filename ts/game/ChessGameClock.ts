@@ -116,8 +116,7 @@ class ChessGameClock {
 	}
 
 	private reset(): void {
-		this.time['w'] = this.initialTime;
-		this.time['b'] = this.initialTime;
+		console.debug('Clock reset.');
 		if (this.side['w'].clock) {
 			this.side['w'].clock.textContent = this.format(this.initialTime);
 			this.side['w'].clock.classList.toggle('active', false);
@@ -126,6 +125,14 @@ class ChessGameClock {
 			this.side['b'].clock.textContent = this.format(this.initialTime);
 			this.side['b'].clock.classList.toggle('active', false);
 		}
+		this.time = {
+			'w': this.initialTime,
+			'b': this.initialTime,
+		};
+		this.firstMove = {
+			'w': true,
+			'b': true,
+		};
 	}
 
 	public getState(): clockState {
