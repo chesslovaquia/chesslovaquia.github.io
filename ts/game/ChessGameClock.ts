@@ -144,7 +144,16 @@ class ChessGameClock {
 		this.increment   = s.increment;
 		this.time        = s.time;
 		this.firstMove   = s.firstMove;
+		this.setTimeDiff(s.tstamp);
 		this.updateAll();
+	}
+
+	private setTimeDiff(tstamp: number): void {
+		const diff = Math.floor((Date.now() - tstamp) / 1000);
+		console.debug('Clock time diff:', diff, 'seconds');
+		if (diff >= 1) {
+			this.time[this.game.turn()] -= diff;
+		}
 	}
 }
 
