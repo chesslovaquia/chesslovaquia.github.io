@@ -43,7 +43,7 @@ class ChessGame {
 		this.board     = this.newBoard(config);
 		this.move      = new ChessGameMove(this.game, this.board);
 		this.display   = new ChessGameDisplay(config, this.game, this.move);
-		this.promotion = new ChessGamePromotion(this.move, this.display);
+		this.promotion = new ChessGamePromotion(this.id, this.state, this.move, this.display);
 		if (this.board) {
 			this.setupEventListeners(config);
 			this.init();
@@ -137,10 +137,14 @@ class ChessGame {
 			console.debug('Move was pawn promotion.');
 			this.promotion.handle(orig, dest);
 			this.display.updateStatus();
+		} else {
+			// Update clocks.
+			this.clock.move(this.game.turn());
+			this.saveState();
 		}
-		// Update clocks.
-		this.clock.move(this.game.turn());
-		// Save state.
+	}
+
+	private saveState(): void {
 		this.state.save(this.id).finally(() => {
 			console.debug('Game state saved.');
 			this.enableMoves();

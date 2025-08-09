@@ -5,12 +5,17 @@ import * as board from 'chessground/types';
 
 import { ChessGameDisplay } from './ChessGameDisplay';
 import { ChessGameMove    } from './ChessGameMove';
+import { ChessGameState   } from './ChessGameState';
 
 class ChessGamePromotion {
+	private readonly id:      string;
+	private readonly state:   ChessGameState;
 	private readonly move:    ChessGameMove;
 	private readonly display: ChessGameDisplay;
 
-	constructor(m: ChessGameMove, d: ChessGameDisplay) {
+	constructor(id: string, s: ChessGameState, m: ChessGameMove, d: ChessGameDisplay) {
+		this.id      = id;
+		this.state   = s;
 		this.move    = m;
 		this.display = d;
 	}
@@ -54,6 +59,13 @@ class ChessGamePromotion {
 	private finish(orig: board.Key, dest: board.Key, side: board.Color, piece: string): void {
 		console.log('Pawn promotion done:', orig, dest, side, piece);
 		this.display.updateStatus();
+		this.saveState();
+	}
+
+	private saveState(): void {
+		this.state.save(this.id).finally(() => {
+			console.debug('Pawn promotion state saved.');
+		});
 	}
 }
 
