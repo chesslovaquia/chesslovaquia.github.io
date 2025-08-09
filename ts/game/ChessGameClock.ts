@@ -8,6 +8,14 @@ import { ChessGamePlayer } from './ChessGamePlayer';
 
 type Color = 'w' | 'b';
 
+type clockState = {
+	tstamp:      number,
+	initialTime: number,
+	increment:   number,
+	time:        Record<Color, number>,
+	firstMove:   Record<Color, boolean>,
+};
+
 class ChessGameClock {
 	private readonly game: Chess;
 	private readonly p1:   ChessGamePlayer;
@@ -22,6 +30,7 @@ class ChessGameClock {
 	private firstMove: Record<Color, boolean>;
 
 	constructor(game: Chess, p1: ChessGamePlayer, p2: ChessGamePlayer, time: number, increment: number) {
+		console.debug('Clock init:', time, increment);
 		if (time < 0 || increment < 0) {
 			throw new ChessGameError(`Invalid clock time (${time}) or increment (${increment})`);
 		}
@@ -62,7 +71,7 @@ class ChessGameClock {
 			console.warn('Clock tried to start again!');
 			return false;
 		}
-		console.debug('Clock start:', this.initialTime, this.increment);
+		console.debug('Clock start:', this.time);
 		this.interval = setInterval(() => {
 			const turn = this.game.turn();
 			this.time[turn]--;
@@ -90,6 +99,16 @@ class ChessGameClock {
 		this.side['b'].clock?.classList.toggle('active', turn === 'b');
 	}
 
+	private updateAll(): void {
+		if (this.side['w'].clock) {
+			this.side['w'].clock.textContent = this.format(this.time['w']);
+		}
+		if (this.side['b'].clock) {
+			this.side['b'].clock.textContent = this.format(this.time['b']);
+		}
+		this.update(this.game.turn());
+	}
+
 	private format(seconds: number): string {
 		const mins = Math.floor(seconds / 60);
 		const secs = seconds % 60;
@@ -109,7 +128,23 @@ class ChessGameClock {
 		}
 	}
 
-	public saveState(): void {
+	public getState(): clockState {
+		return {
+			tstamp:      Date.now(),
+			initialTime: this.initialTime,
+			increment:   this.increment,
+			time:        this.time,
+			firstMove:   this.firstMove,
+		};
+	}
+
+	public setState(s: clockState): void {
+		console.debug('Clock set state:', s);
+		this.initialTime = s.initialTime;
+		this.increment   = s.increment;
+		this.time        = s.time;
+		this.firstMove   = s.firstMove;
+		this.updateAll();
 	}
 }
 

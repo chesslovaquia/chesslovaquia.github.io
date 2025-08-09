@@ -17,6 +17,7 @@ import { ChessGamePlayer    } from './ChessGamePlayer';
 import { ChessGameClock     } from './ChessGameClock';
 
 class ChessGame {
+	private readonly id:        string;
 	private readonly game:      game.Chess;
 	private readonly board:     ChessgroundApi;
 	private readonly move:      ChessGameMove;
@@ -32,6 +33,7 @@ class ChessGame {
 
 	constructor(config: ChessGameConfig) {
 		console.debug('Game config:', config);
+		this.id        = 'current'; // FIXME: generate internal game ID
 		this.active    = false;
 		this.game      = this.newGame();
 		this.p1        = new ChessGamePlayer("1");
@@ -51,7 +53,7 @@ class ChessGame {
 	private init(): void {
 		console.debug('Game init.');
 		this.disableBoard();
-		this.state.load().then((done) => {
+		this.state.load(this.id).then((done) => {
 			console.debug('Game load done:', done);
 			if (done) {
 				this.move.updateBoard(this.move.getLastMove());
@@ -139,7 +141,7 @@ class ChessGame {
 		// Update clocks.
 		this.clock.move(this.game.turn());
 		// Save state.
-		this.state.save().finally(() => {
+		this.state.save(this.id).finally(() => {
 			console.debug('Game state saved.');
 			this.enableMoves();
 		});

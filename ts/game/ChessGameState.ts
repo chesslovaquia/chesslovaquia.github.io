@@ -27,16 +27,18 @@ class ChessGameState {
 		this.db.removeItem('game');
 	}
 
-	public async save(): Promise<void> {
-		await this.db.setItem('game', {
+	public async save(id: string): Promise<void> {
+		await this.db.setItem(id, {
 			moves: this.game.history(),
+			clock: this.clock.getState(),
 		});
 	}
 
-	public async load(): Promise<boolean> {
-		const state = await this.db.getItem('game');
+	public async load(id: string): Promise<boolean> {
+		const state = await this.db.getItem(id);
 		if (state.moves) {
 			this.loadMoves(state.moves);
+			this.clock.setState(state.clock);
 			return true;
 		}
 		return false;
