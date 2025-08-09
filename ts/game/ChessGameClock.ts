@@ -13,7 +13,7 @@ type clockState = {
 	initialTime: number,
 	increment:   number,
 	time:        Record<Color, number>,
-	firstMove:   Record<Color, boolean>,
+	firstMove:   boolean,
 };
 
 class ChessGameClock {
@@ -131,10 +131,7 @@ class ChessGameClock {
 			'w': this.initialTime,
 			'b': this.initialTime,
 		};
-		this.firstMove = {
-			'w': true,
-			'b': true,
-		};
+		this.firstMove = true;
 	}
 
 	public getState(): clockState {
