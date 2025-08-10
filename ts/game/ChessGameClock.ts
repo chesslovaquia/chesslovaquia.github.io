@@ -53,15 +53,16 @@ class ChessGameClock {
 	}
 
 	public move(turn: Color): void {
+		if (this.increment > 0) {
+			const other = turn === 'w' ? 'b' : 'w';
+			this.time[other] += this.increment;
+		}
 		if (this.firstMove && turn === 'b') {
+			this.update(turn);
 			return;
 		}
 		if (this.firstMove) {
 			this.firstMove = false;
-		}
-		if (this.increment > 0) {
-			const other = turn === 'w' ? 'b' : 'w';
-			this.time[other] += this.increment;
 		}
 		this.update(turn);
 	}
@@ -98,6 +99,9 @@ class ChessGameClock {
 		if (this.side['w'].clock) {
 			this.side['w'].clock.textContent = this.format(this.time['w']);
 			this.side['w'].clock.classList.toggle('active', turn === 'w');
+		}
+		if (this.firstMove) {
+			return;
 		}
 		if (this.side['b'].clock) {
 			this.side['b'].clock.textContent = this.format(this.time['b']);
