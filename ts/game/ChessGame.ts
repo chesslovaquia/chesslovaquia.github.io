@@ -215,7 +215,9 @@ class ChessGame {
 
 	private stop(): void {
 		console.debug('Game stop.');
+		this.disableBoard();
 		this.clock.stop();
+		this.state.reset(this.id);
 		this.active = false;
 	}
 
