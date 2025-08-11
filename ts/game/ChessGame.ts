@@ -16,6 +16,10 @@ import { ChessGameState     } from './ChessGameState';
 import { ChessGamePlayer    } from './ChessGamePlayer';
 import { ChessGameClock     } from './ChessGameClock';
 
+import { ClockTimeout } from './events';
+
+type Color = 'w' | 'b';
+
 class ChessGame {
 	private readonly id:        string;
 	private readonly game:      game.Chess;
@@ -66,6 +70,12 @@ class ChessGame {
 
 	private setupEventListeners(cfg: ChessGameConfig): void {
 		console.debug('Game setup event listeners.');
+		// Clock events.
+		document.addEventListener('clockTimeout', (evt: Event) => {
+			const e = evt as ClockTimeout;
+			this.clockTimeout(e.detail.color);
+		});
+		// Game menu.
 		cfg.resetButton?.addEventListener('click', () => this.reset());
 	}
 
@@ -207,6 +217,12 @@ class ChessGame {
 		console.debug('Game stop.');
 		this.clock.stop();
 		this.active = false;
+	}
+
+	private clockTimeout(color: Color): void {
+		console.debug('Game clock timeout:', color);
+		this.stop();
+		this.display.clockTimeout(color);
 	}
 }
 

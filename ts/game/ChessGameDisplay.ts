@@ -6,6 +6,8 @@ import { Chess, Move } from 'chess.js';
 import { ChessGameConfig } from './ChessGameConfig';
 import { ChessGameMove   } from './ChessGameMove';
 
+type Color = 'w' | 'b';
+
 class ChessGameDisplay {
 	private readonly game: Chess;
 	private readonly move: ChessGameMove;
@@ -49,6 +51,13 @@ class ChessGameDisplay {
 	public clear(): void {
 		if (this.cfg.statusBar) {
 			this.cfg.statusBar.textContent = '';
+		}
+	}
+
+	public clockTimeout(color: Color): void {
+		if (this.cfg.statusBar) {
+			const player = color === 'w' ? 'White' : 'Black';
+			this.cfg.statusBar.textContent = `${player} timeout!`;
 		}
 	}
 }

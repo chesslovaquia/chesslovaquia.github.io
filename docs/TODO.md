@@ -1,9 +1,5 @@
 # To do list
 
-End game if clock times out.
-
----
-
 Game navigation.
 
 ---

@@ -6,6 +6,8 @@ import { Chess } from 'chess.js';
 import { ChessGameError  } from './ChessGameError';
 import { ChessGamePlayer } from './ChessGamePlayer';
 
+import { ClockTimeout } from './events';
+
 type Color = 'w' | 'b';
 
 type clockState = {
@@ -80,6 +82,12 @@ class ChessGameClock {
 			}
 			this.time[turn]--;
 			this.update(turn);
+			if (this.time[turn] <= 0) {
+				this.time[turn] = 0;
+				const evt = new ClockTimeout(turn);
+				document.dispatchEvent(evt);
+			}
+			this.update(turn);
 		}, 1000);
 		return true;
 	}
@@ -110,6 +118,9 @@ class ChessGameClock {
 	}
 
 	private format(seconds: number): string {
+		if (seconds === 0) {
+			return '00:00';
+		}
 		const mins = Math.floor(seconds / 60);
 		const secs = seconds % 60;
 		return `${mins}:${secs.toString().padStart(2, '0')}`;
