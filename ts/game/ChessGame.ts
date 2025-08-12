@@ -18,7 +18,7 @@ import { ChessGameClock     } from './ChessGameClock';
 
 import { ClockTimeout } from './events';
 
-type Color = 'w' | 'b';
+import { Color } from './types';
 
 class ChessGame {
 	private readonly id:        string;

@@ -6,7 +6,7 @@ import { Chess, Move } from 'chess.js';
 import { ChessGameConfig } from './ChessGameConfig';
 import { ChessGameMove   } from './ChessGameMove';
 
-type Color = 'w' | 'b';
+import { Color } from './types';
 
 class ChessGameDisplay {
 	private readonly game: Chess;

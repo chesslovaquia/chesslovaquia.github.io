@@ -1,7 +1,7 @@
 // Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com>
 // See LICENSE file.
 
-type Color = 'w' | 'b';
+import { Color } from './types';
 
 class ClockTimeout extends CustomEvent<{ color: Color }> {
 	constructor(color: Color) {

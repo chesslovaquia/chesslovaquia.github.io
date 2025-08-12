@@ -8,7 +8,7 @@ import { ChessGamePlayer } from './ChessGamePlayer';
 
 import { ClockTimeout } from './events';
 
-type Color = 'w' | 'b';
+import { Color } from './types';
 
 type clockState = {
 	tstamp:        number,
