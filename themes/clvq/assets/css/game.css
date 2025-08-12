@@ -21,3 +21,11 @@
 .game-clock.active {
 	color: #4caf50;
 }
+
+.game-clock.warning {
+	color: #d2be0e;
+}
+
+.game-clock.alert {
+	color: #f44336;
+}

@@ -10,6 +10,8 @@ import { ClockTimeout } from './events';
 
 import { Color } from './types';
 
+type clockClass = 'active' | 'warning' | 'alert';
+
 type clockState = {
 	tstamp:        number,
 	initialTime:   number,
@@ -20,6 +22,8 @@ type clockState = {
 };
 
 const firstMoveTimeout: number = 30; // Seconds.
+const activeWarning:    number = 30;
+const activeAlert:      number = 10
 
 class ChessGameClock {
 	private readonly game: Chess;
@@ -30,10 +34,11 @@ class ChessGameClock {
 	private increment:   number;
 	private interval:    ReturnType<typeof setInterval> | null;
 
-	private side:      Record<Color, ChessGamePlayer>;
-	private time:      Record<Color, number>;
-	private firstMove: boolean;
+	private side:  Record<Color, ChessGamePlayer>;
+	private time:  Record<Color, number>;
+	private klass: Record<Color, clockClass>;
 
+	private firstMove:         boolean;
 	private firstMoveTime:     Record<Color, number>;
 	private firstMoveInterval: ReturnType<typeof setInterval> | null;
 
@@ -52,6 +57,10 @@ class ChessGameClock {
 		this.time = {
 			'w': time,
 			'b': time,
+		};
+		this.klass = {
+			'w': 'active',
+			'b': 'active',
 		};
 		this.firstMoveTime = {
 			'w': firstMoveTimeout,
@@ -139,16 +148,25 @@ class ChessGameClock {
 	}
 
 	private async update(turn: Color): Promise<void> {
+		if (this.time[turn] <= activeAlert) {
+			this.klass[turn] = 'alert';
+			this.side[turn].clock?.classList.toggle('warning', false);
+		} else if (this.time[turn] <= activeWarning) {
+			this.klass[turn] = 'warning';
+			this.side[turn].clock?.classList.toggle('active', false);
+		}
 		if (this.side['w'].clock) {
 			this.side['w'].clock.textContent = this.format(this.time['w']);
-			this.side['w'].clock.classList.toggle('active', turn === 'w');
+			const klass = this.klass['w'];
+			this.side['w'].clock.classList.toggle(klass, turn === 'w');
 		}
 		if (this.firstMove) {
 			return;
 		}
 		if (this.side['b'].clock) {
 			this.side['b'].clock.textContent = this.format(this.time['b']);
-			this.side['b'].clock.classList.toggle('active', turn === 'b');
+			const klass = this.klass['b'];
+			this.side['b'].clock.classList.toggle(klass, turn === 'b');
 		}
 	}
 
@@ -166,14 +184,22 @@ class ChessGameClock {
 		if (this.side['w'].clock) {
 			this.side['w'].clock.textContent = this.format(this.initialTime);
 			this.side['w'].clock.classList.toggle('active', false);
+			this.side['w'].clock.classList.toggle('warning', false);
+			this.side['w'].clock.classList.toggle('alert', false);
 		}
 		if (this.side['b'].clock) {
 			this.side['b'].clock.textContent = this.format(this.initialTime);
 			this.side['b'].clock.classList.toggle('active', false);
+			this.side['b'].clock.classList.toggle('warning', false);
+			this.side['b'].clock.classList.toggle('alert', false);
 		}
 		this.time = {
 			'w': this.initialTime,
 			'b': this.initialTime,
+		};
+		this.klass = {
+			'w': 'active',
+			'b': 'active',
 		};
 		this.firstMoveTime = {
 			'w': firstMoveTimeout,

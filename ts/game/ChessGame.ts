@@ -42,7 +42,7 @@ class ChessGame {
 		this.game      = this.newGame();
 		this.p1        = new ChessGamePlayer("1");
 		this.p2        = new ChessGamePlayer("2");
-		this.clock     = new ChessGameClock(this.game, this.p1, this.p2, 900, 10);
+		this.clock     = new ChessGameClock(this.game, this.p1, this.p2, 35, 0);
 		this.state     = new ChessGameState(this.game, this.clock);
 		this.board     = this.newBoard(config);
 		this.move      = new ChessGameMove(this.game, this.board);
