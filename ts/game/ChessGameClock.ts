@@ -98,6 +98,7 @@ class ChessGameClock {
 				const turn = this.game.turn();
 				this.firstMoveTime[turn]--;
 				if (this.firstMoveTime[turn] <= 0) {
+					this.firstMoveTime[turn] = 0;
 					const evt = new ClockTimeout(turn);
 					document.dispatchEvent(evt);
 					return;
@@ -209,8 +210,14 @@ class ChessGameClock {
 		if (diff >= 1) {
 			const turn = this.game.turn();
 			this.time[turn] -= diff;
+			if (this.time[turn] <= 0) {
+				this.time[turn] = 0;
+			}
 			if (this.firstMove) {
 				this.firstMoveTime[turn] -= diff;
+				if (this.firstMoveTime[turn] <= 0) {
+					this.firstMoveTime[turn] = 0;
+				}
 			}
 		}
 	}
