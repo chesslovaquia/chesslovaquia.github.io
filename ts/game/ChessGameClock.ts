@@ -11,12 +11,15 @@ import { ClockTimeout } from './events';
 type Color = 'w' | 'b';
 
 type clockState = {
-	tstamp:      number,
-	initialTime: number,
-	increment:   number,
-	time:        Record<Color, number>,
-	firstMove:   boolean,
+	tstamp:        number,
+	initialTime:   number,
+	increment:     number,
+	time:          Record<Color, number>,
+	firstMove:     boolean,
+	firstMoveTime: Record<Color, number>,
 };
+
+const firstMoveTimeout: number = 30; // Seconds.
 
 class ChessGameClock {
 	private readonly game: Chess;
@@ -30,6 +33,9 @@ class ChessGameClock {
 	private side:      Record<Color, ChessGamePlayer>;
 	private time:      Record<Color, number>;
 	private firstMove: boolean;
+
+	private firstMoveTime:     Record<Color, number>;
+	private firstMoveInterval: ReturnType<typeof setInterval> | null;
 
 	constructor(game: Chess, p1: ChessGamePlayer, p2: ChessGamePlayer, time: number, increment: number) {
 		console.debug('Clock init:', time, increment);
@@ -47,10 +53,15 @@ class ChessGameClock {
 			'w': time,
 			'b': time,
 		};
-		this.firstMove   = true;
-		this.interval    = null;
-		this.initialTime = time;
-		this.increment   = increment;
+		this.firstMoveTime = {
+			'w': firstMoveTimeout,
+			'b': firstMoveTimeout,
+		};
+		this.firstMoveInterval = null;
+		this.firstMove         = true;
+		this.interval          = null;
+		this.initialTime       = time;
+		this.increment         = increment;
 		this.reset(); // So the clock display shows proper time.
 	}
 
@@ -65,6 +76,9 @@ class ChessGameClock {
 		}
 		if (this.firstMove) {
 			this.firstMove = false;
+			if (this.firstMoveInterval) {
+				clearInterval(this.firstMoveInterval);
+			}
 		}
 		this.update(turn);
 	}
@@ -75,17 +89,34 @@ class ChessGameClock {
 			return false;
 		}
 		console.debug('Clock start:', this.time);
+		// First move timeout.
+		if (this.firstMove) {
+			this.firstMoveInterval = setInterval(() => {
+				if (!this.firstMove) {
+					return;
+				}
+				const turn = this.game.turn();
+				this.firstMoveTime[turn]--;
+				if (this.firstMoveTime[turn] <= 0) {
+					const evt = new ClockTimeout(turn);
+					document.dispatchEvent(evt);
+					return;
+				}
+			}, 1000);
+		}
+		// Clock.
 		this.interval = setInterval(() => {
-			const turn = this.game.turn();
 			if (this.firstMove) {
 				return;
 			}
+			const turn = this.game.turn();
 			this.time[turn]--;
-			this.update(turn);
 			if (this.time[turn] <= 0) {
 				this.time[turn] = 0;
 				const evt = new ClockTimeout(turn);
+				this.update(turn);
 				document.dispatchEvent(evt);
+				return;
 			}
 			this.update(turn);
 		}, 1000);
@@ -93,6 +124,9 @@ class ChessGameClock {
 	}
 
 	public stop(): boolean {
+		if (this.firstMoveInterval) {
+			clearInterval(this.firstMoveInterval);
+		}
 		if (this.interval) {
 			console.debug('Clock stop.');
 			clearInterval(this.interval);
@@ -140,25 +174,31 @@ class ChessGameClock {
 			'w': this.initialTime,
 			'b': this.initialTime,
 		};
+		this.firstMoveTime = {
+			'w': firstMoveTimeout,
+			'b': firstMoveTimeout,
+		};
 		this.firstMove = true;
 	}
 
 	public getState(): clockState {
 		return {
-			tstamp:      Date.now(),
-			initialTime: this.initialTime,
-			increment:   this.increment,
-			time:        this.time,
-			firstMove:   this.firstMove,
+			tstamp:        Date.now(),
+			initialTime:   this.initialTime,
+			increment:     this.increment,
+			time:          this.time,
+			firstMove:     this.firstMove,
+			firstMoveTime: this.firstMoveTime,
 		};
 	}
 
 	public setState(s: clockState): void {
 		console.debug('Clock set state:', s);
-		this.initialTime = s.initialTime;
-		this.increment   = s.increment;
-		this.time        = s.time;
-		this.firstMove   = s.firstMove;
+		this.initialTime   = s.initialTime;
+		this.increment     = s.increment;
+		this.time          = s.time;
+		this.firstMove     = s.firstMove;
+		this.firstMoveTime = s.firstMoveTime;
 		this.setTimeDiff(s.tstamp);
 		this.update(this.game.turn());
 	}
