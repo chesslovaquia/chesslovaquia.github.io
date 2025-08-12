@@ -164,6 +164,7 @@ class ChessGame {
 	private reset(): void {
 		console.log('Game reset!');
 		this.stop();
+		this.enableBoard();
 		this.game.reset();
 		this.clock.reset();
 		this.state.reset(this.id);
