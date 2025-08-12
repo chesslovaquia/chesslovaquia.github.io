@@ -207,7 +207,11 @@ class ChessGameClock {
 		const diff = Math.floor((Date.now() - tstamp) / 1000);
 		console.debug('Clock time diff:', diff, 'seconds');
 		if (diff >= 1) {
-			this.time[this.game.turn()] -= diff;
+			const turn = this.game.turn();
+			this.time[turn] -= diff;
+			if (this.firstMove) {
+				this.firstMoveTime[turn] -= diff;
+			}
 		}
 	}
 }
