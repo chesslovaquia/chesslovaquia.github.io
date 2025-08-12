@@ -218,7 +218,7 @@ class ChessGame {
 		console.debug('Game stop.');
 		this.disableBoard();
 		this.clock.stop();
-		this.state.reset(this.id);
+		this.state.save(this.id);
 		this.active = false;
 	}
 
