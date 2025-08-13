@@ -4,9 +4,8 @@
 const CACHE_NAME = 'clvq{{ getenv "HUGO_CLVQ_BUILD" | default "UNSET" }}';
 const FALLBACK_URL = '/';
 
-function mergeUnique(arr1, arr2) {
-	return [...new Set([...arr1, ...arr2])]
-}
+const BASE_URL = '{{ .Site.BaseURL }}'.replace(/\/$/, '');
+const ASSETS_CDN = '{{ .Site.Params.cdn }}';
 
 const SITE_URLS = [
 	'/',
@@ -19,6 +18,10 @@ const SITE_URLS = [
 
 console.log('Service Worker, CACHE_NAME:', CACHE_NAME);
 
+function mergeUnique(arr1, arr2) {
+	return [...new Set([...arr1, ...arr2])]
+}
+
 // Install event - cache resources
 self.addEventListener('install', event => {
 	console.log('Service Worker Install.');
@@ -29,8 +32,11 @@ async function installHandler() {
 	try {
 		const resp = await fetch('/assets.json');
 		const assets_urls = await resp.json();
-		const cache_urls = mergeUnique(SITE_URLS, assets_urls);
 		const cache = await caches.open(CACHE_NAME);
+		const cache_urls = mergeUnique(
+			SITE_URLS.map(s => `${BASE_URL}${s}`),
+			assets_url.map(s => `${ASSETS_CDN}${s}`)
+		);
 		await cache.addAll(cache_urls);
 		console.log('All resources cached successfully.');
 		// Force the waiting service worker to become the active service worker

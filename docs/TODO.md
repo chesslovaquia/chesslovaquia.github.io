@@ -8,10 +8,6 @@ User preferences.
 
 ---
 
-Fix service worker caching to use CDN as the real requests would be done later.
-
----
-
 Game setup: user should choose time specs and click start.
 
 ---
