@@ -13,6 +13,7 @@ rm -f ./public/lila/COPYING.md \
 # Assets URLs.
 #
 
+rm -f ./public/assets.json
 assets_urls=$(mktemp /tmp/clvq.assets.XXXXXXXX)
 
 echo "[" >"${assets_urls}"
@@ -24,8 +25,8 @@ find ./public -type f | sort | while read -r filename; do
 	echo "  \"${url}\"," >>"${assets_urls}"
 done
 
-echo "  \"/\"" >>"${assets_urls}"
-echo "]" >>"${assets_urls}"
+echo '  "/assets.json"' >>"${assets_urls}"
+echo ']' >>"${assets_urls}"
 
 mv -f "${assets_urls}" ./public/assets.json
 
