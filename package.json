@@ -14,7 +14,7 @@
     "@types/chess.js": "^0.13.7",
     "@types/jest": "^30.0.0",
     "csstree-validator": "^4.0.1",
-    "html-validate": "^9.7.1",
+    "html-validate": "^10.0.0",
     "jest-environment-jsdom": "^30.0.5",
     "npm-check-updates": "^18.0.2",
     "ts-jest": "^29.4.1",
