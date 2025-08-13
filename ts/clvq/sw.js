@@ -1,7 +1,8 @@
 // Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com>
 // See LICENSE file.
 
-const CACHE_NAME = 'clvq{{ getenv "HUGO_CLVQ_BUILD" | default "UNSET" }}';
+const BUILD_ID = '{{ getenv "HUGO_CLVQ_BUILD" | default "UNSET" }}';
+const CACHE_NAME = `clvq${BUILD_ID}`;
 const FALLBACK_URL = '{{ .Site.BaseURL }}';
 
 const BASE_URL = FALLBACK_URL.replace(/\/$/, '');
@@ -35,7 +36,7 @@ async function installHandler() {
 		const cache = await caches.open(CACHE_NAME);
 		const cache_urls = mergeUnique(
 			SITE_URLS.map(s => `${BASE_URL}${s}`),
-			assets_url.map(s => `${ASSETS_CDN}${s}`)
+			assets_url.map(s => `${ASSETS_CDN}${s}?v${BUILD_ID}`)
 		);
 		await cache.addAll(cache_urls);
 		console.log('All resources cached successfully.');
