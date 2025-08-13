@@ -16,10 +16,12 @@
 		onclick="Clvq.w3ToggleMenu('gameMenu')">&#9776;</a>
 </div>
 <!-- Dropdown Menu -->
-<div id="gameMenu" class="w3-modal w3-hide">
+<div id="gameMenu" class="w3-modal w3-hide" onclick="Clvq.w3HideModal('gameMenu')">
 	<div class="w3-modal-content w3-bar-block w3-black w3-center w3-round">
+<!--
 		<span class="w3-bar-item {{ $siteBtnClass }}"
 			onclick="Clvq.w3ToggleMenu('gameMenu')">&times</span>
+-->
 		<!-- Game Reset -->
 		<a id="gameReset" href="javascript:void(0)"
 			class="w3-bar-item {{ $siteBtnClass }}"
