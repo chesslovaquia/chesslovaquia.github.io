@@ -20,6 +20,9 @@ import { ClockTimeout } from './events';
 
 import { Color } from './types';
 
+const clockInitialTime = 900; // Seconds.
+const clockIncrement   = 10;  // Seconds.
+
 class ChessGame {
 	private readonly id:        string;
 	private readonly game:      game.Chess;
@@ -42,7 +45,7 @@ class ChessGame {
 		this.game      = this.newGame();
 		this.p1        = new ChessGamePlayer("1");
 		this.p2        = new ChessGamePlayer("2");
-		this.clock     = new ChessGameClock(this.game, this.p1, this.p2, 900, 10);
+		this.clock     = new ChessGameClock(this.game, this.p1, this.p2, clockInitialTime, clockIncrement);
 		this.state     = new ChessGameState(this.game, this.clock);
 		this.board     = this.newBoard(config);
 		this.move      = new ChessGameMove(this.game, this.board);

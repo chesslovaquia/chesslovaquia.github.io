@@ -12,5 +12,4 @@ Game setup: user should choose time specs and click start.
 
 ---
 
-Clock granularity: manage miliseconds (?) or maybe just a decimal part. Instead
-of seconds as currently is.
+Clock use delta times diff? As interval could not take exactly 100ms.
