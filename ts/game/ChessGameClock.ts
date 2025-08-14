@@ -101,34 +101,12 @@ class ChessGameClock {
 		// First move timeout.
 		if (this.firstMove) {
 			this.firstMoveInterval = setInterval(() => {
-				if (!this.firstMove) {
-					return;
-				}
-				const turn = this.game.turn();
-				this.firstMoveTime[turn]--;
-				if (this.firstMoveTime[turn] <= 0) {
-					this.firstMoveTime[turn] = 0;
-					const evt = new ClockTimeout(turn);
-					document.dispatchEvent(evt);
-					return;
-				}
+				this.firstMoveTimer();
 			}, 1000);
 		}
 		// Clock.
 		this.interval = setInterval(() => {
-			if (this.firstMove) {
-				return;
-			}
-			const turn = this.game.turn();
-			this.time[turn]--;
-			if (this.time[turn] <= 0) {
-				this.time[turn] = 0;
-				const evt = new ClockTimeout(turn);
-				this.update(turn);
-				document.dispatchEvent(evt);
-				return;
-			}
-			this.update(turn);
+			this.timer();
 		}, 1000);
 		return true;
 	}
@@ -246,6 +224,36 @@ class ChessGameClock {
 				}
 			}
 		}
+	}
+
+	private firstMoveTimer(): void {
+		if (!this.firstMove) {
+			return;
+		}
+		const turn = this.game.turn();
+		this.firstMoveTime[turn]--;
+		if (this.firstMoveTime[turn] <= 0) {
+			this.firstMoveTime[turn] = 0;
+			const evt = new ClockTimeout(turn);
+			document.dispatchEvent(evt);
+			return;
+		}
+	}
+
+	private timer(): void {
+		if (this.firstMove) {
+			return;
+		}
+		const turn = this.game.turn();
+		this.time[turn]--;
+		if (this.time[turn] <= 0) {
+			this.time[turn] = 0;
+			const evt = new ClockTimeout(turn);
+			this.update(turn);
+			document.dispatchEvent(evt);
+			return;
+		}
+		this.update(turn);
 	}
 }
 
