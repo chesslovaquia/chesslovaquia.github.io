@@ -10,7 +10,7 @@ import { ClockTimeout } from './events';
 
 import { Color } from './types';
 
-type clockClass = 'active' | 'warning' | 'alert';
+type clockClass = 'active' | 'warning' | 'alert' | 'timeout';
 
 type clockState = {
 	tstamp:        number,
@@ -126,12 +126,14 @@ class ChessGameClock {
 	}
 
 	private async update(turn: Color): Promise<void> {
-		if (this.time[turn] <= activeAlert) {
-			this.klass[turn] = 'alert';
-			this.side[turn].clock?.classList.toggle('warning', false);
-		} else if (this.time[turn] <= activeWarning) {
-			this.klass[turn] = 'warning';
-			this.side[turn].clock?.classList.toggle('active', false);
+		if (this.klass[turn] !== 'timeout') {
+			if (this.time[turn] <= activeAlert) {
+				this.klass[turn] = 'alert';
+				this.side[turn].clock?.classList.toggle('warning', false);
+			} else if (this.time[turn] <= activeWarning) {
+				this.klass[turn] = 'warning';
+				this.side[turn].clock?.classList.toggle('active', false);
+			}
 		}
 		if (this.side['w'].clock) {
 			this.side['w'].clock.textContent = this.format(this.time['w']);
@@ -165,12 +167,14 @@ class ChessGameClock {
 			this.side['w'].clock.classList.toggle('active', false);
 			this.side['w'].clock.classList.toggle('warning', false);
 			this.side['w'].clock.classList.toggle('alert', false);
+			this.side['w'].clock.classList.toggle('timeout', false);
 		}
 		if (this.side['b'].clock) {
 			this.side['b'].clock.textContent = this.format(this.initialTime);
 			this.side['b'].clock.classList.toggle('active', false);
 			this.side['b'].clock.classList.toggle('warning', false);
 			this.side['b'].clock.classList.toggle('alert', false);
+			this.side['b'].clock.classList.toggle('timeout', false);
 		}
 		this.time = {
 			'w': this.initialTime,
@@ -231,11 +235,9 @@ class ChessGameClock {
 		}
 		const turn = this.game.turn();
 		this.firstMoveTime[turn]--;
-		console.debug('First move timer:', turn, this.firstMoveTime[turn]);
 		if (this.firstMoveTime[turn] <= 0) {
 			this.firstMoveTime[turn] = 0;
-			const evt = new ClockTimeout(turn);
-			document.dispatchEvent(evt);
+			this.timeout(turn);
 		}
 	}
 
@@ -246,12 +248,19 @@ class ChessGameClock {
 		const turn = this.game.turn();
 		this.time[turn]--;
 		if (this.time[turn] <= 0) {
-			this.time[turn] = 0;
-			const evt = new ClockTimeout(turn);
-			this.update(turn);
-			document.dispatchEvent(evt);
+			this.timeout(turn);
 			return;
 		}
+		this.update(turn);
+	}
+
+	private timeout(turn: Color): void {
+		console.debug('Clock timeout:', turn);
+		const evt = new ClockTimeout(turn);
+		document.dispatchEvent(evt);
+		this.firstMove = false;
+		this.time[turn] = 0;
+		this.klass[turn] = 'timeout';
 		this.update(turn);
 	}
 }

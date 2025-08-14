@@ -29,3 +29,8 @@
 .game-clock.alert {
 	color: #f44336;
 }
+
+.game-clock.timeout {
+	color: #fff;
+	background-color: #f44336;
+}
