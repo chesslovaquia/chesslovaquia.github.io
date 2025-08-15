@@ -12,8 +12,7 @@ import * as chess from 'chess.js';
 
 import { GameConfig } from '../game/GameConfig';
 
-import { EventBoardMove      } from '../events/EventBoardMove';
-import { EventBoardAfterMove } from '../events/EventBoardAfterMove';
+import { EventBoardMove } from '../events/EventBoardMove';
 
 class ChessBoard {
 	private readonly cfg:   GameConfig;
@@ -40,19 +39,8 @@ class ChessBoard {
 				rookCastle: true,
 				events: {
 					after: (orig: cg.Key, dest: cg.Key, meta?: cg.MoveMetadata) => {
-						const data = {orig: orig, dest: dest};
-						const evt  = new EventBoardMove(data);
-						document.dispatchEvent(evt);
-						this.enableMoves();
+						this.afterMove(orig, dest, meta);
 					},
-				},
-			},
-			events: {
-				move: (orig: cg.Key, dest: cg.Key, gotPiece?: cg.Piece) => {
-					this.disableMoves();
-					const data = {orig: orig, dest: dest, gotPiece: gotPiece};
-					const evt  = new EventBoardAfterMove(data);
-					document.dispatchEvent(evt);
 				},
 			},
 			highlight: {
@@ -76,6 +64,15 @@ class ChessBoard {
 				enabled: false,
 			},
 		});
+	}
+
+	private afterMove(orig: cg.Key, dest: cg.Key, meta?: cg.MoveMetadata): void {
+		this.disableMoves();
+		console.debug('Board dispatch move event.');
+		const data = {orig: orig, dest: dest, meta: meta};
+		const evt  = new EventBoardMove(data);
+		document.dispatchEvent(evt);
+		this.enableMoves();
 	}
 
 	private turnColor(): cg.Color {

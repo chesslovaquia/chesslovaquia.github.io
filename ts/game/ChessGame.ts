@@ -6,11 +6,10 @@ import * as chess  from 'chess.js';
 
 import { ChessBoard } from '../board/ChessBoard';
 
-import { EventBoardMove      } from '../events/EventBoardMove';
-import { BoardMoveData       } from '../events/EventBoardMove';
-import { EventBoardAfterMove } from '../events/EventBoardAfterMove';
-import { BoardAfterMoveData  } from '../events/EventBoardAfterMove';
-import { EventClockTimeout   } from '../events/EventClockTimeout';
+import { EventBoardMove } from '../events/EventBoardMove';
+import { BoardMoveData  } from '../events/EventBoardMove';
+
+import { EventClockTimeout } from '../events/EventClockTimeout';
 
 import { GameConfig    } from './GameConfig';
 import { GameDisplay   } from './GameDisplay';
@@ -84,11 +83,7 @@ class ChessGame {
 		// Board events.
 		document.addEventListener('clvqBoardMove', (evt: Event) => {
 			const e = evt as EventBoardMove;
-			this.onMove(e.detail);
-		});
-		document.addEventListener('clvqBoardAfterMove', (evt: Event) => {
-			const e = evt as EventBoardAfterMove;
-			this.afterMove(e.detail);
+			this.doMove(e.detail);
 		});
 		// Clock events.
 		document.addEventListener('clvqClockTimeout', (evt: Event) => {
@@ -101,19 +96,22 @@ class ChessGame {
 		this.cfg.ui.gameStart?.addEventListener('click', () => this.start());
 	}
 
-	private onMove(data: BoardMoveData): void {
+	private doMove(move: BoardMoveData): void {
+		console.debug('Game move:', move);
 		if (!this.active) {
 			this.start();
 		}
-		this.move.exec(data.orig, data.dest, 'q');
+		this.move.exec(move.orig, move.dest, 'q');
 		this.display.updateStatus();
+		this.afterMove(move);
 	}
 
-	private afterMove(data: BoardAfterMoveData) {
+	private afterMove(move: BoardMoveData) {
+		console.debug('Game after move:', move);
 		// Pawn promotion.
 		if (this.move.isPromotion()) {
 			console.debug('Move was pawn promotion.');
-			this.promotion.handle(data.orig, data.dest);
+			this.promotion.handle(move.orig, move.dest);
 			this.display.updateStatus();
 		} else {
 			// Update clocks.
