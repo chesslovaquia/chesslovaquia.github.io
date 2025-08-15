@@ -61,6 +61,10 @@ class ChessGameMove {
 		const lastMove = this.game.history({verbose : true}).pop();
 		return lastMove;
 	}
+
+	public turnColor(): cg.Color {
+		return this.game.turn() === 'w' ? 'white' : 'black';
+	}
 }
 
 export { ChessGameMove };
