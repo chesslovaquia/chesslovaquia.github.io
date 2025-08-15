@@ -148,9 +148,15 @@ class ChessGameClock {
 		if (seconds === 0) {
 			return '00:00';
 		}
-		const mins = Math.floor(seconds / 60);
-		const secs = Math.floor(seconds % 60);
-		return `${mins}:${secs.toString().padStart(2, '0')}`;
+		if (seconds < 10) {
+			const secs = Math.floor(seconds % 60);
+			const tenths = Math.floor(ts % 10);
+			return `${secs.toString().padStart(2, '0')}.${tenths.toString().padStart(1, '0')}`;
+		} else {
+			const mins = Math.floor(seconds / 60);
+			const secs = Math.floor(seconds % 60);
+			return `${mins}:${secs.toString().padStart(2, '0')}`;
+		}
 	}
 
 	public reset(): void {
