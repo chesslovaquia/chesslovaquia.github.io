@@ -172,6 +172,7 @@ class ChessGame {
 		this.clock.reset();
 		this.state.reset(this.id);
 		this.move.updateBoard(undefined);
+		this.display.reset();
 		this.display.updateStatus();
 	}
 

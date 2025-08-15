@@ -54,11 +54,16 @@ class ChessGameDisplay {
 		}
 	}
 
+	public reset(): void {
+		this.cfg.boardElement.classList.toggle('w3-red', false);
+	}
+
 	public clockTimeout(color: Color): void {
 		if (this.cfg.statusBar) {
 			const player = color === 'w' ? 'White' : 'Black';
 			this.cfg.statusBar.textContent = `${player} timeout!`;
 		}
+		this.cfg.boardElement.classList.toggle('w3-red', true);
 	}
 }
 

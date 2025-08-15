@@ -47,31 +47,19 @@ class ChessGameClock {
 		if (time < 0 || increment < 0) {
 			throw new ChessGameError(`Invalid clock time (${time}) or increment (${increment})`);
 		}
-		this.game = game;
-		this.p1   = p1;
-		this.p2   = p2;
-		this.side = {
-			'w': this.p1,
-			'b': this.p2,
-		};
-		this.initialTime = time * 10;
-		this.increment   = increment * 10;
-		this.time = {
-			'w': this.initialTime,
-			'b': this.initialTime,
-		};
-		this.klass = {
-			'w': 'active',
-			'b': 'active',
-		};
-		this.firstMoveTime = {
-			'w': firstMoveTimeout,
-			'b': firstMoveTimeout,
-		};
+		this.game              = game;
+		this.p1                = p1;
+		this.p2                = p2;
+		this.side              = {'w': this.p1, 'b': this.p2};
+		this.initialTime       = time * 10;
+		this.increment         = increment * 10;
+		this.time              = {'w': 0, 'b': 0};
+		this.klass             = {'w': 'active', 'b': 'active'};
+		this.firstMoveTime     = {'w': 0, 'b': 0};
 		this.firstMoveInterval = null;
 		this.firstMove         = true;
 		this.interval          = null;
-		this.reset(); // So the clock display shows proper time.
+		this.reset();
 	}
 
 	public move(turn: Color): void {
