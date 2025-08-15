@@ -71,7 +71,7 @@ class ChessGame {
 		this.state.load(this.id).then((done) => {
 			console.debug('Game load done:', done);
 			if (done) {
-				this.move.updateBoard(this.move.getLastMove());
+				this.board.update(this.move.getLastMove());
 				this.display.updateStatus();
 				this.start();
 			} else {
@@ -136,7 +136,7 @@ class ChessGame {
 		this.game.reset();
 		this.clock.reset();
 		this.state.reset(this.id);
-		this.move.updateBoard(undefined);
+		this.board.update(undefined);
 		this.display.reset();
 		this.display.updateStatus();
 		this.setup();
