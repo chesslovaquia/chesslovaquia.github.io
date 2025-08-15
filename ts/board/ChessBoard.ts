@@ -11,7 +11,6 @@ import { Chess } from 'chess.js';
 import * as chess from 'chess.js';
 
 import { ChessGameConfig } from '../game/ChessGameConfig';
-import { ChessGameError  } from '../game/ChessGameError';
 
 import {
 	BoardMoveEvent,
