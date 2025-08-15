@@ -5,7 +5,7 @@ import { Color } from './types';
 
 class ClockTimeout extends CustomEvent<{ color: Color }> {
 	constructor(color: Color) {
-		super('clockTimeout', {
+		super('clvqClockTimeout', {
 			detail: { color: color },
 		});
 	}

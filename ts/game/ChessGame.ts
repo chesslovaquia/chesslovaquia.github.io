@@ -93,7 +93,7 @@ class ChessGame {
 			this.afterMove(e.detail);
 		});
 		// Clock events.
-		document.addEventListener('clockTimeout', (evt: Event) => {
+		document.addEventListener('clvqClockTimeout', (evt: Event) => {
 			const e = evt as ClockTimeout;
 			this.clockTimeout(e.detail.color);
 		});
