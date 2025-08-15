@@ -47,11 +47,13 @@ class ChessBoard {
 						const data = {orig: orig, dest: dest};
 						const evt  = new BoardMoveEvent(data);
 						document.dispatchEvent(evt);
+						this.enableMoves();
 					},
 				},
 			},
 			events: {
 				move: (orig: cg.Key, dest: cg.Key, gotPiece?: cg.Piece) => {
+					this.disableMoves();
 					const data = {orig: orig, dest: dest, gotPiece: gotPiece};
 					const evt  = new BoardAfterMoveEvent(data);
 					document.dispatchEvent(evt);
@@ -84,12 +86,12 @@ class ChessBoard {
 		return this.game.turn() === 'w' ? 'white' : 'black';
 	}
 
-	public disableMoves(): void {
+	private disableMoves(): void {
 		console.debug('Board disable moves.');
 		this.board.set({ movable: { color: undefined } });
 	}
 
-	public enableMoves(): void {
+	private enableMoves(): void {
 		console.debug('Board enable moves.');
 		this.board.set({ movable: { color: this.turnColor() } });
 	}

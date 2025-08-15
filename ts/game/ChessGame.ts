@@ -103,7 +103,6 @@ class ChessGame {
 	}
 
 	private onMove(data: BoardMoveData): void {
-		this.disableMoves();
 		if (!this.active) {
 			this.start();
 		}
@@ -127,7 +126,6 @@ class ChessGame {
 	private saveState(): void {
 		this.state.save(this.id).finally(() => {
 			console.debug('Game state saved.');
-			this.enableMoves();
 		});
 	}
 
