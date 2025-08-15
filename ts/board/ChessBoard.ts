@@ -12,10 +12,8 @@ import * as chess from 'chess.js';
 
 import { GameConfig } from '../game/GameConfig';
 
-import {
-	BoardMoveEvent,
-	BoardAfterMoveEvent,
-} from './events';
+import { EventBoardMove      } from '../events/EventBoardMove';
+import { EventBoardAfterMove } from '../events/EventBoardAfterMove';
 
 class ChessBoard {
 	private readonly cfg:   GameConfig;
@@ -43,7 +41,7 @@ class ChessBoard {
 				events: {
 					after: (orig: cg.Key, dest: cg.Key, meta?: cg.MoveMetadata) => {
 						const data = {orig: orig, dest: dest};
-						const evt  = new BoardMoveEvent(data);
+						const evt  = new EventBoardMove(data);
 						document.dispatchEvent(evt);
 						this.enableMoves();
 					},
@@ -53,7 +51,7 @@ class ChessBoard {
 				move: (orig: cg.Key, dest: cg.Key, gotPiece?: cg.Piece) => {
 					this.disableMoves();
 					const data = {orig: orig, dest: dest, gotPiece: gotPiece};
-					const evt  = new BoardAfterMoveEvent(data);
+					const evt  = new EventBoardAfterMove(data);
 					document.dispatchEvent(evt);
 				},
 			},

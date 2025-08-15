@@ -5,12 +5,11 @@ import { Chess }   from 'chess.js';
 import * as chess  from 'chess.js';
 
 import { ChessBoard } from '../board/ChessBoard';
-import {
-	BoardMoveEvent,
-	BoardMoveData,
-	BoardAfterMoveEvent,
-	BoardAfterMoveData,
-} from '../board/events';
+
+import { EventBoardMove      } from '../events/EventBoardMove';
+import { BoardMoveData       } from '../events/EventBoardMove';
+import { EventBoardAfterMove } from '../events/EventBoardAfterMove';
+import { BoardAfterMoveData  } from '../events/EventBoardAfterMove';
 
 import { GameConfig    } from './GameConfig';
 import { GameDisplay   } from './GameDisplay';
@@ -85,11 +84,11 @@ class ChessGame {
 		console.debug('Game setup event listeners.');
 		// Board events.
 		document.addEventListener('clvqBoardMove', (evt: Event) => {
-			const e = evt as BoardMoveEvent;
+			const e = evt as EventBoardMove;
 			this.onMove(e.detail);
 		});
 		document.addEventListener('clvqBoardAfterMove', (evt: Event) => {
-			const e = evt as BoardAfterMoveEvent;
+			const e = evt as EventBoardAfterMove;
 			this.afterMove(e.detail);
 		});
 		// Clock events.
