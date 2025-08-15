@@ -98,9 +98,9 @@ class ChessGame {
 			this.clockTimeout(e.detail.color);
 		});
 		// Game menu.
-		this.cfg.gameReset?.addEventListener('click', () => this.reset());
+		this.cfg.ui.gameReset?.addEventListener('click', () => this.reset());
 		// Game setup.
-		this.cfg.gameStart?.addEventListener('click', () => this.start());
+		this.cfg.ui.gameStart?.addEventListener('click', () => this.start());
 	}
 
 	private onMove(data: BoardMoveData): void {
@@ -154,7 +154,7 @@ class ChessGame {
 	}
 
 	private setup(): void {
-		this.cfg.gameSetupModal?.classList.toggle('w3-show', true);
+		this.cfg.ui.gameSetupModal?.classList.toggle('w3-show', true);
 	}
 
 	private start(): void {

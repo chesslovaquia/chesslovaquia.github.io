@@ -20,7 +20,7 @@ class ChessGameDisplay {
 	}
 
 	public async updateStatus(): Promise<void> {
-		if (!this.cfg.statusBar) {
+		if (!this.cfg.ui.statusBar) {
 			console.debug('Game status bar not found.');
 			return;
 		}
@@ -45,25 +45,25 @@ class ChessGameDisplay {
 				statusText += ' (in check)';
 			}
 		}
-		this.cfg.statusBar.textContent = statusText;
+		this.cfg.ui.statusBar.textContent = statusText;
 	}
 
 	public clear(): void {
-		if (this.cfg.statusBar) {
-			this.cfg.statusBar.textContent = '';
+		if (this.cfg.ui.statusBar) {
+			this.cfg.ui.statusBar.textContent = '';
 		}
 	}
 
 	public reset(): void {
-		this.cfg.boardElement.classList.toggle('timeout', false);
+		this.cfg.ui.board.classList.toggle('timeout', false);
 	}
 
 	public clockTimeout(color: Color): void {
-		if (this.cfg.statusBar) {
+		if (this.cfg.ui.statusBar) {
 			const player = color === 'w' ? 'White' : 'Black';
-			this.cfg.statusBar.textContent = `${player} timeout!`;
+			this.cfg.ui.statusBar.textContent = `${player} timeout!`;
 		}
-		this.cfg.boardElement.classList.toggle('timeout', true);
+		this.cfg.ui.board.classList.toggle('timeout', true);
 	}
 }
 

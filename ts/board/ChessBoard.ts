@@ -30,10 +30,7 @@ class ChessBoard {
 	}
 
 	private newBoard(): ChessgroundApi {
-		if (!this.cfg.boardElement) {
-			throw new ChessGameError('Init board element not found.');
-		}
-		return Chessground(this.cfg.boardElement, {
+		return Chessground(this.cfg.ui.board, {
 			disableContextMenu: true,
 			coordinates: false,
 			fen: this.game.fen(),

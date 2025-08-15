@@ -3,16 +3,16 @@
 
 import { ChessGameError } from './ChessGameError';
 
-class ChessGameConfig {
-	public boardElement: HTMLElement;
+class ConfigUI {
+	public board: HTMLElement;
 
 	public statusBar:      HTMLElement | undefined;
 	public gameReset:      HTMLElement | undefined;
 	public gameSetupModal: HTMLElement | null;
 	public gameStart:      HTMLElement | null;
 
-	constructor(boardElement: HTMLElement) {
-		this.boardElement   = boardElement;
+	constructor(board: HTMLElement) {
+		this.board   = board;
 		this.statusBar      = document.getElementById('gameStatus') || undefined;
 		this.gameReset      = document.getElementById('gameReset')  || undefined;
 		this.gameSetupModal = document.getElementById('gameSetupModal');
@@ -33,6 +33,14 @@ class ChessGameConfig {
 		if (!this.gameStart) {
 			throw new ChessGameError('Config gameStart not found.');
 		}
+	}
+}
+
+class ChessGameConfig {
+	public ui: ConfigUI;
+
+	constructor(board: HTMLElement) {
+		this.ui = new ConfigUI(board);
 	}
 }
 
