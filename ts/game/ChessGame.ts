@@ -79,7 +79,9 @@ class ChessGame {
 			this.clockTimeout(e.detail.color);
 		});
 		// Game menu.
-		cfg.resetButton?.addEventListener('click', () => this.reset());
+		cfg.gameReset?.addEventListener('click', () => this.reset());
+		// Game setup.
+		cfg.gameStart?.addEventListener('click', () => this.start());
 	}
 
 	private newGame(): game.Chess {

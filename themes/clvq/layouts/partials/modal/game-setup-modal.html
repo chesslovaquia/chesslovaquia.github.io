@@ -1,0 +1,15 @@
+{{- $page := .page }}
+
+{{- $siteBtnClass := $page.Site.Params.btnClass }}
+
+<div id="gameSetupModal" class="w3-modal">
+	<div class="w3-modal-content w3-black w3-round w3-card-4">
+		<div class="w3-container">
+			<!-- Start -->
+			<a id="gameStart" href="javascript:void(0)" class="{{ $siteBtnClass }}"
+				onclick="Clvq.w3ToggleMenu('gameStart')">
+				Start
+			</a>
+		</div>
+	</div>
+</div>
