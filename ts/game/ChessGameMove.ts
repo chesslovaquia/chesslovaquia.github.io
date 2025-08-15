@@ -67,10 +67,6 @@ class ChessGameMove {
 		return dests;
 	}
 
-	public turnColor(): board.Color {
-		return this.game.turn() === 'w' ? 'white' : 'black';
-	}
-
 	public exec(orig: board.Key, dest: board.Key, promotion: string): void {
 		try {
 			const move = this.game.move({

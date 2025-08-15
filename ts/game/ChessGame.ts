@@ -144,39 +144,13 @@ class ChessGame {
 		this.enableBoard();
 	}
 
-	private disableMoves(): void {
-		console.debug('Disable moves.');
-		this.board.set({ movable: { color: undefined } });
-	}
-
-	private enableMoves(): void {
-		console.debug('Enable moves.');
-		this.board.set({ movable: { color: this.move.turnColor() } });
-	}
-
 	private disableBoard(): void {
-		console.debug('Disable board.');
+		this.board.disable();
 		this.display.clear();
-		this.board.set({
-			movable: {
-				color: undefined,
-			},
-			selectable: {
-				enabled: false,
-			},
-		});
 	}
 
 	private enableBoard(): void {
-		console.debug('Enable board.');
-		this.board.set({
-			movable: {
-				color: this.move.turnColor(),
-			},
-			selectable: {
-				enabled: true,
-			},
-		});
+		this.board.enable();
 		this.display.updateStatus();
 	}
 

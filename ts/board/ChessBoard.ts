@@ -79,6 +79,44 @@ class ChessBoard {
 			},
 		});
 	}
+
+	private turnColor(): cg.Color {
+		return this.game.turn() === 'w' ? 'white' : 'black';
+	}
+
+	public disableMoves(): void {
+		console.debug('Board disable moves.');
+		this.board.set({ movable: { color: undefined } });
+	}
+
+	public enableMoves(): void {
+		console.debug('Board enable moves.');
+		this.board.set({ movable: { color: this.turnColor() } });
+	}
+
+	public disable(): void {
+		console.debug('Board disable.');
+		this.board.set({
+			movable: {
+				color: undefined,
+			},
+			selectable: {
+				enabled: false,
+			},
+		});
+	}
+
+	public enable(): void {
+		console.debug('Board enable.');
+		this.board.set({
+			movable: {
+				color: this.turnColor(),
+			},
+			selectable: {
+				enabled: true,
+			},
+		});
+	}
 }
 
 export { ChessBoard };
