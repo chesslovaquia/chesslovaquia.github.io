@@ -67,6 +67,7 @@ class ChessGame {
 	private init(): void {
 		console.debug('Game init.');
 		this.disableBoard();
+		this.board.init();
 		this.state.load(this.id).then((done) => {
 			console.debug('Game load done:', done);
 			if (done) {

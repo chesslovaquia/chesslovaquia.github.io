@@ -1,51 +1,21 @@
 // Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com>
 // See LICENSE file.
 
-import { Api as ChessgroundApi } from 'chessground/api';
+import { Chess } from 'chess.js';
 
-import * as board from 'chessground/types';
-import * as game  from 'chess.js';
+import * as chess  from 'chess.js';
+
+import * as cg from 'chessground/types';
+
+import { ChessBoard } from '../board/ChessBoard';
 
 class ChessGameMove {
-	private readonly game:  game.Chess;
-	private readonly board: ChessgroundApi;
+	private readonly game:  Chess;
+	private readonly board: ChessBoard;
 
-	constructor(g: game.Chess, b: ChessgroundApi) {
+	constructor(g: Chess, b: ChessBoard) {
 		this.game  = g;
 		this.board = b;
-		this.initBoard();
-	}
-
-	private initBoard(): void {
-		this.board.set({
-			turnColor: this.turnColor(),
-			movable: {
-				color: this.turnColor(),
-				dests: this.possibleDests(),
-				showDests: true,
-			},
-		});
-	}
-
-	private getBoardMove(m: game.Move | undefined): board.Key[] {
-		if (m) {
-			return [m.from as board.Key, m.to as board.Key];
-		}
-		return [];
-	}
-
-	public updateBoard(lastMove: game.Move | undefined): void {
-		const turnColor = this.turnColor();
-		this.board.set({
-			fen: this.game.fen(),
-			turnColor: turnColor,
-			movable: {
-				color: turnColor,
-				dests: this.possibleDests()
-			},
-			lastMove: this.getBoardMove(lastMove),
-			check: this.game.inCheck(),
-		});
 	}
 
 	public isPromotion(): boolean {
@@ -56,50 +26,39 @@ class ChessGameMove {
 		return false;
 	}
 
-	public possibleDests(): Map<board.Key, board.Key[]> {
-		const dests = new Map<board.Key, board.Key[]>();
-		game.SQUARES.forEach((square: game.Square) => {
-			const moves = this.game.moves({ square, verbose: true }) as game.Move[];
-			if (moves.length > 0) {
-				dests.set(square as board.Key, moves.map((move: game.Move) => move.to as board.Key));
-			}
-		})
-		return dests;
-	}
-
-	public exec(orig: board.Key, dest: board.Key, promotion: string): void {
+	public exec(orig: cg.Key, dest: cg.Key, promotion: string): void {
 		try {
 			const move = this.game.move({
-				from: orig as game.Square,
-				to: dest as game.Square,
+				from: orig as chess.Square,
+				to: dest as chess.Square,
 				promotion: promotion,
 			});
 			if (move) {
 				console.log('Move:', move.san);
-				this.updateBoard(move);
+				this.board.update(move);
 			} else {
 				// Invalid move - reset position
 				console.error('Invalid move, reset position:', move);
-				this.board.set({ fen: this.game.fen() });
+				this.board.reset();
 			}
 		} catch (error) {
 			console.error('Invalid move:', error);
 			// Reset board to current position
-			this.board.set({ fen: this.game.fen() });
+			this.board.reset();
 		}
 	}
 
 	public undo(): boolean {
 		if (this.game.undo()) {
-			this.updateBoard(this.getLastMove());
+			this.board.update(this.getLastMove());
 			return true;
 		}
 		console.log('No move to undo!');
 		return false;
 	}
 
-	public getLastMove(): game.Move | undefined {
-		const lastMove = this.game.history({ verbose : true }).pop();
+	public getLastMove(): chess.Move | undefined {
+		const lastMove = this.game.history({verbose : true}).pop();
 		return lastMove;
 	}
 }

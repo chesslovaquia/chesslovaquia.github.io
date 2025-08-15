@@ -8,6 +8,8 @@ import * as cg from 'chessground/types';
 
 import { Chess } from 'chess.js';
 
+import * as chess from 'chess.js';
+
 import { ChessGameConfig } from '../game/ChessGameConfig';
 import { ChessGameError  } from '../game/ChessGameError';
 
@@ -118,6 +120,53 @@ class ChessBoard {
 				enabled: true,
 			},
 		});
+	}
+
+	private possibleDests(): Map<cg.Key, cg.Key[]> {
+		const dests = new Map<cg.Key, cg.Key[]>();
+		chess.SQUARES.forEach((square: chess.Square) => {
+			const moves = this.game.moves({ square, verbose: true }) as chess.Move[];
+			if (moves.length > 0) {
+				dests.set(square as cg.Key, moves.map((move: chess.Move) => move.to as cg.Key));
+			}
+		})
+		return dests;
+	}
+
+	public init(): void {
+		this.board.set({
+			turnColor: this.turnColor(),
+			movable: {
+				color: this.turnColor(),
+				dests: this.possibleDests(),
+				showDests: true,
+			},
+		});
+	}
+
+	private getMove(m: chess.Move | undefined): cg.Key[] {
+		if (m) {
+			return [m.from as cg.Key, m.to as cg.Key];
+		}
+		return [];
+	}
+
+	public update(lastMove: chess.Move | undefined): void {
+		const turnColor = this.turnColor();
+		this.board.set({
+			fen: this.game.fen(),
+			turnColor: turnColor,
+			movable: {
+				color: turnColor,
+				dests: this.possibleDests()
+			},
+			lastMove: this.getMove(lastMove),
+			check: this.game.inCheck(),
+		});
+	}
+
+	public reset(): void {
+		this.board.set({fen: this.game.fen()});
 	}
 }
 
