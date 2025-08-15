@@ -3,10 +3,10 @@
 
 import { Chess } from 'chess.js';
 
+import { EventClockTimeout } from '../events/EventClockTimeout';
+
 import { GameError  } from './GameError';
 import { GamePlayer } from './GamePlayer';
-
-import { ClockTimeout } from './events';
 
 import { Color } from './types';
 
@@ -242,7 +242,7 @@ class GameClock {
 
 	private timeout(turn: Color): void {
 		console.debug('Clock timeout:', turn);
-		const evt = new ClockTimeout(turn);
+		const evt = new EventClockTimeout(turn);
 		document.dispatchEvent(evt);
 		this.firstMove = false;
 		this.time[turn] = 0;

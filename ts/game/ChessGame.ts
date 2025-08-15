@@ -10,6 +10,7 @@ import { EventBoardMove      } from '../events/EventBoardMove';
 import { BoardMoveData       } from '../events/EventBoardMove';
 import { EventBoardAfterMove } from '../events/EventBoardAfterMove';
 import { BoardAfterMoveData  } from '../events/EventBoardAfterMove';
+import { EventClockTimeout   } from '../events/EventClockTimeout';
 
 import { GameConfig    } from './GameConfig';
 import { GameDisplay   } from './GameDisplay';
@@ -19,8 +20,6 @@ import { GamePromotion } from './GamePromotion';
 import { GameState     } from './GameState';
 import { GamePlayer    } from './GamePlayer';
 import { GameClock     } from './GameClock';
-
-import { ClockTimeout } from './events';
 
 import { Color } from './types';
 
@@ -93,7 +92,7 @@ class ChessGame {
 		});
 		// Clock events.
 		document.addEventListener('clvqClockTimeout', (evt: Event) => {
-			const e = evt as ClockTimeout;
+			const e = evt as EventClockTimeout;
 			this.clockTimeout(e.detail.color);
 		});
 		// Game menu.

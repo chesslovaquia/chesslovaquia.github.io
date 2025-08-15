@@ -1,9 +1,9 @@
 // Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com>
 // See LICENSE file.
 
-import { Color } from './types';
+import { Color } from '../game/types';
 
-class ClockTimeout extends CustomEvent<{ color: Color }> {
+class EventClockTimeout extends CustomEvent<{ color: Color }> {
 	constructor(color: Color) {
 		super('clvqClockTimeout', {
 			detail: { color: color },
@@ -11,6 +11,4 @@ class ClockTimeout extends CustomEvent<{ color: Color }> {
 	}
 }
 
-export {
-	ClockTimeout,
-}
+export { EventClockTimeout }
