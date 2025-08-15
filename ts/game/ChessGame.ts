@@ -27,6 +27,7 @@ class ChessGame {
 	private readonly id:        string;
 	private readonly game:      game.Chess;
 	private readonly board:     ChessgroundApi;
+	private readonly cfg:       ChessGameConfig;
 	private readonly move:      ChessGameMove;
 	private readonly promotion: ChessGamePromotion;
 	private readonly state:     ChessGameState;
@@ -40,6 +41,7 @@ class ChessGame {
 
 	constructor(config: ChessGameConfig) {
 		console.debug('Game config:', config);
+		this.cfg       = config;
 		this.id        = 'current'; // FIXME: generate internal game ID
 		this.active    = false;
 		this.game      = this.newGame();
@@ -47,12 +49,12 @@ class ChessGame {
 		this.p2        = new ChessGamePlayer("2");
 		this.clock     = new ChessGameClock(this.game, this.p1, this.p2, clockInitialTime, clockIncrement);
 		this.state     = new ChessGameState(this.game, this.clock);
-		this.board     = this.newBoard(config);
+		this.board     = this.newBoard(this.cfg);
 		this.move      = new ChessGameMove(this.game, this.board);
-		this.display   = new ChessGameDisplay(config, this.game, this.move);
+		this.display   = new ChessGameDisplay(this.cfg, this.game, this.move);
 		this.promotion = new ChessGamePromotion(this.id, this.state, this.move, this.display);
 		if (this.board) {
-			this.setupEventListeners(config);
+			this.setupEventListeners();
 			this.init();
 		}
 	}
@@ -66,12 +68,14 @@ class ChessGame {
 				this.move.updateBoard(this.move.getLastMove());
 				this.display.updateStatus();
 				this.start();
+			} else {
+				this.setup();
 			}
 		});
 		this.enableBoard();
 	}
 
-	private setupEventListeners(cfg: ChessGameConfig): void {
+	private setupEventListeners(): void {
 		console.debug('Game setup event listeners.');
 		// Clock events.
 		document.addEventListener('clockTimeout', (evt: Event) => {
@@ -79,9 +83,9 @@ class ChessGame {
 			this.clockTimeout(e.detail.color);
 		});
 		// Game menu.
-		cfg.gameReset?.addEventListener('click', () => this.reset());
+		this.cfg.gameReset?.addEventListener('click', () => this.reset());
 		// Game setup.
-		cfg.gameStart?.addEventListener('click', () => this.start());
+		this.cfg.gameStart?.addEventListener('click', () => this.start());
 	}
 
 	private newGame(): game.Chess {
@@ -169,13 +173,14 @@ class ChessGame {
 	private reset(): void {
 		console.log('Game reset!');
 		this.stop();
-		this.enableBoard();
 		this.game.reset();
 		this.clock.reset();
 		this.state.reset(this.id);
 		this.move.updateBoard(undefined);
 		this.display.reset();
 		this.display.updateStatus();
+		this.setup();
+		this.enableBoard();
 	}
 
 	private disableMoves(): void {
@@ -212,6 +217,10 @@ class ChessGame {
 			},
 		});
 		this.display.updateStatus();
+	}
+
+	private setup(): void {
+		this.cfg.gameSetupModal?.classList.toggle('w3-show', true);
 	}
 
 	private start(): void {
