@@ -26,5 +26,8 @@ target = "assets/clvq"
 source = "ts/game"
 target = "assets/game"
 [[module.mounts]]
+source = "ts/board"
+target = "assets/board"
+[[module.mounts]]
 source = "node_modules/chessground"
 target = "assets/chessground"
