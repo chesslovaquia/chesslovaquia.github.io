@@ -85,11 +85,11 @@ class ChessGame {
 		// Board events.
 		document.addEventListener('clvqBoardMove', (evt: Event) => {
 			const e = evt as BoardMoveEvent;
-			this.onMove(e.detail.data);
+			this.onMove(e.detail);
 		});
 		document.addEventListener('clvqBoardAfterMove', (evt: Event) => {
 			const e = evt as BoardAfterMoveEvent;
-			this.afterMove(e.detail.data);
+			this.afterMove(e.detail);
 		});
 		// Clock events.
 		document.addEventListener('clockTimeout', (evt: Event) => {
