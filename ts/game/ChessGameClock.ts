@@ -10,8 +10,6 @@ import { ClockTimeout } from './events';
 
 import { Color } from './types';
 
-type clockClass = 'active' | 'warning' | 'alert' | 'timeout';
-
 type clockState = {
 	tstamp:        number,
 	initialTime:   number,
@@ -25,6 +23,13 @@ const firstMoveTimeout: number = 30 * 10; // 30 seconds in tenths.
 const activeWarning:    number = 30 * 10; // 30 seconds in tenths.
 const activeAlert:      number = 10 * 10; // 10 seconds in tenths.
 
+enum Status {
+	active  = 'active',
+	warning = 'warning',
+	alert   = 'alert',
+	timeout = 'timeout',
+}
+
 class ChessGameClock {
 	private readonly game: Chess;
 	private readonly p1:   ChessGamePlayer;
@@ -36,7 +41,7 @@ class ChessGameClock {
 
 	private side:  Record<Color, ChessGamePlayer>;
 	private time:  Record<Color, number>;
-	private klass: Record<Color, clockClass>;
+	private klass: Record<Color, Status>;
 
 	private firstMove:         boolean;
 	private firstMoveTime:     Record<Color, number>;
@@ -54,7 +59,7 @@ class ChessGameClock {
 		this.initialTime       = time * 10;
 		this.increment         = increment * 10;
 		this.time              = {'w': 0, 'b': 0};
-		this.klass             = {'w': 'active', 'b': 'active'};
+		this.klass             = {'w': Status.active, 'b': Status.active};
 		this.firstMoveTime     = {'w': 0, 'b': 0};
 		this.firstMoveInterval = null;
 		this.firstMove         = true;
@@ -114,13 +119,13 @@ class ChessGameClock {
 	}
 
 	private async update(turn: Color): Promise<void> {
-		if (this.klass[turn] !== 'timeout') {
+		if (this.klass[turn] !== Status.timeout) {
 			if (this.time[turn] <= activeAlert) {
-				this.klass[turn] = 'alert';
-				this.side[turn].clock?.classList.toggle('warning', false);
+				this.klass[turn] = Status.alert;
+				this.side[turn].clock?.classList.toggle(Status.warning, false);
 			} else if (this.time[turn] <= activeWarning) {
-				this.klass[turn] = 'warning';
-				this.side[turn].clock?.classList.toggle('active', false);
+				this.klass[turn] = Status.warning;
+				this.side[turn].clock?.classList.toggle(Status.active, false);
 			}
 		}
 		if (this.side['w'].clock) {
@@ -152,31 +157,18 @@ class ChessGameClock {
 		console.debug('Clock reset.');
 		if (this.side['w'].clock) {
 			this.side['w'].clock.textContent = this.format(this.initialTime);
-			this.side['w'].clock.classList.toggle('active', false);
-			this.side['w'].clock.classList.toggle('warning', false);
-			this.side['w'].clock.classList.toggle('alert', false);
-			this.side['w'].clock.classList.toggle('timeout', false);
 		}
 		if (this.side['b'].clock) {
 			this.side['b'].clock.textContent = this.format(this.initialTime);
-			this.side['b'].clock.classList.toggle('active', false);
-			this.side['b'].clock.classList.toggle('warning', false);
-			this.side['b'].clock.classList.toggle('alert', false);
-			this.side['b'].clock.classList.toggle('timeout', false);
 		}
-		this.time = {
-			'w': this.initialTime,
-			'b': this.initialTime,
-		};
-		this.klass = {
-			'w': 'active',
-			'b': 'active',
-		};
-		this.firstMoveTime = {
-			'w': firstMoveTimeout,
-			'b': firstMoveTimeout,
-		};
-		this.firstMove = true;
+		Object.values(Status).forEach(status => {
+			this.side['w'].clock?.classList.toggle(status, false);
+			this.side['b'].clock?.classList.toggle(status, false);
+		});
+		this.klass         = {'w': Status.active,    'b': Status.active};
+		this.time          = {'w': this.initialTime, 'b': this.initialTime};
+		this.firstMoveTime = {'w': firstMoveTimeout, 'b': firstMoveTimeout};
+		this.firstMove     = true;
 	}
 
 	public getState(): clockState {
@@ -248,7 +240,7 @@ class ChessGameClock {
 		document.dispatchEvent(evt);
 		this.firstMove = false;
 		this.time[turn] = 0;
-		this.klass[turn] = 'timeout';
+		this.klass[turn] = Status.timeout;
 		this.update(turn);
 	}
 }

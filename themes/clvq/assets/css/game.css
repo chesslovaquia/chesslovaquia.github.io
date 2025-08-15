@@ -6,6 +6,11 @@
 	margin: auto; /* Centers the board */
 }
 
+.game-board.timeout {
+	color: #fff;
+	background-color: #f44336;
+}
+
 .game-player {
 	margin: 0;
 	padding: 0;
