@@ -1,11 +1,16 @@
 // Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com>
 // See LICENSE file.
 
-import { Chessground           } from 'chessground';
-import { Api as ChessgroundApi } from 'chessground/api';
+import { Chess }   from 'chess.js';
+import * as chess  from 'chess.js';
 
-import * as board from 'chessground/types';
-import * as game  from 'chess.js';
+import { ChessBoard } from '../board/ChessBoard';
+import {
+	BoardMoveEvent,
+	BoardMoveData,
+	BoardAfterMoveEvent,
+	BoardAfterMoveData,
+} from '../board/events';
 
 import { ChessGameConfig    } from './ChessGameConfig';
 import { ChessGameDisplay   } from './ChessGameDisplay';
@@ -25,8 +30,8 @@ const clockIncrement   = 10;  // Seconds.
 
 class ChessGame {
 	private readonly id:        string;
-	private readonly game:      game.Chess;
-	private readonly board:     ChessgroundApi;
+	private readonly game:      Chess;
+	private readonly board:     ChessBoard;
 	private readonly cfg:       ChessGameConfig;
 	private readonly move:      ChessGameMove;
 	private readonly promotion: ChessGamePromotion;
@@ -44,12 +49,12 @@ class ChessGame {
 		this.cfg       = config;
 		this.id        = 'current'; // FIXME: generate internal game ID
 		this.active    = false;
-		this.game      = this.newGame();
+		this.game      = new Chess(chess.DEFAULT_POSITION);
+		this.board     = new ChessBoard(this.cfg, this.game);
 		this.p1        = new ChessGamePlayer("1");
 		this.p2        = new ChessGamePlayer("2");
 		this.clock     = new ChessGameClock(this.game, this.p1, this.p2, clockInitialTime, clockIncrement);
 		this.state     = new ChessGameState(this.game, this.clock);
-		this.board     = this.newBoard(this.cfg);
 		this.move      = new ChessGameMove(this.game, this.board);
 		this.display   = new ChessGameDisplay(this.cfg, this.game, this.move);
 		this.promotion = new ChessGamePromotion(this.id, this.state, this.move, this.display);
@@ -77,6 +82,15 @@ class ChessGame {
 
 	private setupEventListeners(): void {
 		console.debug('Game setup event listeners.');
+		// Board events.
+		document.addEventListener('clvqBoardMove', (evt: Event) => {
+			const e = evt as BoardMoveEvent;
+			this.onMove(e.detail.data);
+		});
+		document.addEventListener('clvqBoardAfterMove', (evt: Event) => {
+			const e = evt as BoardAfterMoveEvent;
+			this.afterMove(e.detail.data);
+		});
 		// Clock events.
 		document.addEventListener('clockTimeout', (evt: Event) => {
 			const e = evt as ClockTimeout;
@@ -88,73 +102,20 @@ class ChessGame {
 		this.cfg.gameStart?.addEventListener('click', () => this.start());
 	}
 
-	private newGame(): game.Chess {
-		return new game.Chess(game.DEFAULT_POSITION);
-	}
-
-	private newBoard(config: ChessGameConfig): ChessgroundApi {
-		if (!config.boardElement) {
-			throw new ChessGameError('Init board element not found.');
-		}
-		return Chessground(config.boardElement, {
-			disableContextMenu: true,
-			coordinates: false,
-			fen: this.game.fen(),
-			orientation: 'white',
-			turnColor: 'white',
-			movable: {
-				color: 'white',
-				free: false,
-				showDests: false,
-				rookCastle: true,
-				events: {
-					after: (orig: board.Key, dest: board.Key, meta?: board.MoveMetadata) => {
-						this.afterMove(orig, dest)
-					},
-				},
-			},
-			events: {
-				move: (orig: board.Key, dest: board.Key, gotPiece?: board.Piece) => {
-					this.onMove(orig, dest, gotPiece)
-				},
-			},
-			highlight: {
-				lastMove: true,
-				check: true,
-			},
-			selectable: {
-				enabled: true,
-			},
-			premovable: {
-				enabled: false,
-			},
-			animation: {
-				enabled: false,
-				duration: 200,
-			},
-			drawable: {
-				enabled: false,
-			},
-			draggable: {
-				enabled: false,
-			},
-		});
-	}
-
-	private onMove(orig: board.Key, dest: board.Key, gotPiece?: board.Piece): void {
+	private onMove(data: BoardMoveData): void {
 		this.disableMoves();
 		if (!this.active) {
 			this.start();
 		}
-		this.move.exec(orig, dest, 'q');
+		this.move.exec(data.orig, data.dest, 'q');
 		this.display.updateStatus();
 	}
 
-	private afterMove(orig: board.Key, dest: board.Key) {
+	private afterMove(data: BoardAfterMoveData) {
 		// Pawn promotion.
 		if (this.move.isPromotion()) {
 			console.debug('Move was pawn promotion.');
-			this.promotion.handle(orig, dest);
+			this.promotion.handle(data.orig, data.dest);
 			this.display.updateStatus();
 		} else {
 			// Update clocks.
