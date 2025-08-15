@@ -3,17 +3,17 @@
 
 import * as board from 'chessground/types';
 
-import { ChessGameDisplay } from './ChessGameDisplay';
-import { ChessGameMove    } from './ChessGameMove';
-import { ChessGameState   } from './ChessGameState';
+import { GameDisplay } from './GameDisplay';
+import { GameMove    } from './GameMove';
+import { GameState   } from './GameState';
 
-class ChessGamePromotion {
+class GamePromotion {
 	private readonly id:      string;
-	private readonly state:   ChessGameState;
-	private readonly move:    ChessGameMove;
-	private readonly display: ChessGameDisplay;
+	private readonly state:   GameState;
+	private readonly move:    GameMove;
+	private readonly display: GameDisplay;
 
-	constructor(id: string, s: ChessGameState, m: ChessGameMove, d: ChessGameDisplay) {
+	constructor(id: string, s: GameState, m: GameMove, d: GameDisplay) {
 		this.id      = id;
 		this.state   = s;
 		this.move    = m;
@@ -69,4 +69,4 @@ class ChessGamePromotion {
 	}
 }
 
-export { ChessGamePromotion };
+export { GamePromotion };

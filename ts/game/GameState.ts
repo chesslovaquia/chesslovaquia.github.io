@@ -3,21 +3,21 @@
 
 import { Chess } from 'chess.js';
 
-import { ChessGameError } from './ChessGameError';
-import { ChessGameClock } from './ChessGameClock';
+import { GameError } from './GameError';
+import { GameClock } from './GameClock';
 
 import { ClvqIndexedDB } from '../clvq/ClvqIndexedDB';
 
-const dbName    = 'clvqChessGame';
+const dbName    = 'clvqGame';
 const dbStore   = 'state';
 const dbVersion = 3;
 
-class ChessGameState {
+class GameState {
 	private readonly game:  Chess;
-	private readonly clock: ChessGameClock;
+	private readonly clock: GameClock;
 	private readonly db:    ClvqIndexedDB;
 
-	constructor(game: Chess, clock: ChessGameClock) {
+	constructor(game: Chess, clock: GameClock) {
 		this.game  = game;
 		this.clock = clock;
 		this.db    = new ClvqIndexedDB(dbName, dbStore, dbVersion);
@@ -58,10 +58,10 @@ class ChessGameState {
 			}
 		});
 		if (gotError !== '') {
-			throw new ChessGameError(`Invalid move: ${gotError}`);
+			throw new GameError(`Invalid move: ${gotError}`);
 		}
 
 	}
 }
 
-export { ChessGameState };
+export { GameState };

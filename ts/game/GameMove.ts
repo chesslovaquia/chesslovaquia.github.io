@@ -9,7 +9,7 @@ import * as cg from 'chessground/types';
 
 import { ChessBoard } from '../board/ChessBoard';
 
-class ChessGameMove {
+class GameMove {
 	private readonly game:  Chess;
 	private readonly board: ChessBoard;
 
@@ -67,4 +67,4 @@ class ChessGameMove {
 	}
 }
 
-export { ChessGameMove };
+export { GameMove };

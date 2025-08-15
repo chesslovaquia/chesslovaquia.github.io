@@ -3,7 +3,7 @@
 
 import { ConfigUI } from '../config/ConfigUI';
 
-class ChessGameConfig {
+class GameConfig {
 	public ui: ConfigUI;
 
 	constructor(board: HTMLElement) {
@@ -11,4 +11,4 @@ class ChessGameConfig {
 	}
 }
 
-export { ChessGameConfig };
+export { GameConfig };

@@ -3,8 +3,8 @@
 
 import { Chess } from 'chess.js';
 
-import { ChessGameError  } from './ChessGameError';
-import { ChessGamePlayer } from './ChessGamePlayer';
+import { GameError  } from './GameError';
+import { GamePlayer } from './GamePlayer';
 
 import { ClockTimeout } from './events';
 
@@ -30,16 +30,16 @@ enum Status {
 	timeout = 'timeout',
 }
 
-class ChessGameClock {
+class GameClock {
 	private readonly game: Chess;
-	private readonly p1:   ChessGamePlayer;
-	private readonly p2:   ChessGamePlayer;
+	private readonly p1:   GamePlayer;
+	private readonly p2:   GamePlayer;
 
 	private initialTime: number;
 	private increment:   number;
 	private interval:    ReturnType<typeof setInterval> | null;
 
-	private side:  Record<Color, ChessGamePlayer>;
+	private side:  Record<Color, GamePlayer>;
 	private time:  Record<Color, number>;
 	private klass: Record<Color, Status>;
 
@@ -47,10 +47,10 @@ class ChessGameClock {
 	private firstMoveTime:     Record<Color, number>;
 	private firstMoveInterval: ReturnType<typeof setInterval> | null;
 
-	constructor(game: Chess, p1: ChessGamePlayer, p2: ChessGamePlayer, time: number, increment: number) {
+	constructor(game: Chess, p1: GamePlayer, p2: GamePlayer, time: number, increment: number) {
 		console.debug('Clock init:', time, increment);
 		if (time < 0 || increment < 0) {
-			throw new ChessGameError(`Invalid clock time (${time}) or increment (${increment})`);
+			throw new GameError(`Invalid clock time (${time}) or increment (${increment})`);
 		}
 		this.game              = game;
 		this.p1                = p1;
@@ -251,4 +251,4 @@ class ChessGameClock {
 	}
 }
 
-export { ChessGameClock };
+export { GameClock };

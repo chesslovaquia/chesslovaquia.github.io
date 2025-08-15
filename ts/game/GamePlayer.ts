@@ -1,9 +1,9 @@
 // Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com>
 // See LICENSE file.
 
-import { ChessGameError } from './ChessGameError';
+import { GameError } from './GameError';
 
-class ChessGamePlayer {
+class GamePlayer {
 	private readonly info:  HTMLElement | undefined;
 	public  readonly clock: HTMLElement | undefined;
 
@@ -11,12 +11,12 @@ class ChessGamePlayer {
 		this.info  = document.getElementById(`gamePlayer${id}`) || undefined;
 		this.clock = document.getElementById(`gameClock${id}`) || undefined;
 		if (!this.info) {
-			throw new ChessGameError(`gamePlayer${id}: element not found`);
+			throw new GameError(`gamePlayer${id}: element not found`);
 		}
 		if (!this.clock) {
-			throw new ChessGameError(`gameClock${id}: element not found`);
+			throw new GameError(`gameClock${id}: element not found`);
 		}
 	}
 }
 
-export { ChessGamePlayer };
+export { GamePlayer };

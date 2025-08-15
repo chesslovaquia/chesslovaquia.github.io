@@ -12,14 +12,14 @@ import {
 	BoardAfterMoveData,
 } from '../board/events';
 
-import { ChessGameConfig    } from './ChessGameConfig';
-import { ChessGameDisplay   } from './ChessGameDisplay';
-import { ChessGameError     } from './ChessGameError';
-import { ChessGameMove      } from './ChessGameMove';
-import { ChessGamePromotion } from './ChessGamePromotion';
-import { ChessGameState     } from './ChessGameState';
-import { ChessGamePlayer    } from './ChessGamePlayer';
-import { ChessGameClock     } from './ChessGameClock';
+import { GameConfig    } from './GameConfig';
+import { GameDisplay   } from './GameDisplay';
+import { GameError     } from './GameError';
+import { GameMove      } from './GameMove';
+import { GamePromotion } from './GamePromotion';
+import { GameState     } from './GameState';
+import { GamePlayer    } from './GamePlayer';
+import { GameClock     } from './GameClock';
 
 import { ClockTimeout } from './events';
 
@@ -32,32 +32,32 @@ class ChessGame {
 	private readonly id:        string;
 	private readonly game:      Chess;
 	private readonly board:     ChessBoard;
-	private readonly cfg:       ChessGameConfig;
-	private readonly move:      ChessGameMove;
-	private readonly promotion: ChessGamePromotion;
-	private readonly state:     ChessGameState;
-	private readonly display:   ChessGameDisplay;
-	private readonly clock:     ChessGameClock;
+	private readonly cfg:       GameConfig;
+	private readonly move:      GameMove;
+	private readonly promotion: GamePromotion;
+	private readonly state:     GameState;
+	private readonly display:   GameDisplay;
+	private readonly clock:     GameClock;
 
-	private readonly p1: ChessGamePlayer;
-	private readonly p2: ChessGamePlayer;
+	private readonly p1: GamePlayer;
+	private readonly p2: GamePlayer;
 
 	private active: boolean;
 
-	constructor(config: ChessGameConfig) {
+	constructor(config: GameConfig) {
 		console.debug('Game config:', config);
 		this.cfg       = config;
 		this.id        = 'current'; // FIXME: generate internal game ID
 		this.active    = false;
 		this.game      = new Chess(chess.DEFAULT_POSITION);
 		this.board     = new ChessBoard(this.cfg, this.game);
-		this.p1        = new ChessGamePlayer("1");
-		this.p2        = new ChessGamePlayer("2");
-		this.clock     = new ChessGameClock(this.game, this.p1, this.p2, clockInitialTime, clockIncrement);
-		this.state     = new ChessGameState(this.game, this.clock);
-		this.move      = new ChessGameMove(this.game, this.board);
-		this.display   = new ChessGameDisplay(this.cfg, this.game, this.move);
-		this.promotion = new ChessGamePromotion(this.id, this.state, this.move, this.display);
+		this.p1        = new GamePlayer("1");
+		this.p2        = new GamePlayer("2");
+		this.clock     = new GameClock(this.game, this.p1, this.p2, clockInitialTime, clockIncrement);
+		this.state     = new GameState(this.game, this.clock);
+		this.move      = new GameMove(this.game, this.board);
+		this.display   = new GameDisplay(this.cfg, this.game, this.move);
+		this.promotion = new GamePromotion(this.id, this.state, this.move, this.display);
 		if (this.board) {
 			this.setupEventListeners();
 			this.init();

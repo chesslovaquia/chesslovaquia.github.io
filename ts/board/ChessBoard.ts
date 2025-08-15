@@ -10,7 +10,7 @@ import { Chess } from 'chess.js';
 
 import * as chess from 'chess.js';
 
-import { ChessGameConfig } from '../game/ChessGameConfig';
+import { GameConfig } from '../game/GameConfig';
 
 import {
 	BoardMoveEvent,
@@ -18,11 +18,11 @@ import {
 } from './events';
 
 class ChessBoard {
-	private readonly cfg:   ChessGameConfig;
+	private readonly cfg:   GameConfig;
 	private readonly game:  Chess;
 	private readonly board: ChessgroundApi;
 
-	constructor(cfg: ChessGameConfig, game: Chess) {
+	constructor(cfg: GameConfig, game: Chess) {
 		this.cfg   = cfg;
 		this.game  = game;
 		this.board = this.newBoard();

@@ -3,17 +3,17 @@
 
 import { Chess, Move } from 'chess.js';
 
-import { ChessGameConfig } from './ChessGameConfig';
-import { ChessGameMove   } from './ChessGameMove';
+import { GameConfig } from './GameConfig';
+import { GameMove   } from './GameMove';
 
 import { Color } from './types';
 
-class ChessGameDisplay {
+class GameDisplay {
 	private readonly game: Chess;
-	private readonly move: ChessGameMove;
-	private readonly cfg:  ChessGameConfig;
+	private readonly move: GameMove;
+	private readonly cfg:  GameConfig;
 
-	constructor(cfg: ChessGameConfig, g: Chess, m: ChessGameMove) {
+	constructor(cfg: GameConfig, g: Chess, m: GameMove) {
 		this.game = g;
 		this.move = m;
 		this.cfg  = cfg;
@@ -67,4 +67,4 @@ class ChessGameDisplay {
 	}
 }
 
-export { ChessGameDisplay };
+export { GameDisplay };
