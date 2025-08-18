@@ -8,9 +8,9 @@ console.debug('Assets CDN: {{ $cdn }}');
 {{- $buildID := getenv "HUGO_CLVQ_BUILD" | default "UNSET" }}
 console.debug('Assets build ID: {{ $buildID }}');
 
-{{- with site.Params.game_assets }}
+{{- with site.Params.game_board_assets }}
 	{{- range . }}
 console.debug('Fetch: {{ . }}');
-fetch('{{ $cdn }}/{{ . }}?v={{ $buildID }}');
+fetch('{{ $cdn }}/{{ . }}');
 	{{- end }}
 {{- end }}

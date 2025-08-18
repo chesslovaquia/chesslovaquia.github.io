@@ -17,10 +17,16 @@ const SITE_URLS = [
 {{- end }}
 ];
 
+const BOARD_ASSETS = [
+{{- range $asset := .Site.Params.game_board_assets }}
+	'{{ $asset }}',
+{{- end }}
+];
+
 console.log('Service Worker, CACHE_NAME:', CACHE_NAME);
 
-function mergeUnique(arr1, arr2) {
-	return [...new Set([...arr1, ...arr2])]
+function mergeUnique(arr1, arr2, arr3) {
+	return [...new Set([...arr1, ...arr2, ...arr3])]
 }
 
 // Install event - cache resources
@@ -36,6 +42,7 @@ async function installHandler() {
 		const cache = await caches.open(CACHE_NAME);
 		const cache_urls = mergeUnique(
 			SITE_URLS.map(s => `${BASE_URL}${s}`),
+			BOARD_ASSETS.map(s => `${BASE_URL}${s}`),
 			assets_urls.map(s => `${ASSETS_CDN}${s}?v=${BUILD_ID}`)
 		);
 		await cache.addAll(cache_urls);

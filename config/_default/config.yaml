@@ -18,7 +18,7 @@ params:
   screen_ts: game/screen.ts
   game_ts: game/game.ts
   game_loader_js: game/load.js
-  game_assets:
+  game_board_assets:
     - lila/public/images/board/wood4.jpg
 
 menus:
