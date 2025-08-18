@@ -81,12 +81,12 @@ class ChessGame {
 	private setupEventListeners(): void {
 		console.debug('Game setup event listeners.');
 		// Board events.
-		document.addEventListener('clvqBoardMove', (evt: Event) => {
+		EventBoardMove.Target.addEventListener(EventBoardMove.Name, (evt: Event) => {
 			const e = evt as EventBoardMove;
 			this.doMove(e.detail);
 		});
 		// Clock events.
-		document.addEventListener('clvqClockTimeout', (evt: Event) => {
+		EventClockTimeout.Target.addEventListener(EventClockTimeout.Name, (evt: Event) => {
 			const e = evt as EventClockTimeout;
 			this.clockTimeout(e.detail.color);
 		});

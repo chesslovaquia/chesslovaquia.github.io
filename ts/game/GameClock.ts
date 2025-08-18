@@ -243,7 +243,7 @@ class GameClock {
 	private timeout(turn: Color): void {
 		console.debug('Clock timeout:', turn);
 		const evt = new EventClockTimeout(turn);
-		document.dispatchEvent(evt);
+		EventClockTimeout.Target.dispatchEvent(evt);
 		this.firstMove = false;
 		this.time[turn] = 0;
 		this.klass[turn] = Status.timeout;

@@ -71,7 +71,7 @@ class ChessBoard {
 		console.debug('Board dispatch move event.');
 		const data = {orig: orig, dest: dest, meta: meta};
 		const evt  = new EventBoardMove(data);
-		document.dispatchEvent(evt);
+		EventBoardMove.Target.dispatchEvent(evt);
 		this.enableMoves();
 	}
 
