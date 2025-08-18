@@ -37,7 +37,7 @@ self.addEventListener('install', event => {
 
 async function installHandler() {
 	try {
-		const resp = await fetch('/assets.json');
+		const resp = await fetch('/sw-assets.json');
 		const assets_urls = await resp.json();
 		const cache = await caches.open(CACHE_NAME);
 		const cache_urls = mergeUnique(
