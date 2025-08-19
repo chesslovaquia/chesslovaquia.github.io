@@ -10,10 +10,10 @@
 		function setupPWA() {
 			if ('serviceWorker' in navigator) {
 				console.log('Service Worker Setup.');
-				navigator.serviceWorker.register('/clvq/sw.js?v={{ $buildID }}');
+				navigator.serviceWorker.register('/js/service-worker.js?v={{ $buildID }}');
 			}
 		}
 		setupPWA();
 	</script>
-	<script src="/game/load.js?v={{ $buildID }}"></script>
+	<script src="/js/assets-load.js?v={{ $buildID }}"></script>
 {{- end }}

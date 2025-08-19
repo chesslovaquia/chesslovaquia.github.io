@@ -20,6 +20,9 @@ dir = ":cacheDir/images"
 
 [module]
 [[module.mounts]]
+source = "js"
+target = "assets/js"
+[[module.mounts]]
 source = "ts/clvq"
 target = "assets/clvq"
 [[module.mounts]]

@@ -12,11 +12,11 @@ params:
     - chessground/assets/chessground.cburnett.css
     - css/chessground.wood4.css
     - css/game.css
+  sw_js: js/service-worker.js
+  game_loader_js: js/assets-load.js
   js_load:
     - clvq/main.ts
-  sw_js: clvq/sw.js
   game_ts: game/game.ts
-  game_loader_js: game/load.js
   game_board_assets:
     - lila/public/images/board/wood4.jpg
 
