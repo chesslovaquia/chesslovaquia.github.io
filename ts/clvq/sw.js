@@ -42,7 +42,7 @@ async function installHandler() {
 		const cache = await caches.open(CACHE_NAME);
 		const cache_urls = mergeUnique(
 			SITE_URLS.map(s => `${BASE_URL}${s}`),
-			BOARD_ASSETS.map(s => `${BASE_URL}${s}`),
+			BOARD_ASSETS.map(s => `${BASE_URL}/${s}`),
 			assets_urls.map(s => `${ASSETS_CDN}${s}?v=${BUILD_ID}`)
 		);
 		await cache.addAll(cache_urls);
