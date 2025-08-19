@@ -19,7 +19,7 @@ async function screenReplace(url: string): Promise<void> {
 
 type Mode = 'mobile' | 'desktop';
 
-export function screenMode(): Mode {
+function screenMode(): Mode {
 	console.debug('Window width:', window.innerWidth);
 	console.debug('Window height:', window.innerHeight);
 	if (window.innerWidth < window.innerHeight) {
