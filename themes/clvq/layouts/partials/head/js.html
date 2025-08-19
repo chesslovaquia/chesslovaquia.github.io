@@ -1,14 +1,14 @@
 {{- $buildID := getenv "HUGO_CLVQ_BUILD" | default "UNSET" -}}
-
 {{- $cdn := .Site.Params.cdn -}}
 {{- $js_load := .Site.Params.js_load }}
 
+<!-- Game app -->
 {{- $game_ts := .Site.Params.game_ts }}
-
-<!-- Game assets -->
 {{- if eq .Params.gamePage "load" }}
 	{{- $js_load = $js_load | append $game_ts }}
 {{- end }}
+
+<!-- Build ts files -->
 
 {{- range $resource := $js_load }}
 	{{- with resources.Get $resource }}
@@ -27,12 +27,14 @@
 	{{- end }}
 {{- end }}
 
+<!-- Parse templated js files -->
+
 <!-- Game assets loader -->
 {{- $gload_js := .Site.Params.game_loader_js }}
 {{- $gl := resources.Get $gload_js | resources.ExecuteAsTemplate $gload_js . -}}
 {{- $gl.Publish -}}
 
-<!-- PWA Service Worker -->
+<!-- PWA service worker -->
 {{- $sw_js := .Site.Params.sw_js }}
 {{- $sw := resources.Get $sw_js | resources.ExecuteAsTemplate $sw_js . -}}
 {{- $sw.Publish -}}
