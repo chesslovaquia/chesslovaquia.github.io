@@ -20,9 +20,8 @@ Renders a menu for the given menu ID.
 	</a>
 	{{- partial "inline/menu/walk.html" (dict "page" $page "menuEntries" . "hide" "w3-hide-small" "siteBtnClass" $siteBtnClass) }}
 	<!-- Toggle Button for Mobile -->
-	<a class="w3-bar-item {{ $siteBtnClass }} w3-right w3-hide-large w3-hide-medium"
-		href="javascript:void(0)"
-		onclick="Clvq.w3ToggleMenu('mobileMenu')">&#9776;</a>
+	<button class="w3-bar-item {{ $siteBtnClass }} w3-right w3-hide-large w3-hide-medium"
+		onclick="Clvq.w3ToggleMenu('mobileMenu')">&#9776;</button>
 </div>
 <!-- Dropdown Menu for Small Screens -->
 <div id="mobileMenu" class="w3-bar-block w3-hide w3-hide-large w3-hide-medium">
