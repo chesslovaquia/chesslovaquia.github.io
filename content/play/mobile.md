@@ -5,5 +5,4 @@ title: "Play"
 type: "page"
 layout: "game-mobile"
 gamePage: "load"
-playPage: "load"
 ---

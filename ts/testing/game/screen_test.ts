@@ -1,23 +1,23 @@
 // Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com>
 // See LICENSE file.
 
-import { __screen } from '../../game/screen';
+import * as screen from '../../game/screen';
 
 test('screenLoad', async () => {
-	await __screen.screenLoad(0);
+	await screen.screenLoad();
 });
 
 test('screenResize', async () => {
-	await __screen.screenResize(0);
+	await screen.screenResize(0);
 });
 
-describe('toggleScreen', () => {
+describe('screenToggle', () => {
 	test('mobile', () => {
 		const width = window.innerWidth;
 		const height = window.innerHeight;
 		window.innerWidth = 360;
 		window.innerHeight = 640;
-		const mode = __screen.toggleScreen();
+		const mode = screen.screenToggle();
 		window.innerWidth = width;
 		window.innerHeight = height;
 		expect(mode).toBe('mobile');
@@ -27,7 +27,7 @@ describe('toggleScreen', () => {
 		const height = window.innerHeight;
 		window.innerWidth = 640;
 		window.innerHeight = 360;
-		const mode = __screen.toggleScreen();
+		const mode = screen.screenToggle();
 		window.innerWidth = width;
 		window.innerHeight = height;
 		expect(mode).toBe('desktop');

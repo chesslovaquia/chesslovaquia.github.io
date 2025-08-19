@@ -2,8 +2,9 @@
 // See LICENSE file.
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+const screenDelay = 200; // ms
 
-async function replace(url: string): Promise<void> {
+async function screenReplace(url: string): Promise<void> {
 	try {
 		const resp = await fetch(url, { method: 'HEAD' });
 		if (resp.ok) {
@@ -18,7 +19,7 @@ async function replace(url: string): Promise<void> {
 
 type Mode = 'mobile' | 'desktop';
 
-function toggleScreen(): Mode {
+function screenToggle(): Mode {
 	const path = window.location.pathname;
 	console.debug('Screen toggle:', path);
 	console.debug('Window width:', window.innerWidth);
@@ -26,14 +27,14 @@ function toggleScreen(): Mode {
 	if (window.innerWidth < window.innerHeight) {
 		if (path !== '/play/mobile/') {
 			console.debug('Screen change to mobile mode.');
-			replace('/play/mobile/');
+			screenReplace('/play/mobile/');
 		} else {
 			console.debug('Screen already in mobile mode.');
 		}
 	} else {
 		if (path !== '/play/desktop/') {
 			console.debug('Screen change to desktop mode.');
-			replace('/play/desktop/');
+			screenReplace('/play/desktop/');
 		} else {
 			console.debug('Screen already in desktop mode.');
 		}
@@ -45,26 +46,14 @@ function toggleScreen(): Mode {
 async function screenResize(wait: number): Promise<void> {
 	console.debug('Screen resize, wait:', wait);
 	await sleep(wait);
-	toggleScreen();
+	screenToggle();
 }
 
-window.addEventListener('resize', () => screenResize(100));
+window.addEventListener('resize', () => screenResize(screenDelay));
 
-async function screenLoad(wait: number): Promise<void> {
-	console.debug('Screen load, wait:', wait);
-	await sleep(wait);
-	toggleScreen();
+async function screenLoad(): Promise<void> {
+	console.debug('Screen load.');
+	screenToggle();
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-	if (window.location.pathname === '/play/') {
-		screenLoad(300);
-	}
-});
-
-// Testing exports.
-export const __screen = {
-	screenLoad,
-	screenResize,
-	toggleScreen,
-};
+export {screenLoad, screenResize, screenToggle}

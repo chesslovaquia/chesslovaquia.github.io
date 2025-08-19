@@ -4,5 +4,4 @@ draft: false
 title: "Play"
 type: "page"
 layout: "play"
-playPage: "load"
 ---
