@@ -19,12 +19,22 @@ async function screenReplace(url: string): Promise<void> {
 
 type Mode = 'mobile' | 'desktop';
 
-export function screenToggle(): Mode {
-	const path = window.location.pathname;
-	console.debug('Screen toggle:', path);
+export function screenMode(): Mode {
 	console.debug('Window width:', window.innerWidth);
 	console.debug('Window height:', window.innerHeight);
 	if (window.innerWidth < window.innerHeight) {
+		return 'mobile';
+	} else {
+		return 'desktop';
+	}
+}
+
+export function screenToggle(): Mode {
+	const path = window.location.pathname;
+	const mode = screenMode();
+	console.debug('Screen toggle:', path);
+	console.debug('Screen mode:', mode);
+	if (mode === 'mobile') {
 		if (path !== '/play/mobile/') {
 			console.debug('Screen change to mobile mode.');
 			screenReplace('/play/mobile/');
@@ -38,9 +48,8 @@ export function screenToggle(): Mode {
 		} else {
 			console.debug('Screen already in desktop mode.');
 		}
-		return 'desktop';
 	}
-	return 'mobile';
+	return mode;
 }
 
 export async function screenResize(wait: number): Promise<void> {
