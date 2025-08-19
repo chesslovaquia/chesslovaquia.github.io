@@ -6,15 +6,15 @@ import { ConfigError } from './ConfigError';
 class ConfigUI {
 	public board: HTMLElement;
 
-	public statusBar:      HTMLElement | undefined;
-	public gameReset:      HTMLElement | undefined;
+	public statusBar:      HTMLElement | null;
+	public gameReset:      HTMLElement | null;
 	public gameSetupModal: HTMLElement | null;
 	public gameStart:      HTMLElement | null;
 
 	constructor(board: HTMLElement) {
 		this.board          = board;
-		this.statusBar      = document.getElementById('gameStatus') || undefined;
-		this.gameReset      = document.getElementById('gameReset')  || undefined;
+		this.statusBar      = document.getElementById('gameStatus');
+		this.gameReset      = document.getElementById('gameReset');
 		this.gameSetupModal = document.getElementById('gameSetupModal');
 		this.gameStart      = document.getElementById('gameStart');
 		this.validate();
