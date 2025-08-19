@@ -9,3 +9,10 @@
 .clvq-bg2 {
 	background-color: #353535 !important;
 }
+
+.clvq-menu-icon {
+	width: 24px;
+	height: 24px;
+	background-size: contain;
+	object-fit: contain;
+}

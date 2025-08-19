@@ -15,7 +15,9 @@ Renders a menu for the given menu ID.
 {{- with index site.Menus $menuID }}
 <!-- Top Navigation Bar -->
 <div class="w3-bar">
-	<a class="w3-bar-item {{ $siteBtnClass }}" href="/">&#9004</a>
+	<a class="w3-bar-item {{ $siteBtnClass }}" href="/">
+		<img src="/favicon.ico" alt="Home" class="clvq-menu-icon">
+	</a>
 	{{- partial "inline/menu/walk.html" (dict "page" $page "menuEntries" . "hide" "w3-hide-small" "siteBtnClass" $siteBtnClass) }}
 	<!-- Toggle Button for Mobile -->
 	<a class="w3-bar-item {{ $siteBtnClass }} w3-right w3-hide-large w3-hide-medium"
