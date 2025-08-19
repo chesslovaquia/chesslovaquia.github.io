@@ -1,8 +1,29 @@
 {{- define "main" }}
+	{{- $siteBtnClass := .Site.Params.btnClass }}
+	{{- $extraBtnClass := "w3-border w3-border-dark-grey w3-black game-play-button" }}
 	{{- partial "header.html" . }}
 	{{- partial "page/main-head.html" . }}
-	<div class="w3-container">
-		<p class="w3-center">Loading...</p>
+	<div class="w3-container w3-padding">
+		<div class="w3-bar w3-center">
+			<button class="{{ $siteBtnClass }} {{ $extraBtnClass }}">1+0</button>
+			<button class="{{ $siteBtnClass }} {{ $extraBtnClass }}">2+1</button>
+			<button class="{{ $siteBtnClass }} {{ $extraBtnClass }}">3+0</button>
+		</div>
+		<div class="w3-bar w3-center">
+			<button class="{{ $siteBtnClass }} {{ $extraBtnClass }}">3+2</button>
+			<button class="{{ $siteBtnClass }} {{ $extraBtnClass }}">5+0</button>
+			<button class="{{ $siteBtnClass }} {{ $extraBtnClass }}">5+3</button>
+		</div>
+		<div class="w3-bar w3-center">
+			<button class="{{ $siteBtnClass }} {{ $extraBtnClass }}">10+0</button>
+			<button class="{{ $siteBtnClass }} {{ $extraBtnClass }}">10+5</button>
+			<button class="{{ $siteBtnClass }} {{ $extraBtnClass }}">15+10</button>
+		</div>
+		<div class="w3-bar w3-center">
+			<button class="{{ $siteBtnClass }} {{ $extraBtnClass }}">30+0</button>
+			<button class="{{ $siteBtnClass }} {{ $extraBtnClass }}">30+20</button>
+			<button class="{{ $siteBtnClass }} {{ $extraBtnClass }}">Custom</button>
+		</div>
 	</div>
 	{{- partial "page/main-tail.html" . }}
 {{- end }}
