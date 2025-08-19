@@ -8,10 +8,6 @@ import { GameClock } from './GameClock';
 
 import { ClvqIndexedDB } from '../clvq/ClvqIndexedDB';
 
-const dbName    = 'clvqGame';
-const dbStore   = 'state';
-const dbVersion = 3;
-
 export class GameState {
 	private readonly game:  Chess;
 	private readonly clock: GameClock;
@@ -20,7 +16,7 @@ export class GameState {
 	constructor(game: Chess, clock: GameClock) {
 		this.game  = game;
 		this.clock = clock;
-		this.db    = new ClvqIndexedDB(dbName, dbStore, dbVersion);
+		this.db    = new ClvqIndexedDB('gameState');
 	}
 
 	public reset(id: string): void {

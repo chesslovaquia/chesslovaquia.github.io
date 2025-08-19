@@ -1,18 +1,17 @@
 // Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com>
 // See LICENSE file.
 
+const dbName    = 'clvqDB';
+const dbVersion = 1;
+
 export class ClvqIndexedDB {
-	private readonly name:    string;
 	private readonly store:   string;
-	private readonly version: number;
 
 	private db;
 	private promise;
 
-	constructor(name: string, store: string, version: number) {
-		this.name    = name;
+	constructor(store: string) {
 		this.store   = store;
-		this.version = version;
 		this.db      = null;
 		this.promise = null;
 	}
@@ -20,7 +19,7 @@ export class ClvqIndexedDB {
 	private async getDB() {
 		if (!this.promise) {
 			this.promise = new Promise((resolve, reject) => {
-				const req = indexedDB.open(this.name, this.version);
+				const req = indexedDB.open(dbName, dbVersion);
 				req.onerror = () => reject(req.error);
 				req.onsuccess = () => {
 					this.db = req.result;
