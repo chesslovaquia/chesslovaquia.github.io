@@ -75,7 +75,6 @@ export class ChessGame {
 				this.setup();
 			}
 		});
-		this.enableBoard();
 	}
 
 	private setupEventListeners(): void {
@@ -151,10 +150,12 @@ export class ChessGame {
 
 	private setup(): void {
 		this.cfg.ui.gameSetupModal?.classList.toggle('w3-show', true);
+		this.enableBoard();
 	}
 
 	private start(): void {
 		console.debug('Game start.');
+		this.enableBoard();
 		this.clock.start();
 		this.active = true;
 	}
