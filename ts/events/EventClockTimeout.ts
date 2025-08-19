@@ -6,7 +6,7 @@ import { Color } from '../game/types';
 const eventName:   string      = 'clvqClockTimeout';
 const eventTarget: EventTarget = document as EventTarget;
 
-class EventClockTimeout extends CustomEvent<{ color: Color }> {
+export class EventClockTimeout extends CustomEvent<{ color: Color }> {
 	static Name:   string      = eventName;
 	static Target: EventTarget = eventTarget;
 
@@ -16,5 +16,3 @@ class EventClockTimeout extends CustomEvent<{ color: Color }> {
 		});
 	}
 }
-
-export { EventClockTimeout }

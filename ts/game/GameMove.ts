@@ -9,7 +9,7 @@ import * as cg from 'chessground/types';
 
 import { ChessBoard } from '../board/ChessBoard';
 
-class GameMove {
+export class GameMove {
 	private readonly game:  Chess;
 	private readonly board: ChessBoard;
 
@@ -66,5 +66,3 @@ class GameMove {
 		return this.game.turn() === 'w' ? 'white' : 'black';
 	}
 }
-
-export { GameMove };

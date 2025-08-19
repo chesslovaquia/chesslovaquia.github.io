@@ -8,7 +8,7 @@ import { GameMove   } from './GameMove';
 
 import { Color } from './types';
 
-class GameDisplay {
+export class GameDisplay {
 	private readonly game: Chess;
 	private readonly move: GameMove;
 	private readonly cfg:  GameConfig;
@@ -66,5 +66,3 @@ class GameDisplay {
 		this.cfg.ui.board.classList.toggle('timeout', true);
 	}
 }
-
-export { GameDisplay };

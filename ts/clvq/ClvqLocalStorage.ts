@@ -3,7 +3,7 @@
 
 import { ClvqError } from './ClvqError';
 
-class ClvqLocalStorage {
+export class ClvqLocalStorage {
 
 	public setItem(key: string, val: string): void {
 		try {
@@ -36,5 +36,3 @@ class ClvqLocalStorage {
 	}
 
 }
-
-export { ClvqLocalStorage };

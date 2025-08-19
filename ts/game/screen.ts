@@ -19,7 +19,7 @@ async function screenReplace(url: string): Promise<void> {
 
 type Mode = 'mobile' | 'desktop';
 
-function screenToggle(): Mode {
+export function screenToggle(): Mode {
 	const path = window.location.pathname;
 	console.debug('Screen toggle:', path);
 	console.debug('Window width:', window.innerWidth);
@@ -43,7 +43,7 @@ function screenToggle(): Mode {
 	return 'mobile';
 }
 
-async function screenResize(wait: number): Promise<void> {
+export async function screenResize(wait: number): Promise<void> {
 	console.debug('Screen resize, wait:', wait);
 	await sleep(wait);
 	screenToggle();
@@ -51,9 +51,7 @@ async function screenResize(wait: number): Promise<void> {
 
 window.addEventListener('resize', () => screenResize(screenDelay));
 
-async function screenLoad(): Promise<void> {
+export async function screenLoad(): Promise<void> {
 	console.debug('Screen load.');
 	screenToggle();
 }
-
-export {screenLoad, screenResize, screenToggle}

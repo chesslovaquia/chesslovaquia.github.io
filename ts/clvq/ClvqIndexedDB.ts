@@ -1,7 +1,7 @@
 // Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com>
 // See LICENSE file.
 
-class ClvqIndexedDB {
+export class ClvqIndexedDB {
 	private readonly name:    string;
 	private readonly store:   string;
 	private readonly version: number;
@@ -98,5 +98,3 @@ class ClvqIndexedDB {
 		});
 	}
 }
-
-export { ClvqIndexedDB };

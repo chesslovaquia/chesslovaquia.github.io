@@ -7,7 +7,7 @@ import { GameDisplay } from './GameDisplay';
 import { GameMove    } from './GameMove';
 import { GameState   } from './GameState';
 
-class GamePromotion {
+export class GamePromotion {
 	private readonly id:      string;
 	private readonly state:   GameState;
 	private readonly move:    GameMove;
@@ -68,5 +68,3 @@ class GamePromotion {
 		});
 	}
 }
-
-export { GamePromotion };

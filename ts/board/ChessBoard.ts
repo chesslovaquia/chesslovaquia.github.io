@@ -14,7 +14,7 @@ import { GameConfig } from '../game/GameConfig';
 
 import { EventBoardMove } from '../events/EventBoardMove';
 
-class ChessBoard {
+export class ChessBoard {
 	private readonly cfg:   GameConfig;
 	private readonly game:  Chess;
 	private readonly board: ChessgroundApi;
@@ -160,5 +160,3 @@ class ChessBoard {
 		this.board.set({fen: this.game.fen()});
 	}
 }
-
-export { ChessBoard };

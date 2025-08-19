@@ -1,7 +1,7 @@
 // Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com>
 // See LICENSE file.
 
-class Clvq {
+export class Clvq {
 	constructor() {
 		console.debug('Clvq loaded.');
 	}
@@ -28,5 +28,3 @@ class Clvq {
 		}
 	}
 }
-
-export { Clvq }

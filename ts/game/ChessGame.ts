@@ -25,7 +25,7 @@ import { Color } from './types';
 const clockInitialTime = 900; // Seconds.
 const clockIncrement   = 10;  // Seconds.
 
-class ChessGame {
+export class ChessGame {
 	private readonly id:        string;
 	private readonly game:      Chess;
 	private readonly board:     ChessBoard;
@@ -173,5 +173,3 @@ class ChessGame {
 		this.display.clockTimeout(color);
 	}
 }
-
-export { ChessGame };

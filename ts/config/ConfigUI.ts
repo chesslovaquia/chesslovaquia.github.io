@@ -3,7 +3,7 @@
 
 import { ConfigError } from './ConfigError';
 
-class ConfigUI {
+export class ConfigUI {
 	public board: HTMLElement;
 
 	public statusBar:      HTMLElement | null;
@@ -35,5 +35,3 @@ class ConfigUI {
 		}
 	}
 }
-
-export { ConfigUI };

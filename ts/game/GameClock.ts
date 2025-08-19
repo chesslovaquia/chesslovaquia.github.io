@@ -30,7 +30,7 @@ enum Status {
 	timeout = 'timeout',
 }
 
-class GameClock {
+export class GameClock {
 	private readonly game: Chess;
 	private readonly p1:   GamePlayer;
 	private readonly p2:   GamePlayer;
@@ -250,5 +250,3 @@ class GameClock {
 		this.update(turn);
 	}
 }
-
-export { GameClock };

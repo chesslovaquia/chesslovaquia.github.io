@@ -3,7 +3,7 @@
 
 import { GameError } from './GameError';
 
-class GamePlayer {
+export class GamePlayer {
 	private readonly info:  HTMLElement | undefined;
 	public  readonly clock: HTMLElement | undefined;
 
@@ -18,5 +18,3 @@ class GamePlayer {
 		}
 	}
 }
-
-export { GamePlayer };

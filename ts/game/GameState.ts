@@ -12,7 +12,7 @@ const dbName    = 'clvqGame';
 const dbStore   = 'state';
 const dbVersion = 3;
 
-class GameState {
+export class GameState {
 	private readonly game:  Chess;
 	private readonly clock: GameClock;
 	private readonly db:    ClvqIndexedDB;
@@ -63,5 +63,3 @@ class GameState {
 
 	}
 }
-
-export { GameState };
