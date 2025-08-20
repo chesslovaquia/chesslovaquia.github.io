@@ -91,8 +91,6 @@ export class ChessGame {
 		});
 		// Game menu.
 		this.cfg.ui.gameReset?.addEventListener('click', () => this.reset());
-		// Game setup.
-		this.cfg.ui.gameStart?.addEventListener('click', () => this.start());
 	}
 
 	private doMove(move: BoardMoveData): void {
@@ -149,8 +147,8 @@ export class ChessGame {
 	}
 
 	private setup(): void {
-		this.cfg.ui.gameSetupModal?.classList.toggle('w3-show', true);
-		this.enableBoard();
+		console.debug('Game setup.');
+		window.location.href = '/play/';
 	}
 
 	private start(): void {
