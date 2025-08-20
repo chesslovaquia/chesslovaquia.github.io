@@ -133,7 +133,6 @@ export class ChessGame {
 		this.display.reset();
 		this.display.updateStatus();
 		this.setup();
-		this.enableBoard();
 	}
 
 	private disableBoard(): void {
