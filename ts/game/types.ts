@@ -2,3 +2,8 @@
 // See LICENSE file.
 
 export type Color = 'w' | 'b';
+
+export type GameData = {
+	time:      number,
+	increment: number,
+}

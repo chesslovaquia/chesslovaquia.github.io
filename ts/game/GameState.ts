@@ -5,6 +5,9 @@ import { Chess } from 'chess.js';
 
 import { GameError } from './GameError';
 import { GameClock } from './GameClock';
+import { GameSetup } from './GameSetup';
+
+import { GameData  } from './types';
 
 import { ClvqIndexedDB, Store } from '../clvq/ClvqIndexedDB';
 
@@ -12,11 +15,13 @@ export class GameState {
 	private readonly game:  Chess;
 	private readonly clock: GameClock;
 	private readonly db:    ClvqIndexedDB;
+	private readonly setup: GameSetup;
 
 	constructor(game: Chess, clock: GameClock) {
 		this.game  = game;
 		this.clock = clock;
 		this.db    = new ClvqIndexedDB(Store.state);
+		this.setup = new GameSetup();
 	}
 
 	public reset(id: string): void {
@@ -32,9 +37,11 @@ export class GameState {
 
 	public async load(id: string): Promise<boolean> {
 		const state = await this.db.getItem(id);
-		if (state.moves) {
-			this.loadMoves(state.moves);
+		if (state) {
 			this.clock.setState(state.clock);
+			if (state.moves) {
+				this.loadMoves(state.moves);
+			}
 			return true;
 		}
 		return false;
@@ -56,6 +63,17 @@ export class GameState {
 		if (gotError !== '') {
 			throw new GameError(`Invalid move: ${gotError}`);
 		}
+	}
 
+	public async setupNewGame(): Promise<boolean> {
+		const newGame = await this.setup.getGame();
+		if (newGame) {
+			console.debug('State setup new game:', newGame);
+			this.clock.setupNewGame(newGame.time, newGame.increment);
+			this.setup.removeGame();
+			this.save('current');
+			return true;
+		}
+		return false;
 	}
 }

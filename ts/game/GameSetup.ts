@@ -3,9 +3,11 @@
 
 import { screenLoad } from './screen';
 
+import { GameData } from './types';
+
 import { ClvqIndexedDB, Store } from '../clvq/ClvqIndexedDB';
 
-type setupData = {
+type SetupData = {
 	time:      number,
 	increment: number,
 }
@@ -17,9 +19,19 @@ export class GameSetup {
 		this.db = new ClvqIndexedDB(Store.state);
 	}
 
-	public async newGame(data: setupData): Promise<void> {
+	public async newGame(data: SetupData): Promise<void> {
 		console.debug('Setup new game:', data);
 		await this.db.setItem('new', data);
 		screenLoad();
+	}
+
+	public async getGame(): Promise<GameData> {
+		console.debug('Setup get game.');
+		return await this.db.getItem('new');
+	}
+
+	public async removeGame(): Promise<void> {
+		console.debug('Setup remove game.');
+		this.db.removeItem('new');
 	}
 }

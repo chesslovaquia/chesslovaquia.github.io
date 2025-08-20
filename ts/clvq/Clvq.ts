@@ -39,11 +39,11 @@ export class Clvq {
 		}
 	}
 
-	public gameSetup(time: number, increment: number): void {
+	public gameSetup(timeMinutes: number, incrementSeconds: number): void {
 		const s = new GameSetup();
 		s.newGame({
-			time:      time,
-			increment: increment,
+			time:      timeMinutes * 60,
+			increment: incrementSeconds,
 		});
 	}
 }

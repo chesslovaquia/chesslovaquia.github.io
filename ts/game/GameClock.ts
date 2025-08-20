@@ -199,18 +199,25 @@ export class GameClock {
 		this.update(this.game.turn());
 	}
 
+	public setupNewGame(time: number, increment: number): void {
+		this.initialTime = time * 10;
+		this.increment   = increment * 10;
+		this.reset();
+	}
+
 	private setTimeDiff(tstamp: number): void {
 		const diff = Math.floor(Date.now() - tstamp) / 100;
 		console.debug('Clock time diff:', diff);
 		const turn = this.game.turn();
-		this.time[turn] -= diff;
-		if (this.time[turn] <= 0) {
-			this.time[turn] = 0;
-		}
 		if (this.firstMove) {
 			this.firstMoveTime[turn] -= diff;
 			if (this.firstMoveTime[turn] <= 0) {
 				this.firstMoveTime[turn] = 0;
+			}
+		} else {
+			this.time[turn] -= diff;
+			if (this.time[turn] <= 0) {
+				this.time[turn] = 0;
 			}
 		}
 	}

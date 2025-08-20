@@ -146,8 +146,14 @@ export class ChessGame {
 	}
 
 	private setup(): void {
-		console.debug('Game setup.');
-		window.location.href = '/play/';
+		this.state.setupNewGame().then((done) => {
+			console.debug('Game setup done:', done);
+			if (done) {
+				this.start();
+			} else {
+				window.location.href = '/play/';
+			}
+		});
 	}
 
 	private start(): void {
