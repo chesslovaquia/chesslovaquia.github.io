@@ -6,7 +6,7 @@ import { Chess } from 'chess.js';
 import { GameError } from './GameError';
 import { GameClock } from './GameClock';
 
-import { ClvqIndexedDB } from '../clvq/ClvqIndexedDB';
+import { ClvqIndexedDB, Store } from '../clvq/ClvqIndexedDB';
 
 export class GameState {
 	private readonly game:  Chess;
@@ -16,7 +16,7 @@ export class GameState {
 	constructor(game: Chess, clock: GameClock) {
 		this.game  = game;
 		this.clock = clock;
-		this.db    = new ClvqIndexedDB('gameState');
+		this.db    = new ClvqIndexedDB(Store.state);
 	}
 
 	public reset(id: string): void {

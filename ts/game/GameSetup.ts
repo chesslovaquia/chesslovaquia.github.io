@@ -3,7 +3,7 @@
 
 import { screenLoad } from './screen';
 
-import { ClvqIndexedDB } from '../clvq/ClvqIndexedDB';
+import { ClvqIndexedDB, Store } from '../clvq/ClvqIndexedDB';
 
 type setupData = {
 	time:      number,
@@ -14,7 +14,7 @@ export class GameSetup {
 	private readonly db: ClvqIndexedDB;
 
 	constructor() {
-		this.db = new ClvqIndexedDB('gameSetup');
+		this.db = new ClvqIndexedDB(Store.state);
 	}
 
 	public async newGame(data: setupData): Promise<void> {

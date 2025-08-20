@@ -4,19 +4,23 @@
 const dbName    = 'clvqDB';
 const dbVersion = 1;
 
+export enum Store {
+	state = 'state',
+}
+
 export class ClvqIndexedDB {
-	private readonly store:   string;
+	private readonly store: Store;
 
-	private db;
-	private promise;
+	private db:      IDBDatabase | null;
+	private promise: Promise<IDBDatabase> | null;
 
-	constructor(store: string) {
+	constructor(store: Store) {
 		this.store   = store;
 		this.db      = null;
 		this.promise = null;
 	}
 
-	private async getDB() {
+	private async getDB(): Promise<IDBDatabase> {
 		if (!this.promise) {
 			this.promise = new Promise((resolve, reject) => {
 				const req = indexedDB.open(dbName, dbVersion);
@@ -28,15 +32,21 @@ export class ClvqIndexedDB {
 				req.onupgradeneeded = (event) => {
 					const evt = (event as any);
 					if (evt.target) {
-						const db = evt.target.result;
-						if (!db.objectStoreNames.contains(this.store)) {
-							db.createObjectStore(this.store, { keyPath: 'key' });
-						}
+						const db = evt.target.result as IDBDatabase;
+						this.upgrade(db);
 					}
 				}
 			});
 		}
 		return this.promise;
+	}
+
+	private upgrade(db: IDBDatabase): void {
+		Object.values(Store).forEach(store => {
+			if (!db.objectStoreNames.contains(store)) {
+				db.createObjectStore(store, { keyPath: 'key' });
+			}
+		});
 	}
 
 	public async hasItem(key: string): Promise<boolean> {
