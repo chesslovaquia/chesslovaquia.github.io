@@ -3,21 +3,6 @@
 
 export const screenDelay = 200; // ms
 
-const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-
-async function screenReplace(url: string): Promise<void> {
-	try {
-		const resp = await fetch(url, { method: 'HEAD' });
-		if (resp.ok) {
-			window.location.replace(url);
-		} else {
-			console.error('Screen replace check failed!');
-		}
-	} catch (err) {
-		console.error('Screen replace failed:', err);
-	}
-}
-
 type Mode = 'mobile' | 'desktop';
 
 function screenMode(): Mode {
@@ -38,20 +23,22 @@ export function screenToggle(): Mode {
 	if (mode === 'mobile') {
 		if (path !== '/play/mobile/') {
 			console.debug('Screen change to mobile mode.');
-			screenReplace('/play/mobile/');
+			window.location.replace('/play/mobile/');
 		} else {
 			console.debug('Screen already in mobile mode.');
 		}
 	} else {
 		if (path !== '/play/desktop/') {
 			console.debug('Screen change to desktop mode.');
-			screenReplace('/play/desktop/');
+			window.location.replace('/play/desktop/');
 		} else {
 			console.debug('Screen already in desktop mode.');
 		}
 	}
 	return mode;
 }
+
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 export async function screenResize(wait: number): Promise<void> {
 	console.debug('Screen resize, wait:', wait);
