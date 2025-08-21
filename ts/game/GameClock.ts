@@ -130,16 +130,13 @@ export class GameClock {
 		}
 		if (this.side['w'].clock) {
 			this.side['w'].clock.textContent = this.format(this.time['w']);
-			const klass = this.klass['w'];
-			this.side['w'].clock.classList.toggle(klass, turn === 'w');
-		}
-		if (this.firstMove) {
-			return;
 		}
 		if (this.side['b'].clock) {
 			this.side['b'].clock.textContent = this.format(this.time['b']);
-			const klass = this.klass['b'];
-			this.side['b'].clock.classList.toggle(klass, turn === 'b');
+		}
+		if (!this.firstMove) {
+			this.side['w'].clock?.classList.toggle(this.klass['w'], turn === 'w');
+			this.side['b'].clock?.classList.toggle(this.klass['b'], turn === 'b');
 		}
 	}
 
