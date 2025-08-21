@@ -151,7 +151,7 @@ export class ChessGame {
 			if (done) {
 				this.start();
 			} else {
-				window.location.href = '/play/';
+				window.location.replace('/');
 			}
 		});
 	}

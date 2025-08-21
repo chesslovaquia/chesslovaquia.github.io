@@ -22,10 +22,7 @@ params:
 
 menus:
   main:
-    - name: Play
-      pageref: /play/
-      weight: 1
     - name: About
       pageref: /about/
-      weight: 9
+      weight: 1
   game: []

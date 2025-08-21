@@ -1,8 +1,9 @@
 // Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com>
 // See LICENSE file.
 
+export const screenDelay = 200; // ms
+
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-const screenDelay = 200; // ms
 
 async function screenReplace(url: string): Promise<void> {
 	try {
@@ -57,8 +58,6 @@ export async function screenResize(wait: number): Promise<void> {
 	await sleep(wait);
 	screenToggle();
 }
-
-window.addEventListener('resize', () => screenResize(screenDelay));
 
 export async function screenLoad(): Promise<void> {
 	console.debug('Screen load.');
