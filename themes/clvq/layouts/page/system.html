@@ -5,4 +5,20 @@
 		<pre id="systemInfo" class="w3-monospace"></pre>
 	</div>
 	{{ partial "page/main-tail.html" . }}
+	{{- $buildID := getenv "HUGO_CLVQ_BUILD" | default "UNSET" -}}
+	{{- $cdn := .Site.Params.cdn -}}
+	{{- with resources.Get "clvq/system.ts" }}
+		{{- if eq hugo.Environment "devel" }}
+			{{- with . | js.Build }}
+				<script src="{{ $cdn }}{{ .RelPermalink }}?v={{ $buildID }}"></script>
+			{{- end }}
+		{{- else }}
+			{{- $opts := dict "minify" true }}
+			{{- with . | js.Build $opts | fingerprint }}
+				<script src="{{ $cdn }}{{ .RelPermalink }}?v={{ $buildID }}"
+					integrity="{{- .Data.Integrity }}"
+					crossorigin="anonymous"></script>
+			{{- end }}
+		{{- end }}
+	{{- end }}
 {{ end }}
