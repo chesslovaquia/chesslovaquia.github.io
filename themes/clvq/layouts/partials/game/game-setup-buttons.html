@@ -1,0 +1,26 @@
+{{- $page := .page }}
+{{- $siteBtnClass := $page.Site.Params.btnClass }}
+{{- $extraBtnClass := "w3-border w3-border-dark-grey clvq-bg game-play-button" }}
+{{- $btnClass := printf "%s %s" $extraBtnClass $siteBtnClass }}
+<div class="w3-container w3-padding">
+	<div class="w3-bar w3-center">
+		<button class="{{ $btnClass }}" onclick="Clvq.gameSetup(1, 0)">1+0</button>
+		<button class="{{ $btnClass }}" onclick="Clvq.gameSetup(2, 1)">2+1</button>
+		<button class="{{ $btnClass }}" onclick="Clvq.gameSetup(3, 0)">3+0</button>
+	</div>
+	<div class="w3-bar w3-center">
+		<button class="{{ $btnClass }}" onclick="Clvq.gameSetup(3, 2)">3+2</button>
+		<button class="{{ $btnClass }}" onclick="Clvq.gameSetup(5, 0)">5+0</button>
+		<button class="{{ $btnClass }}" onclick="Clvq.gameSetup(5, 3)">5+3</button>
+	</div>
+	<div class="w3-bar w3-center">
+		<button class="{{ $btnClass }}" onclick="Clvq.gameSetup(10, 0)">10+0</button>
+		<button class="{{ $btnClass }}" onclick="Clvq.gameSetup(10, 5)">10+5</button>
+		<button class="{{ $btnClass }}" onclick="Clvq.gameSetup(15, 10)">15+10</button>
+	</div>
+	<div class="w3-bar w3-center">
+		<button class="{{ $btnClass }}" onclick="Clvq.gameSetup(30, 0)">30+0</button>
+		<button class="{{ $btnClass }}" onclick="Clvq.gameSetup(30, 20)">30+20</button>
+		<button class="{{ $btnClass }}" onclick="Clvq.w3ShowModal('gameSetup')">Custom</button>
+	</div>
+</div>

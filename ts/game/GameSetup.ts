@@ -1,8 +1,6 @@
 // Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com>
 // See LICENSE file.
 
-import { screenLoad } from './screen';
-
 import { GameData } from './types';
 
 import { ClvqIndexedDB, Store } from '../clvq/ClvqIndexedDB';
@@ -22,7 +20,7 @@ export class GameSetup {
 	public async newGame(data: SetupData): Promise<void> {
 		console.debug('Setup new game:', data);
 		await this.db.setItem('new', data);
-		screenLoad();
+		// FIXME: redirect to play game
 	}
 
 	public async getGame(): Promise<GameData> {

@@ -3,7 +3,7 @@
 	{{ partial "header.html" . }}
 	{{ partial "page/main-head.html" . }}
 	<div class="w3-container">
-		{{ .Content }}
+		{{ partial "game/game-setup-buttons.html" (dict "page" .) }}
 	</div>
 	{{ partial "page/main-tail.html" . }}
 	<script>

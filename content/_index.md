@@ -5,5 +5,3 @@ draft: false
 type: "page"
 layout: "home"
 ---
-
-# Chesslovaquia
