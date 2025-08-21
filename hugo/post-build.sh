@@ -20,10 +20,10 @@ echo "[" >"${assets_urls}"
 
 echo "Site files:"
 find ./public -type f | sort | while read -r filename; do
+	echo "  ${filename}"
 	if echo "${filename}" | grep -sq 'lila/public/images/board'; then
 		continue
 	fi
-	echo "  ${filename}"
 	url=$(echo "${filename}" | sed 's#^\./public##')
 	echo "  \"${url}\"," >>"${assets_urls}"
 done
