@@ -68,6 +68,7 @@ export class GameClock {
 	}
 
 	public move(turn: Color): void {
+		console.debug('Clock move:', turn);
 		if (this.increment > 0) {
 			const other = turn === 'w' ? 'b' : 'w';
 			this.time[other] += this.increment;
@@ -203,9 +204,9 @@ export class GameClock {
 	}
 
 	private setTimeDiff(tstamp: number): void {
-		const diff = Math.floor(Date.now() - tstamp) / 100;
-		console.debug('Clock time diff:', diff);
 		const turn = this.game.turn();
+		const diff = Math.floor(Date.now() - tstamp) / 100;
+		console.debug('Clock set time diff:', turn, diff);
 		if (this.firstMove) {
 			this.firstMoveTime[turn] -= diff;
 			if (this.firstMoveTime[turn] <= 0) {

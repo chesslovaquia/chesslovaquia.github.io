@@ -38,10 +38,11 @@ export class GameState {
 	public async load(id: string): Promise<boolean> {
 		const state = await this.db.getItem(id);
 		if (state) {
-			this.clock.setState(state.clock);
 			if (state.moves) {
 				this.loadMoves(state.moves);
 			}
+			// Set clock state after loading moves so clock turn is correct.
+			this.clock.setState(state.clock);
 			return true;
 		}
 		return false;
