@@ -38,12 +38,6 @@ export class GameDisplay {
 			} else if (this.game.isInsufficientMaterial()) {
 				statusText = 'Draw by insufficient material!';
 			}
-		} else {
-			const currentPlayer = this.game.turn() === 'w' ? 'White' : 'Black';
-			statusText = `${currentPlayer} to move`;
-			if (this.game.inCheck()) {
-				statusText += ' (in check)';
-			}
 		}
 		this.cfg.ui.statusBar.textContent = statusText;
 	}
@@ -60,8 +54,8 @@ export class GameDisplay {
 
 	public clockTimeout(color: Color): void {
 		if (this.cfg.ui.statusBar) {
-			const player = color === 'w' ? 'White' : 'Black';
-			this.cfg.ui.statusBar.textContent = `${player} timeout!`;
+			const winner = color === 'w' ? 'Black' : 'White';
+			this.cfg.ui.statusBar.textContent = `Timeout! ${winner} wins.`;
 		}
 		this.cfg.ui.board.classList.toggle('timeout', true);
 	}
