@@ -44,3 +44,9 @@
 	width: 6em;
 	margin: 2px;
 }
+
+@media (max-width: 400px) {
+	.game-play-button {
+		font-size: 75%;
+	}
+}
