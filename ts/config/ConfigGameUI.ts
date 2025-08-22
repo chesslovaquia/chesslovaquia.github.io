@@ -3,16 +3,16 @@
 
 import { ConfigError } from './ConfigError';
 
-export class ConfigUI {
+export class ConfigGameUI {
 	public board: HTMLElement;
 
-	public statusBar:      HTMLElement | null;
-	public gameReset:      HTMLElement | null;
+	public statusBar: HTMLElement | null;
+	public gameReset: HTMLElement | null;
 
 	constructor(board: HTMLElement) {
-		this.board          = board;
-		this.statusBar      = document.getElementById('gameStatus');
-		this.gameReset      = document.getElementById('gameReset');
+		this.board     = board;
+		this.statusBar = document.getElementById('gameStatus');
+		this.gameReset = document.getElementById('gameReset');
 		this.validate();
 	}
 

@@ -1,12 +1,12 @@
 // Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com>
 // See LICENSE file.
 
-import { ConfigUI } from '../config/ConfigUI';
+import { ConfigGameUI } from '../config/ConfigGameUI';
 
 export class GameConfig {
-	public ui: ConfigUI;
+	public ui: ConfigGameUI;
 
 	constructor(board: HTMLElement) {
-		this.ui = new ConfigUI(board);
+		this.ui = new ConfigGameUI(board);
 	}
 }
