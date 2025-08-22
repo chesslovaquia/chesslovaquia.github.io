@@ -9,19 +9,30 @@ export class ConfigGameUI {
 	public statusBar: HTMLElement | null;
 	public gameReset: HTMLElement | null;
 
+	public navBackward: HTMLElement | null;
+	public navForward:  HTMLElement | null;
+
 	constructor(board: HTMLElement) {
-		this.board     = board;
-		this.statusBar = document.getElementById('gameStatus');
-		this.gameReset = document.getElementById('gameReset');
+		this.board       = board;
+		this.statusBar   = document.getElementById('gameStatus');
+		this.gameReset   = document.getElementById('gameReset');
+		this.navBackward = document.getElementById('gameNavBackward');
+		this.navForward  = document.getElementById('gameNavForward');
 		this.validate();
 	}
 
 	private validate(): void {
 		if (!this.statusBar) {
-			throw new ConfigError('ConfigUI statusBar not found.');
+			throw new ConfigError('ConfigGameUI statusBar not found.');
 		}
 		if (!this.gameReset) {
-			throw new ConfigError('ConfigUI gameReset not found.');
+			throw new ConfigError('ConfigGameUI gameReset not found.');
+		}
+		if (!this.navBackward) {
+			throw new ConfigError('ConfigGameUI navBackward not found.');
+		}
+		if (!this.navForward) {
+			throw new ConfigError('ConfigGameUI navForward not found.');
 		}
 	}
 }

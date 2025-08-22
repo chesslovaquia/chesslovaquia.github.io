@@ -89,8 +89,10 @@ export class ChessGame {
 			const e = evt as EventClockTimeout;
 			this.clockTimeout(e.detail.color);
 		});
-		// Game menu.
+		// Game actions.
 		this.cfg.ui.gameReset?.addEventListener('click', () => this.reset());
+		this.cfg.ui.navBackward?.addEventListener('click', () => this.navBackward());
+		this.cfg.ui.navForward?.addEventListener('click', () => this.navForward());
 	}
 
 	private doMove(move: BoardMoveData): void {
@@ -175,5 +177,11 @@ export class ChessGame {
 		console.debug('Game clock timeout:', color);
 		this.stop();
 		this.display.clockTimeout(color);
+	}
+
+	private navBackward(): void {
+	}
+
+	private navForward(): void {
 	}
 }
