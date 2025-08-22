@@ -9,15 +9,15 @@ export class ConfigGameUI {
 	public statusBar: HTMLElement | null;
 	public gameReset: HTMLElement | null;
 
-	public navBackward: HTMLElement | null;
-	public navForward:  HTMLElement | null;
+	public navBackward: HTMLButtonElement | null;
+	public navForward:  HTMLButtonElement | null;
 
 	constructor(board: HTMLElement) {
 		this.board       = board;
 		this.statusBar   = document.getElementById('gameStatus');
 		this.gameReset   = document.getElementById('gameReset');
-		this.navBackward = document.getElementById('gameNavBackward');
-		this.navForward  = document.getElementById('gameNavForward');
+		this.navBackward = document.getElementById('gameNavBackward') as HTMLButtonElement;
+		this.navForward  = document.getElementById('gameNavForward') as HTMLButtonElement;
 		this.validate();
 	}
 

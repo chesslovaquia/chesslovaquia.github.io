@@ -180,8 +180,10 @@ export class ChessGame {
 	}
 
 	private navBackward(): void {
+		console.debug('Game nav backward.');
 	}
 
 	private navForward(): void {
+		console.debug('Game nav forward.');
 	}
 }
