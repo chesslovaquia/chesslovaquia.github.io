@@ -5,10 +5,10 @@
 		</div>
 		<div class="w3-half">
 			{{ partial "game/game-menu.html" (dict "menuID" "game" "page" .) }}
-			<div class="w3-container">
+			{{ partial "game/game-main-head.html" }}
 			{{ partial "game/game-player.html" (dict "id" "2" "page" .)}}
 			{{ partial "game/game-player.html" (dict "id" "1" "page" .)}}
-			</div>
+			{{ partial "game/game-main-head.html" }}
 		</div>
 	</div>
 	{{ partial "game/game-modals.html" (dict "page" .)}}
