@@ -19,6 +19,7 @@ import { GamePromotion } from './GamePromotion';
 import { GameState     } from './GameState';
 import { GamePlayer    } from './GamePlayer';
 import { GameClock     } from './GameClock';
+import { GameNavigate  } from './GameNavigate';
 
 import { Color } from './types';
 
@@ -35,6 +36,7 @@ export class ChessGame {
 	private readonly state:     GameState;
 	private readonly display:   GameDisplay;
 	private readonly clock:     GameClock;
+	private readonly nav:       GameNavigate;
 
 	private readonly p1: GamePlayer;
 	private readonly p2: GamePlayer;
@@ -55,6 +57,7 @@ export class ChessGame {
 		this.move      = new GameMove(this.game, this.board);
 		this.display   = new GameDisplay(this.cfg, this.game, this.move);
 		this.promotion = new GamePromotion(this.id, this.state, this.move, this.display);
+		this.nav       = new GameNavigate(this.cfg.ui);
 		if (this.board) {
 			this.setupEventListeners();
 			this.init();
@@ -91,8 +94,6 @@ export class ChessGame {
 		});
 		// Game actions.
 		this.cfg.ui.gameReset?.addEventListener('click', () => this.reset());
-		this.cfg.ui.navBackward?.addEventListener('click', () => this.navBackward());
-		this.cfg.ui.navForward?.addEventListener('click', () => this.navForward());
 	}
 
 	private doMove(move: BoardMoveData): void {
@@ -107,13 +108,13 @@ export class ChessGame {
 
 	private afterMove(move: BoardMoveData) {
 		console.debug('Game after move:', move);
-		// Pawn promotion.
 		if (this.move.isPromotion()) {
+			// Pawn promotion.
 			console.debug('Move was pawn promotion.');
 			this.promotion.handle(move.orig, move.dest);
 			this.display.updateStatus();
 		} else {
-			// Update clocks.
+			// Update clocks and save state.
 			this.clock.move(this.game.turn());
 			this.saveState();
 		}
@@ -177,13 +178,5 @@ export class ChessGame {
 		console.debug('Game clock timeout:', color);
 		this.stop();
 		this.display.clockTimeout(color);
-	}
-
-	private navBackward(): void {
-		console.debug('Game nav backward.');
-	}
-
-	private navForward(): void {
-		console.debug('Game nav forward.');
 	}
 }
