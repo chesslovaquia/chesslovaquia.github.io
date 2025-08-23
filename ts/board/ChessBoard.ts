@@ -159,4 +159,8 @@ export class ChessBoard {
 	public reset(): void {
 		this.board.set({fen: this.game.fen()});
 	}
+
+	public getFen(): string {
+		return this.board.getFen();
+	}
 }

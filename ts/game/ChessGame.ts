@@ -116,6 +116,7 @@ export class ChessGame {
 		} else {
 			// Update clocks and save state.
 			this.clock.move(this.game.turn());
+			this.nav.add(this.board.getFen());
 			this.saveState();
 		}
 	}
