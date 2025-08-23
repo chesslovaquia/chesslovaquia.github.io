@@ -3,9 +3,10 @@
 
 import { Chess } from 'chess.js';
 
-import { GameError } from './GameError';
-import { GameClock } from './GameClock';
-import { GameSetup } from './GameSetup';
+import { GameError    } from './GameError';
+import { GameClock    } from './GameClock';
+import { GameSetup    } from './GameSetup';
+import { GameNavigate } from './GameNavigate';
 
 import { GameData  } from './types';
 
@@ -17,11 +18,13 @@ export class GameState {
 	private readonly clock: GameClock;
 	private readonly db:    ClvqIndexedDB;
 	private readonly setup: GameSetup;
+	private readonly nav:   GameNavigate;
 
-	constructor(game: Chess, clock: GameClock) {
+	constructor(game: Chess, clock: GameClock, nav: GameNavigate) {
 		this.id    = 'current';
 		this.game  = game;
 		this.clock = clock;
+		this.nav   = nav;
 		this.db    = new ClvqIndexedDB(Store.state);
 		this.setup = new GameSetup();
 	}
@@ -34,6 +37,7 @@ export class GameState {
 		await this.db.setItem(this.id, {
 			moves: this.game.history(),
 			clock: this.clock.getState(),
+			nav:   this.nav.getState(),
 		});
 	}
 
@@ -42,6 +46,9 @@ export class GameState {
 		if (state) {
 			if (state.moves) {
 				this.loadMoves(state.moves);
+			}
+			if (state.nav) {
+				this.nav.setState(state.nav);
 			}
 			// Set clock state after loading moves so clock turn is correct.
 			this.clock.setState(state.clock);

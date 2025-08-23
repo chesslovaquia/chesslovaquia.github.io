@@ -3,18 +3,16 @@
 
 import { ConfigGameUI } from '../config/ConfigGameUI';
 
-type NavigateData = Map<number, string>;
+type BoardMoves = string[];
 
 export class GameNavigate {
-	private readonly ui:   ConfigGameUI;
-	private readonly data: NavigateData;
+	private readonly ui: ConfigGameUI;
 
-	private index: number;
+	private data: BoardMoves;
 
 	constructor(ui: ConfigGameUI) {
 		this.ui    = ui;
-		this.data  = new Map();
-		this.index = 0;
+		this.data  = [];
 		this.setupEventListeners();
 	}
 
@@ -24,8 +22,7 @@ export class GameNavigate {
 	}
 
 	public async add(fen: string): Promise<void> {
-		this.data.set(this.index, fen);
-		this.index += 1;
+		this.data.push(fen);
 	}
 
 	public navBackward(): void {
@@ -34,5 +31,13 @@ export class GameNavigate {
 
 	public navForward(): void {
 		console.debug('Game nav forward.');
+	}
+
+	public getState(): BoardMoves {
+		return this.data;
+	}
+
+	public setState(data: BoardMoves): void {
+		this.data = data;
 	}
 }

@@ -51,11 +51,11 @@ export class ChessGame {
 		this.p1        = new GamePlayer("1");
 		this.p2        = new GamePlayer("2");
 		this.clock     = new GameClock(this.game, this.p1, this.p2, clockInitialTime, clockIncrement);
-		this.state     = new GameState(this.game, this.clock);
+		this.nav       = new GameNavigate(this.cfg.ui);
+		this.state     = new GameState(this.game, this.clock, this.nav);
 		this.move      = new GameMove(this.game, this.board);
 		this.display   = new GameDisplay(this.cfg, this.game, this.move);
 		this.promotion = new GamePromotion(this.state, this.move, this.display);
-		this.nav       = new GameNavigate(this.cfg.ui);
 		if (this.board) {
 			this.setupEventListeners();
 			this.init();
@@ -66,6 +66,7 @@ export class ChessGame {
 		console.debug('Game init.');
 		this.disableBoard();
 		this.board.init();
+		this.nav.add(this.board.getFen());
 		this.state.load().then((done) => {
 			console.debug('Game load done:', done);
 			if (done) {
