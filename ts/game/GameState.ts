@@ -12,31 +12,33 @@ import { GameData  } from './types';
 import { ClvqIndexedDB, Store } from '../clvq/ClvqIndexedDB';
 
 export class GameState {
+	private readonly id:    string;
 	private readonly game:  Chess;
 	private readonly clock: GameClock;
 	private readonly db:    ClvqIndexedDB;
 	private readonly setup: GameSetup;
 
 	constructor(game: Chess, clock: GameClock) {
+		this.id    = 'current';
 		this.game  = game;
 		this.clock = clock;
 		this.db    = new ClvqIndexedDB(Store.state);
 		this.setup = new GameSetup();
 	}
 
-	public reset(id: string): void {
-		this.db.removeItem(id);
+	public reset(): void {
+		this.db.removeItem(this.id);
 	}
 
-	public async save(id: string): Promise<void> {
-		await this.db.setItem(id, {
+	public async save(): Promise<void> {
+		await this.db.setItem(this.id, {
 			moves: this.game.history(),
 			clock: this.clock.getState(),
 		});
 	}
 
-	public async load(id: string): Promise<boolean> {
-		const state = await this.db.getItem(id);
+	public async load(): Promise<boolean> {
+		const state = await this.db.getItem(this.id);
 		if (state) {
 			if (state.moves) {
 				this.loadMoves(state.moves);
@@ -72,7 +74,7 @@ export class GameState {
 			console.debug('State setup new game:', newGame);
 			this.clock.setupNewGame(newGame.time, newGame.increment);
 			this.setup.removeGame();
-			this.save('current');
+			this.save();
 			return true;
 		}
 		return false;

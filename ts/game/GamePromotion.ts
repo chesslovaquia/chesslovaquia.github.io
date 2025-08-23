@@ -8,13 +8,11 @@ import { GameMove    } from './GameMove';
 import { GameState   } from './GameState';
 
 export class GamePromotion {
-	private readonly id:      string;
 	private readonly state:   GameState;
 	private readonly move:    GameMove;
 	private readonly display: GameDisplay;
 
-	constructor(id: string, s: GameState, m: GameMove, d: GameDisplay) {
-		this.id      = id;
+	constructor(s: GameState, m: GameMove, d: GameDisplay) {
 		this.state   = s;
 		this.move    = m;
 		this.display = d;
@@ -63,7 +61,7 @@ export class GamePromotion {
 	}
 
 	private saveState(): void {
-		this.state.save(this.id).finally(() => {
+		this.state.save().finally(() => {
 			console.debug('Pawn promotion state saved.');
 		});
 	}

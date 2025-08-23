@@ -27,7 +27,6 @@ const clockInitialTime = 900; // Seconds.
 const clockIncrement   = 10;  // Seconds.
 
 export class ChessGame {
-	private readonly id:        string;
 	private readonly game:      Chess;
 	private readonly board:     ChessBoard;
 	private readonly cfg:       GameConfig;
@@ -46,7 +45,6 @@ export class ChessGame {
 	constructor(config: GameConfig) {
 		console.debug('Game config:', config);
 		this.cfg       = config;
-		this.id        = 'current'; // FIXME: generate internal game ID
 		this.active    = false;
 		this.game      = new Chess(chess.DEFAULT_POSITION);
 		this.board     = new ChessBoard(this.cfg, this.game);
@@ -56,7 +54,7 @@ export class ChessGame {
 		this.state     = new GameState(this.game, this.clock);
 		this.move      = new GameMove(this.game, this.board);
 		this.display   = new GameDisplay(this.cfg, this.game, this.move);
-		this.promotion = new GamePromotion(this.id, this.state, this.move, this.display);
+		this.promotion = new GamePromotion(this.state, this.move, this.display);
 		this.nav       = new GameNavigate(this.cfg.ui);
 		if (this.board) {
 			this.setupEventListeners();
@@ -68,7 +66,7 @@ export class ChessGame {
 		console.debug('Game init.');
 		this.disableBoard();
 		this.board.init();
-		this.state.load(this.id).then((done) => {
+		this.state.load().then((done) => {
 			console.debug('Game load done:', done);
 			if (done) {
 				this.board.update(this.move.getLastMove());
@@ -122,7 +120,7 @@ export class ChessGame {
 	}
 
 	private saveState(): void {
-		this.state.save(this.id).finally(() => {
+		this.state.save().finally(() => {
 			console.debug('Game state saved.');
 		});
 	}
@@ -132,7 +130,7 @@ export class ChessGame {
 		this.stop();
 		this.game.reset();
 		this.clock.reset();
-		this.state.reset(this.id);
+		this.state.reset();
 		this.board.update(undefined);
 		this.display.reset();
 		this.display.updateStatus();
@@ -171,7 +169,7 @@ export class ChessGame {
 		console.debug('Game stop.');
 		this.disableBoard();
 		this.clock.stop();
-		this.state.save(this.id);
+		this.state.save();
 		this.active = false;
 	}
 
