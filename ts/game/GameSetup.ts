@@ -1,7 +1,7 @@
 // Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com>
 // See LICENSE file.
 
-import { screenLoad } from './screen';
+import { screenRedirect } from './screen';
 
 import { GameData } from './types';
 
@@ -22,7 +22,7 @@ export class GameSetup {
 	public async newGame(data: SetupData): Promise<void> {
 		console.debug('Setup new game:', data);
 		await this.db.setItem('new', data);
-		screenLoad();
+		screenRedirect();
 	}
 
 	public async getGame(): Promise<GameData> {

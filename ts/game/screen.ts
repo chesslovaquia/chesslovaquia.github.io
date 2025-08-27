@@ -1,11 +1,14 @@
 // Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com>
 // See LICENSE file.
 
+const screenMobileURL  = '/play/mobile/';
+const screenDesktopURL = '/play/desktop/';
+
 export const screenDelay = 200; // ms
 
-type Mode = 'mobile' | 'desktop';
+type ScreenMode = 'mobile' | 'desktop';
 
-function screenMode(): Mode {
+function getScreenMode(): ScreenMode {
 	console.debug('Window width:', window.innerWidth);
 	console.debug('Window height:', window.innerHeight);
 	if (window.innerWidth < window.innerHeight) {
@@ -15,22 +18,22 @@ function screenMode(): Mode {
 	}
 }
 
-export function screenToggle(): Mode {
+export function screenToggle(): ScreenMode {
 	const path = window.location.pathname;
-	const mode = screenMode();
+	const mode = getScreenMode();
 	console.debug('Screen toggle:', path);
 	console.debug('Screen mode:', mode);
 	if (mode === 'mobile') {
-		if (path !== '/play/mobile/') {
+		if (path !== screenMobileURL) {
 			console.debug('Screen change to mobile mode.');
-			window.location.replace('/play/mobile/');
+			window.location.replace(screenMobileURL);
 		} else {
 			console.debug('Screen already in mobile mode.');
 		}
 	} else {
-		if (path !== '/play/desktop/') {
+		if (path !== screenDesktopURL) {
 			console.debug('Screen change to desktop mode.');
-			window.location.replace('/play/desktop/');
+			window.location.replace(screenDesktopURL);
 		} else {
 			console.debug('Screen already in desktop mode.');
 		}
@@ -38,15 +41,25 @@ export function screenToggle(): Mode {
 	return mode;
 }
 
-const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+const screenSleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 export async function screenResize(wait: number): Promise<void> {
 	console.debug('Screen resize, wait:', wait);
-	await sleep(wait);
+	await screenSleep(wait);
 	screenToggle();
 }
 
 export async function screenLoad(): Promise<void> {
 	console.debug('Screen load.');
 	screenToggle();
+}
+
+export function screenRedirect(): void {
+	const mode = getScreenMode();
+	console.debug('Screen redirect:', mode);
+	if (mode === 'mobile') {
+		window.location.href = screenMobileURL;
+	} else {
+		window.location.href = screenDesktopURL;
+	}
 }
