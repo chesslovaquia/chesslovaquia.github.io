@@ -18,7 +18,7 @@ function getScreenMode(): ScreenMode {
 	}
 }
 
-export function screenToggle(): ScreenMode {
+export function screenToggle(): [ScreenMode, boolean] {
 	const path = window.location.pathname;
 	const mode = getScreenMode();
 	console.debug('Screen toggle:', path);
@@ -27,6 +27,7 @@ export function screenToggle(): ScreenMode {
 		if (path !== screenMobileURL) {
 			console.debug('Screen change to mobile mode.');
 			window.location.replace(screenMobileURL);
+			return [mode, true];
 		} else {
 			console.debug('Screen already in mobile mode.');
 		}
@@ -34,24 +35,26 @@ export function screenToggle(): ScreenMode {
 		if (path !== screenDesktopURL) {
 			console.debug('Screen change to desktop mode.');
 			window.location.replace(screenDesktopURL);
+			return [mode, true];
 		} else {
 			console.debug('Screen already in desktop mode.');
 		}
 	}
-	return mode;
+	return [mode, false];
 }
 
 const screenSleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-export async function screenResize(wait: number): Promise<void> {
+export function screenResize(wait: number): void {
 	console.debug('Screen resize, wait:', wait);
-	await screenSleep(wait);
-	screenToggle();
+	screenSleep(wait).then(() => {
+		screenToggle();
+	});
 }
 
-export async function screenLoad(): Promise<void> {
+export function screenLoad(): boolean {
 	console.debug('Screen load.');
-	screenToggle();
+	return screenToggle()[1];
 }
 
 export function screenRedirect(): void {

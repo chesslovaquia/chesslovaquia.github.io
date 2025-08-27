@@ -11,8 +11,11 @@ import { GameError  } from './GameError';
 
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-	window.addEventListener('resize', () => screenResize(screenDelay));
-	screenLoad().then(() => {
+	const loaded = screenLoad();
+	if (loaded) {
+		console.debug('Screen loaded.');
+	} else {
+		window.addEventListener('resize', () => screenResize(screenDelay));
 		const board = document.getElementById('chessboard');
 		if (board) {
 			const cfg = new GameConfig(board);
@@ -20,5 +23,5 @@ document.addEventListener('DOMContentLoaded', () => {
 		} else {
 			throw new GameError('Chess board not found!');
 		}
-	});
+	}
 });

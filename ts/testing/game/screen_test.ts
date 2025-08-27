@@ -17,7 +17,7 @@ describe('screenToggle', () => {
 		const height = window.innerHeight;
 		window.innerWidth = 360;
 		window.innerHeight = 640;
-		const mode = screen.screenToggle();
+		const mode = screen.screenToggle()[0];
 		window.innerWidth = width;
 		window.innerHeight = height;
 		expect(mode).toBe('mobile');
@@ -27,7 +27,7 @@ describe('screenToggle', () => {
 		const height = window.innerHeight;
 		window.innerWidth = 640;
 		window.innerHeight = 360;
-		const mode = screen.screenToggle();
+		const mode = screen.screenToggle()[0];
 		window.innerWidth = width;
 		window.innerHeight = height;
 		expect(mode).toBe('desktop');
