@@ -54,8 +54,11 @@ export class GameNavigate {
 
 	public navBackward(): void {
 		console.debug('Game nav backward.');
+		if (this.index === this.pos.length - 1) {
+			this.enableButton(this.ui.navForward);
+			this.board.disable();
+		}
 		const idx = this.index - 1;
-		this.board.disable();
 		this.board.setPosition(this.pos[idx]);
 		this.index--;
 		if (this.index === 0) {
