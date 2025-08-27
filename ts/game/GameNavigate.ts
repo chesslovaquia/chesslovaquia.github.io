@@ -58,9 +58,8 @@ export class GameNavigate {
 			this.enableButton(this.ui.navForward);
 			this.board.disable();
 		}
-		const idx = this.index - 1;
-		this.board.setPosition(this.pos[idx]);
 		this.index--;
+		this.board.setPosition(this.pos[this.index]);
 		if (this.index === 0) {
 			this.disableButton(this.ui.navBackward);
 		}
@@ -68,6 +67,15 @@ export class GameNavigate {
 
 	public navForward(): void {
 		console.debug('Game nav forward.');
+		this.index++;
+		this.board.setPosition(this.pos[this.index]);
+		if (this.index === this.pos.length - 1) {
+			this.disableButton(this.ui.navForward);
+			this.board.enable();
+		}
+		if (this.index === 1) {
+			this.enableButton(this.ui.navBackward);
+		}
 	}
 
 	public getState(): NavState {
