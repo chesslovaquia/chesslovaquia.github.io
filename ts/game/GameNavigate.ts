@@ -32,7 +32,7 @@ export class GameNavigate {
 		this.ui.navForward?.addEventListener('click', () => this.navForward());
 	}
 
-	private disableButton(button: HTMLButtonElement): void {
+	private disableButton(button: HTMLButtonElement | null): void {
 		if (button) {
 			button.disabled = true;
 		}
@@ -54,6 +54,13 @@ export class GameNavigate {
 
 	public navBackward(): void {
 		console.debug('Game nav backward.');
+		const idx = this.index - 1;
+		this.board.disable();
+		this.board.setPosition(this.pos[idx]);
+		this.index--;
+		if (this.index === 0) {
+			this.disableButton(this.ui.navBackward);
+		}
 	}
 
 	public navForward(): void {

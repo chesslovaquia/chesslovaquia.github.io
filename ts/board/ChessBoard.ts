@@ -163,4 +163,9 @@ export class ChessBoard {
 	public getFen(): string {
 		return this.board.getFen();
 	}
+
+	public setPosition(fen: string): void {
+		console.debug('Board set position:', fen);
+		this.board.set({fen: fen, lastMove: []});
+	}
 }
