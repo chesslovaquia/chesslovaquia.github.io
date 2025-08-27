@@ -51,7 +51,7 @@ export class ChessGame {
 		this.p1        = new GamePlayer("1");
 		this.p2        = new GamePlayer("2");
 		this.clock     = new GameClock(this.game, this.p1, this.p2, clockInitialTime, clockIncrement);
-		this.nav       = new GameNavigate(this.cfg.ui);
+		this.nav       = new GameNavigate(this.cfg.ui, this.board);
 		this.state     = new GameState(this.game, this.clock, this.nav);
 		this.move      = new GameMove(this.game, this.board);
 		this.display   = new GameDisplay(this.cfg, this.game, this.move);
@@ -66,7 +66,7 @@ export class ChessGame {
 		console.debug('Game init.');
 		this.disableBoard();
 		this.board.init();
-		this.nav.add(this.board.getFen());
+		this.nav.addPosition();
 		this.state.load().then((done) => {
 			console.debug('Game load done:', done);
 			if (done) {
@@ -115,7 +115,7 @@ export class ChessGame {
 		} else {
 			// Update clocks and save state.
 			this.clock.move(this.game.turn());
-			this.nav.add(this.board.getFen());
+			this.nav.addPosition();
 			this.saveState();
 		}
 	}

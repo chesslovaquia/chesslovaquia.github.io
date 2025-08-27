@@ -3,15 +3,19 @@
 
 import { ConfigGameUI } from '../config/ConfigGameUI';
 
+import { ChessBoard } from '../board/ChessBoard';
+
 type BoardMoves = string[];
 
 export class GameNavigate {
-	private readonly ui: ConfigGameUI;
+	private readonly ui:    ConfigGameUI;
+	private readonly board: ChessBoard;
 
 	private data: BoardMoves;
 
-	constructor(ui: ConfigGameUI) {
+	constructor(ui: ConfigGameUI, board: ChessBoard) {
 		this.ui    = ui;
+		this.board = board;
 		this.data  = [];
 		this.setupEventListeners();
 	}
@@ -21,8 +25,8 @@ export class GameNavigate {
 		this.ui.navForward?.addEventListener('click', () => this.navForward());
 	}
 
-	public async add(fen: string): Promise<void> {
-		this.data.push(fen);
+	public addPosition(): void {
+		this.data.push(this.board.getFen());
 	}
 
 	public navBackward(): void {
