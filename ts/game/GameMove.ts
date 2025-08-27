@@ -58,8 +58,7 @@ export class GameMove {
 	}
 
 	public getLastMove(): chess.Move | undefined {
-		const lastMove = this.game.history({verbose : true}).pop();
-		return lastMove;
+		return this.game.history({verbose : true}).pop();
 	}
 
 	public turnColor(): cg.Color {

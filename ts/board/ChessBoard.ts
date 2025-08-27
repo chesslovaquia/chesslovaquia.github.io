@@ -6,8 +6,7 @@ import { Api as ChessgroundApi } from 'chessground/api';
 
 import * as cg from 'chessground/types';
 
-import { Chess } from 'chess.js';
-
+import { Chess }  from 'chess.js';
 import * as chess from 'chess.js';
 
 import { GameConfig } from '../game/GameConfig';
@@ -164,8 +163,8 @@ export class ChessBoard {
 		return this.board.getFen();
 	}
 
-	public setPosition(fen: string): void {
-		console.debug('Board set position:', fen);
-		this.board.set({fen: fen, lastMove: []});
+	public setPosition(fen: string, lastMove: chess.Move): void {
+		console.debug('Board set position:', fen, lastMove);
+		this.board.set({fen: fen, lastMove: this.getMove(lastMove)});
 	}
 }

@@ -1,6 +1,9 @@
 // Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com>
 // See LICENSE file.
 
+import { Chess }  from 'chess.js';
+import * as chess from 'chess.js';
+
 import { ConfigGameUI } from '../config/ConfigGameUI';
 
 import { ChessBoard } from '../board/ChessBoard';
@@ -8,22 +11,27 @@ import { ChessBoard } from '../board/ChessBoard';
 type BoardMoves = string[];
 
 type NavState = {
-	moves:    BoardMoves,
-	position: number,
+	pos:   BoardMoves,
+	index: number,
+	moves: chess.Move[],
 }
 
 export class GameNavigate {
 	private readonly ui:    ConfigGameUI;
 	private readonly board: ChessBoard;
+	private readonly game:  Chess;
 
 	private pos:   BoardMoves;
 	private index: number;
+	private moves: chess.Move[];
 
-	constructor(ui: ConfigGameUI, board: ChessBoard) {
+	constructor(ui: ConfigGameUI, board: ChessBoard, game: Chess) {
 		this.ui    = ui;
 		this.board = board;
+		this.game  = game;
 		this.pos   = [];
 		this.index = -1;
+		this.moves = [];
 		this.setupEventListeners();
 	}
 
@@ -44,7 +52,15 @@ export class GameNavigate {
 		}
 	}
 
+	private getLastMove(): chess.Move | undefined {
+		return this.game.history({verbose: true}).pop();
+	}
+
 	public addPosition(): void {
+		const lastMove = this.getLastMove();
+		if (lastMove) {
+			this.moves.push(lastMove);
+		}
 		this.pos.push(this.board.getFen());
 		this.index++;
 		if (this.index === 1) {
@@ -59,7 +75,7 @@ export class GameNavigate {
 			this.board.disable();
 		}
 		this.index--;
-		this.board.setPosition(this.pos[this.index]);
+		this.board.setPosition(this.pos[this.index], this.moves[this.index - 1]);
 		if (this.index === 0) {
 			this.disableButton(this.ui.navBackward);
 		}
@@ -68,7 +84,7 @@ export class GameNavigate {
 	public navForward(): void {
 		console.debug('Game nav forward.');
 		this.index++;
-		this.board.setPosition(this.pos[this.index]);
+		this.board.setPosition(this.pos[this.index], this.moves[this.index - 1]);
 		if (this.index === this.pos.length - 1) {
 			this.disableButton(this.ui.navForward);
 			this.board.enable();
@@ -80,15 +96,17 @@ export class GameNavigate {
 
 	public getState(): NavState {
 		return {
-			moves:    this.pos,
-			position: this.index,
+			pos:   this.pos,
+			index: this.index,
+			moves: this.moves,
 		};
 	}
 
 	public setState(state: NavState): void {
-		if (state.moves) {
-			this.pos   = state.moves;
-			this.index = state.position;
+		if (state.pos) {
+			this.pos   = state.pos;
+			this.index = state.index;
+			this.moves = state.moves;
 			if (this.index >= 1) {
 				this.enableButton(this.ui.navBackward);
 			}
