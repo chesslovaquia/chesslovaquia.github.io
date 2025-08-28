@@ -65,8 +65,7 @@ export class GamePromotion {
 
 	private saveState(): void {
 		this.nav.addPosition();
-		this.state.save().finally(() => {
-			console.debug('Pawn promotion state saved.');
-		});
+		this.state.save();
+		console.debug('Pawn promotion state saved.');
 	}
 }

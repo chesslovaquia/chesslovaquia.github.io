@@ -121,9 +121,8 @@ export class ChessGame {
 
 	private saveState(): void {
 		this.nav.addPosition();
-		this.state.save().finally(() => {
-			console.debug('Game state saved.');
-		});
+		this.state.save();
+		console.debug('Game state saved.');
 	}
 
 	private reset(): void {

@@ -33,12 +33,12 @@ export class GameState {
 		this.db.removeItem(this.id);
 	}
 
-	public async save(): Promise<void> {
-		await this.db.setItem(this.id, {
+	public save(): void {
+		this.db.setItem(this.id, {
 			moves: this.game.history(),
 			clock: this.clock.getState(),
 			nav:   this.nav.getState(),
-		});
+		}).then(() => { console.debug('State saved.') });
 	}
 
 	public async load(): Promise<boolean> {
