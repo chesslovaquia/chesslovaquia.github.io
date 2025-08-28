@@ -3,19 +3,22 @@
 
 import * as board from 'chessground/types';
 
-import { GameDisplay } from './GameDisplay';
-import { GameMove    } from './GameMove';
-import { GameState   } from './GameState';
+import { GameDisplay  } from './GameDisplay';
+import { GameMove     } from './GameMove';
+import { GameState    } from './GameState';
+import { GameNavigate } from './GameNavigate';
 
 export class GamePromotion {
 	private readonly state:   GameState;
 	private readonly move:    GameMove;
 	private readonly display: GameDisplay;
+	private readonly nav:     GameNavigate;
 
-	constructor(s: GameState, m: GameMove, d: GameDisplay) {
+	constructor(s: GameState, m: GameMove, d: GameDisplay, n: GameNavigate) {
 		this.state   = s;
 		this.move    = m;
 		this.display = d;
+		this.nav     = n;
 	}
 
 	public handle(orig: board.Key, dest: board.Key): void {
@@ -61,6 +64,7 @@ export class GamePromotion {
 	}
 
 	private saveState(): void {
+		this.nav.addPosition();
 		this.state.save().finally(() => {
 			console.debug('Pawn promotion state saved.');
 		});

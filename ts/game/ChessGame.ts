@@ -55,7 +55,7 @@ export class ChessGame {
 		this.state     = new GameState(this.game, this.clock, this.nav);
 		this.move      = new GameMove(this.game, this.board);
 		this.display   = new GameDisplay(this.cfg, this.game, this.move);
-		this.promotion = new GamePromotion(this.state, this.move, this.display);
+		this.promotion = new GamePromotion(this.state, this.move, this.display, this.nav);
 		if (this.board) {
 			this.setupEventListeners();
 			this.init();
@@ -115,12 +115,12 @@ export class ChessGame {
 		} else {
 			// Update clocks and save state.
 			this.clock.move(this.game.turn());
-			this.nav.addPosition();
 			this.saveState();
 		}
 	}
 
 	private saveState(): void {
+		this.nav.addPosition();
 		this.state.save().finally(() => {
 			console.debug('Game state saved.');
 		});
