@@ -13,4 +13,5 @@ export interface GameEngine {
 	inCheck():       boolean;
 	possibleDests(): BoardDests;
 	lastMove():      BoardMove | undefined;
+	isPromotion():   boolean;
 }

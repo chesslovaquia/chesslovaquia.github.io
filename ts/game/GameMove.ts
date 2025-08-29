@@ -9,6 +9,9 @@ import * as cg from 'chessground/types';
 
 import { ChessBoard } from '../board/ChessBoard';
 
+import { BoardSquare         } from '../board/GameBoard';
+import { BoardPromotionPiece } from '../board/GameBoard';
+
 export class GameMove {
 	private readonly game:  Chess;
 	private readonly board: ChessBoard;
@@ -18,24 +21,16 @@ export class GameMove {
 		this.board = b;
 	}
 
-	public isPromotion(): boolean {
-		const lastMove = this.getLastMove();
-		if (lastMove) {
-			return lastMove.isPromotion();
-		}
-		return false;
-	}
-
-	public exec(orig: cg.Key, dest: cg.Key, promotion: string): void {
+	public exec(orig: BoardSquare, dest: BoardSquare, promotion: BoardPromotionPiece): void {
 		try {
 			const move = this.game.move({
-				from: orig as chess.Square,
-				to: dest as chess.Square,
+				from: orig,
+				to: dest,
 				promotion: promotion,
 			});
 			if (move) {
 				console.log('Move:', move.san);
-				this.board.update(move);
+				this.board.update();
 			} else {
 				// Invalid move - reset position
 				console.error('Invalid move, reset position:', move);
@@ -50,15 +45,11 @@ export class GameMove {
 
 	public undo(): boolean {
 		if (this.game.undo()) {
-			this.board.update(this.getLastMove());
+			this.board.update();
 			return true;
 		}
 		console.log('No move to undo!');
 		return false;
-	}
-
-	public getLastMove(): chess.Move | undefined {
-		return this.game.history({verbose : true}).pop();
 	}
 
 	public turnColor(): cg.Color {

@@ -17,3 +17,5 @@ export type BoardMove = {
 	from: BoardSquare,
 	to:   BoardSquare,
 };
+
+export type BoardPromotionPiece = 'q' | 'r' | 'k' | 'b';

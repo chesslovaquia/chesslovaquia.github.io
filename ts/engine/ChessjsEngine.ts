@@ -17,6 +17,10 @@ export class ChessjsEngine {
 		this.game = new Chess(chess.DEFAULT_POSITION);
 	}
 
+	private getLastMove(): chess.Move | undefined {
+		return this.game.history({verbose: true}).pop();
+	}
+
 	public turn(): EngineColor {
 		return this.game.turn();
 	}
@@ -45,10 +49,18 @@ export class ChessjsEngine {
 	}
 
 	public lastMove(): BoardMove | undefined {
-		const m = this.game.history({verbose: true}).pop();
+		const m = this.getLastMove();
 		if (m) {
 			return {from: m.from, to: m.to};
 		}
 		return undefined;
+	}
+
+	public isPromotion(): boolean {
+		const m = this.getLastMove();
+		if (m) {
+			return m.isPromotion();
+		}
+		return false;
 	}
 }

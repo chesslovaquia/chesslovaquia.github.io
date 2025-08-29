@@ -75,7 +75,7 @@ export class ChessGame {
 		this.state.load().then((done) => {
 			console.debug('Game load done:', done);
 			if (done) {
-				this.board.update(this.move.getLastMove());
+				this.board.update();
 				this.display.updateStatus();
 				this.start();
 			} else {
@@ -112,7 +112,7 @@ export class ChessGame {
 
 	private afterMove(move: BoardMoveData) {
 		console.debug('Game after move:', move);
-		if (this.move.isPromotion()) {
+		if (this.engine.isPromotion()) {
 			// Pawn promotion.
 			console.debug('Move was pawn promotion.');
 			this.promotion.handle(move.orig, move.dest);
