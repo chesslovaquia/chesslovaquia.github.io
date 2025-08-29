@@ -6,29 +6,31 @@ import { Api as ChessgroundApi } from 'chessground/api';
 
 import * as cg from 'chessground/types';
 
-import { Chess }  from 'chess.js';
-import * as chess from 'chess.js';
+import { GameEngine } from '../engine/GameEngine';
 
 import { GameConfig } from '../game/GameConfig';
 
 import { EventBoardMove } from '../events/EventBoardMove';
 
-export class ChessBoard {
-	private readonly cfg:   GameConfig;
-	private readonly game:  Chess;
-	private readonly board: ChessgroundApi;
+import { BoardDests } from './GameBoard';
+import { BoardMove  } from './GameBoard';
 
-	constructor(cfg: GameConfig, game: Chess) {
-		this.cfg   = cfg;
-		this.game  = game;
-		this.board = this.newBoard();
+export class ChessBoard {
+	private readonly cfg:    GameConfig;
+	private readonly engine: GameEngine;
+	private readonly board:  ChessgroundApi;
+
+	constructor(cfg: GameConfig, engine: GameEngine) {
+		this.cfg    = cfg;
+		this.engine = engine;
+		this.board  = this.newBoard();
 	}
 
 	private newBoard(): ChessgroundApi {
 		return Chessground(this.cfg.ui.board, {
 			disableContextMenu: true,
 			coordinates: false,
-			fen: this.game.fen(),
+			fen: this.engine.fen(),
 			orientation: 'white',
 			turnColor: 'white',
 			movable: {
@@ -75,7 +77,7 @@ export class ChessBoard {
 	}
 
 	private turnColor(): cg.Color {
-		return this.game.turn() === 'w' ? 'white' : 'black';
+		return this.engine.turn() === 'w' ? 'white' : 'black';
 	}
 
 	private disableMoves(): void {
@@ -87,6 +89,14 @@ export class ChessBoard {
 		console.debug('Board enable moves.');
 		this.board.set({ movable: { color: this.turnColor() } });
 	}
+
+	private getLastMove(m: BoardMove | undefined): cg.Key[] {
+		if (m) {
+			return [m.from as cg.Key, m.to as cg.Key];
+		}
+		return [];
+	}
+
 
 	public disable(): void {
 		console.debug('Board disable.');
@@ -112,59 +122,42 @@ export class ChessBoard {
 		});
 	}
 
-	private possibleDests(): Map<cg.Key, cg.Key[]> {
-		const dests = new Map<cg.Key, cg.Key[]>();
-		chess.SQUARES.forEach((square: chess.Square) => {
-			const moves = this.game.moves({ square, verbose: true }) as chess.Move[];
-			if (moves.length > 0) {
-				dests.set(square as cg.Key, moves.map((move: chess.Move) => move.to as cg.Key));
-			}
-		})
-		return dests;
-	}
-
 	public init(): void {
+		const turnColor = this.turnColor();
 		this.board.set({
-			turnColor: this.turnColor(),
+			turnColor: turnColor,
 			movable: {
-				color: this.turnColor(),
-				dests: this.possibleDests(),
+				color: turnColor,
+				dests: this.engine.possibleDests(),
 				showDests: true,
 			},
 		});
 	}
 
-	private getMove(m: chess.Move | undefined): cg.Key[] {
-		if (m) {
-			return [m.from as cg.Key, m.to as cg.Key];
-		}
-		return [];
-	}
-
-	public update(lastMove: chess.Move | undefined): void {
+	public update(): void {
 		const turnColor = this.turnColor();
 		this.board.set({
-			fen: this.game.fen(),
+			fen: this.engine.fen(),
 			turnColor: turnColor,
 			movable: {
 				color: turnColor,
-				dests: this.possibleDests()
+				dests: this.engine.possibleDests()
 			},
-			lastMove: this.getMove(lastMove),
-			check: this.game.inCheck(),
+			lastMove: this.getLastMove(this.engine.lastMove()),
+			check: this.engine.inCheck(),
 		});
 	}
 
 	public reset(): void {
-		this.board.set({fen: this.game.fen()});
+		this.board.set({fen: this.engine.fen()});
 	}
 
 	public getFen(): string {
 		return this.board.getFen();
 	}
 
-	public setPosition(fen: string, lastMove: chess.Move): void {
+	public setPosition(fen: string, lastMove: BoardMove): void {
 		console.debug('Board set position:', fen, lastMove);
-		this.board.set({fen: fen, lastMove: this.getMove(lastMove)});
+		this.board.set({fen: fen, lastMove: this.getLastMove(lastMove)});
 	}
 }

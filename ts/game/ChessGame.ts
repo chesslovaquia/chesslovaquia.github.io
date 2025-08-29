@@ -52,7 +52,7 @@ export class ChessGame {
 		this.active    = false;
 		this.engine    = new ChessjsEngine();
 		this.game      = new Chess(chess.DEFAULT_POSITION);
-		this.board     = new ChessBoard(this.cfg, this.game);
+		this.board     = new ChessBoard(this.cfg, this.engine);
 		this.p1        = new GamePlayer("1");
 		this.p2        = new GamePlayer("2");
 		this.clock     = new GameClock(this.game, this.p1, this.p2, clockInitialTime, clockIncrement);
@@ -136,7 +136,7 @@ export class ChessGame {
 		this.game.reset();
 		this.clock.reset();
 		this.state.reset();
-		this.board.update(undefined);
+		this.board.reset();
 		this.display.reset();
 		this.display.updateStatus();
 		this.setup();
