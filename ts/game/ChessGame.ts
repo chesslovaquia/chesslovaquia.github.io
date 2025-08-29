@@ -11,6 +11,9 @@ import { BoardMoveData  } from '../events/EventBoardMove';
 
 import { EventClockTimeout } from '../events/EventClockTimeout';
 
+import { GameEngine    } from '../engine/GameEngine';
+import { ChessjsEngine } from '../engine/ChessjsEngine';
+
 import { GameConfig    } from './GameConfig';
 import { GameDisplay   } from './GameDisplay';
 import { GameError     } from './GameError';
@@ -27,6 +30,7 @@ const clockInitialTime = 900; // Seconds.
 const clockIncrement   = 10;  // Seconds.
 
 export class ChessGame {
+	private readonly engine:    GameEngine;
 	private readonly game:      Chess;
 	private readonly board:     ChessBoard;
 	private readonly cfg:       GameConfig;
@@ -46,6 +50,7 @@ export class ChessGame {
 		console.debug('Game config:', config);
 		this.cfg       = config;
 		this.active    = false;
+		this.engine    = new ChessjsEngine();
 		this.game      = new Chess(chess.DEFAULT_POSITION);
 		this.board     = new ChessBoard(this.cfg, this.game);
 		this.p1        = new GamePlayer("1");
