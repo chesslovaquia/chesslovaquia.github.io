@@ -1,19 +1,29 @@
 // Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com>
 // See LICENSE file.
 
-import { BoardDests } from '../board/GameBoard';
-import { BoardMove  } from '../board/GameBoard';
+import { BoardDests          } from '../board/GameBoard';
+import { BoardMove           } from '../board/GameBoard';
+import { BoardSquare         } from '../board/GameBoard';
+import { BoardPromotionPiece } from '../board/GameBoard';
 
 export type EngineColor = 'b' | 'w';
 
+export type EngineMove = {
+	from?:      BoardSquare,
+	to?:        BoardSquare,
+	promotion?: BoardPromotionPiece,
+	san?:       string,
+};
+
 export interface GameEngine {
-	turn():            EngineColor;
-	reset():           void;
-	fen():             string;
-	inCheck():         boolean;
-	possibleDests():   BoardDests;
-	lastMove():        BoardMove | null;
-	isPromotion():     boolean;
-	history():         string[];
-	move(san: string): BoardMove | null;
+	turn():              EngineColor;
+	reset():             void;
+	fen():               string;
+	inCheck():           boolean;
+	possibleDests():     BoardDests;
+	lastMove():          BoardMove | null;
+	isPromotion():       boolean;
+	history():           string[];
+	move(m: EngineMove): BoardMove | null;
+	undo():              BoardMove | null;
 }

@@ -1,11 +1,9 @@
 // Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com>
 // See LICENSE file.
 
-import { Chess } from 'chess.js';
-
-import * as chess  from 'chess.js';
-
 import * as cg from 'chessground/types';
+
+import { GameEngine } from '../engine/GameEngine';
 
 import { ChessBoard } from '../board/ChessBoard';
 
@@ -13,23 +11,23 @@ import { BoardSquare         } from '../board/GameBoard';
 import { BoardPromotionPiece } from '../board/GameBoard';
 
 export class GameMove {
-	private readonly game:  Chess;
-	private readonly board: ChessBoard;
+	private readonly engine: GameEngine;
+	private readonly board:  ChessBoard;
 
-	constructor(g: Chess, b: ChessBoard) {
-		this.game  = g;
+	constructor(engine: GameEngine, b: ChessBoard) {
+		this.engine = engine;
 		this.board = b;
 	}
 
 	public exec(orig: BoardSquare, dest: BoardSquare, promotion: BoardPromotionPiece): void {
 		try {
-			const move = this.game.move({
+			const move = this.engine.move({
 				from: orig,
 				to: dest,
 				promotion: promotion,
 			});
 			if (move) {
-				console.log('Move:', move.san);
+				console.log('Move:', move);
 				this.board.update();
 			} else {
 				// Invalid move - reset position
@@ -44,7 +42,7 @@ export class GameMove {
 	}
 
 	public undo(): boolean {
-		if (this.game.undo()) {
+		if (this.engine.undo()) {
 			this.board.update();
 			return true;
 		}
@@ -53,6 +51,6 @@ export class GameMove {
 	}
 
 	public turnColor(): cg.Color {
-		return this.game.turn() === 'w' ? 'white' : 'black';
+		return this.engine.turn() === 'w' ? 'white' : 'black';
 	}
 }

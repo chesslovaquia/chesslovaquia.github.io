@@ -62,7 +62,7 @@ export class GameState {
 		this.engine.reset();
 		let gotError = '';
 		moves.every(san => {
-			const move = this.engine.move(san);
+			const move = this.engine.move({san: san});
 			if (move) {
 				return true;
 			} else {

@@ -9,6 +9,7 @@ import { BoardSquare } from '../board/GameBoard';
 import { BoardMove   } from '../board/GameBoard';
 
 import { EngineColor } from './GameEngine';
+import { EngineMove  } from './GameEngine';
 
 export class ChessjsEngine {
 	private readonly game: Chess;
@@ -68,7 +69,18 @@ export class ChessjsEngine {
 		return this.game.history();
 	}
 
-	public move(san: string): BoardMove | null {
-		return this.game.move(san, {strict: true});
+	public move(m: EngineMove): BoardMove | null {
+		if (m.san) {
+			return this.game.move(m.san, {strict: true});
+		}
+		return this.game.move({
+			from:      m.from as string,
+			to:        m.to as string,
+			promotion: m.promotion,
+		});
+	}
+
+	public undo(): BoardMove | null {
+		return this.game.undo();
 	}
 }
