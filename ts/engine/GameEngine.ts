@@ -16,14 +16,20 @@ export type EngineMove = {
 };
 
 export interface GameEngine {
-	turn():              EngineColor;
-	reset():             void;
-	fen():               string;
-	inCheck():           boolean;
-	possibleDests():     BoardDests;
-	lastMove():          BoardMove | null;
-	isPromotion():       boolean;
-	history():           string[];
-	move(m: EngineMove): BoardMove | null;
-	undo():              BoardMove | null;
+	turn():                   EngineColor;
+	reset():                  void;
+	fen():                    string;
+	inCheck():                boolean;
+	possibleDests():          BoardDests;
+	lastMove():               BoardMove | null;
+	isPromotion():            boolean;
+	history():                string[];
+	move(m: EngineMove):      BoardMove | null;
+	undo():                   BoardMove | null;
+	isGameOver():             boolean;
+	isCheckmate():            boolean;
+	isDraw():                 boolean;
+	isStalemate():            boolean;
+	isThreefoldRepetition():  boolean;
+	isInsufficientMaterial(): boolean;
 }

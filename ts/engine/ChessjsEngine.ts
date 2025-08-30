@@ -83,4 +83,28 @@ export class ChessjsEngine {
 	public undo(): BoardMove | null {
 		return this.game.undo();
 	}
+
+	public isGameOver(): boolean {
+		return this.game.isGameOver();
+	}
+
+	public isCheckmate(): boolean {
+		return this.game.isCheckmate();
+	}
+
+	public isDraw(): boolean {
+		return this.game.isDraw();
+	}
+
+	public isStalemate(): boolean {
+		return this.game.isStalemate();
+	}
+
+	public isThreefoldRepetition(): boolean {
+		return this.game.isThreefoldRepetition();
+	}
+
+	public isInsufficientMaterial(): boolean {
+		return this.game.isInsufficientMaterial();
+	}
 }

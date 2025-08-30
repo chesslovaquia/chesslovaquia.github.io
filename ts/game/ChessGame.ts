@@ -1,9 +1,6 @@
 // Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com>
 // See LICENSE file.
 
-import { Chess }  from 'chess.js';
-import * as chess from 'chess.js';
-
 import { ChessBoard } from '../board/ChessBoard';
 
 import { BoardMove } from '../board/GameBoard';
@@ -31,7 +28,6 @@ const clockIncrement   = 10;  // Seconds.
 
 export class ChessGame {
 	private readonly engine:    GameEngine;
-	private readonly game:      Chess;
 	private readonly board:     ChessBoard;
 	private readonly cfg:       GameConfig;
 	private readonly move:      GameMove;
@@ -51,7 +47,6 @@ export class ChessGame {
 		this.cfg       = config;
 		this.active    = false;
 		this.engine    = new ChessjsEngine();
-		this.game      = new Chess(chess.DEFAULT_POSITION);
 		this.board     = new ChessBoard(this.cfg, this.engine);
 		this.p1        = new GamePlayer("1");
 		this.p2        = new GamePlayer("2");
@@ -59,7 +54,7 @@ export class ChessGame {
 		this.nav       = new GameNavigate(this.cfg.ui, this.board, this.engine);
 		this.state     = new GameState(this.engine, this.clock, this.nav);
 		this.move      = new GameMove(this.engine, this.board);
-		this.display   = new GameDisplay(this.cfg, this.game, this.move);
+		this.display   = new GameDisplay(this.cfg, this.engine, this.move);
 		this.promotion = new GamePromotion(this.state, this.move, this.display, this.nav);
 		if (this.board) {
 			this.setupEventListeners();

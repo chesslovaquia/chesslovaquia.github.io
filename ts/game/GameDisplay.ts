@@ -1,7 +1,7 @@
 // Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com>
 // See LICENSE file.
 
-import { Chess, Move } from 'chess.js';
+import { GameEngine } from '../engine/GameEngine';
 
 import { GameConfig } from './GameConfig';
 import { GameMove   } from './GameMove';
@@ -9,14 +9,14 @@ import { GameMove   } from './GameMove';
 import { Color } from './types';
 
 export class GameDisplay {
-	private readonly game: Chess;
-	private readonly move: GameMove;
-	private readonly cfg:  GameConfig;
+	private readonly cfg:    GameConfig;
+	private readonly engine: GameEngine;
+	private readonly move:   GameMove;
 
-	constructor(cfg: GameConfig, g: Chess, m: GameMove) {
-		this.game = g;
-		this.move = m;
-		this.cfg  = cfg;
+	constructor(cfg: GameConfig, engine: GameEngine, move: GameMove) {
+		this.cfg    = cfg;
+		this.engine = engine;
+		this.move   = move;
 	}
 
 	public async updateStatus(): Promise<void> {
@@ -25,17 +25,17 @@ export class GameDisplay {
 			return;
 		}
 		let statusText = '';
-		if (this.game.isGameOver()) {
-			if (this.game.isCheckmate()) {
-				const winner = this.game.turn() === 'w' ? 'Black' : 'White';
+		if (this.engine.isGameOver()) {
+			if (this.engine.isCheckmate()) {
+				const winner = this.engine.turn() === 'w' ? 'Black' : 'White';
 				statusText = `Checkmate! ${winner} wins.`;
-			} else if (this.game.isDraw()) {
+			} else if (this.engine.isDraw()) {
 				statusText = 'Draw!';
-			} else if (this.game.isStalemate()) {
+			} else if (this.engine.isStalemate()) {
 				statusText = 'Stalemate!';
-			} else if (this.game.isThreefoldRepetition()) {
+			} else if (this.engine.isThreefoldRepetition()) {
 				statusText = 'Draw by threefold repetition!';
-			} else if (this.game.isInsufficientMaterial()) {
+			} else if (this.engine.isInsufficientMaterial()) {
 				statusText = 'Draw by insufficient material!';
 			}
 		}
