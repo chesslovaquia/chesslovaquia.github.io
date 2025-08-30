@@ -48,12 +48,12 @@ export class ChessjsEngine {
 		return dests;
 	}
 
-	public lastMove(): BoardMove | undefined {
+	public lastMove(): BoardMove | null {
 		const m = this.getLastMove();
 		if (m) {
 			return {from: m.from, to: m.to};
 		}
-		return undefined;
+		return null;
 	}
 
 	public isPromotion(): boolean {

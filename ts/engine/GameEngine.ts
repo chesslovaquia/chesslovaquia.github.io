@@ -12,7 +12,7 @@ export interface GameEngine {
 	fen():             string;
 	inCheck():         boolean;
 	possibleDests():   BoardDests;
-	lastMove():        BoardMove | undefined;
+	lastMove():        BoardMove | null;
 	isPromotion():     boolean;
 	history():         string[];
 	move(san: string): BoardMove | null;

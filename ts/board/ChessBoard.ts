@@ -94,7 +94,7 @@ export class ChessBoard {
 		this.board.set({ movable: { color: this.turnColor() } });
 	}
 
-	private getLastMove(m: BoardMove | undefined): cg.Key[] {
+	private getLastMove(m: BoardMove | null): cg.Key[] {
 		if (m) {
 			return [m.from as cg.Key, m.to as cg.Key];
 		}
