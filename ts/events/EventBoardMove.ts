@@ -3,16 +3,16 @@
 
 import * as cg from 'chessground/types';
 
+import { BoardMove } from '../board/GameBoard';
+
 const eventName:   string      = 'clvqBoardMove';
 const eventTarget: EventTarget = document as EventTarget;
 
-export type BoardMoveData = {orig: cg.Key, dest: cg.Key, meta?: cg.MoveMetadata};
-
-export class EventBoardMove extends CustomEvent<BoardMoveData> {
+export class EventBoardMove extends CustomEvent<BoardMove> {
 	static Name:   string      = eventName;
 	static Target: EventTarget = eventTarget;
 
-	constructor(data: BoardMoveData) {
+	constructor(data: BoardMove) {
 		super(eventName, {
 			detail: data,
 		});

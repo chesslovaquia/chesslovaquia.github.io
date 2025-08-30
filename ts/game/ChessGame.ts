@@ -6,13 +6,13 @@ import * as chess from 'chess.js';
 
 import { ChessBoard } from '../board/ChessBoard';
 
-import { EventBoardMove } from '../events/EventBoardMove';
-import { BoardMoveData  } from '../events/EventBoardMove';
-
-import { EventClockTimeout } from '../events/EventClockTimeout';
+import { BoardMove } from '../board/GameBoard';
 
 import { GameEngine    } from '../engine/GameEngine';
 import { ChessjsEngine } from '../engine/ChessjsEngine';
+
+import { EventBoardMove    } from '../events/EventBoardMove';
+import { EventClockTimeout } from '../events/EventClockTimeout';
 
 import { GameConfig    } from './GameConfig';
 import { GameDisplay   } from './GameDisplay';
@@ -100,22 +100,22 @@ export class ChessGame {
 		this.cfg.ui.gameReset?.addEventListener('click', () => this.reset());
 	}
 
-	private doMove(move: BoardMoveData): void {
+	private doMove(move: BoardMove): void {
 		console.debug('Game move:', move);
 		if (!this.active) {
 			this.start();
 		}
-		this.move.exec(move.orig, move.dest, 'q');
+		this.move.exec(move.from, move.to, 'q');
 		this.display.updateStatus();
 		this.afterMove(move);
 	}
 
-	private afterMove(move: BoardMoveData) {
+	private afterMove(move: BoardMove) {
 		console.debug('Game after move:', move);
 		if (this.engine.isPromotion()) {
 			// Pawn promotion.
 			console.debug('Move was pawn promotion.');
-			this.promotion.handle(move.orig, move.dest);
+			this.promotion.handle(move);
 			this.display.updateStatus();
 		} else {
 			// Update clocks and save state.

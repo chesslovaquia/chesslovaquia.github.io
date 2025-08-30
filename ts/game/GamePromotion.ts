@@ -3,6 +3,9 @@
 
 import * as board from 'chessground/types';
 
+import { BoardMove           } from '../board/GameBoard';
+import { BoardPromotionPiece } from '../board/GameBoard';
+
 import { GameDisplay  } from './GameDisplay';
 import { GameMove     } from './GameMove';
 import { GameState    } from './GameState';
@@ -21,19 +24,19 @@ export class GamePromotion {
 		this.nav     = n;
 	}
 
-	public handle(orig: board.Key, dest: board.Key): void {
-		console.log('Pawn promotion handle:', orig, dest);
+	public handle(move: BoardMove): void {
+		console.log('Pawn promotion handle:', move);
 		this.move.undo();
 		const side: board.Color = this.move.turnColor();
 		this.showModal(side, (selectedPiece) => {
-			this.exec(orig, dest, side, selectedPiece);
+			this.exec(move, side, selectedPiece);
 		})
 	}
 
-	private exec(orig: board.Key, dest: board.Key, side: board.Color, piece: board.Role): void {
-		console.log('Pawn promotion exec:', orig, dest, side, piece);
-		this.move.exec(orig, dest, piece);
-		this.finish(orig, dest, side, piece);
+	private exec(move: BoardMove, side: board.Color, piece: BoardPromotionPiece): void {
+		console.log('Pawn promotion exec:', move, side, piece);
+		this.move.exec(move.from, move.to, piece);
+		this.finish(move, side, piece);
 	}
 
 	private showModal(side: board.Color, callback: any): void {
@@ -57,8 +60,8 @@ export class GamePromotion {
 		}
 	}
 
-	private finish(orig: board.Key, dest: board.Key, side: board.Color, piece: string): void {
-		console.log('Pawn promotion done:', orig, dest, side, piece);
+	private finish(move: BoardMove, side: board.Color, piece: string): void {
+		console.log('Pawn promotion done:', move, side, piece);
 		this.display.updateStatus();
 		this.saveState();
 	}
