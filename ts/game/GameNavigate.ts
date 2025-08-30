@@ -1,37 +1,38 @@
 // Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com>
 // See LICENSE file.
 
-import { Chess }  from 'chess.js';
-import * as chess from 'chess.js';
+import { GameEngine } from '../engine/GameEngine';
 
 import { ConfigGameUI } from '../config/ConfigGameUI';
 
 import { ChessBoard } from '../board/ChessBoard';
 
-type BoardMoves = string[];
+import { BoardMove } from '../board/GameBoard';
+
+type BoardPositions = string[];
 
 type NavState = {
-	pos:   BoardMoves,
+	pos:   BoardPositions,
 	index: number,
-	moves: chess.Move[],
+	moves: BoardMove[],
 }
 
 export class GameNavigate {
-	private readonly ui:    ConfigGameUI;
-	private readonly board: ChessBoard;
-	private readonly game:  Chess;
+	private readonly ui:     ConfigGameUI;
+	private readonly board:  ChessBoard;
+	private readonly engine: GameEngine;
 
-	private pos:   BoardMoves;
+	private pos:   BoardPositions;
 	private index: number;
-	private moves: chess.Move[];
+	private moves: BoardMove[];
 
-	constructor(ui: ConfigGameUI, board: ChessBoard, game: Chess) {
-		this.ui    = ui;
-		this.board = board;
-		this.game  = game;
-		this.pos   = [];
-		this.index = -1;
-		this.moves = [];
+	constructor(ui: ConfigGameUI, board: ChessBoard, engine: GameEngine) {
+		this.ui     = ui;
+		this.board  = board;
+		this.engine = engine;
+		this.pos    = [];
+		this.index  = -1;
+		this.moves  = [];
 		this.setupEventListeners();
 	}
 
@@ -52,12 +53,8 @@ export class GameNavigate {
 		}
 	}
 
-	private getLastMove(): chess.Move | undefined {
-		return this.game.history({verbose: true}).pop();
-	}
-
 	public addPosition(): void {
-		const lastMove = this.getLastMove();
+		const lastMove = this.engine.lastMove();
 		if (lastMove) {
 			this.moves.push(lastMove);
 		}
