@@ -1,32 +1,32 @@
 // Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com>
 // See LICENSE file.
 
-import { Chess } from 'chess.js';
+import { GameEngine } from '../engine/GameEngine';
 
 import { GameError    } from './GameError';
 import { GameClock    } from './GameClock';
 import { GameSetup    } from './GameSetup';
 import { GameNavigate } from './GameNavigate';
 
-import { GameData  } from './types';
+import { GameData } from './types';
 
 import { ClvqIndexedDB, Store } from '../clvq/ClvqIndexedDB';
 
 export class GameState {
-	private readonly id:    string;
-	private readonly game:  Chess;
-	private readonly clock: GameClock;
-	private readonly db:    ClvqIndexedDB;
-	private readonly setup: GameSetup;
-	private readonly nav:   GameNavigate;
+	private readonly id:     string;
+	private readonly engine: GameEngine;
+	private readonly clock:  GameClock;
+	private readonly db:     ClvqIndexedDB;
+	private readonly setup:  GameSetup;
+	private readonly nav:    GameNavigate;
 
-	constructor(game: Chess, clock: GameClock, nav: GameNavigate) {
-		this.id    = 'current';
-		this.game  = game;
-		this.clock = clock;
-		this.nav   = nav;
-		this.db    = new ClvqIndexedDB(Store.state);
-		this.setup = new GameSetup();
+	constructor(engine: GameEngine, clock: GameClock, nav: GameNavigate) {
+		this.id     = 'current';
+		this.engine = engine;
+		this.clock  = clock;
+		this.nav    = nav;
+		this.db     = new ClvqIndexedDB(Store.state);
+		this.setup  = new GameSetup();
 	}
 
 	public reset(): void {
@@ -35,7 +35,7 @@ export class GameState {
 
 	public save(): void {
 		this.db.setItem(this.id, {
-			moves: this.game.history(),
+			moves: this.engine.history(),
 			clock: this.clock.getState(),
 			nav:   this.nav.getState(),
 		}).then(() => { console.debug('State saved.') });
@@ -59,10 +59,10 @@ export class GameState {
 
 	private loadMoves(moves: string[]): void {
 		console.debug('Game load moves:', moves);
-		this.game.reset();
+		this.engine.reset();
 		let gotError = '';
 		moves.every(san => {
-			const move = this.game.move(san, { strict: true });
+			const move = this.engine.move(san);
 			if (move) {
 				return true;
 			} else {

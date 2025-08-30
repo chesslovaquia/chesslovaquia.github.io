@@ -57,7 +57,7 @@ export class ChessGame {
 		this.p2        = new GamePlayer("2");
 		this.clock     = new GameClock(this.engine, this.p1, this.p2, clockInitialTime, clockIncrement);
 		this.nav       = new GameNavigate(this.cfg.ui, this.board, this.engine);
-		this.state     = new GameState(this.game, this.clock, this.nav);
+		this.state     = new GameState(this.engine, this.clock, this.nav);
 		this.move      = new GameMove(this.game, this.board);
 		this.display   = new GameDisplay(this.cfg, this.game, this.move);
 		this.promotion = new GamePromotion(this.state, this.move, this.display, this.nav);

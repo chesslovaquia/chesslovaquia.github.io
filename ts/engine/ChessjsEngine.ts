@@ -63,4 +63,12 @@ export class ChessjsEngine {
 		}
 		return false;
 	}
+
+	public history(): string[] {
+		return this.game.history();
+	}
+
+	public move(san: string): BoardMove | null {
+		return this.game.move(san, {strict: true});
+	}
 }
