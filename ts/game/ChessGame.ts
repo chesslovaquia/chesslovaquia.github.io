@@ -119,7 +119,7 @@ export class ChessGame {
 			this.display.updateStatus();
 		} else {
 			// Update clocks and save state.
-			this.clock.move(this.game.turn());
+			this.clock.move(this.engine.turn());
 			this.saveState();
 		}
 	}
@@ -133,7 +133,7 @@ export class ChessGame {
 	private reset(): void {
 		console.log('Game reset!');
 		this.stop();
-		this.game.reset();
+		this.engine.reset();
 		this.clock.reset();
 		this.state.reset();
 		this.board.reset();
