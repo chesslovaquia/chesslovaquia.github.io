@@ -1,7 +1,7 @@
 // Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com>
 // See LICENSE file.
 
-import { Chess } from 'chess.js';
+import { GameEngine } from '../engine/GameEngine';
 
 import { EventClockTimeout } from '../events/EventClockTimeout';
 
@@ -31,9 +31,9 @@ enum Status {
 }
 
 export class GameClock {
-	private readonly game: Chess;
-	private readonly p1:   GamePlayer;
-	private readonly p2:   GamePlayer;
+	private readonly engine: GameEngine;
+	private readonly p1:     GamePlayer;
+	private readonly p2:     GamePlayer;
 
 	private initialTime: number;
 	private increment:   number;
@@ -47,12 +47,12 @@ export class GameClock {
 	private firstMoveTime:     Record<Color, number>;
 	private firstMoveInterval: ReturnType<typeof setInterval> | null;
 
-	constructor(game: Chess, p1: GamePlayer, p2: GamePlayer, time: number, increment: number) {
+	constructor(engine: GameEngine, p1: GamePlayer, p2: GamePlayer, time: number, increment: number) {
 		console.debug('Clock init:', time, increment);
 		if (time < 0 || increment < 0) {
 			throw new GameError(`Invalid clock time (${time}) or increment (${increment})`);
 		}
-		this.game              = game;
+		this.engine            = engine;
 		this.p1                = p1;
 		this.p2                = p2;
 		this.side              = {'w': this.p1, 'b': this.p2};
@@ -113,7 +113,7 @@ export class GameClock {
 			console.debug('Clock stop.');
 			clearInterval(this.interval);
 			this.interval = null;
-			this.update(this.game.turn());
+			this.update(this.engine.turn());
 			return true;
 		}
 		return false;
@@ -194,7 +194,7 @@ export class GameClock {
 		this.firstMove     = s.firstMove;
 		this.firstMoveTime = s.firstMoveTime;
 		this.setTimeDiff(s.tstamp);
-		this.update(this.game.turn());
+		this.update(this.engine.turn());
 	}
 
 	public setupNewGame(time: number, increment: number): void {
@@ -204,7 +204,7 @@ export class GameClock {
 	}
 
 	private setTimeDiff(tstamp: number): void {
-		const turn = this.game.turn();
+		const turn = this.engine.turn();
 		const diff = Math.floor(Date.now() - tstamp) / 100;
 		console.debug('Clock set time diff:', turn, diff);
 		if (this.firstMove) {
@@ -224,7 +224,7 @@ export class GameClock {
 		if (!this.firstMove) {
 			return;
 		}
-		const turn = this.game.turn();
+		const turn = this.engine.turn();
 		this.firstMoveTime[turn]--;
 		if (this.firstMoveTime[turn] <= 0) {
 			this.firstMoveTime[turn] = 0;
@@ -236,7 +236,7 @@ export class GameClock {
 		if (this.firstMove) {
 			return;
 		}
-		const turn = this.game.turn();
+		const turn = this.engine.turn();
 		this.time[turn]--;
 		if (this.time[turn] <= 0) {
 			this.timeout(turn);
