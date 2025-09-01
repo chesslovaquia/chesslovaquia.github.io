@@ -2,6 +2,7 @@
 // See LICENSE file.
 
 import { ChessBoard } from '../board/ChessBoard';
+import { GameBoard  } from '../board/GameBoard';
 
 import { BoardMove } from '../board/GameBoard';
 
@@ -27,7 +28,7 @@ const clockIncrement   = 10;  // Seconds.
 
 export class ChessGame {
 	private readonly engine:    GameEngine;
-	private readonly board:     ChessBoard;
+	private readonly board:     GameBoard;
 	private readonly cfg:       GameConfig;
 	private readonly move:      GameMove;
 	private readonly promotion: GamePromotion;

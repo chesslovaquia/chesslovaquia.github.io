@@ -20,3 +20,11 @@ export type BoardMove = {
 	to:         BoardSquare,
 	promotion?: BoardPromotionPiece,
 };
+
+export interface GameBoard {
+	init():    void;
+	reset():   void;
+	update():  void;
+	enable():  void;
+	disable(): void;
+}
