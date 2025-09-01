@@ -22,9 +22,11 @@ export type BoardMove = {
 };
 
 export interface GameBoard {
-	init():    void;
-	reset():   void;
-	update():  void;
-	enable():  void;
-	disable(): void;
+	init():                               void;
+	reset():                              void;
+	update():                             void;
+	enable():                             void;
+	disable():                            void;
+	getFen():                             string;
+	setPosition(f: string, m: BoardMove): void;
 }

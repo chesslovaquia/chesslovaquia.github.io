@@ -5,8 +5,7 @@ import { GameEngine } from '../engine/GameEngine';
 
 import { ConfigGameUI } from '../config/ConfigGameUI';
 
-import { ChessBoard } from '../board/ChessBoard';
-
+import { GameBoard } from '../board/GameBoard';
 import { BoardMove } from '../board/GameBoard';
 
 type BoardPositions = string[];
@@ -19,14 +18,14 @@ type NavState = {
 
 export class GameNavigate {
 	private readonly ui:     ConfigGameUI;
-	private readonly board:  ChessBoard;
+	private readonly board:  GameBoard;
 	private readonly engine: GameEngine;
 
 	private pos:   BoardPositions;
 	private index: number;
 	private moves: BoardMove[];
 
-	constructor(ui: ConfigGameUI, board: ChessBoard, engine: GameEngine) {
+	constructor(ui: ConfigGameUI, board: GameBoard, engine: GameEngine) {
 		this.ui     = ui;
 		this.board  = board;
 		this.engine = engine;
