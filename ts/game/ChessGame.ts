@@ -1,9 +1,9 @@
 // Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com>
 // See LICENSE file.
 
-import { ChessBoard } from '../board/ChessBoard';
-import { GameBoard  } from '../board/GameBoard';
+import { ChessgroundBoard } from '../board/ChessgroundBoard';
 
+import { GameBoard } from '../board/GameBoard';
 import { BoardMove } from '../board/GameBoard';
 
 import { ChessjsEngine } from '../engine/ChessjsEngine';
@@ -47,7 +47,7 @@ export class ChessGame {
 		this.cfg       = config;
 		this.active    = false;
 		this.engine    = new ChessjsEngine();
-		this.board     = new ChessBoard(this.cfg, this.engine);
+		this.board     = new ChessgroundBoard(this.cfg, this.engine);
 		this.p1        = new GamePlayer("1");
 		this.p2        = new GamePlayer("2");
 		this.clock     = new GameClock(this.engine, this.p1, this.p2, clockInitialTime, clockIncrement);

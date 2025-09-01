@@ -16,7 +16,7 @@ import { BoardDests  } from './GameBoard';
 import { BoardMove   } from './GameBoard';
 import { BoardSquare } from './GameBoard';
 
-export class ChessBoard {
+export class ChessgroundBoard {
 	private readonly cfg:    GameConfig;
 	private readonly engine: GameEngine;
 	private readonly board:  ChessgroundApi;
