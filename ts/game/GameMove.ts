@@ -31,7 +31,7 @@ export class GameMove {
 				this.board.update();
 			} else {
 				// Invalid move - reset position
-				console.error('Invalid move, reset position:', move);
+				console.error('Invalid move, reset position.');
 				this.board.reset();
 			}
 		} catch (error) {

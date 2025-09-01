@@ -11,7 +11,6 @@ import { BoardMove   } from '../board/GameBoard';
 import { EngineError } from './EngineError';
 
 import { EngineColor } from './GameEngine';
-import { EngineMove  } from './GameEngine';
 import { MovesSAN    } from './GameEngine';
 
 export class ChessjsEngine {
@@ -68,19 +67,24 @@ export class ChessjsEngine {
 		return false;
 	}
 
-	public move(m: EngineMove): BoardMove | null {
-		if (m.san) {
-			return this.game.move(m.san, {strict: true});
-		}
-		return this.game.move({
-			from:      m.from as string,
-			to:        m.to as string,
-			promotion: m.promotion,
+	public move(m: BoardMove): BoardMove | null {
+		const move = this.game.move({
+			from:      m.from      as chess.Square,
+			to:        m.to        as chess.Square,
+			promotion: m.promotion as chess.PieceSymbol,
 		});
+		if (move) {
+			return {from: move.from, to: move.to};
+		}
+		return null;
 	}
 
 	public undo(): BoardMove | null {
-		return this.game.undo();
+		const move = this.game.undo();
+		if (move) {
+			return {from: move.from, to: move.to};
+		}
+		return null;
 	}
 
 	public isGameOver(): boolean {
