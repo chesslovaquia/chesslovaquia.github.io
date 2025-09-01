@@ -5,18 +5,18 @@ import * as cg from 'chessground/types';
 
 import { GameEngine } from '../engine/GameEngine';
 
-import { ChessBoard } from '../board/ChessBoard';
+import { GameBoard } from '../board/GameBoard';
 
 import { BoardSquare         } from '../board/GameBoard';
 import { BoardPromotionPiece } from '../board/GameBoard';
 
 export class GameMove {
 	private readonly engine: GameEngine;
-	private readonly board:  ChessBoard;
+	private readonly board:  GameBoard;
 
-	constructor(engine: GameEngine, b: ChessBoard) {
+	constructor(engine: GameEngine, board: GameBoard) {
 		this.engine = engine;
-		this.board = b;
+		this.board = board;
 	}
 
 	public exec(orig: BoardSquare, dest: BoardSquare, promotion: BoardPromotionPiece): void {
