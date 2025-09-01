@@ -1,8 +1,6 @@
 // Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com>
 // See LICENSE file.
 
-import * as cg from 'chessground/types';
-
 import { BoardMove } from '../board/GameBoard';
 
 const eventName:   string      = 'clvqBoardMove';

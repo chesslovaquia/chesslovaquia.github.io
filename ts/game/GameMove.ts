@@ -1,14 +1,12 @@
 // Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com>
 // See LICENSE file.
 
-import * as cg from 'chessground/types';
-
 import { GameEngine } from '../engine/GameEngine';
 
-import { GameBoard } from '../board/GameBoard';
-
+import { GameBoard           } from '../board/GameBoard';
 import { BoardSquare         } from '../board/GameBoard';
 import { BoardPromotionPiece } from '../board/GameBoard';
+import { BoardColor          } from '../board/GameBoard';
 
 export class GameMove {
 	private readonly engine: GameEngine;
@@ -50,7 +48,7 @@ export class GameMove {
 		return false;
 	}
 
-	public turnColor(): cg.Color {
+	public turnColor(): BoardColor {
 		return this.engine.turn() === 'w' ? 'white' : 'black';
 	}
 }

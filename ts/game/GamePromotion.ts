@@ -1,10 +1,9 @@
 // Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com>
 // See LICENSE file.
 
-import * as board from 'chessground/types';
-
 import { BoardMove           } from '../board/GameBoard';
 import { BoardPromotionPiece } from '../board/GameBoard';
+import { BoardColor          } from '../board/GameBoard';
 
 import { GameDisplay  } from './GameDisplay';
 import { GameMove     } from './GameMove';
@@ -27,19 +26,19 @@ export class GamePromotion {
 	public handle(move: BoardMove): void {
 		console.log('Pawn promotion handle:', move);
 		this.move.undo();
-		const side: board.Color = this.move.turnColor();
+		const side: BoardColor = this.move.turnColor();
 		this.showModal(side, (selectedPiece) => {
 			this.exec(move, side, selectedPiece);
 		})
 	}
 
-	private exec(move: BoardMove, side: board.Color, piece: BoardPromotionPiece): void {
+	private exec(move: BoardMove, side: BoardColor, piece: BoardPromotionPiece): void {
 		console.log('Pawn promotion exec:', move, side, piece);
 		this.move.exec(move.from, move.to, piece);
 		this.finish(move, side, piece);
 	}
 
-	private showModal(side: board.Color, callback: any): void {
+	private showModal(side: BoardColor, callback: any): void {
 		console.log('Pawn promotion show modal:', side);
 		const modal = document.getElementById(`${side}PawnPromotion`);
 		if (modal) {
@@ -60,7 +59,7 @@ export class GamePromotion {
 		}
 	}
 
-	private finish(move: BoardMove, side: board.Color, piece: string): void {
+	private finish(move: BoardMove, side: BoardColor, piece: string): void {
 		console.log('Pawn promotion done:', move, side, piece);
 		this.display.updateStatus();
 		this.saveState();
