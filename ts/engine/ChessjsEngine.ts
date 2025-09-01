@@ -8,8 +8,11 @@ import { BoardDests  } from '../board/GameBoard';
 import { BoardSquare } from '../board/GameBoard';
 import { BoardMove   } from '../board/GameBoard';
 
+import { EngineError } from './EngineError';
+
 import { EngineColor } from './GameEngine';
 import { EngineMove  } from './GameEngine';
+import { MovesSAN    } from './GameEngine';
 
 export class ChessjsEngine {
 	private readonly game: Chess;
@@ -65,10 +68,6 @@ export class ChessjsEngine {
 		return false;
 	}
 
-	public history(): string[] {
-		return this.game.history();
-	}
-
 	public move(m: EngineMove): BoardMove | null {
 		if (m.san) {
 			return this.game.move(m.san, {strict: true});
@@ -106,5 +105,27 @@ export class ChessjsEngine {
 
 	public isInsufficientMaterial(): boolean {
 		return this.game.isInsufficientMaterial();
+	}
+
+	public getState(): MovesSAN {
+		return this.game.history();
+	}
+
+	public setState(moves: MovesSAN): void {
+		console.debug('Engine load moves:', moves);
+		this.game.reset();
+		let gotError = '';
+		moves.every(san => {
+			const move = this.game.move(san);
+			if (move) {
+				return true;
+			} else {
+				gotError = san;
+				return false;
+			}
+		});
+		if (gotError !== '') {
+			throw new EngineError(`Invalid move: ${gotError}`);
+		}
 	}
 }

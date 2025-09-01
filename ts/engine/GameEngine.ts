@@ -15,6 +15,8 @@ export type EngineMove = {
 	san?:       string,
 };
 
+export type MovesSAN = string[];
+
 export interface GameEngine {
 	turn():                   EngineColor;
 	reset():                  void;
@@ -23,7 +25,6 @@ export interface GameEngine {
 	possibleDests():          BoardDests;
 	lastMove():               BoardMove | null;
 	isPromotion():            boolean;
-	history():                string[];
 	move(m: EngineMove):      BoardMove | null;
 	undo():                   BoardMove | null;
 	isGameOver():             boolean;
@@ -32,4 +33,6 @@ export interface GameEngine {
 	isStalemate():            boolean;
 	isThreefoldRepetition():  boolean;
 	isInsufficientMaterial(): boolean;
+	getState():               MovesSAN;
+	setState(m: MovesSAN):    void;
 }

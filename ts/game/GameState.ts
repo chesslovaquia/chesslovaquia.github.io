@@ -33,7 +33,7 @@ export class GameState {
 
 	public save(): void {
 		this.db.setItem(this.id, {
-			moves: this.engine.history(),
+			moves: this.engine.getState(),
 			clock: this.clock.getState(),
 			nav:   this.nav.getState(),
 		}).then(() => { console.debug('State saved.') });
@@ -43,7 +43,7 @@ export class GameState {
 		const state = await this.db.getItem(this.id);
 		if (state) {
 			if (state.moves) {
-				this.loadMoves(state.moves);
+				this.engine.setState(state.moves);
 			}
 			if (state.nav) {
 				this.nav.setState(state.nav);
@@ -53,24 +53,6 @@ export class GameState {
 			return true;
 		}
 		return false;
-	}
-
-	private loadMoves(moves: string[]): void {
-		console.debug('Game load moves:', moves);
-		this.engine.reset();
-		let gotError = '';
-		moves.every(san => {
-			const move = this.engine.move({san: san});
-			if (move) {
-				return true;
-			} else {
-				gotError = san;
-				return false;
-			}
-		});
-		if (gotError !== '') {
-			throw new GameError(`Invalid move: ${gotError}`);
-		}
 	}
 
 	public async setupNewGame(): Promise<boolean> {
