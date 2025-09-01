@@ -5,8 +5,9 @@ import { ChessBoard } from '../board/ChessBoard';
 
 import { BoardMove } from '../board/GameBoard';
 
-import { GameEngine    } from '../engine/GameEngine';
 import { ChessjsEngine } from '../engine/ChessjsEngine';
+import { GameEngine    } from '../engine/GameEngine';
+import { EngineColor   } from '../engine/GameEngine';
 
 import { EventBoardMove    } from '../events/EventBoardMove';
 import { EventClockTimeout } from '../events/EventClockTimeout';
@@ -20,8 +21,6 @@ import { GameState     } from './GameState';
 import { GamePlayer    } from './GamePlayer';
 import { GameClock     } from './GameClock';
 import { GameNavigate  } from './GameNavigate';
-
-import { Color } from './types';
 
 const clockInitialTime = 900; // Seconds.
 const clockIncrement   = 10;  // Seconds.
@@ -173,7 +172,7 @@ export class ChessGame {
 		this.active = false;
 	}
 
-	private clockTimeout(color: Color): void {
+	private clockTimeout(color: EngineColor): void {
 		console.debug('Game clock timeout:', color);
 		this.stop();
 		this.display.clockTimeout(color);

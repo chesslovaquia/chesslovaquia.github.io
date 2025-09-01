@@ -1,13 +1,11 @@
 // Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com>
 // See LICENSE file.
 
-import { screenRedirect } from './screen';
-
-import { GameData } from './types';
-
 import { ClvqIndexedDB, Store } from '../clvq/ClvqIndexedDB';
 
-type SetupData = {
+import { screenRedirect } from './screen';
+
+export type SetupData = {
 	time:      number,
 	increment: number,
 }
@@ -25,7 +23,7 @@ export class GameSetup {
 		screenRedirect();
 	}
 
-	public async getGame(): Promise<GameData> {
+	public async getGame(): Promise<SetupData> {
 		console.debug('Setup get game.');
 		return await this.db.getItem('new');
 	}

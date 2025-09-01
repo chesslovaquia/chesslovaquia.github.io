@@ -8,8 +8,6 @@ import { GameClock    } from './GameClock';
 import { GameSetup    } from './GameSetup';
 import { GameNavigate } from './GameNavigate';
 
-import { GameData } from './types';
-
 import { ClvqIndexedDB, Store } from '../clvq/ClvqIndexedDB';
 
 export class GameState {

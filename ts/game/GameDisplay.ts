@@ -1,12 +1,11 @@
 // Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com>
 // See LICENSE file.
 
-import { GameEngine } from '../engine/GameEngine';
+import { GameEngine  } from '../engine/GameEngine';
+import { EngineColor } from '../engine/GameEngine';
 
 import { GameConfig } from './GameConfig';
 import { GameMove   } from './GameMove';
-
-import { Color } from './types';
 
 export class GameDisplay {
 	private readonly cfg:    GameConfig;
@@ -52,7 +51,7 @@ export class GameDisplay {
 		this.cfg.ui.board.classList.toggle('timeout', false);
 	}
 
-	public clockTimeout(color: Color): void {
+	public clockTimeout(color: EngineColor): void {
 		if (this.cfg.ui.statusBar) {
 			const winner = color === 'w' ? 'Black' : 'White';
 			this.cfg.ui.statusBar.textContent = `Timeout! ${winner} wins.`;

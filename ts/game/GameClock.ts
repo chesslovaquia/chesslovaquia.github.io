@@ -1,22 +1,21 @@
 // Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com>
 // See LICENSE file.
 
-import { GameEngine } from '../engine/GameEngine';
+import { GameEngine  } from '../engine/GameEngine';
+import { EngineColor } from '../engine/GameEngine';
 
 import { EventClockTimeout } from '../events/EventClockTimeout';
 
 import { GameError  } from './GameError';
 import { GamePlayer } from './GamePlayer';
 
-import { Color } from './types';
-
 type clockState = {
 	tstamp:        number,
 	initialTime:   number,
 	increment:     number,
-	time:          Record<Color, number>,
+	time:          Record<EngineColor, number>,
 	firstMove:     boolean,
-	firstMoveTime: Record<Color, number>,
+	firstMoveTime: Record<EngineColor, number>,
 };
 
 const firstMoveTimeout: number = 30 * 10; // 30 seconds in tenths.
@@ -39,12 +38,12 @@ export class GameClock {
 	private increment:   number;
 	private interval:    ReturnType<typeof setInterval> | null;
 
-	private side:  Record<Color, GamePlayer>;
-	private time:  Record<Color, number>;
-	private klass: Record<Color, Status>;
+	private side:  Record<EngineColor, GamePlayer>;
+	private time:  Record<EngineColor, number>;
+	private klass: Record<EngineColor, Status>;
 
 	private firstMove:         boolean;
-	private firstMoveTime:     Record<Color, number>;
+	private firstMoveTime:     Record<EngineColor, number>;
 	private firstMoveInterval: ReturnType<typeof setInterval> | null;
 
 	constructor(engine: GameEngine, p1: GamePlayer, p2: GamePlayer, time: number, increment: number) {
@@ -67,7 +66,7 @@ export class GameClock {
 		this.reset();
 	}
 
-	public move(turn: Color): void {
+	public move(turn: EngineColor): void {
 		console.debug('Clock move:', turn);
 		if (this.increment > 0) {
 			const other = turn === 'w' ? 'b' : 'w';
@@ -119,7 +118,7 @@ export class GameClock {
 		return false;
 	}
 
-	private async update(turn: Color): Promise<void> {
+	private async update(turn: EngineColor): Promise<void> {
 		if (this.klass[turn] !== Status.timeout) {
 			if (this.time[turn] <= activeAlert) {
 				this.klass[turn] = Status.alert;
@@ -245,7 +244,7 @@ export class GameClock {
 		this.update(turn);
 	}
 
-	private timeout(turn: Color): void {
+	private timeout(turn: EngineColor): void {
 		console.debug('Clock timeout:', turn);
 		const evt = new EventClockTimeout(turn);
 		EventClockTimeout.Target.dispatchEvent(evt);
