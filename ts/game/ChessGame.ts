@@ -68,6 +68,11 @@ export class ChessGame {
 			if (done) {
 				this.board.update();
 				this.display.updateStatus();
+				const orientation = this.state.getOrientation();
+				if (orientation === 'b') {
+					console.debug('Game load flip board.');
+					this.flipBoard();
+				}
 				this.start();
 			} else {
 				this.setup();
@@ -89,7 +94,7 @@ export class ChessGame {
 		});
 		// Game actions.
 		this.cfg.ui.gameReset?.addEventListener('click', () => this.reset());
-		this.cfg.ui.flipBoard?.addEventListener('click', () => this.flipBoard());
+		this.cfg.ui.flipBoard?.addEventListener('click', () => this.toggleOrientation());
 	}
 
 	private doMove(move: BoardMove): void {
@@ -179,5 +184,12 @@ export class ChessGame {
 	private flipBoard(): void {
 		console.debug('Game flip board.');
 		this.board.flip();
+	}
+
+	private toggleOrientation(): void {
+		console.debug('Game toggle orientation.');
+		this.flipBoard();
+		this.state.toggleOrientation();
+		this.state.save();
 	}
 }

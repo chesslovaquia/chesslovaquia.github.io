@@ -1,7 +1,8 @@
 // Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com>
 // See LICENSE file.
 
-import { GameEngine } from '../engine/GameEngine';
+import { GameEngine  } from '../engine/GameEngine';
+import { EngineColor } from '../engine/GameEngine';
 
 import { GameError    } from './GameError';
 import { GameClock    } from './GameClock';
@@ -11,20 +12,23 @@ import { GameNavigate } from './GameNavigate';
 import { ClvqIndexedDB, Store } from '../clvq/ClvqIndexedDB';
 
 export class GameState {
-	private readonly id:     string;
-	private readonly engine: GameEngine;
-	private readonly clock:  GameClock;
-	private readonly db:     ClvqIndexedDB;
-	private readonly setup:  GameSetup;
-	private readonly nav:    GameNavigate;
+	private readonly id:          string;
+	private readonly engine:      GameEngine;
+	private readonly clock:       GameClock;
+	private readonly db:          ClvqIndexedDB;
+	private readonly setup:       GameSetup;
+	private readonly nav:         GameNavigate;
+
+	private orientation: EngineColor;
 
 	constructor(engine: GameEngine, clock: GameClock, nav: GameNavigate) {
-		this.id     = 'current';
-		this.engine = engine;
-		this.clock  = clock;
-		this.nav    = nav;
-		this.db     = new ClvqIndexedDB(Store.state);
-		this.setup  = new GameSetup();
+		this.id          = 'current';
+		this.engine      = engine;
+		this.clock       = clock;
+		this.nav         = nav;
+		this.db          = new ClvqIndexedDB(Store.state);
+		this.setup       = new GameSetup();
+		this.orientation = 'w';
 	}
 
 	public reset(): void {
@@ -33,9 +37,10 @@ export class GameState {
 
 	public save(): void {
 		this.db.setItem(this.id, {
-			moves: this.engine.getState(),
-			clock: this.clock.getState(),
-			nav:   this.nav.getState(),
+			moves:       this.engine.getState(),
+			clock:       this.clock.getState(),
+			nav:         this.nav.getState(),
+			orientation: this.orientation,
 		}).then(() => { console.debug('State saved.') });
 	}
 
@@ -50,6 +55,7 @@ export class GameState {
 			}
 			// Set clock state after loading moves so clock turn is correct.
 			this.clock.setState(state.clock);
+			this.orientation = state.orientation;
 			return true;
 		}
 		return false;
@@ -65,5 +71,18 @@ export class GameState {
 			return true;
 		}
 		return false;
+	}
+
+	public getOrientation(): EngineColor {
+		return this.orientation;
+	}
+
+	public toggleOrientation(): void {
+		if (this.orientation === 'w') {
+			this.orientation = 'b';
+		} else {
+			this.orientation = 'w';
+		}
+		this.save();
 	}
 }
