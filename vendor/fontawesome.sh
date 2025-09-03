@@ -5,7 +5,8 @@ fa_version='7.0.1'
 fa_url="https://use.fontawesome.com/releases/v7.0.1/fontawesome-free-${fa_version}-web.zip"
 
 fa_src="vendor/tmp/fontawesome-free-${fa_version}-web"
-fa_dst='themes/clvq/assets/fontawesome'
+fa_theme_dst='themes/clvq/assets/fontawesome'
+fa_static_dst='static/fontawesome'
 
 mkdir -vp vendor/tmp
 
@@ -18,14 +19,15 @@ cd vendor/tmp
 unzip -qq fontawesome.zip
 cd ../..
 
-rm -rf "${fa_dst}"
+rm -rf "${fa_theme_dst}"
+mkdir -vp "${fa_theme_dst}/css"
 
-mkdir -vp "${fa_dst}/css"
-mkdir -vp "${fa_dst}/webfonts"
+cp -va "${fa_src}/css/fontawesome.css" "${fa_theme_dst}/css"
+cp -va "${fa_src}/css/solid.css" "${fa_theme_dst}/css"
 
-cp -va "${fa_src}/css/fontawesome.css" "${fa_dst}/css"
-cp -va "${fa_src}/css/solid.css" "${fa_dst}/css"
+rm -rf "${fa_static_dst}"
+mkdir -vp "${fa_static_dst}/webfonts"
 
-cp -va "${fa_src}/webfonts/fa-solid-900.woff2" "${fa_dst}/webfonts"
+cp -va "${fa_src}/webfonts/fa-solid-900.woff2" "${fa_static_dst}/webfonts"
 
 exit 0
