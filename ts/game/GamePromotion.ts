@@ -1,9 +1,10 @@
 // Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com>
 // See LICENSE file.
 
-import { BoardMove           } from '../board/GameBoard';
 import { BoardPromotionPiece } from '../board/GameBoard';
 import { BoardColor          } from '../board/GameBoard';
+
+import { EngineMove } from '../engine/GameEngine';
 
 import { GameDisplay  } from './GameDisplay';
 import { GameMove     } from './GameMove';
@@ -23,7 +24,7 @@ export class GamePromotion {
 		this.nav     = n;
 	}
 
-	public handle(move: BoardMove): void {
+	public handle(move: EngineMove): void {
 		console.log('Pawn promotion handle:', move);
 		this.move.undo();
 		const side: BoardColor = this.move.turnColor();
@@ -32,7 +33,7 @@ export class GamePromotion {
 		})
 	}
 
-	private exec(move: BoardMove, side: BoardColor, piece: BoardPromotionPiece): void {
+	private exec(move: EngineMove, side: BoardColor, piece: BoardPromotionPiece): void {
 		console.log('Pawn promotion exec:', move, side, piece);
 		this.move.exec(move.from, move.to, piece);
 		this.finish(move, side, piece);
@@ -59,7 +60,7 @@ export class GamePromotion {
 		}
 	}
 
-	private finish(move: BoardMove, side: BoardColor, piece: string): void {
+	private finish(move: EngineMove, side: BoardColor, piece: string): void {
 		console.log('Pawn promotion done:', move, side, piece);
 		this.display.updateStatus();
 		this.saveState();

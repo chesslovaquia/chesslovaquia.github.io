@@ -10,6 +10,7 @@ import { BoardMove   } from '../board/GameBoard';
 
 import { EngineError } from './EngineError';
 
+import { EngineMove  } from './GameEngine';
 import { EngineColor } from './GameEngine';
 import { MovesSAN    } from './GameEngine';
 
@@ -71,7 +72,7 @@ export class ChessjsEngine {
 		return false;
 	}
 
-	public move(m: BoardMove): BoardMove | null {
+	public move(m: EngineMove): BoardMove | null {
 		const move = this.game.move({
 			from:      m.from      as chess.Square,
 			to:        m.to        as chess.Square,

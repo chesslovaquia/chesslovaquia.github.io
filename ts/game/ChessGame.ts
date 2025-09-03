@@ -8,6 +8,7 @@ import { BoardMove        } from '../board/GameBoard';
 import { ChessjsEngine } from '../engine/ChessjsEngine';
 import { GameEngine    } from '../engine/GameEngine';
 import { EngineColor   } from '../engine/GameEngine';
+import { EngineMove    } from '../engine/GameEngine';
 
 import { EventBoardMove    } from '../events/EventBoardMove';
 import { EventClockTimeout } from '../events/EventClockTimeout';
@@ -97,7 +98,7 @@ export class ChessGame {
 		this.cfg.ui.flipBoard?.addEventListener('click', () => this.flipBoard());
 	}
 
-	private doMove(move: BoardMove): void {
+	private doMove(move: EngineMove): void {
 		console.debug('Game move:', move);
 		if (!this.active) {
 			this.start();
@@ -107,8 +108,8 @@ export class ChessGame {
 		this.afterMove(move);
 	}
 
-	private afterMove(move: BoardMove) {
-		console.debug('Game after move:', move);
+	private afterMove(move: EngineMove) {
+		console.debug('Game after move.');
 		if (this.engine.isPromotion()) {
 			// Pawn promotion.
 			console.debug('Move was pawn promotion.');

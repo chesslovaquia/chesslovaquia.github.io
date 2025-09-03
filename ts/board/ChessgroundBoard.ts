@@ -12,9 +12,10 @@ import { GameConfig } from '../game/GameConfig';
 
 import { EventBoardMove } from '../events/EventBoardMove';
 
-import { BoardDests  } from './GameBoard';
-import { BoardMove   } from './GameBoard';
-import { BoardSquare } from './GameBoard';
+import { BoardDests          } from './GameBoard';
+import { BoardMove           } from './GameBoard';
+import { BoardSquare         } from './GameBoard';
+import { BoardPromotionPiece } from './GameBoard';
 
 export class ChessgroundBoard {
 	private readonly cfg:    GameConfig;
@@ -72,9 +73,9 @@ export class ChessgroundBoard {
 		this.disableMoves();
 		console.debug('Board dispatch move event.');
 		const data = {
-			from:    orig as BoardSquare,
-			to:      dest as BoardSquare,
-			inCheck: false,
+			from:      orig as BoardSquare,
+			to:        dest as BoardSquare,
+			promotion: 'q'  as BoardPromotionPiece,
 		};
 		const evt  = new EventBoardMove(data);
 		EventBoardMove.Target.dispatchEvent(evt);

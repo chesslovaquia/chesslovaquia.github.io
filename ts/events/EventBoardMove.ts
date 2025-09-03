@@ -1,16 +1,16 @@
 // Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com>
 // See LICENSE file.
 
-import { BoardMove } from '../board/GameBoard';
+import { EngineMove } from '../engine/GameEngine';
 
 const eventName:   string      = 'clvqBoardMove';
 const eventTarget: EventTarget = document as EventTarget;
 
-export class EventBoardMove extends CustomEvent<BoardMove> {
+export class EventBoardMove extends CustomEvent<EngineMove> {
 	static Name:   string      = eventName;
 	static Target: EventTarget = eventTarget;
 
-	constructor(data: BoardMove) {
+	constructor(data: EngineMove) {
 		super(eventName, {
 			detail: data,
 		});

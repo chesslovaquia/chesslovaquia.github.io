@@ -10,6 +10,12 @@ export type EngineColor = 'b' | 'w';
 
 export type MovesSAN = string[];
 
+export type EngineMove = {
+	from:      BoardSquare,
+	to:        BoardSquare,
+	promotion: BoardPromotionPiece,
+};
+
 export interface GameEngine {
 	turn():                   EngineColor;
 	reset():                  void;
@@ -17,7 +23,7 @@ export interface GameEngine {
 	possibleDests():          BoardDests;
 	lastMove():               BoardMove | null;
 	isPromotion():            boolean;
-	move(m: BoardMove):       BoardMove | null;
+	move(m: EngineMove):      BoardMove | null;
 	undo():                   BoardMove | null;
 	isGameOver():             boolean;
 	isCheckmate():            boolean;
