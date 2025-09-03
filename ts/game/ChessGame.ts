@@ -190,6 +190,5 @@ export class ChessGame {
 		console.debug('Game toggle orientation.');
 		this.flipBoard();
 		this.state.toggleOrientation();
-		this.state.save();
 	}
 }
