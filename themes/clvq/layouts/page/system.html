@@ -1,11 +1,15 @@
 {{ define "main" }}
+	{{- $buildID := getenv "HUGO_CLVQ_BUILD" | default "UNSET" -}}
 	{{ partial "header.html" . }}
 	{{ partial "page/main-head.html" . }}
 	<div class="w3-container">
-		<pre id="systemInfo" class="w3-monospace"></pre>
+		<pre id="systemInfo" class="w3-monospace">
+Build ID:   {{ $buildID }}
+Build date: {{ now | time.Format "Jan 2 15:04:05 MST 2006" }}
+
+</pre>
 	</div>
 	{{ partial "page/main-tail.html" . }}
-	{{- $buildID := getenv "HUGO_CLVQ_BUILD" | default "UNSET" -}}
 	{{- $cdn := .Site.Params.cdn -}}
 	{{- with resources.Get "clvq/system.ts" }}
 		{{- if eq hugo.Environment "devel" }}

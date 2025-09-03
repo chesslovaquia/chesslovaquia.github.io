@@ -1,5 +1,4 @@
 {{ define "main" }}
-	{{- $buildID := getenv "HUGO_CLVQ_BUILD" | default "UNSET" }}
 	{{- $buildVersion := getenv "HUGO_CLVQ_VERSION" | default "UNSET" }}
 	{{ partial "header.html" . }}
 	{{ partial "page/main-head.html" . }}
@@ -9,8 +8,6 @@
 			<a class="w3-button" style="margin:0;padding:0;" href="/system/">
 				v{{ $buildVersion }}
 			</a>
-			<br>{{ $buildID }}
-			<br>{{ now | time.Format "Jan 2 15:04:05 MST 2006" }}
 		</p>
 	</div>
 	{{ partial "page/main-tail.html" . }}
