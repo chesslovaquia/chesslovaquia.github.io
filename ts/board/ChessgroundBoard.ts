@@ -164,4 +164,8 @@ export class ChessgroundBoard {
 		console.debug('Board set position:', fen, lastMove);
 		this.board.set({fen: fen, lastMove: this.getLastMove(lastMove)});
 	}
+
+	public flip(): void {
+		this.board.toggleOrientation();
+	}
 }

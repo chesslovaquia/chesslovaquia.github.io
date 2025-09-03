@@ -31,4 +31,5 @@ export interface GameBoard {
 	disable():                            void;
 	getFen():                             string;
 	setPosition(f: string, m: BoardMove): void;
+	flip():                               void;
 }

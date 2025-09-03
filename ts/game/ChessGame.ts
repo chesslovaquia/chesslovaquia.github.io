@@ -178,5 +178,6 @@ export class ChessGame {
 
 	private flipBoard(): void {
 		console.debug('Game flip board.');
+		this.board.flip();
 	}
 }
