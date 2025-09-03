@@ -25,7 +25,7 @@ build:
 
 .PHONY: check
 check: all
-	shellcheck ./*.sh docker/*.sh hugo/*.sh ts/*.sh
+	shellcheck ./*.sh docker/*.sh hugo/*.sh ts/*.sh vendor/*.sh
 	ts/check.sh
 	@echo "node `node --version`"
 	ts/build-check.sh
@@ -37,7 +37,8 @@ test: check
 
 .PHONY: vendor
 vendor:
-	./vendor.sh
+	./vendor/lila.sh
+	./vendor/fontawesome.sh
 
 .PHONY: upgrade
 upgrade:
