@@ -1,6 +1,9 @@
 {{- $page := .page }}
 {{- $siteBtnClass := $page.Site.Params.btnClass }}
 <div class="w3-bar w3-large">
+	<button id="gameFlipBoard" class="w3-bar-item {{ $siteBtnClass }}">
+		<i class="fas fa-retweet"></i>
+	</button>
 	<button id="gameNavBackward" class="w3-bar-item {{ $siteBtnClass }}" disabled>
 		<i class="fas fa-chevron-left"></i>
 	</button>

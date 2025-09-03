@@ -11,6 +11,7 @@ export class ConfigGameUI {
 
 	public navBackward: HTMLButtonElement | null;
 	public navForward:  HTMLButtonElement | null;
+	public flipBoard:   HTMLButtonElement | null;
 
 	constructor(board: HTMLElement) {
 		this.board       = board;
@@ -18,6 +19,7 @@ export class ConfigGameUI {
 		this.gameReset   = document.getElementById('gameReset');
 		this.navBackward = document.getElementById('gameNavBackward') as HTMLButtonElement;
 		this.navForward  = document.getElementById('gameNavForward') as HTMLButtonElement;
+		this.flipBoard   = document.getElementById('gameFlipBoard') as HTMLButtonElement;
 		this.validate();
 	}
 
@@ -33,6 +35,9 @@ export class ConfigGameUI {
 		}
 		if (!this.navForward) {
 			throw new ConfigError('ConfigGameUI navForward not found.');
+		}
+		if (!this.flipBoard) {
+			throw new ConfigError('ConfigGameUI flipBoard not found.');
 		}
 	}
 }
