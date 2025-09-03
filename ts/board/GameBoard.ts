@@ -18,10 +18,10 @@ export type BoardDests = Map<BoardSquare, BoardSquare[]>;
 export type BoardPromotionPiece = 'q' | 'r' | 'k' | 'b';
 
 export type BoardMove = {
-	from:       BoardSquare,
-	to:         BoardSquare,
-	inCheck:    boolean,
-	promotion?: BoardPromotionPiece,
+	from:      BoardSquare,
+	to:        BoardSquare,
+	inCheck:   boolean,
+	turnColor: BoardColor,
 };
 
 export interface GameBoard {

@@ -166,9 +166,10 @@ export class ChessgroundBoard {
 	public setPosition(fen: string, lastMove: BoardMove): void {
 		console.debug('Board set position:', fen, lastMove);
 		this.board.set({
-			fen: fen,
-			lastMove: this.getLastMove(lastMove),
-			check: lastMove?.inCheck,
+			fen:       fen,
+			lastMove:  this.getLastMove(lastMove),
+			check:     lastMove.inCheck,
+			turnColor: lastMove.turnColor,
 		});
 	}
 

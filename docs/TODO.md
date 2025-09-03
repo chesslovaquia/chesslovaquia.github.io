@@ -14,5 +14,3 @@ Game setup:
 Game navigation:
 
 * Clear square selection before navigate back in case the user selected a piece before.
-* Clear king check highlight before navidate back in case the king is in check.
-* Set check highlight when navigation through "in check" positions.

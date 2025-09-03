@@ -7,6 +7,7 @@ import * as chess from 'chess.js';
 import { BoardDests  } from '../board/GameBoard';
 import { BoardSquare } from '../board/GameBoard';
 import { BoardMove   } from '../board/GameBoard';
+import { BoardColor  } from '../board/GameBoard';
 
 import { EngineError } from './EngineError';
 
@@ -27,6 +28,23 @@ export class ChessjsEngine {
 
 	private inCheck(): boolean {
 		return this.game.inCheck();
+	}
+
+	private turnColor(): BoardColor {
+		if (this.game.turn() === 'w') {
+			return 'white';
+		} else {
+			return 'black';
+		}
+	}
+
+	private boardMove(from: BoardSquare, to: BoardSquare): BoardMove {
+		return {
+			from:      from,
+			to:        to,
+			inCheck:   this.inCheck(),
+			turnColor: this.turnColor(),
+		};
 	}
 
 	public turn(): EngineColor {
@@ -55,11 +73,7 @@ export class ChessjsEngine {
 	public lastMove(): BoardMove | null {
 		const m = this.getLastMove();
 		if (m) {
-			return {
-				from: m.from,
-				to: m.to,
-				inCheck: this.inCheck(),
-			};
+			return this.boardMove(m.from, m.to);
 		}
 		return null;
 	}
@@ -79,11 +93,7 @@ export class ChessjsEngine {
 			promotion: m.promotion as chess.PieceSymbol,
 		});
 		if (move) {
-			return {
-				from: move.from,
-				to: move.to,
-				inCheck: this.inCheck(),
-			};
+			return this.boardMove(move.from, move.to);
 		}
 		return null;
 	}
@@ -91,11 +101,7 @@ export class ChessjsEngine {
 	public undo(): BoardMove | null {
 		const move = this.game.undo();
 		if (move) {
-			return {
-				from: move.from,
-				to: move.to,
-				inCheck: this.inCheck(),
-			};
+			return this.boardMove(move.from, move.to);
 		}
 		return null;
 	}
