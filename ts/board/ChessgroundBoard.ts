@@ -72,8 +72,9 @@ export class ChessgroundBoard {
 		this.disableMoves();
 		console.debug('Board dispatch move event.');
 		const data = {
-			from: orig as BoardSquare,
-			to: dest as BoardSquare,
+			from:    orig as BoardSquare,
+			to:      dest as BoardSquare,
+			inCheck: false,
 		};
 		const evt  = new EventBoardMove(data);
 		EventBoardMove.Target.dispatchEvent(evt);
@@ -140,6 +141,7 @@ export class ChessgroundBoard {
 
 	public update(): void {
 		const turnColor = this.turnColor();
+		const lastMove = this.engine.lastMove();
 		this.board.set({
 			fen: this.engine.fen(),
 			turnColor: turnColor,
@@ -147,8 +149,8 @@ export class ChessgroundBoard {
 				color: turnColor,
 				dests: this.engine.possibleDests()
 			},
-			lastMove: this.getLastMove(this.engine.lastMove()),
-			check: this.engine.inCheck(),
+			lastMove: this.getLastMove(lastMove),
+			check: lastMove?.inCheck,
 		});
 	}
 
@@ -162,7 +164,11 @@ export class ChessgroundBoard {
 
 	public setPosition(fen: string, lastMove: BoardMove): void {
 		console.debug('Board set position:', fen, lastMove);
-		this.board.set({fen: fen, lastMove: this.getLastMove(lastMove)});
+		this.board.set({
+			fen: fen,
+			lastMove: this.getLastMove(lastMove),
+			check: lastMove?.inCheck,
+		});
 	}
 
 	public flip(): void {

@@ -20,6 +20,7 @@ export type BoardPromotionPiece = 'q' | 'r' | 'k' | 'b';
 export type BoardMove = {
 	from:       BoardSquare,
 	to:         BoardSquare,
+	inCheck:    boolean,
 	promotion?: BoardPromotionPiece,
 };
 

@@ -24,6 +24,10 @@ export class ChessjsEngine {
 		return this.game.history({verbose: true}).pop();
 	}
 
+	private inCheck(): boolean {
+		return this.game.inCheck();
+	}
+
 	public turn(): EngineColor {
 		return this.game.turn();
 	}
@@ -34,10 +38,6 @@ export class ChessjsEngine {
 
 	public fen(): string {
 		return this.game.fen();
-	}
-
-	public inCheck(): boolean {
-		return this.game.inCheck();
 	}
 
 	public possibleDests(): BoardDests {
@@ -54,7 +54,11 @@ export class ChessjsEngine {
 	public lastMove(): BoardMove | null {
 		const m = this.getLastMove();
 		if (m) {
-			return {from: m.from, to: m.to};
+			return {
+				from: m.from,
+				to: m.to,
+				inCheck: this.inCheck(),
+			};
 		}
 		return null;
 	}
@@ -74,7 +78,11 @@ export class ChessjsEngine {
 			promotion: m.promotion as chess.PieceSymbol,
 		});
 		if (move) {
-			return {from: move.from, to: move.to};
+			return {
+				from: move.from,
+				to: move.to,
+				inCheck: this.inCheck(),
+			};
 		}
 		return null;
 	}
@@ -82,7 +90,11 @@ export class ChessjsEngine {
 	public undo(): BoardMove | null {
 		const move = this.game.undo();
 		if (move) {
-			return {from: move.from, to: move.to};
+			return {
+				from: move.from,
+				to: move.to,
+				inCheck: this.inCheck(),
+			};
 		}
 		return null;
 	}

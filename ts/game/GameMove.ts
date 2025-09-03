@@ -23,6 +23,7 @@ export class GameMove {
 				from: orig,
 				to: dest,
 				promotion: promotion,
+				inCheck: false,
 			});
 			if (move) {
 				console.log('Move:', move);

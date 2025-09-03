@@ -14,7 +14,6 @@ export interface GameEngine {
 	turn():                   EngineColor;
 	reset():                  void;
 	fen():                    string;
-	inCheck():                boolean;
 	possibleDests():          BoardDests;
 	lastMove():               BoardMove | null;
 	isPromotion():            boolean;
