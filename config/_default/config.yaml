@@ -12,6 +12,8 @@ params:
     - chessground/assets/chessground.cburnett.css
     - css/chessground.wood4.css
     - css/game.css
+    - fontawesome/css/fontawesome.css
+    - fontawesome/css/solid.css
   sw_js: js/service-worker.js
   game_loader_js: js/assets-load.js
   js_load:
