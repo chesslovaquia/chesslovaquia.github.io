@@ -89,6 +89,7 @@ export class ChessGame {
 		});
 		// Game actions.
 		this.cfg.ui.gameReset?.addEventListener('click', () => this.reset());
+		this.cfg.ui.flipBoard?.addEventListener('click', () => this.flipBoard());
 	}
 
 	private doMove(move: BoardMove): void {
@@ -173,5 +174,9 @@ export class ChessGame {
 		console.debug('Game clock timeout:', color);
 		this.stop();
 		this.display.clockTimeout(color);
+	}
+
+	private flipBoard(): void {
+		console.debug('Game flip board.');
 	}
 }
