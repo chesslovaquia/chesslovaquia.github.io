@@ -2,9 +2,8 @@
 // See LICENSE file.
 
 import { ChessgroundBoard } from '../board/ChessgroundBoard';
-
-import { GameBoard } from '../board/GameBoard';
-import { BoardMove } from '../board/GameBoard';
+import { GameBoard        } from '../board/GameBoard';
+import { BoardMove        } from '../board/GameBoard';
 
 import { ChessjsEngine } from '../engine/ChessjsEngine';
 import { GameEngine    } from '../engine/GameEngine';
@@ -22,9 +21,6 @@ import { GameState     } from './GameState';
 import { GamePlayer    } from './GamePlayer';
 import { GameClock     } from './GameClock';
 import { GameNavigate  } from './GameNavigate';
-
-const clockInitialTime = 900; // Seconds.
-const clockIncrement   = 10;  // Seconds.
 
 export class ChessGame {
 	private readonly engine:    GameEngine;
@@ -50,7 +46,7 @@ export class ChessGame {
 		this.board     = new ChessgroundBoard(this.cfg, this.engine);
 		this.p1        = new GamePlayer("1");
 		this.p2        = new GamePlayer("2");
-		this.clock     = new GameClock(this.engine, this.p1, this.p2, clockInitialTime, clockIncrement);
+		this.clock     = new GameClock(this.engine, this.p1, this.p2);
 		this.nav       = new GameNavigate(this.cfg.ui, this.board, this.engine);
 		this.state     = new GameState(this.engine, this.clock, this.nav);
 		this.move      = new GameMove(this.engine, this.board);

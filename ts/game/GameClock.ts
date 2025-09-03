@@ -6,7 +6,6 @@ import { EngineColor } from '../engine/GameEngine';
 
 import { EventClockTimeout } from '../events/EventClockTimeout';
 
-import { GameError  } from './GameError';
 import { GamePlayer } from './GamePlayer';
 
 type clockState = {
@@ -18,6 +17,8 @@ type clockState = {
 	firstMoveTime: Record<EngineColor, number>,
 };
 
+const initialTime:      number = 900 * 10; // In seconds thenths.
+const initialIncrement: number = 10 * 10;  // In seconds thenths.
 const firstMoveTimeout: number = 30 * 10; // 30 seconds in tenths.
 const activeWarning:    number = 30 * 10; // 30 seconds in tenths.
 const activeAlert:      number = 10 * 10; // 10 seconds in tenths.
@@ -46,17 +47,13 @@ export class GameClock {
 	private firstMoveTime:     Record<EngineColor, number>;
 	private firstMoveInterval: ReturnType<typeof setInterval> | null;
 
-	constructor(engine: GameEngine, p1: GamePlayer, p2: GamePlayer, time: number, increment: number) {
-		console.debug('Clock init:', time, increment);
-		if (time < 0 || increment < 0) {
-			throw new GameError(`Invalid clock time (${time}) or increment (${increment})`);
-		}
+	constructor(engine: GameEngine, p1: GamePlayer, p2: GamePlayer) {
 		this.engine            = engine;
 		this.p1                = p1;
 		this.p2                = p2;
 		this.side              = {'w': this.p1, 'b': this.p2};
-		this.initialTime       = time * 10;
-		this.increment         = increment * 10;
+		this.initialTime       = initialTime;
+		this.increment         = initialIncrement;
 		this.time              = {'w': 0, 'b': 0};
 		this.klass             = {'w': Status.active, 'b': Status.active};
 		this.firstMoveTime     = {'w': 0, 'b': 0};
@@ -196,9 +193,9 @@ export class GameClock {
 		this.update(this.engine.turn());
 	}
 
-	public setupNewGame(time: number, increment: number): void {
-		this.initialTime = time * 10;
-		this.increment   = increment * 10;
+	public setupNewGame(timeSeconds: number, incrementSeconds: number): void {
+		this.initialTime = timeSeconds * 10;
+		this.increment   = incrementSeconds * 10;
 		this.reset();
 	}
 
