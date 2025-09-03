@@ -47,6 +47,8 @@ export class GameClock {
 	private firstMoveTime:     Record<EngineColor, number>;
 	private firstMoveInterval: ReturnType<typeof setInterval> | null;
 
+	private orientation: EngineColor;
+
 	constructor(engine: GameEngine, p1: GamePlayer, p2: GamePlayer) {
 		this.engine            = engine;
 		this.p1                = p1;
@@ -60,6 +62,7 @@ export class GameClock {
 		this.firstMoveInterval = null;
 		this.firstMove         = true;
 		this.interval          = null;
+		this.orientation       = 'w';
 		this.reset();
 	}
 
@@ -248,6 +251,19 @@ export class GameClock {
 		this.firstMove = false;
 		this.time[turn] = 0;
 		this.klass[turn] = Status.timeout;
+		this.update(turn);
+	}
+
+	public flip(): void {
+		console.debug('Clock flip orientation.');
+		if (this.orientation === 'w') {
+			this.side = {'w': this.p2, 'b': this.p1};
+			this.orientation = 'b';
+		} else {
+			this.side = {'w': this.p1, 'b': this.p2};
+			this.orientation = 'w';
+		}
+		const turn = this.engine.turn();
 		this.update(turn);
 	}
 }

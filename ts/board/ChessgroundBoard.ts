@@ -166,6 +166,7 @@ export class ChessgroundBoard {
 	}
 
 	public flip(): void {
+		console.debug('Board flip orientation.');
 		this.board.toggleOrientation();
 	}
 }

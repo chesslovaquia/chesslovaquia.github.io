@@ -12,12 +12,12 @@ import { GameNavigate } from './GameNavigate';
 import { ClvqIndexedDB, Store } from '../clvq/ClvqIndexedDB';
 
 export class GameState {
-	private readonly id:          string;
-	private readonly engine:      GameEngine;
-	private readonly clock:       GameClock;
-	private readonly db:          ClvqIndexedDB;
-	private readonly setup:       GameSetup;
-	private readonly nav:         GameNavigate;
+	private readonly id:     string;
+	private readonly engine: GameEngine;
+	private readonly clock:  GameClock;
+	private readonly db:     ClvqIndexedDB;
+	private readonly setup:  GameSetup;
+	private readonly nav:    GameNavigate;
 
 	private orientation: EngineColor;
 
