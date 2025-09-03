@@ -5,7 +5,7 @@ params:
   cdn: http://localhost:8045
   btnClass: w3-button w3-round-large w3-hover-lime w3-hover-opacity
   css_load:
-    - w3css/5/w3.css
+    - css/w3.css
     - css/main.css
     - css/clvq.css
     - chessground/assets/chessground.base.css

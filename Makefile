@@ -38,6 +38,7 @@ test: check
 .PHONY: vendor
 vendor:
 	./vendor/lila.sh
+	./vendor/w3css.sh
 	./vendor/fontawesome.sh
 
 .PHONY: upgrade
