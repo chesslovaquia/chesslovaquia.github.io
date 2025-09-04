@@ -1,2 +1,2 @@
 #!/bin/sh
-exec npx vitest --coverage
+exec npx vitest run --coverage

@@ -10,5 +10,17 @@ export default defineConfig({
 			'public/**',
 			'js/**',
 		],
+		coverage: {
+			provider: 'v8',
+			reporter: ['html'],
+			reportOnFailuer: true,
+			include: ['ts/**/*.ts'],
+			exclude: [
+				'node_modules/**',
+				'public/**',
+				'js/**',
+				'ts/testing/**',
+			],
+		},
 	},
 });
