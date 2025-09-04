@@ -8,3 +8,7 @@ Game setup:
 
 * Check from home page that there's no a current game in place. If there's one do not show new game options, show link/button to current game instead.
 * Implement custom setup options.
+
+---
+
+Show game player captured pieces.
