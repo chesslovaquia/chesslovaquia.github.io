@@ -57,7 +57,7 @@ export function screenLoad(): boolean {
 	return screenToggle()[1];
 }
 
-export function screenRedirect(): void {
+export function screenRedirect(): ScreenMode {
 	const mode = getScreenMode();
 	console.debug('Screen redirect:', mode);
 	if (mode === 'mobile') {
@@ -65,4 +65,5 @@ export function screenRedirect(): void {
 	} else {
 		window.location.href = screenDesktopURL;
 	}
+	return mode;
 }
