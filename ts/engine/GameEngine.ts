@@ -21,10 +21,10 @@ export interface GameEngine {
 	reset():                  void;
 	fen():                    string;
 	possibleDests():          BoardDests;
-	lastMove():               BoardMove | null;
+	lastMove():               BoardMove | undefined;
 	isPromotion():            boolean;
-	move(m: EngineMove):      BoardMove | null;
-	undo():                   BoardMove | null;
+	move(m: EngineMove):      BoardMove | undefined;
+	undo():                   BoardMove | undefined;
 	isGameOver():             boolean;
 	isCheckmate():            boolean;
 	isDraw():                 boolean;

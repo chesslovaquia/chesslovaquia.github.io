@@ -70,12 +70,12 @@ export class ChessjsEngine {
 		return dests;
 	}
 
-	public lastMove(): BoardMove | null {
+	public lastMove(): BoardMove | undefined {
 		const m = this.getLastMove();
 		if (m) {
 			return this.boardMove(m.from, m.to);
 		}
-		return null;
+		return undefined;
 	}
 
 	public isPromotion(): boolean {
@@ -86,7 +86,7 @@ export class ChessjsEngine {
 		return false;
 	}
 
-	public move(m: EngineMove): BoardMove | null {
+	public move(m: EngineMove): BoardMove | undefined {
 		const move = this.game.move({
 			from:      m.from      as chess.Square,
 			to:        m.to        as chess.Square,
@@ -95,15 +95,15 @@ export class ChessjsEngine {
 		if (move) {
 			return this.boardMove(move.from, move.to);
 		}
-		return null;
+		return undefined;
 	}
 
-	public undo(): BoardMove | null {
+	public undo(): BoardMove | undefined {
 		const move = this.game.undo();
 		if (move) {
 			return this.boardMove(move.from, move.to);
 		}
-		return null;
+		return undefined;
 	}
 
 	public isGameOver(): boolean {

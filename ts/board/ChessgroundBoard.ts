@@ -96,7 +96,7 @@ export class ChessgroundBoard {
 		this.board.set({ movable: { color: this.turnColor() } });
 	}
 
-	private getLastMove(m: BoardMove | null): cg.Key[] {
+	private getLastMove(m: BoardMove | undefined): cg.Key[] {
 		if (m) {
 			return [m.from as cg.Key, m.to as cg.Key];
 		}
@@ -163,13 +163,19 @@ export class ChessgroundBoard {
 		return this.board.getFen();
 	}
 
-	public setPosition(fen: string, lastMove: BoardMove): void {
+	public setPosition(fen: string, lastMove: BoardMove | undefined): void {
 		console.debug('Board set position:', fen, lastMove);
+		let inCheck = false;
+		let turnColor = 'white';
+		if (lastMove) {
+			inCheck = lastMove.inCheck;
+			turnColor = lastMove.turnColor;
+		}
 		this.board.set({
 			fen:       fen,
 			lastMove:  this.getLastMove(lastMove),
-			check:     lastMove.inCheck,
-			turnColor: lastMove.turnColor,
+			check:     inCheck,
+			turnColor: turnColor as cg.Color,
 		});
 	}
 
