@@ -1,2 +1,2 @@
 #!/bin/sh
-exec npx jest --coverage
+exec npx vitest --coverage

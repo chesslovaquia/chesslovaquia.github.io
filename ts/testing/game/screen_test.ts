@@ -1,6 +1,8 @@
 // Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com>
 // See LICENSE file.
 
+import { test, describe, expect } from 'vitest';
+
 import * as screen from '../../game/screen';
 
 test('screenLoad', async () => {

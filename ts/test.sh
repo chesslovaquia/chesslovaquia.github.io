@@ -1,2 +1,3 @@
 #!/bin/sh
-exec npx jest
+set -eu
+exec npx vitest run

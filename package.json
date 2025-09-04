@@ -13,8 +13,10 @@
   "devDependencies": {
     "@types/chess.js": "^0.13.7",
     "csstree-validator": "^4.0.1",
+    "happy-dom": "^18.0.1",
     "html-validate": "^10.0.0",
     "npm-check-updates": "^18.0.3",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
   }
 }
