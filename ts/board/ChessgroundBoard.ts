@@ -113,6 +113,7 @@ export class ChessgroundBoard {
 			selectable: {
 				enabled: false,
 			},
+			selected: undefined,
 		});
 	}
 
