@@ -130,13 +130,7 @@ export class ChessGame {
 
 	private reset(): void {
 		console.log('Game reset!');
-		this.stop();
-		this.engine.reset();
-		this.clock.reset();
 		this.state.reset();
-		this.board.reset();
-		this.display.reset();
-		this.display.updateStatus();
 		window.location.replace('/');
 	}
 

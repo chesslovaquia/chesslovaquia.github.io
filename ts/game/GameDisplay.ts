@@ -47,10 +47,6 @@ export class GameDisplay {
 		}
 	}
 
-	public reset(): void {
-		this.cfg.ui.board.classList.toggle('timeout', false);
-	}
-
 	public clockTimeout(color: EngineColor): void {
 		if (this.cfg.ui.statusBar) {
 			const winner = color === 'w' ? 'Black' : 'White';

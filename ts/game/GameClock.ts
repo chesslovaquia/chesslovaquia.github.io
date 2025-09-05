@@ -63,7 +63,25 @@ export class GameClock {
 		this.firstMove         = true;
 		this.interval          = null;
 		this.orientation       = 'w';
-		this.reset();
+		this.init();
+	}
+
+	private init(): void {
+		console.debug('Clock init.');
+		if (this.side['w'].clock) {
+			this.side['w'].clock.textContent = this.format(this.initialTime);
+		}
+		if (this.side['b'].clock) {
+			this.side['b'].clock.textContent = this.format(this.initialTime);
+		}
+		Object.values(Status).forEach(status => {
+			this.side['w'].clock?.classList.toggle(status, false);
+			this.side['b'].clock?.classList.toggle(status, false);
+		});
+		this.klass         = {'w': Status.active,    'b': Status.active};
+		this.time          = {'w': this.initialTime, 'b': this.initialTime};
+		this.firstMoveTime = {'w': firstMoveTimeout, 'b': firstMoveTimeout};
+		this.firstMove     = true;
 	}
 
 	public move(turn: EngineColor): void {
@@ -156,24 +174,6 @@ export class GameClock {
 		}
 	}
 
-	public reset(): void {
-		console.debug('Clock reset.');
-		if (this.side['w'].clock) {
-			this.side['w'].clock.textContent = this.format(this.initialTime);
-		}
-		if (this.side['b'].clock) {
-			this.side['b'].clock.textContent = this.format(this.initialTime);
-		}
-		Object.values(Status).forEach(status => {
-			this.side['w'].clock?.classList.toggle(status, false);
-			this.side['b'].clock?.classList.toggle(status, false);
-		});
-		this.klass         = {'w': Status.active,    'b': Status.active};
-		this.time          = {'w': this.initialTime, 'b': this.initialTime};
-		this.firstMoveTime = {'w': firstMoveTimeout, 'b': firstMoveTimeout};
-		this.firstMove     = true;
-	}
-
 	public getState(): clockState {
 		return {
 			tstamp:        Date.now(),
@@ -198,8 +198,8 @@ export class GameClock {
 
 	public setupNewGame(timeSeconds: number, incrementSeconds: number): void {
 		this.initialTime = timeSeconds * 10;
-		this.increment   = incrementSeconds * 10;
-		this.reset();
+		this.increment = incrementSeconds * 10;
+		this.init();
 	}
 
 	private setTimeDiff(tstamp: number): void {

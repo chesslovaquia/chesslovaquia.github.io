@@ -51,10 +51,6 @@ export class ChessjsEngine {
 		return this.game.turn();
 	}
 
-	public reset(): void {
-		this.game.reset();
-	}
-
 	public fen(): string {
 		return this.game.fen();
 	}

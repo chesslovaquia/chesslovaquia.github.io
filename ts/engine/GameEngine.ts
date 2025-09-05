@@ -18,7 +18,6 @@ export type EngineMove = {
 
 export interface GameEngine {
 	turn():                   EngineColor;
-	reset():                  void;
 	fen():                    string;
 	possibleDests():          BoardDests;
 	lastMove():               BoardMove | undefined;
