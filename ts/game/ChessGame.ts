@@ -23,6 +23,8 @@ import { GamePlayer    } from './GamePlayer';
 import { GameClock     } from './GameClock';
 import { GameNavigate  } from './GameNavigate';
 
+import * as utils from '../clvq/utils';
+
 export class ChessGame {
 	private readonly engine:    GameEngine;
 	private readonly board:     GameBoard;
@@ -134,28 +136,16 @@ export class ChessGame {
 		window.location.replace('/');
 	}
 
-	private disableButton(button: HTMLButtonElement | null): void {
-		if (button) {
-			button.disabled = true;
-		}
-	}
-
-	private enableButton(button: HTMLButtonElement | null): void {
-		if (button) {
-			button.disabled = false;
-		}
-	}
-
 	private disableBoard(): void {
 		this.board.disable();
 		this.display.clear();
-		this.disableButton(this.cfg.ui.flipBoard);
+		utils.disableButton(this.cfg.ui.flipBoard);
 	}
 
 	private enableBoard(): void {
 		this.board.enable();
 		this.display.updateStatus();
-		this.enableButton(this.cfg.ui.flipBoard);
+		utils.enableButton(this.cfg.ui.flipBoard);
 	}
 
 	private setup(): void {

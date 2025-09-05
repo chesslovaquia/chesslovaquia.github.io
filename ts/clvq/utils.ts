@@ -41,3 +41,15 @@ export function clvqInternalError(error: Error): void {
 		console.error('clvqInternalErrorMessage element not found!');
 	}
 }
+
+export function disableButton(button: HTMLButtonElement | null): void {
+	if (button) {
+		button.disabled = true;
+	}
+}
+
+export function enableButton(button: HTMLButtonElement | null): void {
+	if (button) {
+		button.disabled = false;
+	}
+}

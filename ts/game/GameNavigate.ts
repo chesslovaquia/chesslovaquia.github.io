@@ -8,6 +8,8 @@ import { ConfigGameUI } from '../config/ConfigGameUI';
 import { GameBoard } from '../board/GameBoard';
 import { BoardMove } from '../board/GameBoard';
 
+import * as utils from '../clvq/utils';
+
 type BoardPositions = string[];
 
 type NavState = {
@@ -40,18 +42,6 @@ export class GameNavigate {
 		this.ui.navForward?.addEventListener('click', () => this.navForward());
 	}
 
-	private disableButton(button: HTMLButtonElement | null): void {
-		if (button) {
-			button.disabled = true;
-		}
-	}
-
-	private enableButton(button: HTMLButtonElement | null): void {
-		if (button) {
-			button.disabled = false;
-		}
-	}
-
 	public addPosition(): void {
 		const lastMove = this.engine.lastMove();
 		if (lastMove) {
@@ -60,20 +50,20 @@ export class GameNavigate {
 		this.pos.push(this.board.getFen());
 		this.index++;
 		if (this.index === 1) {
-			this.enableButton(this.ui.navBackward);
+			utils.enableButton(this.ui.navBackward);
 		}
 	}
 
 	public navBackward(): void {
 		console.debug('Game nav backward.');
 		if (this.index === this.pos.length - 1) {
-			this.enableButton(this.ui.navForward);
+			utils.enableButton(this.ui.navForward);
 			this.board.disable();
 		}
 		this.index--;
 		this.board.setPosition(this.pos[this.index], this.moves[this.index - 1]);
 		if (this.index === 0) {
-			this.disableButton(this.ui.navBackward);
+			utils.disableButton(this.ui.navBackward);
 		}
 	}
 
@@ -82,11 +72,11 @@ export class GameNavigate {
 		this.index++;
 		this.board.setPosition(this.pos[this.index], this.moves[this.index - 1]);
 		if (this.index === this.pos.length - 1) {
-			this.disableButton(this.ui.navForward);
+			utils.disableButton(this.ui.navForward);
 			this.board.enable();
 		}
 		if (this.index === 1) {
-			this.enableButton(this.ui.navBackward);
+			utils.enableButton(this.ui.navBackward);
 		}
 	}
 
@@ -104,7 +94,7 @@ export class GameNavigate {
 			this.index = state.index;
 			this.moves = state.moves;
 			if (this.index >= 1) {
-				this.enableButton(this.ui.navBackward);
+				utils.enableButton(this.ui.navBackward);
 			}
 		}
 	}
