@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
 				throw new GameError('Chess board not found!');
 			}
 		} catch (error) {
-			clvqInternalError(error);
+			clvqInternalError(error as Error);
 			throw error;
 		}
 	}

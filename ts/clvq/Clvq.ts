@@ -1,6 +1,10 @@
 // Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com>
 // See LICENSE file.
 
+import { w3ToggleMenu } from './utils';
+import { w3ShowModal  } from './utils';
+import { w3HideModal  } from './utils';
+
 import { GameSetup } from '../game/GameSetup';
 
 export class Clvq {
@@ -9,34 +13,15 @@ export class Clvq {
 	}
 
 	public w3ToggleMenu(id: string): void {
-		let x = document.getElementById(id);
-		if (x) {
-			if (x.classList.contains("w3-show")) {
-				x.classList.toggle('w3-show', false);
-			} else {
-				x.classList.toggle('w3-show', true);
-			}
-		} else {
-			console.log('Clvq w3ToggleMenu ERROR:', id, 'not found');
-		}
+		w3ToggleMenu(id);
 	}
 
 	public w3HideModal(id: string): void {
-		let x = document.getElementById(id);
-		if (x) {
-			x.classList.toggle('w3-show', false);
-		} else {
-			console.log('Clvq w3HideModal ERROR:', id, 'not found');
-		}
+		w3HideModal(id);
 	}
 
 	public w3ShowModal(id: string): void {
-		let x = document.getElementById(id);
-		if (x) {
-			x.classList.toggle('w3-show', true);
-		} else {
-			console.log('Clvq w3ShowModal ERROR:', id, 'not found');
-		}
+		w3ShowModal(id);
 	}
 
 	public gameSetup(timeMinutes: number, incrementSeconds: number): void {
