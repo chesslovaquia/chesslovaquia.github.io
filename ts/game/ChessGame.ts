@@ -137,7 +137,7 @@ export class ChessGame {
 		this.board.reset();
 		this.display.reset();
 		this.display.updateStatus();
-		this.setup();
+		window.location.replace('/');
 	}
 
 	private disableButton(button: HTMLButtonElement | null): void {
