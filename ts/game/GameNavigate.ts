@@ -61,6 +61,7 @@ export class GameNavigate {
 
 	private navFirstMove(): void {
 		console.debug('Game nav first move.');
+		this.board.disable();
 		this.index = 0;
 		this.board.setPosition(this.pos[this.index], undefined);
 		utils.disableButton(this.ui.navBackward);
@@ -92,6 +93,7 @@ export class GameNavigate {
 		utils.enableButton(this.ui.navFirstMove);
 		utils.disableButton(this.ui.navForward);
 		utils.disableButton(this.ui.navLastMove);
+		this.board.enable();
 	}
 
 	public addPosition(): void {
