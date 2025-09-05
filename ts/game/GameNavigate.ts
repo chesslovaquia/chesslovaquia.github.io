@@ -40,6 +40,58 @@ export class GameNavigate {
 	private setupEventListeners(): void {
 		this.ui.navBackward?.addEventListener('click', () => this.navBackward());
 		this.ui.navForward?.addEventListener('click', () => this.navForward());
+		this.ui.navFirstMove?.addEventListener('click', () => this.navFirstMove());
+		this.ui.navLastMove?.addEventListener('click', () => this.navLastMove());
+	}
+
+	private navBackward(): void {
+		console.debug('Game nav backward.');
+		if (this.index === this.pos.length - 1) {
+			utils.enableButton(this.ui.navForward);
+			utils.enableButton(this.ui.navLastMove);
+			this.board.disable();
+		}
+		this.index--;
+		this.board.setPosition(this.pos[this.index], this.moves[this.index - 1]);
+		if (this.index === 0) {
+			utils.disableButton(this.ui.navBackward);
+			utils.disableButton(this.ui.navFirstMove);
+		}
+	}
+
+	private navFirstMove(): void {
+		console.debug('Game nav first move.');
+		this.index = 0;
+		this.board.setPosition(this.pos[this.index], undefined);
+		utils.disableButton(this.ui.navBackward);
+		utils.disableButton(this.ui.navFirstMove);
+		utils.enableButton(this.ui.navForward);
+		utils.enableButton(this.ui.navLastMove);
+	}
+
+	private navForward(): void {
+		console.debug('Game nav forward.');
+		this.index++;
+		this.board.setPosition(this.pos[this.index], this.moves[this.index - 1]);
+		if (this.index === this.pos.length - 1) {
+			utils.disableButton(this.ui.navForward);
+			utils.disableButton(this.ui.navLastMove);
+			this.board.enable();
+		}
+		if (this.index === 1) {
+			utils.enableButton(this.ui.navBackward);
+			utils.enableButton(this.ui.navFirstMove);
+		}
+	}
+
+	private navLastMove(): void {
+		console.debug('Game nav last move.');
+		this.index = this.pos.length - 1;
+		this.board.setPosition(this.pos[this.index], this.moves[this.index - 1]);
+		utils.enableButton(this.ui.navBackward);
+		utils.enableButton(this.ui.navFirstMove);
+		utils.disableButton(this.ui.navForward);
+		utils.disableButton(this.ui.navLastMove);
 	}
 
 	public addPosition(): void {
@@ -51,32 +103,7 @@ export class GameNavigate {
 		this.index++;
 		if (this.index === 1) {
 			utils.enableButton(this.ui.navBackward);
-		}
-	}
-
-	public navBackward(): void {
-		console.debug('Game nav backward.');
-		if (this.index === this.pos.length - 1) {
-			utils.enableButton(this.ui.navForward);
-			this.board.disable();
-		}
-		this.index--;
-		this.board.setPosition(this.pos[this.index], this.moves[this.index - 1]);
-		if (this.index === 0) {
-			utils.disableButton(this.ui.navBackward);
-		}
-	}
-
-	public navForward(): void {
-		console.debug('Game nav forward.');
-		this.index++;
-		this.board.setPosition(this.pos[this.index], this.moves[this.index - 1]);
-		if (this.index === this.pos.length - 1) {
-			utils.disableButton(this.ui.navForward);
-			this.board.enable();
-		}
-		if (this.index === 1) {
-			utils.enableButton(this.ui.navBackward);
+			utils.enableButton(this.ui.navFirstMove);
 		}
 	}
 
@@ -95,6 +122,7 @@ export class GameNavigate {
 			this.moves = state.moves;
 			if (this.index >= 1) {
 				utils.enableButton(this.ui.navBackward);
+				utils.enableButton(this.ui.navFirstMove);
 			}
 		}
 	}
