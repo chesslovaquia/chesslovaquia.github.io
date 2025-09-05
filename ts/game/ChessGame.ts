@@ -61,8 +61,8 @@ export class ChessGame {
 
 	private init(): void {
 		console.debug('Game init.');
-		this.disableBoard();
 		this.board.init();
+		this.disableBoard();
 		this.nav.addPosition();
 		this.state.load().then((done) => {
 			console.debug('Game load done:', done);
@@ -140,14 +140,28 @@ export class ChessGame {
 		this.setup();
 	}
 
+	private disableButton(button: HTMLButtonElement | null): void {
+		if (button) {
+			button.disabled = true;
+		}
+	}
+
+	private enableButton(button: HTMLButtonElement | null): void {
+		if (button) {
+			button.disabled = false;
+		}
+	}
+
 	private disableBoard(): void {
 		this.board.disable();
 		this.display.clear();
+		this.disableButton(this.cfg.ui.flipBoard);
 	}
 
 	private enableBoard(): void {
 		this.board.enable();
 		this.display.updateStatus();
+		this.enableButton(this.cfg.ui.flipBoard);
 	}
 
 	private setup(): void {
