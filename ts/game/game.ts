@@ -1,6 +1,8 @@
 // Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com>
 // See LICENSE file.
 
+import { clvqInternalError } from '../clvq/utils';
+
 import { screenDelay  } from './screen';
 import { screenLoad   } from './screen';
 import { screenResize } from './screen';
@@ -16,12 +18,17 @@ document.addEventListener('DOMContentLoaded', () => {
 		console.debug('Screen loaded.');
 	} else {
 		window.addEventListener('resize', () => screenResize(screenDelay));
-		const board = document.getElementById('chessboard');
-		if (board) {
-			const cfg = new GameConfig(board);
-			new ChessGame(cfg);
-		} else {
-			throw new GameError('Chess board not found!');
+		try {
+			const board = document.getElementById('chessboard');
+			if (board) {
+				const cfg = new GameConfig(board);
+				new ChessGame(cfg);
+			} else {
+				throw new GameError('Chess board not found!');
+			}
+		} catch (error) {
+			clvqInternalError(error);
+			throw error;
 		}
 	}
 });
