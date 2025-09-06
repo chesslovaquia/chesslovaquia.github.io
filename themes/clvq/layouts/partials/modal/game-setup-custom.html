@@ -4,12 +4,12 @@
 <div id="gameSetupCustom" class="w3-modal w3-hide">
 	<div class="{{ $modalContentClass }} w3-center">
 		<div class="w3-container">
-			<input type="range" id="gameSetupCustomTime"
+			<input type="range" id="gameSetupCustomTime" style="width:90%"
 				min="0" max="120" step="1" value="15">
 			<span id="gameSetupCustomTimeValue">15</span>
 		</div>
 		<div class="w3-container">
-			<input type="range" id="gameSetupCustomIncrement"
+			<input type="range" id="gameSetupCustomIncrement" style="width:90%"
 				min="0" max="120" step="1" value="10">
 			<span id="gameSetupCustomIncrementValue">10</span>
 		</div>
@@ -34,5 +34,6 @@
 		const increment = parseInt(incrementSlider.value);
 		console.debug('Game setup custom:', time, increment);
 		Clvq.w3HideModal('gameSetupCustom');
+		Clvq.gameSetup(time, increment);
 	}
 </script>
