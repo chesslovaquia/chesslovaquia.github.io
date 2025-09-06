@@ -2,8 +2,9 @@
 {{- $siteBtnClass := $page.Site.Params.btnClass }}
 {{- $extraBtnClass := "w3-border w3-border-dark-grey" }}
 {{- $btnClass := printf "%s %s" $extraBtnClass $siteBtnClass }}
+{{- $modalContentClass := $page.Site.Params.modalContentClass }}
 <div id="gameSetupCustom" class="w3-modal w3-hide">
-	<div class="w3-modal-content w3-round-large w3-center w3-padding-large w3-black">
+	<div class="{{ $modalContentClass }} w3-center">
 		<div class="w3-container">
 			<input type="range" id="gameSetupCustomTime"
 				min="0" max="120" step="1" value="15">

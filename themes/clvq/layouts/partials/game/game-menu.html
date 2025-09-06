@@ -1,7 +1,7 @@
 {{- $page := .page }}
 {{- $menuID := .menuID }}
-
 {{- $siteBtnClass := $page.Site.Params.btnClass }}
+{{- $modalContentClass := $page.Site.Params.modalContentClass }}
 
 <!-- Top Navigation Bar -->
 <div class="w3-bar">
@@ -15,7 +15,7 @@
 </div>
 <!-- Dropdown Menu -->
 <div id="gameMenu" class="w3-modal w3-hide" onclick="Clvq.w3HideModal('gameMenu')">
-	<div class="w3-modal-content w3-round-large w3-bar-block w3-black w3-center">
+	<div class="{{ $modalContentClass }} w3-center">
 		<!-- Game Reset -->
 		<a id="gameReset" href="javascript:void(0)"
 			class="w3-bar-item {{ $siteBtnClass }}"
