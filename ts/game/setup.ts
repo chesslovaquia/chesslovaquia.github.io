@@ -3,10 +3,27 @@
 
 import { clvqInternalError } from '../clvq/utils';
 
+import { screenSleep    } from './screen';
+import { screenRedirect } from './screen';
+
+import { GameSetup } from './GameSetup';
+import { SetupData } from './GameSetup';
+
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
 	try {
 		console.debug('Game setup page.');
+		const setup = new GameSetup();
+		setup.getGame().then((game: SetupData) => {
+			if (game) {
+				console.debug('Game active:', game);
+				screenSleep(300).then(() => {
+					screenRedirect();
+				});
+			} else {
+				console.debug('No active game.');
+			}
+		});
 	} catch (error) {
 		clvqInternalError(error as Error);
 		throw error;

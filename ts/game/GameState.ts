@@ -33,6 +33,7 @@ export class GameState {
 
 	public reset(): void {
 		this.db.removeItem(this.id);
+		this.setup.removeGame();
 	}
 
 	public save(): void {
@@ -66,7 +67,6 @@ export class GameState {
 		if (newGame) {
 			console.debug('State setup new game:', newGame);
 			this.clock.setupNewGame(newGame.time, newGame.increment);
-			this.setup.removeGame();
 			this.save();
 			return true;
 		}

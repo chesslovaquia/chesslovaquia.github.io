@@ -1,8 +1,10 @@
 {{- $page := .page }}
+
 {{- $cfgBtnClass := $page.Site.Params.btnClass }}
 {{- $extraBtnClass := "clvq-bg game-play-button" }}
 {{- $btnClass := printf "%s %s" $extraBtnClass $cfgBtnClass }}
-{{ partial "modal/game-setup-custom.html" (dict "page" $page) }}
+
+{{- partial "modal/game-setup-custom.html" (dict "page" $page) }}
 <div class="w3-container w3-padding">
 	<div class="w3-bar w3-center">
 		<button class="{{ $btnClass }}" onclick="Clvq.gameSetup(1, 0)">1+0</button>

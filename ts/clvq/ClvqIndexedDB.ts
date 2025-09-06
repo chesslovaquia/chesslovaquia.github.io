@@ -68,7 +68,7 @@ export class ClvqIndexedDB {
 			const req = store.get(key);
 			req.onsuccess = () => {
 				const result = req.result;
-				resolve(result ? result.value : "");
+				resolve(result ? result.value : null);
 			}
 			req.onerror = () => reject(req.error);
 		});

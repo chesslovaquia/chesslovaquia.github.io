@@ -43,7 +43,7 @@ export function screenToggle(): [ScreenMode, boolean] {
 	return [mode, false];
 }
 
-const screenSleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+export const screenSleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 export function screenResize(wait: number): void {
 	console.debug('Screen resize, wait:', wait);
