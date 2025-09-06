@@ -4,14 +4,18 @@
 <div id="gameSetupCustom" class="w3-modal w3-hide">
 	<div class="{{ $modalContentClass }} w3-center">
 		<div class="w3-container">
+			<label for="gameSetupCustomTime">
+				Time: <span id="gameSetupCustomTimeValue">15</span> minutes.
+			</label>
 			<input type="range" id="gameSetupCustomTime" style="width:90%"
 				min="0" max="120" step="1" value="15">
-			<span id="gameSetupCustomTimeValue">15</span>
 		</div>
 		<div class="w3-container">
+			<label for="gameSetupCustomIncrement">
+				Increment: <span id="gameSetupCustomIncrementValue">10</span> seconds.
+			</label>
 			<input type="range" id="gameSetupCustomIncrement" style="width:90%"
 				min="0" max="120" step="1" value="10">
-			<span id="gameSetupCustomIncrementValue">10</span>
 		</div>
 		<button class="{{ $btnClass }}"
 			onclick="Clvq.w3HideModal('gameSetupCustom')">Cancel</button>
