@@ -1,0 +1,39 @@
+{{- $page := .page }}
+{{- $siteBtnClass := $page.Site.Params.btnClass }}
+{{- $extraBtnClass := "w3-border w3-border-dark-grey" }}
+{{- $btnClass := printf "%s %s" $extraBtnClass $siteBtnClass }}
+<div id="gameSetupCustom" class="w3-modal w3-hide">
+	<div class="w3-modal-content w3-round-large w3-center w3-padding-large w3-black">
+		<div class="w3-container">
+			<input type="range" id="gameSetupCustomTime"
+				min="0" max="120" step="1" value="15">
+			<span id="gameSetupCustomTimeValue">15</span>
+		</div>
+		<div class="w3-container">
+			<input type="range" id="gameSetupCustomIncrement"
+				min="0" max="120" step="1" value="10">
+			<span id="gameSetupCustomIncrementValue">10</span>
+		</div>
+		<button class="{{ $btnClass }}"
+			onclick="Clvq.w3HideModal('gameSetupCustom')">Cancel</button>
+		<button class="{{ $btnClass }}" onclick="gameSetupCustom()">Start</button>
+	</div>
+</div>
+<script>
+	const timeSlider = document.getElementById('gameSetupCustomTime');
+	const timeValue = document.getElementById('gameSetupCustomTimeValue');
+	timeSlider.addEventListener('input', () => {
+		timeValue.textContent = timeSlider.value;
+	});
+	const incrementSlider = document.getElementById('gameSetupCustomIncrement');
+	const incrementValue = document.getElementById('gameSetupCustomIncrementValue');
+	incrementSlider.addEventListener('input', () => {
+		incrementValue.textContent = incrementSlider.value;
+	});
+	function gameSetupCustom() {
+		const time = parseInt(timeSlider.value);
+		const increment = parseInt(incrementSlider.value);
+		console.debug('Game setup custom:', time, increment);
+		Clvq.w3HideModal('gameSetupCustom');
+	}
+</script>

@@ -2,6 +2,7 @@
 {{- $siteBtnClass := $page.Site.Params.btnClass }}
 {{- $extraBtnClass := "w3-border w3-border-dark-grey clvq-bg game-play-button" }}
 {{- $btnClass := printf "%s %s" $extraBtnClass $siteBtnClass }}
+{{ partial "modal/game-setup-custom.html" (dict "page" $page) }}
 <div class="w3-container w3-padding">
 	<div class="w3-bar w3-center">
 		<button class="{{ $btnClass }}" onclick="Clvq.gameSetup(1, 0)">1+0</button>
@@ -21,6 +22,6 @@
 	<div class="w3-bar w3-center">
 		<button class="{{ $btnClass }}" onclick="Clvq.gameSetup(30, 0)">30+0</button>
 		<button class="{{ $btnClass }}" onclick="Clvq.gameSetup(30, 20)">30+20</button>
-		<button class="{{ $btnClass }}" onclick="Clvq.w3ShowModal('gameSetup')">Custom</button>
+		<button class="{{ $btnClass }}" onclick="Clvq.w3ShowModal('gameSetupCustom')">Custom</button>
 	</div>
 </div>
