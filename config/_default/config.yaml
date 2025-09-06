@@ -21,6 +21,7 @@ params:
   js_load:
     - clvq/main.ts
   game_ts: game/game.ts
+  game_setup_ts: game/setup.ts
   game_board_assets:
     - lila/public/images/board/wood4.jpg
 

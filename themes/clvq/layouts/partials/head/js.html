@@ -4,8 +4,13 @@
 
 <!-- Game app -->
 {{- $game_ts := .Site.Params.game_ts }}
+{{- $game_setup_ts := .Site.Params.game_setup_ts }}
 {{- if eq .Params.gamePage "load" }}
+	<!-- Load game app -->
 	{{- $js_load = $js_load | append $game_ts }}
+{{- else if eq .Params.gamePage "setup" }}
+	<!-- Load game setup -->
+	{{- $js_load = $js_load | append $game_setup_ts }}
 {{- end }}
 
 <!-- Build ts files -->
