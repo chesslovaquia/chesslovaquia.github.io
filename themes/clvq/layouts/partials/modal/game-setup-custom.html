@@ -1,7 +1,5 @@
 {{- $page := .page }}
-{{- $siteBtnClass := $page.Site.Params.btnClass }}
-{{- $extraBtnClass := "w3-border w3-border-dark-grey" }}
-{{- $btnClass := printf "%s %s" $extraBtnClass $siteBtnClass }}
+{{- $btnClass := $page.Site.Params.btnClass }}
 {{- $modalContentClass := $page.Site.Params.modalContentClass }}
 <div id="gameSetupCustom" class="w3-modal w3-hide">
 	<div class="{{ $modalContentClass }} w3-center">

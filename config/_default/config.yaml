@@ -3,7 +3,8 @@ params:
   sitemap: true
   debug: false
   cdn: http://localhost:8045
-  btnClass: w3-button w3-round-large w3-hover-lime w3-hover-opacity
+  btnClass: w3-button w3-round-large w3-hover-lime w3-hover-opacity w3-border w3-border-dark-grey
+  menuBtnClass: w3-button w3-round-large w3-hover-lime w3-hover-opacity
   modalContentClass: w3-modal-content w3-round-large w3-padding-large w3-black w3-border w3-border-dark-grey
   css_load:
     - css/w3.css

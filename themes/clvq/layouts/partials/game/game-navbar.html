@@ -1,19 +1,19 @@
 {{- $page := .page }}
-{{- $siteBtnClass := $page.Site.Params.btnClass }}
+{{- $btnClass := $page.Site.Params.menuBtnClass }}
 <div class="w3-bar w3-large">
-	<button id="gameFlipBoard" class="w3-bar-item {{ $siteBtnClass }}">
+	<button id="gameFlipBoard" class="w3-bar-item {{ $btnClass }}">
 		<i class="fas fa-retweet"></i>
 	</button>
-	<button id="gameNavFirstMove" class="w3-bar-item {{ $siteBtnClass }}" disabled>
+	<button id="gameNavFirstMove" class="w3-bar-item {{ $btnClass }}" disabled>
 		<i class="fas fa-angle-double-left"></i>
 	</button>
-	<button id="gameNavBackward" class="w3-bar-item {{ $siteBtnClass }}" disabled>
+	<button id="gameNavBackward" class="w3-bar-item {{ $btnClass }}" disabled>
 		<i class="fas fa-angle-left"></i>
 	</button>
-	<button id="gameNavForward" class="w3-bar-item {{ $siteBtnClass }}" disabled>
+	<button id="gameNavForward" class="w3-bar-item {{ $btnClass }}" disabled>
 		<i class="fas fa-angle-right"></i>
 	</button>
-	<button id="gameNavLastMove" class="w3-bar-item {{ $siteBtnClass }}" disabled>
+	<button id="gameNavLastMove" class="w3-bar-item {{ $btnClass }}" disabled>
 		<i class="fas fa-angle-double-right"></i>
 	</button>
 </div>

@@ -10,30 +10,30 @@ Renders a menu for the given menu ID.
 {{- $page := .page }}
 {{- $menuID := .menuID }}
 
-{{- $siteBtnClass := $page.Site.Params.btnClass }}
+{{- $menuBtnClass := $page.Site.Params.menuBtnClass }}
 
 {{- with index site.Menus $menuID }}
 <!-- Top Navigation Bar -->
 <div class="w3-bar">
-	<a class="w3-bar-item {{ $siteBtnClass }}" href="/">
+	<a class="w3-bar-item {{ $menuBtnClass }}" href="/">
 		<img src="/favicon.ico" alt="Home" class="clvq-menu-icon">
 	</a>
-	{{- partial "inline/menu/walk.html" (dict "page" $page "menuEntries" . "hide" "w3-hide-small" "siteBtnClass" $siteBtnClass) }}
+	{{- partial "inline/menu/walk.html" (dict "page" $page "menuEntries" . "hide" "w3-hide-small" "menuBtnClass" $menuBtnClass) }}
 	<!-- Toggle Button for Mobile -->
-	<button class="w3-bar-item {{ $siteBtnClass }} w3-right w3-hide-large w3-hide-medium"
+	<button class="w3-bar-item {{ $menuBtnClass }} w3-right w3-hide-large w3-hide-medium"
 		onclick="Clvq.w3ToggleMenu('mobileMenu')">&#9776;</button>
 </div>
 <!-- Dropdown Menu for Small Screens -->
 <div id="mobileMenu" class="w3-bar-block w3-hide w3-hide-large w3-hide-medium">
-	{{- partial "inline/menu/walk.html" (dict "page" $page "menuEntries" . "hide" "" "siteBtnClass" $siteBtnClass) }}
+	{{- partial "inline/menu/walk.html" (dict "page" $page "menuEntries" . "hide" "" "menuBtnClass" $menuBtnClass) }}
 </div>
 {{- end }}
 
 {{- define "partials/inline/menu/walk.html" }}
 	{{- $hide := .hide }}
-	{{- $siteBtnClass := .siteBtnClass }}
+	{{- $menuBtnClass := .menuBtnClass }}
 	{{- $btnActive := "" }}
-	{{- $btnClass := printf "w3-bar-item %s %s" $siteBtnClass $hide }}
+	{{- $btnClass := printf "w3-bar-item %s %s" $menuBtnClass $hide }}
 	{{- $btnClassActive := printf "%s %s %s" $btnClass $btnActive $hide }}
 	{{- $btnClassAncestor := printf "%s %s %s" $btnClass $btnActive $hide }}
 	{{- $page := .page }}

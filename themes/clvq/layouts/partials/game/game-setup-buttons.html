@@ -1,7 +1,7 @@
 {{- $page := .page }}
-{{- $siteBtnClass := $page.Site.Params.btnClass }}
-{{- $extraBtnClass := "w3-border w3-border-dark-grey clvq-bg game-play-button" }}
-{{- $btnClass := printf "%s %s" $extraBtnClass $siteBtnClass }}
+{{- $cfgBtnClass := $page.Site.Params.btnClass }}
+{{- $extraBtnClass := "clvq-bg game-play-button" }}
+{{- $btnClass := printf "%s %s" $extraBtnClass $cfgBtnClass }}
 {{ partial "modal/game-setup-custom.html" (dict "page" $page) }}
 <div class="w3-container w3-padding">
 	<div class="w3-bar w3-center">

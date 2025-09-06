@@ -1,6 +1,6 @@
 {{- $page := .page }}
 {{- $menuID := .menuID }}
-{{- $siteBtnClass := $page.Site.Params.btnClass }}
+{{- $menuBtnClass := $page.Site.Params.menuBtnClass }}
 {{- $modalContentClass := $page.Site.Params.modalContentClass }}
 
 <!-- Top Navigation Bar -->
@@ -9,7 +9,7 @@
 	<div id="gameStatus" class="w3-bar-item w3-text-lime"></div>
 
 	<!-- Toggle Button -->
-	<a class="w3-bar-item {{ $siteBtnClass }} w3-black clvq-bg w3-right"
+	<a class="w3-bar-item {{ $menuBtnClass }} w3-black clvq-bg w3-right"
 		href="javascript:void(0)"
 		onclick="Clvq.w3ToggleMenu('gameMenu')">&#9776;</a>
 </div>
@@ -18,20 +18,20 @@
 	<div class="{{ $modalContentClass }} w3-center">
 		<!-- Game Reset -->
 		<a id="gameReset" href="javascript:void(0)"
-			class="w3-bar-item {{ $siteBtnClass }}"
+			class="w3-bar-item {{ $menuBtnClass }}"
 			onclick="Clvq.w3ToggleMenu('gameMenu')">
 			Reset
 		</a>
 		{{- with index site.Menus $menuID }}
-			{{- partial "inline/menu/walk.html" (dict "page" $page "siteBtnClass" $siteBtnClass "menuEntries" .) }}
+			{{- partial "inline/menu/walk.html" (dict "page" $page "menuBtnClass" $menuBtnClass "menuEntries" .) }}
 		{{- end }}
 	</div>
 </div>
 
 {{- define "partials/inline/menu/walk.html" }}
-	{{- $siteBtnClass := .siteBtnClass }}
+	{{- $menuBtnClass := .menuBtnClass }}
 	{{- $btnActive := "" }}
-	{{- $btnClass := printf "w3-bar-item %s" $siteBtnClass }}
+	{{- $btnClass := printf "w3-bar-item %s" $menuBtnClass }}
 	{{- $btnClassActive := printf "%s %s" $btnClass $btnActive }}
 	{{- $btnClassAncestor := printf "%s %s" $btnClass $btnActive }}
 	{{- $page := .page }}
