@@ -10,5 +10,16 @@
 			Internal Error
 		</button>
 	</div>
+	{{ partial "game/game-modals.html" (dict "page" .)}}
+	<div class="w3-container w3-padding-large">
+		<button class="{{ $btnClass }}"
+			onclick="Clvq.w3ShowModal('whitePawnPromotion')">
+			Pawn Promotion White
+		</button>
+		<button class="{{ $btnClass }}"
+			onclick="Clvq.w3ShowModal('blackPawnPromotion')">
+			Pawn Promotion Black
+		</button>
+	</div>
 	{{ partial "page/main-tail.html" . }}
 {{ end }}
