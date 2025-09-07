@@ -9,4 +9,4 @@ import { Clvq } from './Clvq';
 document.addEventListener('DOMContentLoaded', () => {
 	console.log('Welcome to Chesslovaquia.');
 	(window as any).Clvq = new Clvq();
-})
+});

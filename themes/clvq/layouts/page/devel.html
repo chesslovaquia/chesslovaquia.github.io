@@ -1,8 +1,14 @@
 {{ define "main" }}
+	{{- $btnClass := .Site.Params.btnClass }}
 	{{ partial "header.html" . }}
 	{{ partial "page/main-head.html" . }}
 	<div class="w3-container">
 		{{ .Content }}
+	</div>
+	<div class="w3-container w3-padding-large">
+		<button class="{{ $btnClass }}" onclick="ClvqDevel.internalError()">
+			Internal Error
+		</button>
 	</div>
 	{{ partial "page/main-tail.html" . }}
 {{ end }}
