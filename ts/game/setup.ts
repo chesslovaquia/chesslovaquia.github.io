@@ -9,8 +9,9 @@ import { screenRedirect } from './screen';
 import { GameSetup } from './GameSetup';
 import { SetupData } from './GameSetup';
 
-// Initialize when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
+console.debug('Game setup event listener.');
+
+window.addEventListener('pageshow', () => {
 	try {
 		console.debug('Game setup page.');
 		const setup = new GameSetup();
