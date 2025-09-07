@@ -4,6 +4,7 @@ draft: true
 title: "Devel"
 type: "page"
 layout: "devel"
+develPage: "load"
 ---
 
 # Development

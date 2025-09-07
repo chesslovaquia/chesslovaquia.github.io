@@ -24,6 +24,7 @@ params:
   game_setup_ts: game/setup.ts
   game_board_assets:
     - lila/public/images/board/wood4.jpg
+  devel_ts: clvq/devel.ts
 
 menus:
   main:

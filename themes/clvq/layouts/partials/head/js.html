@@ -2,6 +2,12 @@
 {{- $cdn := .Site.Params.cdn -}}
 {{- $js_load := .Site.Params.js_load }}
 
+<!-- Development helper -->
+{{- $devel_ts := .Site.Params.devel_ts }}
+{{- if eq .Params.develPage "load" }}
+	{{- $js_load = $js_load | append $devel_ts }}
+{{- end }}
+
 <!-- Game app -->
 {{- $game_ts := .Site.Params.game_ts }}
 {{- $game_setup_ts := .Site.Params.game_setup_ts }}
