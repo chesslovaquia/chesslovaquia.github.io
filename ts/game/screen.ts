@@ -21,9 +21,9 @@ async function screenRedirect(mode: ScreenMode, wait: number): Promise<void> {
 	console.debug('Screen redirect:', mode, 'delay:', wait);
 	await screenSleep(wait);
 	if (mode === 'mobile') {
-		window.location.href = screenMobileURL;
+		window.location.assign(screenMobileURL);
 	} else {
-		window.location.href = screenDesktopURL;
+		window.location.assign(screenDesktopURL);
 	}
 }
 

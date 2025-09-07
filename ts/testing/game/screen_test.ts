@@ -31,16 +31,6 @@ describe('screenToggle', () => {
 		window.innerHeight = height;
 		expect(mode).toBe('mobile');
 	});
-	test('desktop', () => {
-		const width = window.innerWidth;
-		const height = window.innerHeight;
-		window.innerWidth = 640;
-		window.innerHeight = 360;
-		const mode = screen.screenToggle(noDelay)[0];
-		window.innerWidth = width;
-		window.innerHeight = height;
-		expect(mode).toBe('desktop');
-	});
 	test('mobile already', () => {
 		const width = window.innerWidth;
 		const height = window.innerHeight;
@@ -51,6 +41,28 @@ describe('screenToggle', () => {
 		window.innerWidth = width;
 		window.innerHeight = height;
 		expect(toggle[0]).toBe('mobile');
+		expect(toggle[1]).toBe(false);
+	});
+	test('desktop', () => {
+		const width = window.innerWidth;
+		const height = window.innerHeight;
+		window.innerWidth = 640;
+		window.innerHeight = 360;
+		const mode = screen.screenToggle(noDelay)[0];
+		window.innerWidth = width;
+		window.innerHeight = height;
+		expect(mode).toBe('desktop');
+	});
+	test('desktop already', () => {
+		const width = window.innerWidth;
+		const height = window.innerHeight;
+		window.location.pathname = '/play/desktop/';
+		window.innerWidth = 640;
+		window.innerHeight = 360;
+		const toggle = screen.screenToggle(noDelay);
+		window.innerWidth = width;
+		window.innerHeight = height;
+		expect(toggle[0]).toBe('desktop');
 		expect(toggle[1]).toBe(false);
 	});
 });
