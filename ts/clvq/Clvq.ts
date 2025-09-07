@@ -27,8 +27,17 @@ export class Clvq {
 	public gameSetup(timeMinutes: number, incrementSeconds: number): void {
 		const s = new GameSetup();
 		s.newGame({
-			time:      timeMinutes * 60,
+			time: timeMinutes * 60,
 			increment: incrementSeconds,
+		});
+	}
+
+	public gameSetupCorrespondence(days: number): void {
+		const time = days * 86400;
+		const s = new GameSetup();
+		s.newGame({
+			time: time,
+			increment: 0,
 		});
 	}
 }

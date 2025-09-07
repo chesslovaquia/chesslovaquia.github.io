@@ -7,8 +7,8 @@
 			<label for="gameSetupCorrespDays">
 				Days: <span id="gameSetupCorrespDaysValue">3</span>
 			</label>
-			<input type="range" id="gameSetupCustomTime" style="width:90%"
-				min="0" max="14" step="1" value="3">
+			<input type="range" id="gameSetupCorrespDays" style="width:90%"
+				min="1" max="14" step="1" value="3">
 		</div>
 		<div class="w3-container w3-bar">
 			<button class="{{ $btnClass }} w3-bar-item"
@@ -20,7 +20,7 @@
 </div>
 <script>
 	const daysSlider = document.getElementById('gameSetupCorrespDays');
-	const daysValue = document.getElementById('gameSetuppCorrespDaysValue');
+	const daysValue = document.getElementById('gameSetupCorrespDaysValue');
 	daysSlider.addEventListener('input', () => {
 		daysValue.textContent = daysSlider.value;
 	});
