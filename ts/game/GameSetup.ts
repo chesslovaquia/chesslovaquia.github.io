@@ -3,7 +3,8 @@
 
 import { ClvqIndexedDB, Store } from '../clvq/ClvqIndexedDB';
 
-import { screenRedirect } from './screen';
+import { screenLoad  } from './screen';
+import { screenDelay } from './screen';
 
 export type SetupData = {
 	time:      number,
@@ -20,7 +21,7 @@ export class GameSetup {
 	public async newGame(data: SetupData): Promise<void> {
 		console.debug('Setup new game:', data);
 		await this.db.setItem('new', data);
-		screenRedirect();
+		screenLoad(screenDelay);
 	}
 
 	public async getGame(): Promise<SetupData> {

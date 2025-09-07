@@ -3,13 +3,11 @@
 
 import { clvqInternalError } from '../clvq/utils';
 
-import { screenSleep    } from './screen';
-import { screenRedirect } from './screen';
+import { screenLoad  } from './screen';
+import { screenDelay } from './screen';
 
 import { GameSetup } from './GameSetup';
 import { SetupData } from './GameSetup';
-
-console.debug('Game setup event listener.');
 
 window.addEventListener('pageshow', () => {
 	try {
@@ -18,9 +16,7 @@ window.addEventListener('pageshow', () => {
 		setup.getGame().then((game: SetupData) => {
 			if (game) {
 				console.debug('Game active:', game);
-				screenSleep(300).then(() => {
-					screenRedirect();
-				});
+				screenLoad(screenDelay);
 			} else {
 				console.debug('No active game.');
 			}

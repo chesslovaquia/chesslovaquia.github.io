@@ -3,9 +3,9 @@
 
 import { clvqInternalError } from '../clvq/utils';
 
-import { screenDelay  } from './screen';
 import { screenLoad   } from './screen';
 import { screenResize } from './screen';
+import { screenDelay  } from './screen';
 
 import { ChessGame  } from './ChessGame';
 import { GameConfig } from './GameConfig';
@@ -13,7 +13,7 @@ import { GameError  } from './GameError';
 
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-	const loaded = screenLoad();
+	const loaded = screenLoad(screenDelay);
 	if (loaded) {
 		console.debug('Screen loaded.');
 	} else {
