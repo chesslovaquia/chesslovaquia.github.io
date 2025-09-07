@@ -1,0 +1,33 @@
+{{- $page := .page }}
+{{- $btnClass := $page.Site.Params.btnClass }}
+{{- $modalContentClass := $page.Site.Params.modalContentClass }}
+<div id="gameSetupCorrespondence" class="w3-modal w3-hide">
+	<div class="{{ $modalContentClass }} w3-center">
+		<div class="w3-container">
+			<label for="gameSetupCorrespDays">
+				Days: <span id="gameSetupCorrespDaysValue">3</span>
+			</label>
+			<input type="range" id="gameSetupCustomTime" style="width:90%"
+				min="0" max="14" step="1" value="3">
+		</div>
+		<div class="w3-container w3-bar">
+			<button class="{{ $btnClass }} w3-bar-item"
+				onclick="Clvq.w3HideModal('gameSetupCorrespondence')">Cancel</button>
+			<button class="{{ $btnClass }} w3-bar-item"
+				onclick="gameSetupCorrespondence()">Start</button>
+		</div>
+	</div>
+</div>
+<script>
+	const daysSlider = document.getElementById('gameSetupCorrespDays');
+	const daysValue = document.getElementById('gameSetuppCorrespDaysValue');
+	daysSlider.addEventListener('input', () => {
+		daysValue.textContent = daysSlider.value;
+	});
+	function gameSetupCorrespondence() {
+		const days = parseInt(daysSlider.value);
+		console.debug('Game setup correspondence:', days, 'days');
+		Clvq.w3HideModal('gameSetupCorrespondence');
+		Clvq.gameSetupCorrespondence(days);
+	}
+</script>

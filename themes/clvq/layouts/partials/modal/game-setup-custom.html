@@ -1,6 +1,7 @@
 {{- $page := .page }}
 {{- $btnClass := $page.Site.Params.btnClass }}
 {{- $modalContentClass := $page.Site.Params.modalContentClass }}
+{{- partial "modal/game-setup-correspondence.html" (dict "page" $page) }}
 <div id="gameSetupCustom" class="w3-modal w3-hide">
 	<div class="{{ $modalContentClass }} w3-center">
 		<div class="w3-container">
@@ -17,9 +18,16 @@
 			<input type="range" id="gameSetupCustomIncrement" style="width:90%"
 				min="0" max="120" step="1" value="10">
 		</div>
-		<button class="{{ $btnClass }}"
-			onclick="Clvq.w3HideModal('gameSetupCustom')">Cancel</button>
-		<button class="{{ $btnClass }}" onclick="gameSetupCustom()">Start</button>
+		<div class="w3-container w3-bar">
+			<button class="{{ $btnClass }} w3-bar-item"
+				onclick="showSetupCorrespondence()">Correspondence</button>
+		</div>
+		<div class="w3-container w3-bar">
+			<button class="{{ $btnClass }} w3-bar-item"
+				onclick="Clvq.w3HideModal('gameSetupCustom')">Cancel</button>
+			<button class="{{ $btnClass }} w3-bar-item"
+				onclick="gameSetupCustom()">Start</button>
+		</div>
 	</div>
 </div>
 <script>
@@ -39,5 +47,9 @@
 		console.debug('Game setup custom:', time, increment);
 		Clvq.w3HideModal('gameSetupCustom');
 		Clvq.gameSetup(time, increment);
+	}
+	function showSetupCorrespondence() {
+		Clvq.w3HideModal('gameSetupCustom');
+		Clvq.w3ShowModal('gameSetupCorrespondence');
 	}
 </script>
