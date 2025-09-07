@@ -163,14 +163,22 @@ export class GameClock {
 		if (seconds === 0) {
 			return '00:00';
 		}
-		if (seconds < 10) {
+		if (seconds < 10) { // Tenths of seconds.
 			const secs = Math.floor(seconds % 60);
 			const tenths = Math.floor(ts % 10);
-			return `${secs.toString().padStart(2, '0')}.${tenths.toString().padStart(1, '0')}`;
-		} else {
+			return `${secs}.${tenths}`;
+		} else if (seconds < 3600) { // Less than 1 hour.
 			const mins = Math.floor(seconds / 60);
 			const secs = Math.floor(seconds % 60);
 			return `${mins}:${secs.toString().padStart(2, '0')}`;
+		} else if (seconds < 86400) { // Less than 1 day.
+			const hours = Math.floor(seconds / 3600);
+			const mins = Math.floor((seconds % 3600) / 60);
+			return `${hours}h ${mins}m`;
+		} else { // 1 day or more.
+			const days = Math.floor(seconds / 86400);
+			const hours = Math.floor((seconds % 86400) / 3600);
+			return `${days}d ${hours}h`;
 		}
 	}
 
