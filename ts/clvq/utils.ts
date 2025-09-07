@@ -5,8 +5,6 @@ export function w3HideMenu(id: string): void {
 	let x = document.getElementById(id);
 	if (x) {
 		x.classList.toggle('w3-show', false);
-	} else {
-		console.error('Clvq w3HideMenu ERROR:', id, 'not found');
 	}
 }
 
