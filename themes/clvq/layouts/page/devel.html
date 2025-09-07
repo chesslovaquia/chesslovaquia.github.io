@@ -5,13 +5,14 @@
 	<div class="w3-container">
 		{{ .Content }}
 	</div>
-	<div class="w3-container w3-padding-large">
+	<div class="w3-container">
 		<button class="{{ $btnClass }}" onclick="ClvqDevel.internalError()">
 			Internal Error
 		</button>
 	</div>
+	<br>
 	{{ partial "game/game-modals.html" (dict "page" .)}}
-	<div class="w3-container w3-padding-large">
+	<div class="w3-container">
 		<button class="{{ $btnClass }}"
 			onclick="Clvq.w3ShowModal('whitePawnPromotion')">
 			Pawn Promotion White
@@ -21,5 +22,6 @@
 			Pawn Promotion Black
 		</button>
 	</div>
+	<br>
 	{{ partial "page/main-tail.html" . }}
 {{ end }}

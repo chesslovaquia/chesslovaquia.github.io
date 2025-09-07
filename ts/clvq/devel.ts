@@ -14,6 +14,6 @@ class ClvqDevel {
 
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-	console.debug('Chesslovaquia development helper.');
 	(window as any).ClvqDevel = new ClvqDevel();
+	console.debug('ClvqDevel loaded.');
 });

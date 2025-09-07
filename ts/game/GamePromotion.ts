@@ -43,7 +43,7 @@ export class GamePromotion {
 		console.log('Pawn promotion show modal:', side);
 		const modal = document.getElementById(`${side}PawnPromotion`);
 		if (modal) {
-			modal.style.display='block';
+			modal.style.display = 'block';
 			modal.addEventListener('click', (evt: MouseEvent) => {
 				console.log('Pawn promotion select:', evt.target);
 				if (evt.target) {
@@ -51,7 +51,7 @@ export class GamePromotion {
 					if (elem.classList.contains('clvq-promotion-piece')) {
 						const piece = elem.dataset.piece;
 						callback(piece);
-						modal.style.display='none';
+						modal.style.display = 'none';
 					}
 				}
 			})
