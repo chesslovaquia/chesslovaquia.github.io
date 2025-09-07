@@ -1,8 +1,8 @@
 {{- $page := .page }}
 {{- $side := .side }}
-<div id="{{ $side }}PawnPromotion" class="w3-modal w3-hide">
-	<div class="w3-modal-content w3-round-large w3-border w3-border-dark-grey w3-black clvq-bg2">
-		<div class="w3-container">
+<div id="{{ $side }}PawnPromotion" class="w3-modal">
+	<div class="w3-modal-content w3-round-large w3-border w3-border-dark-grey w3-black clvq-bg">
+		<div class="w3-container w3-padding">
 			<div class="cg-wrap" style="display: grid; grid-template-columns: repeat(8, 50px); grid-template-rows: repeat(1, 50px);">
 				<a href="javascript:void(0)" data-piece="q" class="clvq-promotion-piece">
 					<piece class="queen {{ $side }}"

@@ -2,7 +2,7 @@
 {{- $btnClass := $page.Site.Params.btnClass }}
 {{- $modalContentClass := $page.Site.Params.modalContentClass }}
 {{- partial "modal/game-setup-correspondence.html" (dict "page" $page) }}
-<div id="gameSetupCustom" class="w3-modal w3-hide">
+<div id="gameSetupCustom" class="w3-modal">
 	<div class="{{ $modalContentClass }} w3-center">
 		<div class="w3-container">
 			<label for="gameSetupCustomTime">
