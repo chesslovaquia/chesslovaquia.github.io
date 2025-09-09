@@ -3,13 +3,23 @@
 
 import { GameEngine  } from '../engine/GameEngine';
 import { EngineColor } from '../engine/GameEngine';
+import { MovesSAN    } from '../engine/GameEngine';
 
 import { GameError    } from './GameError';
 import { GameClock    } from './GameClock';
+import { ClockState   } from './GameClock';
 import { GameSetup    } from './GameSetup';
 import { GameNavigate } from './GameNavigate';
+import { NavState     } from './GameNavigate';
 
 import { ClvqIndexedDB, Store } from '../clvq/ClvqIndexedDB';
+
+type StateData = {
+	moves:       MovesSAN,
+	clock:       ClockState,
+	nav:         NavState,
+	orientation: EngineColor,
+}
 
 export class GameState {
 	private readonly id:     string;
@@ -36,27 +46,37 @@ export class GameState {
 		this.setup.removeGame();
 	}
 
-	public save(): void {
-		this.db.setItem(this.id, {
-			moves:       this.engine.getState(),
-			clock:       this.clock.getState(),
-			nav:         this.nav.getState(),
+	private getState(): StateData {
+		return {
+			moves: this.engine.getState(),
+			clock: this.clock.getState(),
+			nav: this.nav.getState(),
 			orientation: this.orientation,
-		}).then(() => { console.debug('State saved.') });
+		}
+	}
+
+	public save(): void {
+		this.db.setItem(this.id, this.getState()).then(() => {
+			console.debug('State saved.')
+		});
+	}
+
+	private setState(state: StateData): void {
+		if (state.moves) {
+			this.engine.setState(state.moves);
+		}
+		if (state.nav) {
+			this.nav.setState(state.nav);
+		}
+		// Set clock state after loading moves so clock turn is correct.
+		this.clock.setState(state.clock);
+		this.orientation = state.orientation;
 	}
 
 	public async load(): Promise<boolean> {
 		const state = await this.db.getItem(this.id);
 		if (state) {
-			if (state.moves) {
-				this.engine.setState(state.moves);
-			}
-			if (state.nav) {
-				this.nav.setState(state.nav);
-			}
-			// Set clock state after loading moves so clock turn is correct.
-			this.clock.setState(state.clock);
-			this.orientation = state.orientation;
+			this.setState(state);
 			return true;
 		}
 		return false;

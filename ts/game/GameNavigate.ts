@@ -12,7 +12,7 @@ import * as utils from '../clvq/utils';
 
 type BoardPositions = string[];
 
-type NavState = {
+export type NavState = {
 	pos:   BoardPositions,
 	index: number,
 	moves: BoardMove[],

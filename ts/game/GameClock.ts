@@ -8,7 +8,7 @@ import { EventClockTimeout } from '../events/EventClockTimeout';
 
 import { GamePlayer } from './GamePlayer';
 
-type clockState = {
+export type ClockState = {
 	tstamp:        number,
 	initialTime:   number,
 	increment:     number,
@@ -182,7 +182,7 @@ export class GameClock {
 		}
 	}
 
-	public getState(): clockState {
+	public getState(): ClockState {
 		return {
 			tstamp:        Date.now(),
 			initialTime:   this.initialTime,
@@ -193,7 +193,7 @@ export class GameClock {
 		};
 	}
 
-	public setState(s: clockState): void {
+	public setState(s: ClockState): void {
 		console.debug('Clock set state:', s);
 		this.initialTime   = s.initialTime;
 		this.increment     = s.increment;
