@@ -29,15 +29,21 @@ export class Clvq {
 		s.newGame({
 			time: timeMinutes * 60,
 			increment: incrementSeconds,
+			desc: `${timeMinutes}+${incrementSeconds}`,
 		});
 	}
 
 	public gameSetupCorrespondence(days: number): void {
+		let unit = 'days';
+		if (days === 1) {
+			unit = 'day';
+		}
 		const time = days * 86400;
 		const s = new GameSetup();
 		s.newGame({
 			time: time,
 			increment: 0,
+			desc: `${days} ${unit}`,
 		});
 	}
 }

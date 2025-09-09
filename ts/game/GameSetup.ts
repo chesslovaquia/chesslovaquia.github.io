@@ -9,6 +9,7 @@ import { screenDelay } from './screen';
 export type SetupData = {
 	time:      number,
 	increment: number,
+	desc:      string,
 }
 
 export class GameSetup {

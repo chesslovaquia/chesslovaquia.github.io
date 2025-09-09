@@ -63,10 +63,10 @@ export class GameState {
 	}
 
 	public async setupNewGame(): Promise<boolean> {
-		const newGame = await this.setup.getGame();
-		if (newGame) {
-			console.debug('State setup new game:', newGame);
-			this.clock.setupNewGame(newGame.time, newGame.increment);
+		const game = await this.setup.getGame();
+		if (game) {
+			console.debug('State setup new game:', game);
+			this.clock.setupNewGame(game.time, game.increment);
 			this.save();
 			return true;
 		}
