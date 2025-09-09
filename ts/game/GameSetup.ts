@@ -16,12 +16,12 @@ export class GameSetup {
 	private readonly id: string;
 	private readonly db: ClvqIndexedDB;
 
-	private data: SetupData | null;
+	private data: SetupData | undefined;
 
 	constructor() {
 		this.id = 'setup';
 		this.db = new ClvqIndexedDB(Store.state);
-		this.data = null;
+		this.data = undefined;
 	}
 
 	public async newGame(data: SetupData): Promise<void> {
@@ -39,7 +39,7 @@ export class GameSetup {
 
 	public async removeGame(): Promise<void> {
 		console.debug('Setup remove game.');
-		this.data = null;
+		this.data = undefined;
 		this.db.removeItem(this.id);
 	}
 
@@ -48,5 +48,10 @@ export class GameSetup {
 			return this.data.desc;
 		}
 		return 'NOGAME';
+	}
+
+	public setState(data: SetupData) {
+		console.debug('Setup set state:', data);
+		this.data = data;
 	}
 }

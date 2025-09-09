@@ -9,6 +9,7 @@ import { GameError    } from './GameError';
 import { GameClock    } from './GameClock';
 import { ClockState   } from './GameClock';
 import { GameSetup    } from './GameSetup';
+import { SetupData    } from './GameSetup';
 import { GameNavigate } from './GameNavigate';
 import { NavState     } from './GameNavigate';
 
@@ -68,12 +69,20 @@ export class GameState {
 		if (state.nav) {
 			this.nav.setState(state.nav);
 		}
-		// Set clock state after loading moves so clock turn is correct.
-		this.clock.setState(state.clock);
 		this.orientation = state.orientation;
+		// Set clock state at the end so clock turn is correct.
+		this.clock.setState(state.clock);
+	}
+
+	private async setSetupData(): void {
+		const data = await this.setup.getGame();
+		if (data) {
+			this.setup.setState(data);
+		}
 	}
 
 	public async load(): Promise<boolean> {
+		this.setSetupData();
 		const state = await this.db.getItem(this.id);
 		if (state) {
 			this.setState(state);
