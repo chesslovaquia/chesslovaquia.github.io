@@ -1,6 +1,8 @@
 #!/bin/sh
 set -eu
 
+# Check https://www.w3schools.com/w3css/
+
 w3css_version='5'
 w3css_url="https://www.w3schools.com/w3css/${w3css_version}/w3.css"
 

@@ -1,6 +1,8 @@
 #!/bin/sh
 set -eu
 
+# Check https://fontawesome.com/download
+
 fa_version='7.0.1'
 fa_url="https://use.fontawesome.com/releases/v7.0.1/fontawesome-free-${fa_version}-web.zip"
 

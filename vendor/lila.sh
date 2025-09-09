@@ -1,6 +1,8 @@
 #!/bin/sh
 set -eu
 
+# Check https://github.com/lichess-org/lila
+
 lila_raw=https://github.com/lichess-org/lila/raw/master
 lila_dir=./static/lila
 
