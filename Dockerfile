@@ -1,7 +1,7 @@
-FROM debian:forky-20250811-slim
+FROM debian:forky-20250908-slim
 
 LABEL maintainer="Jeremías Casteglione <jrmsdev@gmail.com>"
-LABEL version="250722"
+LABEL version="250909"
 
 USER root:root
 WORKDIR /root
@@ -11,7 +11,7 @@ ENV HOME /root
 
 ENV DEBIAN_FRONTEND noninteractive
 
-ENV APT_INSTALL bash openssl ca-certificates media-types less wget npm make shellcheck
+ENV APT_INSTALL bash openssl ca-certificates media-types less wget npm make shellcheck zip unzip
 
 RUN apt-get clean \
 	&& apt-get update -yy \
