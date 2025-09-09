@@ -12,10 +12,23 @@ export class GameDisplay {
 	private readonly engine: GameEngine;
 	private readonly move:   GameMove;
 
+	private description: string;
+
 	constructor(cfg: GameConfig, engine: GameEngine, move: GameMove) {
-		this.cfg    = cfg;
+		this.cfg = cfg;
 		this.engine = engine;
-		this.move   = move;
+		this.move = move;
+		this.description = 'UNSET';
+	}
+
+	private setStatus(status: string): void {
+		if (this.cfg.ui.statusBar) {
+			if (status) {
+				this.cfg.ui.statusBar.textContent = `${this.description} ${status}`;
+			} else {
+				this.cfg.ui.statusBar.textContent = this.description;
+			}
+		}
 	}
 
 	public async updateStatus(): Promise<void> {
@@ -38,7 +51,7 @@ export class GameDisplay {
 				statusText = 'Draw by insufficient material!';
 			}
 		}
-		this.cfg.ui.statusBar.textContent = statusText;
+		this.setStatus(statusText);
 	}
 
 	public clear(): void {
@@ -50,8 +63,14 @@ export class GameDisplay {
 	public clockTimeout(color: EngineColor): void {
 		if (this.cfg.ui.statusBar) {
 			const winner = color === 'w' ? 'Black' : 'White';
-			this.cfg.ui.statusBar.textContent = `Timeout! ${winner} wins.`;
+			const text = `Timeout! ${winner} wins.`;
+			this.setStatus(text);
 		}
 		this.cfg.ui.board.classList.toggle('timeout', true);
+	}
+
+	public async setDescription(desc: string): Promise<void> {
+		this.description = desc;
+		this.setStatus('');
 	}
 }

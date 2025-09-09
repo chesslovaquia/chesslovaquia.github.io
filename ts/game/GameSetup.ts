@@ -16,24 +16,37 @@ export class GameSetup {
 	private readonly id: string;
 	private readonly db: ClvqIndexedDB;
 
+	private data: SetupData | null;
+
 	constructor() {
 		this.id = 'setup';
 		this.db = new ClvqIndexedDB(Store.state);
+		this.data = null;
 	}
 
 	public async newGame(data: SetupData): Promise<void> {
 		console.debug('Setup new game:', data);
-		await this.db.setItem(this.id, data);
+		this.data = data;
+		await this.db.setItem(this.id, this.data);
 		screenLoad(screenDelay);
 	}
 
 	public async getGame(): Promise<SetupData> {
 		console.debug('Setup get game.');
-		return await this.db.getItem(this.id);
+		this.data = await this.db.getItem(this.id);
+		return this.data as SetupData;
 	}
 
 	public async removeGame(): Promise<void> {
 		console.debug('Setup remove game.');
+		this.data = null;
 		this.db.removeItem(this.id);
+	}
+
+	public description(): string {
+		if (this.data) {
+			return this.data.desc;
+		}
+		return 'NOGAME';
 	}
 }

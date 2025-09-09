@@ -161,6 +161,7 @@ export class ChessGame {
 
 	private start(): void {
 		console.debug('Game start.');
+		this.display.setDescription(this.state.gameDescription());
 		this.enableBoard();
 		this.clock.start();
 		this.active = true;

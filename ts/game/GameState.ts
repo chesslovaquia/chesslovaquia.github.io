@@ -85,4 +85,8 @@ export class GameState {
 		}
 		this.save();
 	}
+
+	public gameDescription(): string {
+		return this.setup.description();
+	}
 }
