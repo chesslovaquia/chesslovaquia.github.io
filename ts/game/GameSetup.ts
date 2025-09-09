@@ -12,25 +12,27 @@ export type SetupData = {
 }
 
 export class GameSetup {
+	private readonly id: string;
 	private readonly db: ClvqIndexedDB;
 
 	constructor() {
+		this.id = 'setup';
 		this.db = new ClvqIndexedDB(Store.state);
 	}
 
 	public async newGame(data: SetupData): Promise<void> {
 		console.debug('Setup new game:', data);
-		await this.db.setItem('new', data);
+		await this.db.setItem(this.id, data);
 		screenLoad(screenDelay);
 	}
 
 	public async getGame(): Promise<SetupData> {
 		console.debug('Setup get game.');
-		return await this.db.getItem('new');
+		return await this.db.getItem(this.id);
 	}
 
 	public async removeGame(): Promise<void> {
 		console.debug('Setup remove game.');
-		this.db.removeItem('new');
+		this.db.removeItem(this.id);
 	}
 }
