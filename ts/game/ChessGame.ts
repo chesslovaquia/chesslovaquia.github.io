@@ -106,7 +106,6 @@ export class ChessGame {
 			this.start();
 		}
 		this.move.exec(move.from, move.to, 'q');
-		this.display.updateStatus();
 		this.afterMove(move);
 	}
 
@@ -121,6 +120,11 @@ export class ChessGame {
 			// Update clocks and save state.
 			this.clock.move(this.engine.turn());
 			this.saveState();
+			// Update display.
+			if (!this.state.isFirstMove()) {
+				this.display.disableFirstMove();
+			}
+			this.display.updateStatus();
 		}
 	}
 
@@ -161,6 +165,9 @@ export class ChessGame {
 
 	private start(): void {
 		console.debug('Game start.');
+		if (!this.state.isFirstMove()) {
+			this.display.disableFirstMove();
+		}
 		this.display.setDescription(this.state.gameDescription());
 		this.enableBoard();
 		this.clock.start();

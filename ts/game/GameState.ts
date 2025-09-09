@@ -31,6 +31,7 @@ export class GameState {
 	private readonly nav:    GameNavigate;
 
 	private orientation: EngineColor;
+	private movesCount:  number;
 
 	constructor(engine: GameEngine, clock: GameClock, nav: GameNavigate) {
 		this.id          = 'current';
@@ -40,6 +41,7 @@ export class GameState {
 		this.db          = new ClvqIndexedDB(Store.state);
 		this.setup       = new GameSetup();
 		this.orientation = 'w';
+		this.movesCount  = 0;
 	}
 
 	public reset(): void {
@@ -48,8 +50,10 @@ export class GameState {
 	}
 
 	private getState(): StateData {
+		const moves = this.engine.getState();
+		this.movesCount = moves.length;
 		return {
-			moves: this.engine.getState(),
+			moves: moves,
 			clock: this.clock.getState(),
 			nav: this.nav.getState(),
 			orientation: this.orientation,
@@ -65,6 +69,7 @@ export class GameState {
 	private setState(state: StateData): void {
 		if (state.moves) {
 			this.engine.setState(state.moves);
+			this.movesCount = state.moves.length;
 		}
 		if (state.nav) {
 			this.nav.setState(state.nav);
@@ -74,7 +79,7 @@ export class GameState {
 		this.clock.setState(state.clock);
 	}
 
-	private async setSetupData(): void {
+	private async setSetupData(): Promise<void> {
 		const data = await this.setup.getGame();
 		if (data) {
 			this.setup.setState(data);
@@ -117,5 +122,10 @@ export class GameState {
 
 	public gameDescription(): string {
 		return this.setup.description();
+	}
+
+	public isFirstMove(): boolean {
+		console.debug('State if first move, count:', this.movesCount);
+		return this.movesCount < 2 ? true : false;
 	}
 }

@@ -13,20 +13,26 @@ export class GameDisplay {
 	private readonly move:   GameMove;
 
 	private description: string;
+	private firstMove:   boolean;
 
 	constructor(cfg: GameConfig, engine: GameEngine, move: GameMove) {
 		this.cfg = cfg;
 		this.engine = engine;
 		this.move = move;
 		this.description = 'UNSET';
+		this.firstMove = true;
 	}
 
 	private setStatus(status: string): void {
 		if (this.cfg.ui.statusBar) {
 			if (status) {
-				this.cfg.ui.statusBar.textContent = `${this.description} ${status}`;
+				this.cfg.ui.statusBar.textContent = `${this.description} - ${status}`;
 			} else {
-				this.cfg.ui.statusBar.textContent = this.description;
+				let text = this.description;
+				if (this.firstMove) {
+					text = `${this.description} - 30 seconds for the first move.`
+				}
+				this.cfg.ui.statusBar.textContent = text;
 			}
 		}
 	}
@@ -72,5 +78,9 @@ export class GameDisplay {
 	public async setDescription(desc: string): Promise<void> {
 		this.description = desc;
 		this.setStatus('');
+	}
+
+	public disableFirstMove(): void {
+		this.firstMove = false;
 	}
 }
