@@ -26,17 +26,9 @@ export class GameDisplay {
 	}
 
 	private setStatus(status: string): void {
-		if (this.cfg.ui.statusBar) {
-			if (status) {
+		if (status) {
+			if (this.cfg.ui.statusBar) {
 				this.cfg.ui.statusBar.textContent = `${this.description} - ${status}`;
-			} else {
-				if (this.cfg.ui.messages) {
-					if (this.firstMove) {
-						this.cfg.ui.messages.textContent = '30 seconds for the first move.';
-					} else {
-						this.cfg.ui.messages.textContent = '';
-					}
-				}
 			}
 		}
 	}
@@ -65,9 +57,6 @@ export class GameDisplay {
 	public clear(): void {
 		if (this.cfg.ui.statusBar) {
 			this.cfg.ui.statusBar.textContent = '';
-		}
-		if (this.cfg.ui.messages) {
-			this.cfg.ui.messages.textContent = '';
 		}
 		if (this.cfg.ui.outcome) {
 			this.cfg.ui.outcome.textContent = '';
