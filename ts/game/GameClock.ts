@@ -92,12 +92,6 @@ export class GameClock {
 			this.time[other] += this.increment;
 		}
 		if (this.firstMove && turn === 'b') {
-			if (this.side['w'].info) {
-				this.side['w'].info.textContent = '';
-			}
-			if (this.side['b'].info) {
-				this.side['b'].info.textContent = firstMoveWarning;
-			}
 			return;
 		}
 		if (this.firstMove) {
@@ -124,9 +118,6 @@ export class GameClock {
 				this.firstMoveTimer();
 			}, 100);
 			const turn = this.engine.turn();
-			if (this.side[turn].info) {
-				this.side[turn].info.textContent = firstMoveWarning;
-			}
 		}
 		// Clock timer.
 		this.interval = setInterval(() => {
@@ -156,6 +147,9 @@ export class GameClock {
 					this.side['w'].clock.textContent = this.format(this.time['w']);
 					this.side['w'].clock.classList.toggle(Status.active, false);
 				}
+				if (this.side['w'].info) {
+					this.side['w'].info.textContent = '';
+				}
 			} else {
 				if (this.side['b'].clock) {
 					this.side['b'].clock.textContent = this.format(this.firstMoveTime['b']);
@@ -164,6 +158,9 @@ export class GameClock {
 			if (this.side[turn].clock) {
 				this.side[turn].clock.textContent = this.format(this.firstMoveTime[turn]);
 				this.side[turn].clock.classList.toggle(Status.active, true);
+			}
+			if (this.side[turn].info) {
+				this.side[turn].info.textContent = firstMoveWarning;
 			}
 		} else {
 			if (this.side['w'].clock) {
@@ -292,7 +289,13 @@ export class GameClock {
 	}
 
 	public flip(): void {
-		console.debug('Clock flip orientation.');
+		const turn = this.engine.turn();
+		console.debug('Clock flip orientation:', this.orientation, ', turn:', turn);
+		if (this.firstMove) {
+			if (this.side[turn].info) {
+				this.side[turn].info.textContent = '';
+			}
+		}
 		if (this.orientation === 'w') {
 			this.side = {'w': this.p2, 'b': this.p1};
 			this.orientation = 'b';
@@ -300,7 +303,6 @@ export class GameClock {
 			this.side = {'w': this.p1, 'b': this.p2};
 			this.orientation = 'w';
 		}
-		const turn = this.engine.turn();
 		this.update(turn);
 	}
 }
