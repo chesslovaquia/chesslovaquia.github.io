@@ -295,6 +295,7 @@ export class GameClock {
 			if (this.side[turn].info) {
 				this.side[turn].info.textContent = '';
 			}
+			this.side[turn].clock.classList.toggle(Status.active, false);
 		}
 		if (this.orientation === 'w') {
 			this.side = {'w': this.p2, 'b': this.p1};
