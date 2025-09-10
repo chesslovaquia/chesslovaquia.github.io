@@ -103,7 +103,6 @@ export class GameClock {
 				clearInterval(this.firstMoveInterval);
 			}
 		}
-		this.update(turn);
 	}
 
 	public start(): boolean {
@@ -304,6 +303,5 @@ export class GameClock {
 			this.side = {'w': this.p1, 'b': this.p2};
 			this.orientation = 'w';
 		}
-		this.update(turn);
 	}
 }
