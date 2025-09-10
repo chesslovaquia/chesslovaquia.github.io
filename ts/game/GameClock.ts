@@ -91,7 +91,6 @@ export class GameClock {
 			this.time[other] += this.increment;
 		}
 		if (this.firstMove && turn === 'b') {
-			this.update(turn);
 			return;
 		}
 		if (this.firstMove) {
@@ -137,22 +136,35 @@ export class GameClock {
 	}
 
 	private async update(turn: EngineColor): Promise<void> {
-		if (this.klass[turn] !== Status.timeout) {
-			if (this.time[turn] <= activeAlert) {
-				this.klass[turn] = Status.alert;
-				this.side[turn].clock?.classList.toggle(Status.warning, false);
-			} else if (this.time[turn] <= activeWarning) {
-				this.klass[turn] = Status.warning;
-				this.side[turn].clock?.classList.toggle(Status.active, false);
+		if (this.firstMove) {
+			if (turn === 'b') {
+				if (this.side['w'].clock) {
+					this.side['w'].clock.textContent = this.format(this.time['w']);
+				}
+			} else {
+				if (this.side['b'].clock) {
+					this.side['b'].clock.textContent = this.format(this.firstMoveTime['b']);
+				}
 			}
-		}
-		if (this.side['w'].clock) {
-			this.side['w'].clock.textContent = this.format(this.time['w']);
-		}
-		if (this.side['b'].clock) {
-			this.side['b'].clock.textContent = this.format(this.time['b']);
-		}
-		if (!this.firstMove) {
+			if (this.side[turn].clock) {
+				this.side[turn].clock.textContent = this.format(this.firstMoveTime[turn]);
+			}
+		} else {
+			if (this.side['w'].clock) {
+				this.side['w'].clock.textContent = this.format(this.time['w']);
+			}
+			if (this.side['b'].clock) {
+				this.side['b'].clock.textContent = this.format(this.time['b']);
+			}
+			if (this.klass[turn] !== Status.timeout) {
+				if (this.time[turn] <= activeAlert) {
+					this.klass[turn] = Status.alert;
+					this.side[turn].clock?.classList.toggle(Status.warning, false);
+				} else if (this.time[turn] <= activeWarning) {
+					this.klass[turn] = Status.warning;
+					this.side[turn].clock?.classList.toggle(Status.active, false);
+				}
+			}
 			this.side['w'].clock?.classList.toggle(this.klass['w'], turn === 'w');
 			this.side['b'].clock?.classList.toggle(this.klass['b'], turn === 'b');
 		}
@@ -237,6 +249,7 @@ export class GameClock {
 			this.firstMoveTime[turn] = 0;
 			this.timeout(turn);
 		}
+		this.update(turn);
 	}
 
 	private timer(): void {
