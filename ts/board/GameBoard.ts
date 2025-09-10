@@ -15,7 +15,7 @@ export type BoardSquare =
 
 export type BoardDests = Map<BoardSquare, BoardSquare[]>;
 
-export type BoardPromotionPiece = 'q' | 'r' | 'k' | 'b';
+export type BoardPromotionPiece = 'q' | 'r' | 'n' | 'b';
 
 export type BoardMove = {
 	from:      BoardSquare,
