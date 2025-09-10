@@ -8,6 +8,7 @@ import { BoardDests  } from '../board/GameBoard';
 import { BoardSquare } from '../board/GameBoard';
 import { BoardMove   } from '../board/GameBoard';
 import { BoardColor  } from '../board/GameBoard';
+import { BoardPiece  } from '../board/GameBoard';
 
 import { EngineError } from './EngineError';
 
@@ -124,6 +125,14 @@ export class ChessjsEngine {
 
 	public isInsufficientMaterial(): boolean {
 		return this.game.isInsufficientMaterial();
+	}
+
+	public capturedPiece(): BoardPiece | undefined {
+		const m = this.getLastMove();
+		if (m && m.isCapture()) {
+			return m.captured;
+		}
+		return undefined;
 	}
 
 	public getState(): MovesSAN {

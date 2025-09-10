@@ -4,6 +4,7 @@
 import { BoardDests          } from '../board/GameBoard';
 import { BoardMove           } from '../board/GameBoard';
 import { BoardSquare         } from '../board/GameBoard';
+import { BoardPiece          } from '../board/GameBoard';
 import { BoardPromotionPiece } from '../board/GameBoard';
 
 export type EngineColor = 'b' | 'w';
@@ -32,4 +33,5 @@ export interface GameEngine {
 	isInsufficientMaterial(): boolean;
 	getState():               MovesSAN;
 	setState(m: MovesSAN):    void;
+	capturedPiece():          BoardPiece | undefined;
 }
