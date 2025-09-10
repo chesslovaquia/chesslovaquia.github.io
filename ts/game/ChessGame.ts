@@ -111,21 +111,27 @@ export class ChessGame {
 
 	private afterMove(move: EngineMove) {
 		console.debug('Game after move.');
+		const turn = this.engine.turn();
 		if (this.engine.isPromotion()) {
 			// Pawn promotion.
 			console.debug('Move was pawn promotion.');
 			this.promotion.handle(move);
-			this.display.updateStatus();
 		} else {
 			// Update clocks and save state.
-			this.clock.move(this.engine.turn());
+			this.clock.move(turn);
+			// Captures.
+			const capture = this.engine.capturedPiece();
+			if (capture) {
+				console.debug('Game captured piece:', capture);
+			}
+			// Save state
 			this.saveState();
 			// Update display.
 			if (!this.state.isFirstMove()) {
 				this.display.disableFirstMove();
 			}
-			this.display.updateStatus();
 		}
+		this.display.updateStatus();
 	}
 
 	private saveState(): void {
