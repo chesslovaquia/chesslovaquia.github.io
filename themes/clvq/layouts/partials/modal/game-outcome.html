@@ -1,0 +1,8 @@
+{{- $page := .page }}
+{{- $modalContentClass := $page.Site.Params.modalContentClass }}
+<div id="gameOutcomeModal" class="w3-modal"
+	onclick="Clvq.w3HideModal('gameOutcomeModal')">
+	<div class="{{ $modalContentClass }} w3-center">
+		<div id="gameOutcome" class="w3-container w3-text-lime"></div>
+	</div>
+</div>

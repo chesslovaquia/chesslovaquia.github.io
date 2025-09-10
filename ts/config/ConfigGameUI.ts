@@ -8,6 +8,8 @@ export class ConfigGameUI {
 
 	public statusBar: HTMLElement | null;
 	public messages:  HTMLElement | null;
+	public outcome:   HTMLElement | null;
+
 	public gameReset: HTMLElement | null;
 
 	public navBackward:  HTMLButtonElement | null;
@@ -20,6 +22,7 @@ export class ConfigGameUI {
 		this.board = board;
 		this.statusBar = document.getElementById('gameStatus');
 		this.messages = document.getElementById('gameMessages');
+		this.outcome = document.getElementById('gameOutcome');
 		this.gameReset = document.getElementById('gameReset');
 		this.navBackward = document.getElementById('gameNavBackward') as HTMLButtonElement;
 		this.navForward = document.getElementById('gameNavForward') as HTMLButtonElement;
@@ -35,6 +38,9 @@ export class ConfigGameUI {
 		}
 		if (!this.messages) {
 			throw new ConfigError('ConfigGameUI gameMessages not found.');
+		}
+		if (!this.outcome) {
+			throw new ConfigError('ConfigGameUI gameOutcome not found.');
 		}
 		if (!this.gameReset) {
 			throw new ConfigError('ConfigGameUI gameReset not found.');

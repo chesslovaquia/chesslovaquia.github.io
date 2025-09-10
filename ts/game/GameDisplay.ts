@@ -1,6 +1,8 @@
 // Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com>
 // See LICENSE file.
 
+import { w3ShowModal } from '../clvq/utils';
+
 import { GameEngine  } from '../engine/GameEngine';
 import { EngineColor } from '../engine/GameEngine';
 
@@ -28,7 +30,6 @@ export class GameDisplay {
 			if (status) {
 				this.cfg.ui.statusBar.textContent = `${this.description} - ${status}`;
 			} else {
-				this.cfg.ui.statusBar.textContent = this.description;
 				if (this.cfg.ui.messages) {
 					if (this.firstMove) {
 						this.cfg.ui.messages.textContent = '30 seconds for the first move.';
@@ -41,10 +42,6 @@ export class GameDisplay {
 	}
 
 	public async updateStatus(): Promise<void> {
-		if (!this.cfg.ui.statusBar) {
-			console.debug('Game status bar not found.');
-			return;
-		}
 		let statusText = '';
 		if (this.engine.isGameOver()) {
 			if (this.engine.isCheckmate()) {
@@ -59,6 +56,8 @@ export class GameDisplay {
 			} else if (this.engine.isInsufficientMaterial()) {
 				statusText = 'Draw by insufficient material!';
 			}
+			this.clear();
+			this.showOutcome(statusText);
 		}
 		this.setStatus(statusText);
 	}
@@ -67,12 +66,20 @@ export class GameDisplay {
 		if (this.cfg.ui.statusBar) {
 			this.cfg.ui.statusBar.textContent = '';
 		}
+		if (this.cfg.ui.messages) {
+			this.cfg.ui.messages.textContent = '';
+		}
+		if (this.cfg.ui.outcome) {
+			this.cfg.ui.outcome.textContent = '';
+		}
 	}
 
 	public clockTimeout(color: EngineColor): void {
 		if (this.cfg.ui.statusBar) {
 			const winner = color === 'w' ? 'Black' : 'White';
 			const text = `Timeout! ${winner} wins.`;
+			this.clear();
+			this.showOutcome(text);
 			this.setStatus(text);
 		}
 		this.cfg.ui.board.classList.toggle('timeout', true);
@@ -80,10 +87,19 @@ export class GameDisplay {
 
 	public async setDescription(desc: string): Promise<void> {
 		this.description = desc;
-		this.setStatus('');
+		if (this.cfg.ui.statusBar) {
+			this.cfg.ui.statusBar.textContent = this.description;
+		}
 	}
 
 	public disableFirstMove(): void {
 		this.firstMove = false;
+	}
+
+	private showOutcome(status: string) {
+		if (this.cfg.ui.outcome) {
+			this.cfg.ui.outcome.textContent = status;
+			w3ShowModal('gameOutcomeModal');
+		}
 	}
 }
