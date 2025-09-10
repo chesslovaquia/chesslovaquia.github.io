@@ -28,11 +28,14 @@ export class GameDisplay {
 			if (status) {
 				this.cfg.ui.statusBar.textContent = `${this.description} - ${status}`;
 			} else {
-				let text = this.description;
-				if (this.firstMove) {
-					text = `${this.description} - 30 seconds for the first move.`
+				this.cfg.ui.statusBar.textContent = this.description;
+				if (this.cfg.ui.messages) {
+					if (this.firstMove) {
+						this.cfg.ui.messages.textContent = '30 seconds for the first move.';
+					} else {
+						this.cfg.ui.messages.textContent = '';
+					}
 				}
-				this.cfg.ui.statusBar.textContent = text;
 			}
 		}
 	}

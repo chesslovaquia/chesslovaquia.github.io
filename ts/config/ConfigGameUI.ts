@@ -7,6 +7,7 @@ export class ConfigGameUI {
 	public board: HTMLElement;
 
 	public statusBar: HTMLElement | null;
+	public messages:  HTMLElement | null;
 	public gameReset: HTMLElement | null;
 
 	public navBackward:  HTMLButtonElement | null;
@@ -16,20 +17,24 @@ export class ConfigGameUI {
 	public navLastMove:  HTMLButtonElement | null;
 
 	constructor(board: HTMLElement) {
-		this.board        = board;
-		this.statusBar    = document.getElementById('gameStatus');
-		this.gameReset    = document.getElementById('gameReset');
-		this.navBackward  = document.getElementById('gameNavBackward') as HTMLButtonElement;
-		this.navForward   = document.getElementById('gameNavForward') as HTMLButtonElement;
-		this.flipBoard    = document.getElementById('gameFlipBoard') as HTMLButtonElement;
+		this.board = board;
+		this.statusBar = document.getElementById('gameStatus');
+		this.messages = document.getElementById('gameMessages');
+		this.gameReset = document.getElementById('gameReset');
+		this.navBackward = document.getElementById('gameNavBackward') as HTMLButtonElement;
+		this.navForward = document.getElementById('gameNavForward') as HTMLButtonElement;
+		this.flipBoard = document.getElementById('gameFlipBoard') as HTMLButtonElement;
 		this.navFirstMove = document.getElementById('gameNavFirstMove') as HTMLButtonElement;
-		this.navLastMove  = document.getElementById('gameNavLastMove') as HTMLButtonElement;
+		this.navLastMove = document.getElementById('gameNavLastMove') as HTMLButtonElement;
 		this.validate();
 	}
 
 	private validate(): void {
 		if (!this.statusBar) {
 			throw new ConfigError('ConfigGameUI statusBar not found.');
+		}
+		if (!this.messages) {
+			throw new ConfigError('ConfigGameUI gameMessages not found.');
 		}
 		if (!this.gameReset) {
 			throw new ConfigError('ConfigGameUI gameReset not found.');
