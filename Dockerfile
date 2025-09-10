@@ -23,8 +23,10 @@ RUN apt-get clean \
 		/var/cache/apt/archives/*.deb \
 		/var/cache/apt/*cache.bin
 
-COPY ./hugo/install.sh /tmp/hugo-install.sh
-RUN /bin/sh /tmp/hugo-install.sh && rm -f /tmp/hugo-install.sh
+RUN mkdir -vp ./hugo
+COPY ./hugo/install.sh ./hugo/install.sh
+COPY ./hugo/VERSION ./hugo/VERSION
+RUN /bin/sh ./hugo/install.sh
 
 ARG DEVEL_UID=1000
 ARG DEVEL_GID=1000
