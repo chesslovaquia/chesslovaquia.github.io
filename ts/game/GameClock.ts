@@ -140,6 +140,7 @@ export class GameClock {
 			if (turn === 'b') {
 				if (this.side['w'].clock) {
 					this.side['w'].clock.textContent = this.format(this.time['w']);
+					this.side['w'].clock.classList.toggle(Status.active, false);
 				}
 			} else {
 				if (this.side['b'].clock) {
@@ -148,6 +149,7 @@ export class GameClock {
 			}
 			if (this.side[turn].clock) {
 				this.side[turn].clock.textContent = this.format(this.firstMoveTime[turn]);
+				this.side[turn].clock.classList.toggle(Status.active, true);
 			}
 		} else {
 			if (this.side['w'].clock) {
