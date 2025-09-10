@@ -4,8 +4,8 @@
 import { GameError } from './GameError';
 
 export class GamePlayer {
-	private readonly info:  HTMLElement | undefined;
-	public  readonly clock: HTMLElement | undefined;
+	public readonly info:  HTMLElement | undefined;
+	public readonly clock: HTMLElement | undefined;
 
 	constructor(id: "1" | "2") {
 		this.info  = document.getElementById(`gamePlayer${id}`) || undefined;

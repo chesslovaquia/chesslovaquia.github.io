@@ -22,6 +22,7 @@ const initialIncrement: number = 10 * 10;  // In seconds thenths.
 const firstMoveTimeout: number = 30 * 10; // 30 seconds in tenths.
 const activeWarning:    number = 30 * 10; // 30 seconds in tenths.
 const activeAlert:      number = 10 * 10; // 10 seconds in tenths.
+const firstMoveWarning: string = '30 seconds for the first move';
 
 enum Status {
 	active  = 'active',
@@ -91,10 +92,19 @@ export class GameClock {
 			this.time[other] += this.increment;
 		}
 		if (this.firstMove && turn === 'b') {
+			if (this.side['w'].info) {
+				this.side['w'].info.textContent = '';
+			}
+			if (this.side['b'].info) {
+				this.side['b'].info.textContent = firstMoveWarning;
+			}
 			return;
 		}
 		if (this.firstMove) {
 			this.firstMove = false;
+			if (this.side['b'].info) {
+				this.side['b'].info.textContent = '';
+			}
 			if (this.firstMoveInterval) {
 				clearInterval(this.firstMoveInterval);
 			}
@@ -113,6 +123,10 @@ export class GameClock {
 			this.firstMoveInterval = setInterval(() => {
 				this.firstMoveTimer();
 			}, 100);
+			const turn = this.engine.turn();
+			if (this.side[turn].info) {
+				this.side[turn].info.textContent = firstMoveWarning;
+			}
 		}
 		// Clock timer.
 		this.interval = setInterval(() => {
