@@ -40,13 +40,13 @@
 	background-color: #f44336;
 }
 
-.game-play-button {
+.game-setup-button {
 	width: 6em;
 	margin: 2px;
 }
 
 @media (max-width: 400px) {
-	.game-play-button {
+	.game-setup-button {
 		font-size: 75%;
 	}
 }

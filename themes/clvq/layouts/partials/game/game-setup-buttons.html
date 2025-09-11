@@ -1,7 +1,7 @@
 {{- $page := .page }}
 
 {{- $cfgBtnClass := $page.Site.Params.btnClass }}
-{{- $extraBtnClass := "clvq-bg game-play-button" }}
+{{- $extraBtnClass := "clvq-bg game-setup-button" }}
 {{- $btnClass := printf "%s %s" $extraBtnClass $cfgBtnClass }}
 
 {{- partial "modal/game-setup-custom.html" (dict "page" $page) }}
