@@ -8,6 +8,8 @@ import { ConfigGameUI } from '../config/ConfigGameUI';
 import { GameBoard } from '../board/GameBoard';
 import { BoardMove } from '../board/GameBoard';
 
+import { GameCaptures } from './GameCaptures';
+
 import * as utils from '../clvq/utils';
 
 type BoardPositions = string[];
@@ -19,21 +21,23 @@ export type NavState = {
 }
 
 export class GameNavigate {
-	private readonly ui:     ConfigGameUI;
-	private readonly board:  GameBoard;
-	private readonly engine: GameEngine;
+	private readonly ui:       ConfigGameUI;
+	private readonly board:    GameBoard;
+	private readonly engine:   GameEngine;
+	private readonly captures: GameCaptures;
 
 	private pos:   BoardPositions;
 	private index: number;
 	private moves: BoardMove[];
 
 	constructor(ui: ConfigGameUI, board: GameBoard, engine: GameEngine) {
-		this.ui     = ui;
-		this.board  = board;
+		this.ui = ui;
+		this.board = board;
 		this.engine = engine;
-		this.pos    = [];
-		this.index  = -1;
-		this.moves  = [];
+		this.captures = new GameCaptures(this.ui);
+		this.pos = [];
+		this.index = -1;
+		this.moves = [];
 		this.setupEventListeners();
 	}
 

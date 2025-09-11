@@ -6,7 +6,8 @@ import { EngineColor } from '../engine/GameEngine';
 
 import { EventClockTimeout } from '../events/EventClockTimeout';
 
-import { GamePlayer } from './GamePlayer';
+import { ConfigGameUI     } from '../config/ConfigGameUI';
+import { ConfigGamePlayer } from '../config/ConfigGamePlayer';
 
 export type ClockState = {
 	tstamp:        number,
@@ -32,15 +33,15 @@ enum Status {
 }
 
 export class GameClock {
+	private readonly p1:     ConfigGamePlayer;
+	private readonly p2:     ConfigGamePlayer;
 	private readonly engine: GameEngine;
-	private readonly p1:     GamePlayer;
-	private readonly p2:     GamePlayer;
 
 	private initialTime: number;
 	private increment:   number;
 	private interval:    ReturnType<typeof setInterval> | null;
 
-	private side:  Record<EngineColor, GamePlayer>;
+	private side:  Record<EngineColor, ConfigGamePlayer>;
 	private time:  Record<EngineColor, number>;
 	private klass: Record<EngineColor, Status>;
 
@@ -50,20 +51,20 @@ export class GameClock {
 
 	private orientation: EngineColor;
 
-	constructor(engine: GameEngine, p1: GamePlayer, p2: GamePlayer) {
-		this.engine            = engine;
-		this.p1                = p1;
-		this.p2                = p2;
-		this.side              = {'w': this.p1, 'b': this.p2};
-		this.initialTime       = initialTime;
-		this.increment         = initialIncrement;
-		this.time              = {'w': 0, 'b': 0};
-		this.klass             = {'w': Status.active, 'b': Status.active};
-		this.firstMoveTime     = {'w': 0, 'b': 0};
+	constructor(ui: ConfigGameUI, engine: GameEngine) {
+		this.p1 = ui.player1;
+		this.p2 = ui.player2;
+		this.engine = engine;
+		this.side = {'w': this.p1, 'b': this.p2};
+		this.initialTime = initialTime;
+		this.increment = initialIncrement;
+		this.time = {'w': 0, 'b': 0};
+		this.klass = {'w': Status.active, 'b': Status.active};
+		this.firstMoveTime = {'w': 0, 'b': 0};
 		this.firstMoveInterval = null;
-		this.firstMove         = true;
-		this.interval          = null;
-		this.orientation       = 'w';
+		this.firstMove = true;
+		this.interval = null;
+		this.orientation = 'w';
 		this.init();
 	}
 
@@ -79,10 +80,10 @@ export class GameClock {
 			this.side['w'].clock?.classList.toggle(status, false);
 			this.side['b'].clock?.classList.toggle(status, false);
 		});
-		this.klass         = {'w': Status.active,    'b': Status.active};
-		this.time          = {'w': this.initialTime, 'b': this.initialTime};
+		this.klass = {'w': Status.active,    'b': Status.active};
+		this.time = {'w': this.initialTime, 'b': this.initialTime};
 		this.firstMoveTime = {'w': firstMoveTimeout, 'b': firstMoveTimeout};
-		this.firstMove     = true;
+		this.firstMove = true;
 	}
 
 	public move(turn: EngineColor): void {

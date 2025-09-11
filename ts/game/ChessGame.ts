@@ -19,10 +19,8 @@ import { GameError     } from './GameError';
 import { GameMove      } from './GameMove';
 import { GamePromotion } from './GamePromotion';
 import { GameState     } from './GameState';
-import { GamePlayer    } from './GamePlayer';
 import { GameClock     } from './GameClock';
 import { GameNavigate  } from './GameNavigate';
-import { GameCaptures  } from './GameCaptures';
 
 import * as utils from '../clvq/utils';
 
@@ -36,27 +34,20 @@ export class ChessGame {
 	private readonly display:   GameDisplay;
 	private readonly clock:     GameClock;
 	private readonly nav:       GameNavigate;
-	private readonly captures:  GameCaptures;
-
-	private readonly p1: GamePlayer;
-	private readonly p2: GamePlayer;
 
 	private active: boolean;
 
 	constructor(config: GameConfig) {
 		console.debug('Game config:', config);
-		this.cfg       = config;
-		this.active    = false;
-		this.engine    = new ChessjsEngine();
-		this.board     = new ChessgroundBoard(this.cfg, this.engine);
-		this.p1        = new GamePlayer("1");
-		this.p2        = new GamePlayer("2");
-		this.clock     = new GameClock(this.engine, this.p1, this.p2);
-		this.nav       = new GameNavigate(this.cfg.ui, this.board, this.engine);
-		this.captures  = new GameCaptures(this.p1, this.p2);
-		this.state     = new GameState(this.engine, this.clock, this.nav);
-		this.move      = new GameMove(this.engine, this.board);
-		this.display   = new GameDisplay(this.cfg, this.engine, this.move);
+		this.cfg = config;
+		this.active = false;
+		this.engine = new ChessjsEngine();
+		this.board = new ChessgroundBoard(this.cfg, this.engine);
+		this.clock = new GameClock(this.cfg.ui, this.engine);
+		this.nav = new GameNavigate(this.cfg.ui, this.board, this.engine);
+		this.state = new GameState(this.engine, this.clock, this.nav);
+		this.move = new GameMove(this.engine, this.board);
+		this.display = new GameDisplay(this.cfg, this.engine, this.move);
 		this.promotion = new GamePromotion(this.state, this.move, this.display, this.nav);
 		if (this.board) {
 			this.setupEventListeners();
@@ -121,19 +112,15 @@ export class ChessGame {
 
 	private afterMove(move: EngineMove) {
 		console.debug('Game after move.');
-		const turn = this.engine.turn();
 		if (this.engine.isPromotion()) {
 			// Pawn promotion.
 			console.debug('Move was pawn promotion.');
 			this.promotion.handle(move);
 		} else {
+			const turn = this.engine.turn();
 			// Update clocks and save state.
 			this.clock.move(turn);
-			// Captures.
-			const capture = this.engine.capturedPiece();
-			if (capture) {
-				console.debug('Game captured piece:', capture);
-			}
+			// Check outcome.
 			if (this.engine.isGameOver()) {
 				// Game over.
 				this.stop();

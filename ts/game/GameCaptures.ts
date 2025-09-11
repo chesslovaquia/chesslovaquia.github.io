@@ -3,17 +3,23 @@
 
 import { EngineColor } from '../engine/GameEngine';
 
-import { GamePlayer } from './GamePlayer';
+import { BoardPiece } from '../board/GameBoard';
+
+import { ConfigGameUI     } from '../config/ConfigGameUI';
+import { ConfigGamePlayer } from '../config/ConfigGamePlayer';
 
 export class GameCaptures {
-	private readonly p1: GamePlayer;
-	private readonly p2: GamePlayer;
+	private readonly p1: ConfigGamePlayer;
+	private readonly p2: ConfigGamePlayer;
 
-	private side: Record<EngineColor, GamePlayer>;
+	private side: Record<EngineColor, ConfigGamePlayer>;
 
-	constructor(p1: GamePlayer, p2: GamePlayer) {
-		this.p1 = p1;
-		this.p2 = p2;
+	constructor(ui: ConfigGameUI) {
+		this.p1 = ui.player1;
+		this.p2 = ui.player2;
 		this.side = {'w': this.p1, 'b': this.p2};
+	}
+
+	public add(side: EngineColor, piece: BoardPiece): void {
 	}
 }

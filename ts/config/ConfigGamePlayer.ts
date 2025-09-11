@@ -1,9 +1,9 @@
 // Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com>
 // See LICENSE file.
 
-import { GameError } from './GameError';
+import { ConfigError } from './ConfigError';
 
-export class GamePlayer {
+export class ConfigGamePlayer {
 	public readonly info:  HTMLElement | undefined;
 	public readonly clock: HTMLElement | undefined;
 
@@ -11,10 +11,10 @@ export class GamePlayer {
 		this.info  = document.getElementById(`gamePlayer${id}`) || undefined;
 		this.clock = document.getElementById(`gameClock${id}`) || undefined;
 		if (!this.info) {
-			throw new GameError(`gamePlayer${id}: element not found`);
+			throw new ConfigError(`gamePlayer${id}: element not found`);
 		}
 		if (!this.clock) {
-			throw new GameError(`gameClock${id}: element not found`);
+			throw new ConfigError(`gameClock${id}: element not found`);
 		}
 	}
 }

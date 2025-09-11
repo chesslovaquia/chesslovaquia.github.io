@@ -1,25 +1,31 @@
 // Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com>
 // See LICENSE file.
 
-import { ConfigError } from './ConfigError';
+import { ConfigError      } from './ConfigError';
+import { ConfigGamePlayer } from './ConfigGamePlayer';
 
 export class ConfigGameUI {
-	public board: HTMLElement;
+	public readonly board: HTMLElement;
 
-	public description: HTMLElement | null;
-	public status:      HTMLElement | null;
-	public outcome:     HTMLElement | null;
+	public readonly player1: ConfigGamePlayer;
+	public readonly player2: ConfigGamePlayer;
 
-	public gameReset: HTMLElement | null;
+	public readonly description: HTMLElement | null;
+	public readonly status:      HTMLElement | null;
+	public readonly outcome:     HTMLElement | null;
 
-	public navBackward:  HTMLButtonElement | null;
-	public navForward:   HTMLButtonElement | null;
-	public flipBoard:    HTMLButtonElement | null;
-	public navFirstMove: HTMLButtonElement | null;
-	public navLastMove:  HTMLButtonElement | null;
+	public readonly gameReset: HTMLElement | null;
+
+	public readonly navBackward:  HTMLButtonElement | null;
+	public readonly navForward:   HTMLButtonElement | null;
+	public readonly flipBoard:    HTMLButtonElement | null;
+	public readonly navFirstMove: HTMLButtonElement | null;
+	public readonly navLastMove:  HTMLButtonElement | null;
 
 	constructor(board: HTMLElement) {
 		this.board = board;
+		this.player1 = new ConfigGamePlayer("1");
+		this.player2 = new ConfigGamePlayer("2");
 		this.description = document.getElementById('gameDescription');
 		this.status = document.getElementById('gameStatus');
 		this.outcome = document.getElementById('gameOutcome');
