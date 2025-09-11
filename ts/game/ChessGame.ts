@@ -76,7 +76,14 @@ export class ChessGame {
 					console.debug('Game load flip board.');
 					this.toggleOrientation();
 				}
-				this.start();
+				if (this.engine.isGameOver()) {
+					// Game over.
+					this.stop();
+					this.display.setDescription(this.state.gameDescription());
+					this.display.updateStatus();
+				} else {
+					this.start();
+				}
 			} else {
 				this.setup();
 			}
@@ -123,6 +130,10 @@ export class ChessGame {
 			const capture = this.engine.capturedPiece();
 			if (capture) {
 				console.debug('Game captured piece:', capture);
+			}
+			if (this.engine.isGameOver()) {
+				// Game over.
+				this.stop();
 			}
 			// Save state
 			this.saveState();
@@ -184,7 +195,6 @@ export class ChessGame {
 		console.debug('Game stop.');
 		this.disableBoard();
 		this.clock.stop();
-		this.state.save();
 		this.active = false;
 	}
 
