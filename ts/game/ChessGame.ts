@@ -22,6 +22,7 @@ import { GameState     } from './GameState';
 import { GamePlayer    } from './GamePlayer';
 import { GameClock     } from './GameClock';
 import { GameNavigate  } from './GameNavigate';
+import { GameCaptures  } from './GameCaptures';
 
 import * as utils from '../clvq/utils';
 
@@ -35,6 +36,7 @@ export class ChessGame {
 	private readonly display:   GameDisplay;
 	private readonly clock:     GameClock;
 	private readonly nav:       GameNavigate;
+	private readonly captures:  GameCaptures;
 
 	private readonly p1: GamePlayer;
 	private readonly p2: GamePlayer;
@@ -51,6 +53,7 @@ export class ChessGame {
 		this.p2        = new GamePlayer("2");
 		this.clock     = new GameClock(this.engine, this.p1, this.p2);
 		this.nav       = new GameNavigate(this.cfg.ui, this.board, this.engine);
+		this.captures  = new GameCaptures(this.p1, this.p2);
 		this.state     = new GameState(this.engine, this.clock, this.nav);
 		this.move      = new GameMove(this.engine, this.board);
 		this.display   = new GameDisplay(this.cfg, this.engine, this.move);
