@@ -6,8 +6,9 @@ import { ConfigError } from './ConfigError';
 export class ConfigGameUI {
 	public board: HTMLElement;
 
-	public statusBar: HTMLElement | null;
-	public outcome:   HTMLElement | null;
+	public description: HTMLElement | null;
+	public status:      HTMLElement | null;
+	public outcome:     HTMLElement | null;
 
 	public gameReset: HTMLElement | null;
 
@@ -19,7 +20,8 @@ export class ConfigGameUI {
 
 	constructor(board: HTMLElement) {
 		this.board = board;
-		this.statusBar = document.getElementById('gameStatus');
+		this.description = document.getElementById('gameDescription');
+		this.status = document.getElementById('gameStatus');
 		this.outcome = document.getElementById('gameOutcome');
 		this.gameReset = document.getElementById('gameReset');
 		this.navBackward = document.getElementById('gameNavBackward') as HTMLButtonElement;
@@ -31,8 +33,11 @@ export class ConfigGameUI {
 	}
 
 	private validate(): void {
-		if (!this.statusBar) {
-			throw new ConfigError('ConfigGameUI statusBar not found.');
+		if (!this.description) {
+			throw new ConfigError('ConfigGameUI gameDescription not found.');
+		}
+		if (!this.status) {
+			throw new ConfigError('ConfigGameUI gameStatus not found.');
 		}
 		if (!this.outcome) {
 			throw new ConfigError('ConfigGameUI gameOutcome not found.');

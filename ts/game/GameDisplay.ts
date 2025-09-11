@@ -14,21 +14,19 @@ export class GameDisplay {
 	private readonly engine: GameEngine;
 	private readonly move:   GameMove;
 
-	private description: string;
-	private firstMove:   boolean;
+	private firstMove: boolean;
 
 	constructor(cfg: GameConfig, engine: GameEngine, move: GameMove) {
 		this.cfg = cfg;
 		this.engine = engine;
 		this.move = move;
-		this.description = 'UNSET';
 		this.firstMove = true;
 	}
 
 	private setStatus(status: string): void {
 		if (status) {
-			if (this.cfg.ui.statusBar) {
-				this.cfg.ui.statusBar.textContent = `${this.description} - ${status}`;
+			if (this.cfg.ui.status) {
+				this.cfg.ui.status.textContent = status;
 			}
 		}
 	}
@@ -55,8 +53,8 @@ export class GameDisplay {
 	}
 
 	public clear(): void {
-		if (this.cfg.ui.statusBar) {
-			this.cfg.ui.statusBar.textContent = '';
+		if (this.cfg.ui.status) {
+			this.cfg.ui.status.textContent = '';
 		}
 		if (this.cfg.ui.outcome) {
 			this.cfg.ui.outcome.textContent = '';
@@ -64,20 +62,17 @@ export class GameDisplay {
 	}
 
 	public clockTimeout(color: EngineColor): void {
-		if (this.cfg.ui.statusBar) {
-			const winner = color === 'w' ? 'Black' : 'White';
-			const text = `Timeout! ${winner} wins.`;
-			this.clear();
-			this.showOutcome(text);
-			this.setStatus(text);
-		}
+		const winner = color === 'w' ? 'Black' : 'White';
+		const text = `Timeout! ${winner} wins.`;
+		this.clear();
+		this.showOutcome(text);
+		this.setStatus(text);
 		this.cfg.ui.board.classList.toggle('timeout', true);
 	}
 
 	public async setDescription(desc: string): Promise<void> {
-		this.description = desc;
-		if (this.cfg.ui.statusBar) {
-			this.cfg.ui.statusBar.textContent = this.description;
+		if (this.cfg.ui.description) {
+			this.cfg.ui.description.textContent = desc;
 		}
 	}
 
