@@ -11,14 +11,7 @@
 	background-color: #f44336;
 }
 
-.game-player {
-	margin: 0;
-	padding: 0;
-}
-
 .game-clock {
-	margin: 0;
-	padding: 0;
 	font-weight: bold;
 	color: #3a3a3a;
 }
