@@ -34,7 +34,7 @@ export class GameNavigate {
 		this.ui = ui;
 		this.board = board;
 		this.engine = engine;
-		this.captures = new GameCaptures(this.ui);
+		this.captures = new GameCaptures(this.ui, this.engine);
 		this.pos = [];
 		this.index = -1;
 		this.moves = [];
@@ -111,6 +111,7 @@ export class GameNavigate {
 			utils.enableButton(this.ui.navBackward);
 			utils.enableButton(this.ui.navFirstMove);
 		}
+		this.captures.addPosition();
 	}
 
 	public getState(): NavState {
