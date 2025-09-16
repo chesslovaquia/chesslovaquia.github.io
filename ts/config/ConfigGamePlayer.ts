@@ -3,18 +3,34 @@
 
 import { ConfigError } from './ConfigError';
 
-export class ConfigGamePlayer {
-	public readonly info:  HTMLElement | undefined;
-	public readonly clock: HTMLElement | undefined;
+type PlayerID = "1" | "2";
 
-	constructor(id: "1" | "2") {
-		this.info  = document.getElementById(`gamePlayer${id}`) || undefined;
-		this.clock = document.getElementById(`gameClock${id}`) || undefined;
+export class ConfigGamePlayer {
+	public readonly info: HTMLElement | null;
+	public readonly clock: HTMLElement | null;
+	public readonly material: HTMLElement | null;
+	public readonly materialCount: HTMLElement | null;
+
+	constructor(id: PlayerID) {
+		this.info = document.getElementById(`gamePlayer${id}`);
+		this.clock = document.getElementById(`gameClock${id}`);
+		this.material = document.getElementById(`gameMaterial${id}`);
+		this.materialCount = document.getElementById(`gameMaterialCount${id}`);
+		this.validate(id);
+	}
+
+	private validate(id: PlayerID): void {
 		if (!this.info) {
 			throw new ConfigError(`gamePlayer${id}: element not found`);
 		}
 		if (!this.clock) {
 			throw new ConfigError(`gameClock${id}: element not found`);
+		}
+		if (!this.material) {
+			throw new ConfigError(`gameMaterial${id}: element not found`);
+		}
+		if (!this.materialCount) {
+			throw new ConfigError(`gameMaterialCount${id}: element not found`);
 		}
 	}
 }

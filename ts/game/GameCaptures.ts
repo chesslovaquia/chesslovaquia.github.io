@@ -38,13 +38,16 @@ export class GameCaptures {
 	}
 
 	public addPosition(): void {
+		console.debug('Game captures add position.');
 		const capture = this.engine.capturedPiece();
 		if (capture) {
 			const turn = this.engine.turn();
 			const side = turn === 'w' ? 'b' : 'w';
+			console.debug('Game capture:', side, capture);
 			this.captures[turn].push('');
 			this.captures[side].push(capture);
 			this.addCount(turn, side, capture);
+			this.updateStatus();
 		}
 	}
 
@@ -58,6 +61,15 @@ export class GameCaptures {
 		} else {
 			this.count[turn].push(0);
 			this.count[side].push(value);
+		}
+	}
+
+	private async updateStatus(): Promise<void> {
+		if (this.side['w'].material) {
+			this.side['w'].material.textContent = this.captures['w'].join(', ');
+		}
+		if (this.side['b'].material) {
+			this.side['b'].material.textContent = this.captures['b'].join(', ');
 		}
 	}
 }

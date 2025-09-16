@@ -101,6 +101,7 @@ export class GameNavigate {
 	}
 
 	public addPosition(): void {
+		console.debug('Game nav add position.');
 		const lastMove = this.engine.lastMove();
 		if (lastMove) {
 			this.moves.push(lastMove);
