@@ -8,16 +8,18 @@ import { ConfigGameUI } from '../config/ConfigGameUI';
 import { GameBoard } from '../board/GameBoard';
 import { BoardMove } from '../board/GameBoard';
 
-import { GameCaptures } from './GameCaptures';
+import { GameCaptures  } from './GameCaptures';
+import { CapturesState } from './GameCaptures';
 
 import * as utils from '../clvq/utils';
 
 type BoardPositions = string[];
 
 export type NavState = {
-	pos:   BoardPositions,
+	pos: BoardPositions,
 	index: number,
 	moves: BoardMove[],
+	captures: CapturesState,
 }
 
 export class GameNavigate {
@@ -117,9 +119,10 @@ export class GameNavigate {
 
 	public getState(): NavState {
 		return {
-			pos:   this.pos,
+			pos: this.pos,
 			index: this.index,
 			moves: this.moves,
+			captures: this.captures.getState(),
 		};
 	}
 
@@ -132,6 +135,7 @@ export class GameNavigate {
 				utils.enableButton(this.ui.navBackward);
 				utils.enableButton(this.ui.navFirstMove);
 			}
+			this.captures.setState(state.captures);
 		}
 	}
 }

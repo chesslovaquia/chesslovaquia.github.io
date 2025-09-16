@@ -19,6 +19,11 @@ const pieceValue = new Map<BoardPiece, number>([
 	['q', 9],
 ]);
 
+export type CapturesState = {
+	captures: Record<EngineColor, CapturedPiece[]>,
+	count: Record<EngineColor, number[]>,
+}
+
 export class GameCaptures {
 	private readonly engine: GameEngine;
 	private readonly p1: ConfigGamePlayer;
@@ -68,5 +73,17 @@ export class GameCaptures {
 		if (this.side[side].material) {
 			this.side[side].material.textContent += piece;
 		}
+	}
+
+	public getState(): CapturesState {
+		return {
+			captures: this.captures,
+			count: this.count,
+		}
+	}
+
+	public setState(state: CapturesState): void {
+		this.captures = state.captures;
+		this.count = state.count;
 	}
 }
