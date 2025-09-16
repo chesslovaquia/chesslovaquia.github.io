@@ -44,28 +44,28 @@ export class GameCaptures {
 
 	public addPosition(): void {
 		console.debug('Game captures add position.');
+		const turn = this.engine.turn();
+		const side = turn === 'w' ? 'b' : 'w';
+		this.captures[turn].push('');
 		const capture = this.engine.capturedPiece();
 		if (capture) {
-			const turn = this.engine.turn();
-			const side = turn === 'w' ? 'b' : 'w';
 			console.debug('Game capture:', side, capture);
-			this.captures[turn].push('');
 			this.captures[side].push(capture);
 			this.addCount(turn, side, capture);
 			this.updateMaterial(side, capture);
+		} else {
+			this.captures[side].push('');
+			this.addCount(turn, side, '');
 		}
 	}
 
-	private addCount(turn: EngineColor, side: EngineColor, capture: BoardPiece): void {
-		const value = pieceValue[capture];
-		if (this.count[side].length > 0) {
-			const idx = this.count[side].length - 1;
-			this.count[turn].push(this.count[turn][idx]);
-			const current = this.count[side][idx];
-			this.count[side].push(current + value);
-		} else {
-			this.count[turn].push(0);
+	private addCount(turn: EngineColor, side: EngineColor, capture: CapturedPiece): void {
+		this.count[turn].push(0);
+		if (capture) {
+			const value = pieceValue[capture];
 			this.count[side].push(value);
+		} else {
+			this.count[side].push(0);
 		}
 	}
 
@@ -85,5 +85,24 @@ export class GameCaptures {
 	public setState(state: CapturesState): void {
 		this.captures = state.captures;
 		this.count = state.count;
+		const idx = this.captures['w'].length - 1;
+		this.setPosition(idx);
+	}
+
+	public async setPosition(idx: number): Promise<void> {
+		if (idx <= 0) {
+			return;
+		}
+		this.setSidePosition(idx, 'w');
+		this.setSidePosition(idx, 'b');
+	}
+
+	private async setSidePosition(idx: number, side: EngineColor): Promise<void> {
+		for (let i = 0; i <= idx; i++) {
+			const piece = this.captures[side][i];
+			if (piece) {
+				await this.updateMaterial(side, piece);
+			}
+		}
 	}
 }
