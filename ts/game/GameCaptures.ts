@@ -47,7 +47,7 @@ export class GameCaptures {
 			this.captures[turn].push('');
 			this.captures[side].push(capture);
 			this.addCount(turn, side, capture);
-			this.updateStatus();
+			this.updateMaterial(side, capture);
 		}
 	}
 
@@ -64,12 +64,9 @@ export class GameCaptures {
 		}
 	}
 
-	private async updateStatus(): Promise<void> {
-		if (this.side['w'].material) {
-			this.side['w'].material.textContent = this.captures['w'].join(', ');
-		}
-		if (this.side['b'].material) {
-			this.side['b'].material.textContent = this.captures['b'].join(', ');
+	private async updateMaterial(side: EngineColor, piece: BoardPiece): Promise<void> {
+		if (this.side[side].material) {
+			this.side[side].material.textContent += piece;
 		}
 	}
 }
