@@ -43,6 +43,10 @@ export class GameCaptures {
 		this.count = {'w': [], 'b': []};
 	}
 
+	private getIndex(): number {
+		return this.captures['w'].length - 1;
+	}
+
 	public addPosition(): void {
 		console.debug('Game captures add position.');
 		const turn = this.engine.turn();
@@ -54,6 +58,7 @@ export class GameCaptures {
 			this.captures[side].push(capture);
 			this.addCount(turn, side, capture);
 			this.updateMaterial(side, capture);
+			this.updateCount(this.getIndex());
 		} else {
 			this.captures[side].push('');
 			this.addCount(turn, side, '');
@@ -75,9 +80,7 @@ export class GameCaptures {
 	}
 
 	private async updateMaterial(side: EngineColor, piece: BoardPiece): Promise<void> {
-		if (this.side[side].material) {
-			this.side[side].material.textContent += piece;
-		}
+		this.side[side].material!.textContent += piece;
 	}
 
 	public getState(): CapturesState {
@@ -90,8 +93,7 @@ export class GameCaptures {
 	public setState(state: CapturesState): void {
 		this.captures = state.captures;
 		this.count = state.count;
-		const idx = this.captures['w'].length - 1;
-		this.setPosition(idx);
+		this.setPosition(this.getIndex());
 	}
 
 	public async setPosition(idx: number): Promise<void> {
@@ -100,6 +102,7 @@ export class GameCaptures {
 		}
 		this.setSidePosition(idx, 'w');
 		this.setSidePosition(idx, 'b');
+		this.updateCount(idx);
 	}
 
 	private async setSidePosition(idx: number, side: EngineColor): Promise<void> {
@@ -108,6 +111,24 @@ export class GameCaptures {
 			if (piece) {
 				await this.updateMaterial(side, piece);
 			}
+		}
+	}
+
+	private async updateCount(idx: number): Promise<void> {
+		const wCount = this.count['w'].at(idx) || 0;
+		const bCount = this.count['b'].at(idx) || 0;
+		let diff = wCount - bCount;
+		this.side['w'].materialCount!.textContent = '';
+		this.side['b'].materialCount!.textContent = '';
+		if (diff === 0) {
+			return;
+		} else if (diff < 0) {
+			// Black is up material.
+			diff = diff * -1; // Remove - sign.
+			this.side['b'].materialCount!.textContent = `+${diff}`;
+		} else {
+			// White is up material.
+			this.side['w'].materialCount!.textContent = `+${diff}`;
 		}
 	}
 }
