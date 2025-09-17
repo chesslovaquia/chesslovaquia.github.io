@@ -25,22 +25,24 @@ import { GameNavigate  } from './GameNavigate';
 import * as utils from '../clvq/utils';
 
 export class ChessGame {
-	private readonly engine:    GameEngine;
-	private readonly board:     GameBoard;
-	private readonly cfg:       GameConfig;
-	private readonly move:      GameMove;
+	private readonly engine: GameEngine;
+	private readonly board: GameBoard;
+	private readonly cfg: GameConfig;
+	private readonly move: GameMove;
 	private readonly promotion: GamePromotion;
-	private readonly state:     GameState;
-	private readonly display:   GameDisplay;
-	private readonly clock:     GameClock;
-	private readonly nav:       GameNavigate;
+	private readonly state: GameState;
+	private readonly display: GameDisplay;
+	private readonly clock: GameClock;
+	private readonly nav: GameNavigate;
 
 	private active: boolean;
+	private firstMove: boolean;
 
 	constructor(config: GameConfig) {
 		console.debug('Game config:', config);
 		this.cfg = config;
 		this.active = false;
+		this.firstMove = true;
 		this.engine = new ChessjsEngine();
 		this.board = new ChessgroundBoard(this.cfg, this.engine);
 		this.clock = new GameClock(this.cfg.ui, this.engine);
@@ -128,11 +130,21 @@ export class ChessGame {
 			// Save state
 			this.saveState();
 			// Update display.
-			if (!this.state.isFirstMove()) {
+			if (!this.isFirstMove()) {
 				this.display.disableFirstMove();
 			}
 		}
 		this.display.updateStatus();
+	}
+
+	private isFirstMove(): boolean {
+		if (!this.firstMove) {
+			return false;
+		}
+		if (!this.state.isFirstMove()) {
+			this.firstMove = false;
+		}
+		return this.firstMove;
 	}
 
 	private saveState(): void {
@@ -172,7 +184,7 @@ export class ChessGame {
 
 	private start(): void {
 		console.debug('Game start.');
-		if (!this.state.isFirstMove()) {
+		if (!this.isFirstMove()) {
 			this.display.disableFirstMove();
 		}
 		this.display.setDescription(this.state.gameDescription());
