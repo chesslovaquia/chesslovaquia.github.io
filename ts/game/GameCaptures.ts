@@ -100,14 +100,18 @@ export class GameCaptures {
 		this.side['b'].material!.replaceChildren();
 	}
 
-	private getPieceElement(piece: BoardPiece): HTMLElement {
+	private getPieceElement(side: EngineColor, piece: BoardPiece): HTMLElement {
+		let color = 'w3-text-white';
+		if (side === 'w') {
+			color = 'w3-text-black';
+		}
 		const elem = document.createElement('i');
-		elem.classList.add('fas', pieceSymbol[piece]);
+		elem.classList.add('fas', pieceSymbol[piece], color);
 		return elem;
 	}
 
 	private async updateMaterial(side: EngineColor, piece: BoardPiece): Promise<void> {
-		const elem = this.getPieceElement(piece);
+		const elem = this.getPieceElement(side, piece);
 		this.side[side].material!.appendChild(elem);
 	}
 

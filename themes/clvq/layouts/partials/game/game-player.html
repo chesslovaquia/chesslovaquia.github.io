@@ -1,12 +1,12 @@
 {{- $page := .page }}
 {{- $id := .id }}
 <div class="w3-bar">
+	<div id="gameMaterial{{ $id }}" style="padding-top:1px;padding-bottom:1px"
+		class="w3-bar-item w3-text-lime w3-small"></div>
+	<div id="gameMaterialCount{{ $id }}" style="padding-top:1px;padding-bottom:1px"
+		class="w3-bar-item w3-text-grey w3-small"></div>
 	<div id="gamePlayer{{ $id }}" style="padding-top:1px;padding-bottom:1px"
 		class="w3-bar-item w3-text-lime w3-small"></div>
-	<div id="gameMaterial{{ $id }}" style="padding-top:1px;padding-bottom:1px"
-		class="w3-bar-item w3-text-lime"></div>
-	<div id="gameMaterialCount{{ $id }}" style="padding-top:1px;padding-bottom:1px"
-		class="w3-bar-item w3-text-lime"></div>
 	<div id="gameClock{{ $id }}" style="padding-top:1px;padding-bottom:1px"
 		class="w3-bar-item w3-right game-clock"></div>
 </div>
