@@ -45,6 +45,7 @@ export class GameCaptures {
 	private count: Record<EngineColor, number[]>;
 	private promotion: Record<EngineColor, number>;
 	private orientation: EngineColor;
+	private index: number;
 
 	constructor(ui: ConfigGameUI, engine: GameEngine) {
 		this.engine = engine;
@@ -55,14 +56,16 @@ export class GameCaptures {
 		this.count = {'w': [], 'b': []};
 		this.promotion = {'w': 0, 'b': 0};
 		this.orientation = 'w';
+		this.index = -1;
 	}
 
 	private getIndex(): number {
-		return this.captures['w'].length - 1;
+		return this.index;
 	}
 
 	public addPosition(): void {
 		console.debug('Game captures add position.');
+		this.index++;
 		const turn = this.engine.turn();
 		const side = turn === 'w' ? 'b' : 'w';
 		this.captures[turn].push('');
@@ -128,10 +131,12 @@ export class GameCaptures {
 		this.captures = state.captures;
 		this.count = state.count;
 		this.clearAllMaterial();
-		this.setPosition(this.getIndex());
+		const idx = this.captures['w'].length - 1;
+		this.setPosition(idx);
 	}
 
 	public async setPosition(idx: number): Promise<void> {
+		this.index = idx;
 		this.clearAllMaterial();
 		this.clearAllCount();
 		if (idx <= 0) {
