@@ -11,13 +11,14 @@ import { ConfigGamePlayer } from '../config/ConfigGamePlayer';
 
 type CapturedPiece = BoardPiece | '';
 
-const pieceValue = new Map<BoardPiece, number>([
-	['p', 1],
-	['b', 3],
-	['n', 3],
-	['r', 5],
-	['q', 9],
-]);
+const pieceValue: Record<BoardPiece, number> = {
+	'p': 1,
+	'b': 3,
+	'n': 3,
+	'r': 5,
+	'q': 9,
+	'k': 0,
+};
 
 export type CapturesState = {
 	captures: Record<EngineColor, CapturedPiece[]>,
