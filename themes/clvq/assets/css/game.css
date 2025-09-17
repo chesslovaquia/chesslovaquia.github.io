@@ -43,3 +43,11 @@
 		font-size: 75%;
 	}
 }
+
+.game-material-white {
+	color: #cccccc;
+}
+
+.game-material-black {
+	color: #111111;
+}

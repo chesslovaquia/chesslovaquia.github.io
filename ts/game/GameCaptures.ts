@@ -101,9 +101,9 @@ export class GameCaptures {
 	}
 
 	private getPieceElement(side: EngineColor, piece: BoardPiece): HTMLElement {
-		let color = 'w3-text-white';
+		let color = 'game-material-white';
 		if (side === 'w') {
-			color = 'w3-text-black';
+			color = 'game-material-black';
 		}
 		const elem = document.createElement('i');
 		elem.classList.add('fas', pieceSymbol[piece], color);
