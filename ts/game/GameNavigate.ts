@@ -1,12 +1,14 @@
 // Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com>
 // See LICENSE file.
 
-import { GameEngine } from '../engine/GameEngine';
+import { GameEngine  } from '../engine/GameEngine';
+import { EngineColor } from '../engine/GameEngine';
 
 import { ConfigGameUI } from '../config/ConfigGameUI';
 
-import { GameBoard } from '../board/GameBoard';
-import { BoardMove } from '../board/GameBoard';
+import { GameBoard           } from '../board/GameBoard';
+import { BoardMove           } from '../board/GameBoard';
+import { BoardPromotionPiece } from '../board/GameBoard';
 
 import { GameCaptures  } from './GameCaptures';
 import { CapturesState } from './GameCaptures';
@@ -137,5 +139,11 @@ export class GameNavigate {
 			}
 			this.captures.setState(state.captures);
 		}
+	}
+
+	public addPromotion(side: EngineColor, piece: BoardPromotionPiece): void {
+		console.debug('Game nav add promotion:', side, piece);
+		this.captures.addPromotion(side, piece);
+		this.addPosition();
 	}
 }

@@ -125,7 +125,7 @@ export class GameState {
 	}
 
 	public isFirstMove(): boolean {
-		console.debug('State if first move, count:', this.movesCount);
+		console.debug('State is first move, count:', this.movesCount);
 		return this.movesCount < 2 ? true : false;
 	}
 }

@@ -4,7 +4,8 @@
 import { GameEngine  } from '../engine/GameEngine';
 import { EngineColor } from '../engine/GameEngine';
 
-import { BoardPiece } from '../board/GameBoard';
+import { BoardPiece          } from '../board/GameBoard';
+import { BoardPromotionPiece } from '../board/GameBoard';
 
 import { ConfigGameUI     } from '../config/ConfigGameUI';
 import { ConfigGamePlayer } from '../config/ConfigGamePlayer';
@@ -33,6 +34,7 @@ export class GameCaptures {
 	private side: Record<EngineColor, ConfigGamePlayer>;
 	private captures: Record<EngineColor, CapturedPiece[]>;
 	private count: Record<EngineColor, number[]>;
+	private promotion: Record<EngineColor, number>;
 
 	constructor(ui: ConfigGameUI, engine: GameEngine) {
 		this.engine = engine;
@@ -41,6 +43,7 @@ export class GameCaptures {
 		this.side = {'w': this.p1, 'b': this.p2};
 		this.captures = {'w': [], 'b': []};
 		this.count = {'w': [], 'b': []};
+		this.promotion = {'w': 0, 'b': 0};
 	}
 
 	private getIndex(): number {
@@ -71,6 +74,10 @@ export class GameCaptures {
 		this.count[turn].push(current);
 		// Side.
 		current = this.count[side].at(-1) || 0;
+		if (this.promotion[side] > 0) {
+			current += this.promotion[side];
+			this.promotion[side] = 0;
+		}
 		if (capture) {
 			const value = pieceValue[capture];
 			this.count[side].push(current + value);
@@ -130,5 +137,10 @@ export class GameCaptures {
 			// White is up material.
 			this.side['w'].materialCount!.textContent = `+${diff}`;
 		}
+	}
+
+	public addPromotion(side: EngineColor, piece: BoardPromotionPiece): void {
+		console.debug('Captures add promotion:', side, piece);
+		this.promotion[side] = pieceValue[piece] - pieceValue['p'];
 	}
 }

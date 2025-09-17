@@ -18,10 +18,10 @@ export class GamePromotion {
 	private readonly nav:     GameNavigate;
 
 	constructor(s: GameState, m: GameMove, d: GameDisplay, n: GameNavigate) {
-		this.state   = s;
-		this.move    = m;
+		this.state = s;
+		this.move = m;
 		this.display = d;
-		this.nav     = n;
+		this.nav = n;
 	}
 
 	public handle(move: EngineMove): void {
@@ -60,14 +60,15 @@ export class GamePromotion {
 		}
 	}
 
-	private finish(move: EngineMove, side: BoardColor, piece: string): void {
+	private finish(move: EngineMove, side: BoardColor, piece: BoardPromotionPiece): void {
 		console.log('Pawn promotion done:', move, side, piece);
 		this.display.updateStatus();
+		const engineColor = side === 'white' ? 'w' : 'b';
+		this.nav.addPromotion(engineColor, piece);
 		this.saveState();
 	}
 
 	private saveState(): void {
-		this.nav.addPosition();
 		this.state.save();
 		console.debug('Pawn promotion state saved.');
 	}
