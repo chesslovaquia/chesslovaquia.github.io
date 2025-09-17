@@ -61,12 +61,16 @@ export class GameCaptures {
 	}
 
 	private addCount(turn: EngineColor, side: EngineColor, capture: CapturedPiece): void {
-		this.count[turn].push(0);
+		// Opponent.
+		let current = this.count[turn].at(-1) || 0;
+		this.count[turn].push(current);
+		// Side.
+		current = this.count[side].at(-1) || 0;
 		if (capture) {
 			const value = pieceValue[capture];
-			this.count[side].push(value);
+			this.count[side].push(current + value);
 		} else {
-			this.count[side].push(0);
+			this.count[side].push(current);
 		}
 	}
 
