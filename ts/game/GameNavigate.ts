@@ -146,4 +146,8 @@ export class GameNavigate {
 		this.captures.addPromotion(side, piece);
 		this.addPosition();
 	}
+
+	public flip(): void {
+		this.captures.flip();
+	}
 }

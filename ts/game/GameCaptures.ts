@@ -44,6 +44,7 @@ export class GameCaptures {
 	private captures: Record<EngineColor, CapturedPiece[]>;
 	private count: Record<EngineColor, number[]>;
 	private promotion: Record<EngineColor, number>;
+	private orientation: EngineColor;
 
 	constructor(ui: ConfigGameUI, engine: GameEngine) {
 		this.engine = engine;
@@ -53,6 +54,7 @@ export class GameCaptures {
 		this.captures = {'w': [], 'b': []};
 		this.count = {'w': [], 'b': []};
 		this.promotion = {'w': 0, 'b': 0};
+		this.orientation = 'w';
 	}
 
 	private getIndex(): number {
@@ -169,4 +171,17 @@ export class GameCaptures {
 		console.debug('Captures add promotion:', side, piece);
 		this.promotion[side] = pieceValue[piece] - pieceValue['p'];
 	}
+
+	public flip(): void {
+		this.clearAllMaterial();
+		if (this.orientation === 'w') {
+			this.side = {'w': this.p2, 'b': this.p1};
+			this.orientation = 'b';
+		} else {
+			this.side = {'w': this.p1, 'b': this.p2};
+			this.orientation = 'w';
+		}
+		this.setPosition(this.getIndex()).then(() => { return; });
+	}
+
 }

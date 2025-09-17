@@ -209,6 +209,7 @@ export class ChessGame {
 	private toggleOrientation(): void {
 		this.board.flip();
 		this.clock.flip();
+		this.nav.flip();
 	}
 
 	private flipBoard(): void {
