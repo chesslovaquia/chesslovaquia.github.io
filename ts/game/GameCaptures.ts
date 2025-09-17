@@ -132,6 +132,8 @@ export class GameCaptures {
 	}
 
 	public async setPosition(idx: number): Promise<void> {
+		this.clearAllMaterial();
+		this.clearAllCount();
 		if (idx <= 0) {
 			return;
 		}
@@ -149,12 +151,16 @@ export class GameCaptures {
 		}
 	}
 
+	private clearAllCount(): void {
+		this.side['w'].materialCount!.textContent = '';
+		this.side['b'].materialCount!.textContent = '';
+	}
+
 	private async updateCount(idx: number): Promise<void> {
+		this.clearAllCount();
 		const wCount = this.count['w'].at(idx) || 0;
 		const bCount = this.count['b'].at(idx) || 0;
 		let diff = wCount - bCount;
-		this.side['w'].materialCount!.textContent = '';
-		this.side['b'].materialCount!.textContent = '';
 		if (diff === 0) {
 			return;
 		} else if (diff < 0) {

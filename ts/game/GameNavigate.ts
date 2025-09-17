@@ -61,6 +61,7 @@ export class GameNavigate {
 		}
 		this.index--;
 		this.board.setPosition(this.pos[this.index], this.moves[this.index - 1]);
+		this.captures.setPosition(this.index);
 		if (this.index === 0) {
 			utils.disableButton(this.ui.navBackward);
 			utils.disableButton(this.ui.navFirstMove);
@@ -72,6 +73,7 @@ export class GameNavigate {
 		this.board.disable();
 		this.index = 0;
 		this.board.setPosition(this.pos[this.index], undefined);
+		this.captures.setPosition(this.index);
 		utils.disableButton(this.ui.navBackward);
 		utils.disableButton(this.ui.navFirstMove);
 		utils.enableButton(this.ui.navForward);
@@ -82,6 +84,7 @@ export class GameNavigate {
 		console.debug('Game nav forward.');
 		this.index++;
 		this.board.setPosition(this.pos[this.index], this.moves[this.index - 1]);
+		this.captures.setPosition(this.index);
 		if (this.index === this.pos.length - 1) {
 			utils.disableButton(this.ui.navForward);
 			utils.disableButton(this.ui.navLastMove);
@@ -97,6 +100,7 @@ export class GameNavigate {
 		console.debug('Game nav last move.');
 		this.index = this.pos.length - 1;
 		this.board.setPosition(this.pos[this.index], this.moves[this.index - 1]);
+		this.captures.setPosition(this.index);
 		utils.enableButton(this.ui.navBackward);
 		utils.enableButton(this.ui.navFirstMove);
 		utils.disableButton(this.ui.navForward);
