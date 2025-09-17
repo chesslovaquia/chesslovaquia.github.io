@@ -21,6 +21,15 @@ const pieceValue: Record<BoardPiece, number> = {
 	'k': 0,
 };
 
+const pieceSymbol: Record<BoardPiece, string> = {
+	'p': 'fa-chess-pawn',
+	'b': 'fa-chess-bishop',
+	'n': 'fa-chess-knight',
+	'r': 'fa-chess-rook',
+	'q': 'fa-chess-queen',
+	'k': 'fa-chess-king',
+}
+
 export type CapturesState = {
 	captures: Record<EngineColor, CapturedPiece[]>,
 	count: Record<EngineColor, number[]>,
@@ -86,8 +95,20 @@ export class GameCaptures {
 		}
 	}
 
+	private clearAllMaterial(): void {
+		this.side['w'].material!.replaceChildren();
+		this.side['b'].material!.replaceChildren();
+	}
+
+	private getPieceElement(piece: BoardPiece): HTMLElement {
+		const elem = document.createElement('i');
+		elem.classList.add('fas', pieceSymbol[piece]);
+		return elem;
+	}
+
 	private async updateMaterial(side: EngineColor, piece: BoardPiece): Promise<void> {
-		this.side[side].material!.textContent += piece;
+		const elem = this.getPieceElement(piece);
+		this.side[side].material!.appendChild(elem);
 	}
 
 	public getState(): CapturesState {
@@ -100,6 +121,7 @@ export class GameCaptures {
 	public setState(state: CapturesState): void {
 		this.captures = state.captures;
 		this.count = state.count;
+		this.clearAllMaterial();
 		this.setPosition(this.getIndex());
 	}
 
