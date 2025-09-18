@@ -24,8 +24,8 @@ export class ConfigGameUI {
 
 	constructor(board: HTMLElement) {
 		this.board = board;
-		this.player1 = new ConfigGamePlayer("1");
-		this.player2 = new ConfigGamePlayer("2");
+		this.player1 = new ConfigGamePlayer('1');
+		this.player2 = new ConfigGamePlayer('2');
 		this.description = document.getElementById('gameDescription');
 		this.status = document.getElementById('gameStatus');
 		this.outcome = document.getElementById('gameOutcome');

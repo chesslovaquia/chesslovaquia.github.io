@@ -3,7 +3,7 @@
 
 import { ConfigError } from './ConfigError';
 
-type PlayerID = "1" | "2";
+type PlayerID = '1' | '2';
 
 export class ConfigGamePlayer {
 	public readonly info: HTMLElement | null;
