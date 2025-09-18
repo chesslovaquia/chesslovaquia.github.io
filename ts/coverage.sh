@@ -1,2 +1,4 @@
 #!/bin/sh
-exec npx vitest run --coverage
+set -eu
+SUITE="${1:-}"
+exec npx vitest run "${SUITE}" --coverage
