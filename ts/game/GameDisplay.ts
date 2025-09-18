@@ -14,13 +14,10 @@ export class GameDisplay {
 	private readonly engine: GameEngine;
 	private readonly move:   GameMove;
 
-	private firstMove: boolean;
-
 	constructor(cfg: GameConfig, engine: GameEngine, move: GameMove) {
 		this.cfg = cfg;
 		this.engine = engine;
 		this.move = move;
-		this.firstMove = true;
 	}
 
 	private setStatus(status: string): void {
@@ -74,10 +71,6 @@ export class GameDisplay {
 		if (this.cfg.ui.description) {
 			this.cfg.ui.description.textContent = desc;
 		}
-	}
-
-	public disableFirstMove(): void {
-		this.firstMove = false;
 	}
 
 	private showOutcome(status: string) {
