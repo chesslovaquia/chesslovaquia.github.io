@@ -44,6 +44,7 @@ export class Clvq {
 			time: time,
 			increment: 0,
 			desc: `${days} ${unit}`,
+			correspondence: true,
 		});
 	}
 }

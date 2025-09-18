@@ -101,6 +101,9 @@ export class GameState {
 		if (game) {
 			console.debug('State setup new game:', game);
 			this.clock.setupNewGame(game.time, game.increment);
+			if (game.correspondence) {
+				this.clock.disableFirstMoveTimer();
+			}
 			this.save();
 			return true;
 		}

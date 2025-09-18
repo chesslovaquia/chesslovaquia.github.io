@@ -305,4 +305,8 @@ export class GameClock {
 			this.orientation = 'w';
 		}
 	}
+
+	public disableFirstMoveTimer(): void {
+		this.firstMove = false;
+	}
 }
