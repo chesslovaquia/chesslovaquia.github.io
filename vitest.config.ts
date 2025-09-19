@@ -5,6 +5,7 @@ export default defineConfig({
 		environment: 'happy-dom',
 		setupFiles: 'ts/testing/testing-setup.ts',
 		silent: true,
+		pool: 'threads',
 		include: ['ts/testing/**/*_test.ts'],
 		exclude: [
 			'node_modules/**',
