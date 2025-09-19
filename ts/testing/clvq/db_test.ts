@@ -9,3 +9,8 @@ test('open', () => {
 	const db = new ClvqIndexedDB(Store.state);
 	expect(db.store).toBe('state');
 });
+
+test('setItem', () => {
+	const db = new ClvqIndexedDB(Store.state);
+	db.setItem('test', 'ing');
+});

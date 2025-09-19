@@ -7,17 +7,18 @@
     "test:coverage": "ts/coverage.sh"
   },
   "dependencies": {
-    "chess.js": "^1.4.0",
-    "chessground": "^9.2.1"
+    "chess.js": "1.4.0",
+    "chessground": "9.2.1"
   },
   "devDependencies": {
-    "@types/chess.js": "^0.13.7",
-    "@vitest/coverage-v8": "^3.2.4",
-    "csstree-validator": "^4.0.1",
-    "happy-dom": "^18.0.1",
-    "html-validate": "^10.0.0",
-    "npm-check-updates": "^18.1.0",
-    "typescript": "^5.9.2",
-    "vitest": "^3.2.4"
+    "@types/chess.js": "0.13.7",
+    "@vitest/coverage-v8": "3.2.4",
+    "csstree-validator": "4.0.1",
+    "fake-indexeddb": "6.2.2",
+    "happy-dom": "18.0.1",
+    "html-validate": "10.0.0",
+    "npm-check-updates": "18.1.0",
+    "typescript": "5.9.2",
+    "vitest": "3.2.4"
   }
 }
