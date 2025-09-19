@@ -1,7 +1,7 @@
 // Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com>
 // See LICENSE file.
 
-import { test, expect } from 'vitest';
+import { test, expect, describe } from 'vitest';
 
 import { ClvqIndexedDB, Store } from '../../clvq/ClvqIndexedDB';
 
@@ -10,7 +10,23 @@ test('open', () => {
 	expect(db.store).toBe('state');
 });
 
-test('setItem', () => {
+describe('db', () => {
 	const db = new ClvqIndexedDB(Store.state);
-	db.setItem('test', 'ing');
+	test('setItem', () => {
+		db.setItem('test', 'ing');
+	});
+	test('hasItem', () => {
+		db.hasItem('testing');
+	});
+	test('getItem', () => {
+		db.getItem('testing');
+	});
+	test('removeItem', () => {
+		db.removeItem('testing');
+	});
+	test('clearAll', () => {
+		db.clearAll();
+	});
 });
+
+
