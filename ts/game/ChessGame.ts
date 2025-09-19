@@ -140,7 +140,7 @@ export class ChessGame {
 	private reset(): void {
 		console.log('Game reset!');
 		this.state.reset();
-		window.location.replace('/');
+		window.location.assign('/');
 	}
 
 	private disableBoard(): void {
@@ -161,7 +161,7 @@ export class ChessGame {
 			if (done) {
 				this.start();
 			} else {
-				window.location.replace('/');
+				window.location.assign('/');
 			}
 		});
 	}
