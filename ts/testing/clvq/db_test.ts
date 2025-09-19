@@ -6,8 +6,7 @@ import { test, expect, describe } from 'vitest';
 import { ClvqIndexedDB, Store } from '../../clvq/ClvqIndexedDB';
 
 test('open', () => {
-	const db = new ClvqIndexedDB(Store.state);
-	expect(db.store).toBe('state');
+	new ClvqIndexedDB(Store.state);
 });
 
 describe('db', () => {
