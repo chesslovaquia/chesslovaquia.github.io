@@ -1,3 +1,5 @@
 #!/bin/sh
 set -eu
-exec npx vitest run
+SILENT="${VITEST_SILENT:-passed-only}"
+SUITE="${1:-}"
+exec npx vitest run "${SUITE}" --silent="${SILENT}"

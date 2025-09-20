@@ -9,7 +9,7 @@ import { GameConfig } from '../../game/GameConfig';
 import { ChessGame  } from '../../game/ChessGame';
 import { GameError  } from '../../game/GameError';
 
-import '../../game/game';
+import { gameInit } from '../../game/game';
 
 const board = document.createElement('div');
 
@@ -26,20 +26,29 @@ beforeEach(() => {
 	window.innerHeight = origWindowInnerHeight;
 });
 
-describe('DOM content load', () => {
+describe('game', () => {
 	test('screen load', () => {
-		document.dispatchEvent(new Event('DOMContentLoaded'));
+		gameInit();
 	});
-	test('game init', () => {
+	test('init', () => {
 		window.location.pathname = '/play/mobile/';
 		window.innerWidth = 360;
 		window.innerHeight = 640;
-		document.dispatchEvent(new Event('DOMContentLoaded'));
+		gameInit();
+	});
+	test('board error', () => {
+		window.location.pathname = '/play/mobile/';
+		window.innerWidth = 360;
+		window.innerHeight = 640;
+		document.getElementById('chessboard')?.remove();
+		expect(() => {
+			gameInit();
+		}).toThrow(GameError);
 	});
 });
 
-describe('ChessGame', () => {
-	test('init', () => {
-		new ChessGame(cfg);
-	});
-});
+//~ describe('ChessGame', () => {
+	//~ test('init', () => {
+		//~ new ChessGame(cfg);
+	//~ });
+//~ });

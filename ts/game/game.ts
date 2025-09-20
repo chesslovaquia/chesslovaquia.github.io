@@ -11,24 +11,28 @@ import { ChessGame  } from './ChessGame';
 import { GameConfig } from './GameConfig';
 import { GameError  } from './GameError';
 
-// Initialize when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
+export function gameInit(): void {
 	const loaded = screenLoad(screenDelay);
 	if (loaded) {
 		console.debug('Screen loaded.');
 	} else {
-		window.addEventListener('resize', () => screenResize(screenDelay));
-		try {
-			const board = document.getElementById('chessboard');
-			if (board) {
+		const board = document.getElementById('chessboard');
+		if (board) {
+			window.addEventListener('resize', () => screenResize(screenDelay));
+			try {
+				console.debug('game init board:', board);
 				const cfg = new GameConfig(board);
 				new ChessGame(cfg);
-			} else {
-				throw new GameError('Chess board not found!');
+			} catch (error) {
+				clvqInternalError(error as Error);
+				throw error;
 			}
-		} catch (error) {
-			clvqInternalError(error as Error);
-			throw error;
+		} else {
+			console.error('game init board not found!');
+			throw new GameError('Chess board not found!');
 		}
 	}
-});
+}
+
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => { gameInit() });
