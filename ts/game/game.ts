@@ -11,12 +11,12 @@ import { screenLoad   } from './screen';
 import { screenResize } from './screen';
 import { screenDelay  } from './screen';
 
-import { GameError    } from './GameError';
-import { ChessGame    } from './ChessGame';
-import { GameConfig   } from './GameConfig';
-import { GameClock    } from './GameClock';
-import { GameNavigate } from './GameNavigate';
-import { GameState    } from './GameState';
+import { GameError     } from './GameError';
+import { ChessGame     } from './ChessGame';
+import { GameConfig    } from './GameConfig';
+import { GameClock     } from './GameClock';
+import { GameNavigate  } from './GameNavigate';
+import { GameStateImpl } from './GameState';
 
 export function gameInit(): void {
 	const loaded = screenLoad(screenDelay);
@@ -33,7 +33,7 @@ export function gameInit(): void {
 				const board = new ChessgroundBoard(cfg, engine);
 				const clock = new GameClock(cfg.ui, engine);
 				const nav = new GameNavigate(cfg.ui, board, engine);
-				const state = new GameState(engine, clock, nav);
+				const state = new GameStateImpl(engine, clock, nav);
 				const game = new ChessGame({
 					cfg: cfg,
 					engine: engine,

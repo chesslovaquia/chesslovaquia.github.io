@@ -22,7 +22,17 @@ type StateData = {
 	orientation: EngineColor,
 }
 
-export class GameState {
+export interface GameState {
+	reset():             void;
+	save():              void;
+	load():              Promise<boolean>;
+	setupNewGame():      Promise<boolean>;
+	getOrientation():    EngineColor;
+	toggleOrientation(): void;
+	gameDescription():   string;
+}
+
+export class GameStateImpl implements GameState {
 	private readonly id:     string;
 	private readonly engine: GameEngine;
 	private readonly clock:  GameClock;
