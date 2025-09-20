@@ -39,10 +39,27 @@ export function mockConfigGameUI(): string {
 	`;
 }
 
-const boardUI = document.createElement('div');
-boardUI.id = 'testing-chessboard';
+export class TestGameConfig {
+	public readonly boardUI: HTMLElement;
+
+	public stateLoad: boolean = false;
+	public stateSetupNewGame: boolean = false;
+	public stateOrientation: EngineColor = 'w';
+
+	constructor() {
+		this.boardUI = document.createElement('div');
+		this.boardUI.id = 'testing-chessboard';
+	}
+}
 
 export class TestGameState implements GameState {
+
+	private readonly cfg: TestGameConfig;
+
+	constructor(cfg: TestGameConfig) {
+		this.cfg = cfg;
+	}
+
 	public reset(): void {
 		return;
 	}
@@ -52,15 +69,15 @@ export class TestGameState implements GameState {
 	}
 
 	public async load(): Promise<boolean> {
-		return false;
+		return this.cfg.stateLoad;
 	}
 
 	public async setupNewGame(): Promise<boolean> {
-		return false;
+		return this.cfg.stateSetupNewGame;
 	}
 
 	public getOrientation(): EngineColor {
-		return 'w';
+		return this.cfg.stateOrientation;
 	}
 
 	public toggleOrientation(): void {
@@ -72,8 +89,8 @@ export class TestGameState implements GameState {
 	}
 }
 
-export function mockGameDeps(): GameDeps {
-	const deps = newGameDeps(boardUI);
-	deps.state = new TestGameState();
+export function mockGameDeps(cfg: TestGameConfig): GameDeps {
+	const deps = newGameDeps(cfg.boardUI);
+	deps.state = new TestGameState(cfg);
 	return deps;
 }
