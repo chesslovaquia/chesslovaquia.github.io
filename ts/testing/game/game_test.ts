@@ -5,11 +5,12 @@ import { test, expect, beforeEach, describe } from 'vitest';
 
 import { mockConfigGameUI } from '../testing';
 
+import { ConfigError } from '../../config/ConfigError';
+
 import { GameConfig } from '../../game/GameConfig';
 import { ChessGame  } from '../../game/ChessGame';
 import { GameError  } from '../../game/GameError';
-
-import { gameInit } from '../../game/game';
+import { gameInit   } from '../../game/game';
 
 const board = document.createElement('div');
 
@@ -44,6 +45,15 @@ describe('game', () => {
 		expect(() => {
 			gameInit();
 		}).toThrow(GameError);
+	});
+	test('internal error', () => {
+		window.location.pathname = '/play/mobile/';
+		window.innerWidth = 360;
+		window.innerHeight = 640;
+		document.getElementById('gamePlayer1')?.remove();
+		expect(() => {
+			gameInit();
+		}).toThrow(ConfigError);
 	});
 });
 

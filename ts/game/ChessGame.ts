@@ -38,7 +38,6 @@ export class ChessGame {
 	private active: boolean;
 
 	constructor(config: GameConfig) {
-		console.debug('Game config:', config);
 		this.cfg = config;
 		this.active = false;
 		this.engine = new ChessjsEngine();

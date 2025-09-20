@@ -3,6 +3,10 @@
 
 export function mockConfigGameUI(): string {
 	return `
+	<div id="clvqInternalError">
+		<div id="clvqInternalErrorMessage"></div>
+	</div>
+
 	<div id="chessboard"></div>
 
 	<div id="gamePlayer1"></div>

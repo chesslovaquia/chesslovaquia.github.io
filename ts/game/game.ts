@@ -20,7 +20,7 @@ export function gameInit(): void {
 		if (board) {
 			window.addEventListener('resize', () => screenResize(screenDelay));
 			try {
-				console.debug('game init board:', board);
+				console.debug('game init board:', board.id);
 				const cfg = new GameConfig(board);
 				new ChessGame(cfg);
 			} catch (error) {
