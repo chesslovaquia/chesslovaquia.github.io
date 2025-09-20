@@ -25,7 +25,7 @@ afterEach(() => {
 });
 
 describe('ChessGame', () => {
-	test('init', async () => {
+	test('setup', async () => {
 		const game = newTestGame(cfg);
 		const spyDisableBoard = vi.spyOn(game, 'disableBoard' as any);
 		const spyStart = vi.spyOn(game, 'start' as any);
@@ -41,15 +41,17 @@ describe('ChessGame', () => {
 			expect(spyToggleOrientation).not.toHaveBeenCalled();
 		});
 	});
-	test('state load', async () => {
+	test('start', async () => {
 		cfg.stateLoad = true;
 		const game = newTestGame(cfg);
 		const spyStart = vi.spyOn(game, 'start' as any);
 		const spyStop = vi.spyOn(game, 'stop' as any);
 		const spySetup = vi.spyOn(game, 'setup' as any);
+		const spyEnableBoard = vi.spyOn(game, 'enableBoard' as any);
 		game.init();
 		await vi.waitFor(() => {
 			expect(spyStart).toHaveBeenCalledTimes(1);
+			expect(spyEnableBoard).toHaveBeenCalledTimes(1);
 			expect(spyStop).not.toHaveBeenCalled();
 			expect(spySetup).not.toHaveBeenCalled();
 		});
