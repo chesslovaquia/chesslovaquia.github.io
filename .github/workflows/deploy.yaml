@@ -44,6 +44,9 @@ jobs:
       - name: Hugo Install
         run: sudo hugo/install.sh
 
+      - name: Install deps
+        run: make ci-deps
+
       - name: Make check
         run: make check
 

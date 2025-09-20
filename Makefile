@@ -14,17 +14,24 @@ distclean: clean
 
 # container targets
 
+.PHONY: ci-deps
+ci-deps:
+	ts/ci-deps.sh
+
 .PHONY: all
-all: build
+all: deps build
+
+.PHONY: deps
+deps:
+	ts/mkdeps.sh
 
 .PHONY: build
 build:
-	hugo/mkdeps.sh
 	hugo/build.sh
 	hugo/post-build.sh
 
 .PHONY: check
-check: all
+check: build
 	shellcheck ./*.sh docker/*.sh hugo/*.sh ts/*.sh vendor/*.sh
 	ts/check.sh
 	@echo "node `node --version`"
