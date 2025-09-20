@@ -25,4 +25,15 @@ describe('ChessGame', () => {
 		const game = newTestGame(cfg);
 		game.init();
 	});
+	test('state load', () => {
+		cfg.stateLoad = true;
+		const game = newTestGame(cfg);
+		game.init();
+	});
+	test('state load toggle orientation', () => {
+		cfg.stateLoad = true;
+		cfg.stateOrientation = 'b';
+		const game = newTestGame(cfg);
+		game.init();
+	});
 });
