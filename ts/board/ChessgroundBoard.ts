@@ -12,12 +12,13 @@ import { GameConfig } from '../game/GameConfig';
 
 import { EventBoardMove } from '../events/EventBoardMove';
 
+import { GameBoard           } from './GameBoard';
 import { BoardDests          } from './GameBoard';
 import { BoardMove           } from './GameBoard';
 import { BoardSquare         } from './GameBoard';
 import { BoardPromotionPiece } from './GameBoard';
 
-export class ChessgroundBoard {
+export class ChessgroundBoard implements GameBoard {
 	private readonly cfg:    GameConfig;
 	private readonly engine: GameEngine;
 	private readonly board:  ChessgroundApi;

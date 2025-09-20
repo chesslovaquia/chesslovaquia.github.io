@@ -12,11 +12,12 @@ import { BoardPiece  } from '../board/GameBoard';
 
 import { EngineError } from './EngineError';
 
+import { GameEngine  } from './GameEngine';
 import { EngineMove  } from './GameEngine';
 import { EngineColor } from './GameEngine';
 import { MovesSAN    } from './GameEngine';
 
-export class ChessjsEngine {
+export class ChessjsEngine implements GameEngine {
 	private readonly game: Chess;
 
 	constructor() {
