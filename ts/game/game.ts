@@ -12,11 +12,29 @@ import { screenResize } from './screen';
 import { screenDelay  } from './screen';
 
 import { GameError     } from './GameError';
+import { GameDeps      } from './GameDeps';
 import { ChessGame     } from './ChessGame';
 import { GameConfig    } from './GameConfig';
 import { GameClock     } from './GameClock';
 import { GameNavigate  } from './GameNavigate';
 import { GameStateImpl } from './GameState';
+
+export function gameDeps(boardUI: HTMLElement): GameDeps {
+	const cfg = new GameConfig(boardUI);
+	const engine = new ChessjsEngine();
+	const board = new ChessgroundBoard(cfg, engine);
+	const clock = new GameClock(cfg.ui, engine);
+	const nav = new GameNavigate(cfg.ui, board, engine);
+	const state = new GameStateImpl(engine, clock, nav);
+	return {
+		cfg: cfg,
+		engine: engine,
+		board: board,
+		clock: clock,
+		nav: nav,
+		state: state,
+	};
+}
 
 export function gameInit(): void {
 	const loaded = screenLoad(screenDelay);
@@ -28,20 +46,7 @@ export function gameInit(): void {
 			window.addEventListener('resize', () => screenResize(screenDelay));
 			try {
 				console.debug('game init board:', boardUI.id);
-				const cfg = new GameConfig(boardUI);
-				const engine = new ChessjsEngine();
-				const board = new ChessgroundBoard(cfg, engine);
-				const clock = new GameClock(cfg.ui, engine);
-				const nav = new GameNavigate(cfg.ui, board, engine);
-				const state = new GameStateImpl(engine, clock, nav);
-				const game = new ChessGame({
-					cfg: cfg,
-					engine: engine,
-					board: board,
-					clock: clock,
-					nav: nav,
-					state: state,
-				});
+				const game = new ChessGame(gameDeps(boardUI));
 				game.init();
 			} catch (error) {
 				clvqInternalError(error as Error);
