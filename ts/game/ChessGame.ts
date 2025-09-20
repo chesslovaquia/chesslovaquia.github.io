@@ -4,9 +4,9 @@
 import { GameBoard } from '../board/GameBoard';
 import { BoardMove } from '../board/GameBoard';
 
-import { GameEngine    } from '../engine/GameEngine';
-import { EngineColor   } from '../engine/GameEngine';
-import { EngineMove    } from '../engine/GameEngine';
+import { GameEngine  } from '../engine/GameEngine';
+import { EngineColor } from '../engine/GameEngine';
+import { EngineMove  } from '../engine/GameEngine';
 
 import { EventBoardMove    } from '../events/EventBoardMove';
 import { EventClockTimeout } from '../events/EventClockTimeout';

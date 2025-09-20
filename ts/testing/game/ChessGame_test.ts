@@ -4,11 +4,13 @@
 import { test, expect, beforeEach, describe } from 'vitest';
 
 import { mockConfigGameUI } from '../testing';
+import { mockGameDeps     } from '../testing';
 
-import { gameDeps  } from '../../game/game';
 import { ChessGame } from '../../game/ChessGame';
 
-const boardUI = document.createElement('div');
+function newTestGame(): ChessGame {
+	return new ChessGame(mockGameDeps());
+}
 
 beforeEach(() => {
 	document.body.innerHTML = mockConfigGameUI();
@@ -16,7 +18,7 @@ beforeEach(() => {
 
 describe('ChessGame', () => {
 	test('init', () => {
-		const game = new ChessGame(gameDeps(boardUI));
+		const game = newTestGame();
 		game.init();
 	});
 });

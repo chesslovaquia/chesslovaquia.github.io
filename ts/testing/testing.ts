@@ -1,6 +1,12 @@
 // Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com>
 // See LICENSE file.
 
+import { EngineColor } from '../engine/GameEngine';
+
+import { newGameDeps } from '../game/GameDeps';
+import { GameDeps    } from '../game/GameDeps';
+import { GameState   } from '../game/GameState';
+
 export function mockConfigGameUI(): string {
 	return `
 	<div id="clvqInternalError">
@@ -31,4 +37,43 @@ export function mockConfigGameUI(): string {
 	<button id="gameNavFirstMove"></button>
 	<button id="gameNavLastMove"></button>
 	`;
+}
+
+const boardUI = document.createElement('div');
+boardUI.id = 'testing-chessboard';
+
+export class TestGameState implements GameState {
+	public reset(): void {
+		return;
+	}
+
+	public save(): void {
+		return;
+	}
+
+	public async load(): Promise<boolean> {
+		return false;
+	}
+
+	public async setupNewGame(): Promise<boolean> {
+		return false;
+	}
+
+	public getOrientation(): EngineColor {
+		return 'w';
+	}
+
+	public toggleOrientation(): void {
+		return;
+	}
+
+	public gameDescription(): string {
+		return 't15+10';
+	}
+}
+
+export function mockGameDeps(): GameDeps {
+	const deps = newGameDeps(boardUI);
+	deps.state = new TestGameState();
+	return deps;
 }
