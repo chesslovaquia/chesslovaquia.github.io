@@ -1,11 +1,9 @@
 // Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com>
 // See LICENSE file.
 
-import { ChessgroundBoard } from '../board/ChessgroundBoard';
-import { GameBoard        } from '../board/GameBoard';
-import { BoardMove        } from '../board/GameBoard';
+import { GameBoard } from '../board/GameBoard';
+import { BoardMove } from '../board/GameBoard';
 
-import { ChessjsEngine } from '../engine/ChessjsEngine';
 import { GameEngine    } from '../engine/GameEngine';
 import { EngineColor   } from '../engine/GameEngine';
 import { EngineMove    } from '../engine/GameEngine';
@@ -13,6 +11,7 @@ import { EngineMove    } from '../engine/GameEngine';
 import { EventBoardMove    } from '../events/EventBoardMove';
 import { EventClockTimeout } from '../events/EventClockTimeout';
 
+import { GameDeps      } from './GameDeps';
 import { GameConfig    } from './GameConfig';
 import { GameDisplay   } from './GameDisplay';
 import { GameError     } from './GameError';
@@ -25,36 +24,33 @@ import { GameNavigate  } from './GameNavigate';
 import * as utils from '../clvq/utils';
 
 export class ChessGame {
+	private readonly cfg: GameConfig;
 	private readonly engine: GameEngine;
 	private readonly board: GameBoard;
-	private readonly cfg: GameConfig;
-	private readonly move: GameMove;
-	private readonly promotion: GamePromotion;
-	private readonly state: GameState;
-	private readonly display: GameDisplay;
 	private readonly clock: GameClock;
 	private readonly nav: GameNavigate;
+	private readonly state: GameState;
+	private readonly move: GameMove;
+	private readonly promotion: GamePromotion;
+	private readonly display: GameDisplay;
 
 	private active: boolean;
 
-	constructor(config: GameConfig) {
-		this.cfg = config;
+	constructor(deps: GameDeps) {
 		this.active = false;
-		this.engine = new ChessjsEngine();
-		this.board = new ChessgroundBoard(this.cfg, this.engine);
-		this.clock = new GameClock(this.cfg.ui, this.engine);
-		this.nav = new GameNavigate(this.cfg.ui, this.board, this.engine);
-		this.state = new GameState(this.engine, this.clock, this.nav);
+		this.cfg = deps.cfg;
+		this.engine = deps.engine;
+		this.board = deps.board;
+		this.clock = deps.clock;
+		this.nav = deps.nav;
+		this.state = deps.state;
 		this.move = new GameMove(this.engine, this.board);
 		this.display = new GameDisplay(this.cfg, this.engine, this.move);
 		this.promotion = new GamePromotion(this.state, this.move, this.display, this.nav);
-		if (this.board) {
-			this.setupEventListeners();
-			this.init();
-		}
+		this.setupEventListeners();
 	}
 
-	private init(): void {
+	public init(): void {
 		console.debug('Game init.');
 		this.board.init();
 		this.disableBoard();
