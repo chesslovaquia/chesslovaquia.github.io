@@ -13,9 +13,10 @@ export default defineConfig({
 			'js/**',
 		],
 		coverage: {
-			provider: 'v8',
+			provider: 'istanbul',
+			clean: true,
 			reporter: ['html'],
-			reportOnFailuer: true,
+			reportOnFailure: true,
 			include: ['ts/**/*.ts'],
 			exclude: [
 				'node_modules/**',
