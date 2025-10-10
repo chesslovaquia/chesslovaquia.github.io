@@ -6,12 +6,12 @@ LABEL version="250909"
 USER root:root
 WORKDIR /root
 
-ENV USER root
-ENV HOME /root
+ENV USER=root
+ENV HOME=/root
 
-ENV DEBIAN_FRONTEND noninteractive
+ENV DEBIAN_FRONTEND=noninteractive
 
-ENV APT_INSTALL bash openssl ca-certificates media-types less wget npm make shellcheck zip unzip
+ENV APT_INSTALL='bash openssl ca-certificates media-types less wget npm make shellcheck zip unzip'
 
 RUN apt-get clean \
 	&& apt-get update -yy \
@@ -31,8 +31,8 @@ RUN /bin/sh ./hugo/install.sh
 ARG DEVEL_UID=1000
 ARG DEVEL_GID=1000
 
-ENV DEVEL_UID ${DEVEL_UID}
-ENV DEVEL_GID ${DEVEL_GID}
+ENV DEVEL_UID=${DEVEL_UID}
+ENV DEVEL_GID=${DEVEL_GID}
 
 RUN groupadd -o -g ${DEVEL_GID} devel \
 	&& useradd -o -d /home/devel -m -c 'devel' -g ${DEVEL_GID} -u ${DEVEL_UID} devel \
@@ -50,13 +50,13 @@ RUN install -v -m 0750 -o devel -g devel -d /opt/clvq/site
 USER devel:devel
 WORKDIR /home/devel
 
-ENV USER devel
-ENV HOME /home/devel
+ENV USER=devel
+ENV HOME=/home/devel
 
 RUN npm version
 RUN npx --version
 RUN hugo version
 
-ENV CLVQ_ROOT http://localhost:8000
+ENV CLVQ_ROOT=http://localhost:8000
 
-ENTRYPOINT /usr/local/bin/user-login.sh
+ENTRYPOINT ["/usr/local/bin/user-login.sh"]
