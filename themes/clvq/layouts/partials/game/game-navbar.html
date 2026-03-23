@@ -2,20 +2,20 @@
 {{- $btnClass := $page.Site.Params.menuBtnClass }}
 <div class="w3-center">
 	<div class="w3-bar w3-large">
-		<button id="gameFlipBoard" class="w3-bar-item {{ $btnClass }}">
-			<i class="fas fa-retweet"></i>
+		<button id="gameFlipBoard" class="w3-bar-item {{ $btnClass }}" aria-label="Flip board">
+			<i class="fas fa-retweet" aria-hidden="true"></i>
 		</button>
-		<button id="gameNavFirstMove" class="w3-bar-item {{ $btnClass }}" disabled>
-			<i class="fas fa-angle-double-left"></i>
+		<button id="gameNavFirstMove" class="w3-bar-item {{ $btnClass }}" disabled aria-label="First move">
+			<i class="fas fa-angle-double-left" aria-hidden="true"></i>
 		</button>
-		<button id="gameNavBackward" class="w3-bar-item {{ $btnClass }}" disabled>
-			<i class="fas fa-angle-left"></i>
+		<button id="gameNavBackward" class="w3-bar-item {{ $btnClass }}" disabled aria-label="Previous move">
+			<i class="fas fa-angle-left" aria-hidden="true"></i>
 		</button>
-		<button id="gameNavForward" class="w3-bar-item {{ $btnClass }}" disabled>
-			<i class="fas fa-angle-right"></i>
+		<button id="gameNavForward" class="w3-bar-item {{ $btnClass }}" disabled aria-label="Next move">
+			<i class="fas fa-angle-right" aria-hidden="true"></i>
 		</button>
-		<button id="gameNavLastMove" class="w3-bar-item {{ $btnClass }}" disabled>
-			<i class="fas fa-angle-double-right"></i>
+		<button id="gameNavLastMove" class="w3-bar-item {{ $btnClass }}" disabled aria-label="Last move">
+			<i class="fas fa-angle-double-right" aria-hidden="true"></i>
 		</button>
 	</div>
 </div>

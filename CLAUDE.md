@@ -169,7 +169,15 @@ The app is currently fully standalone. All game state lives in the browser (Inde
 - Hugo handles the build pipeline; avoid bypassing it with raw `tsc` calls.
 - Test files live in `ts/testing/`, named `<Subject>_test.ts`.
 - Copyright headers required on all source files.
-- Responsive layouts: separate desktop (`#game-desktop`) and mobile (`#game-mobile`) DOM sections.
+- Responsive layouts: separate desktop (`play/desktop.md` → `game-desktop.html`) and mobile (`play/mobile.md` → `game-mobile.html`) pages; desktop is a 50/50 `w3-half` split, mobile is a vertical stack.
+
+### HTML & Layouts
+
+- Hugo partials live in `themes/clvq/layouts/partials/`. Game UI is split into `game/` (navbar, players, status) and `modal/` (promotion, outcome, setup, errors).
+- The `id=` attributes in HTML templates are the source of truth for DOM element IDs — they must match the `ElementIds.*` constants in `ts/clvq/ElementIds.ts` exactly.
+- Use only documented w3.css classes. For layout needs not covered by w3.css (e.g. flexbox), use an inline `style=` or add a class to `themes/clvq/assets/css/clvq.css` — do not invent w3.css class names.
+- Modal-specific JS (slider listeners, submit handlers) is written as inline `<script>` blocks directly inside the partial — this is the established pattern for `modal/` partials.
+- The pawn promotion modal uses Chessground's non-standard `<piece>` element for piece rendering — this is intentional and passes HTML validation via `.htmlvalidate.json` configuration.
 
 ---
 
@@ -177,6 +185,9 @@ The app is currently fully standalone. All game state lives in the browser (Inde
 
 - Hugo's asset pipeline compiles TypeScript — do not add a separate `tsconfig.json` build step.
 - `ConfigGameUI` validates DOM elements at init; tests must provide a complete mock DOM via `mockConfigGameUI()`.
-- `GameState` is async (IndexedDB); ensure `await` is used consistently when loading or saving state.
+- `GameState.save()` returns `Promise<void>` — callers that fire-and-forget it are fine for autosave, but don't assume state is persisted synchronously after the call returns.
+- `GameState.load()` and `setSetupData()` are both async; always `await` them in sequence to avoid race conditions.
 - `fake-indexeddb` must be imported in test setup (`ts/testing/testing-setup.ts`) before any storage code runs.
+- Never use raw string IDs in `document.getElementById()` — always use `ElementIds.*` from `ts/clvq/ElementIds.ts`.
+- `ChessGame` registers static event listeners (`EventBoardMove`, `EventClockTimeout`) in the constructor. Call `destroy()` before reinitializing a game instance to prevent listener stacking.
 - Board textures and Chessground CSS are vendored via `vendor/lila.sh` — do not edit them directly.
