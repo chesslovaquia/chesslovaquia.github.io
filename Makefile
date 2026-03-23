@@ -50,5 +50,4 @@ vendor:
 
 .PHONY: upgrade
 upgrade:
-	hugo/upgrade.sh
 	ts/upgrade.sh

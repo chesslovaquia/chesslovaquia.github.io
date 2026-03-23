@@ -1,4 +1,4 @@
-FROM debian:forky-20250908-slim
+FROM debian:forky-20260316-slim
 
 LABEL maintainer="Jeremías Casteglione <jrmsdev@gmail.com>"
 LABEL version="250909"
