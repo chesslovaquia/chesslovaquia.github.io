@@ -1,6 +1,8 @@
 // Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com>
 // See LICENSE file.
 
+import { ElementIds } from './ElementIds';
+
 function showSystemInfo(pre: HTMLElement): void {
 	const MB = 1024 * 1024;
 
@@ -22,7 +24,7 @@ function showSystemInfo(pre: HTMLElement): void {
 
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-	const systemInfo = document.getElementById('systemInfo');
+	const systemInfo = document.getElementById(ElementIds.systemInfo);
 	if (systemInfo) {
 		showSystemInfo(systemInfo);
 	}

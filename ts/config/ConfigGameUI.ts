@@ -4,6 +4,8 @@
 import { ConfigError      } from './ConfigError';
 import { ConfigGamePlayer } from './ConfigGamePlayer';
 
+import { ElementIds } from '../clvq/ElementIds';
+
 export class ConfigGameUI {
 	public readonly board: HTMLElement;
 
@@ -26,15 +28,15 @@ export class ConfigGameUI {
 		this.board = board;
 		this.player1 = new ConfigGamePlayer('1');
 		this.player2 = new ConfigGamePlayer('2');
-		this.description = document.getElementById('gameDescription');
-		this.status = document.getElementById('gameStatus');
-		this.outcome = document.getElementById('gameOutcome');
-		this.gameReset = document.getElementById('gameReset');
-		this.navBackward = document.getElementById('gameNavBackward') as HTMLButtonElement;
-		this.navForward = document.getElementById('gameNavForward') as HTMLButtonElement;
-		this.flipBoard = document.getElementById('gameFlipBoard') as HTMLButtonElement;
-		this.navFirstMove = document.getElementById('gameNavFirstMove') as HTMLButtonElement;
-		this.navLastMove = document.getElementById('gameNavLastMove') as HTMLButtonElement;
+		this.description = document.getElementById(ElementIds.gameDescription);
+		this.status = document.getElementById(ElementIds.gameStatus);
+		this.outcome = document.getElementById(ElementIds.gameOutcome);
+		this.gameReset = document.getElementById(ElementIds.gameReset);
+		this.navBackward = document.getElementById(ElementIds.gameNavBackward) as HTMLButtonElement;
+		this.navForward = document.getElementById(ElementIds.gameNavForward) as HTMLButtonElement;
+		this.flipBoard = document.getElementById(ElementIds.gameFlipBoard) as HTMLButtonElement;
+		this.navFirstMove = document.getElementById(ElementIds.gameNavFirstMove) as HTMLButtonElement;
+		this.navLastMove = document.getElementById(ElementIds.gameNavLastMove) as HTMLButtonElement;
 		this.validate();
 	}
 

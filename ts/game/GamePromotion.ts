@@ -11,6 +11,8 @@ import { GameMove     } from './GameMove';
 import { GameState    } from './GameState';
 import { GameNavigate } from './GameNavigate';
 
+import { ElementIds } from '../clvq/ElementIds';
+
 export class GamePromotion {
 	private readonly state:   GameState;
 	private readonly move:    GameMove;
@@ -43,7 +45,7 @@ export class GamePromotion {
 
 	private showModal(side: BoardColor, callback: (piece: BoardPromotionPiece) => void): void {
 		console.log('Pawn promotion show modal:', side);
-		const modal = document.getElementById(`${side}PawnPromotion`);
+		const modal = document.getElementById(`${side}${ElementIds.pawnPromotion}`);
 		if (modal) {
 			modal.style.display = 'block';
 			const handler = (evt: MouseEvent) => {

@@ -10,6 +10,8 @@ import { ConfigError } from '../../config/ConfigError';
 import { GameError  } from '../../game/GameError';
 import { gameInit   } from '../../game/game';
 
+import { ElementIds } from '../../clvq/ElementIds';
+
 beforeEach(() => {
 	document.body.innerHTML = mockConfigGameUI();
 	window.location.pathname = '/play/mobile/';
@@ -28,13 +30,13 @@ describe('game', () => {
 		gameInit();
 	});
 	test('board error', () => {
-		document.getElementById('chessboard')?.remove();
+		document.getElementById(ElementIds.chessboard)?.remove();
 		expect(() => {
 			gameInit();
 		}).toThrow(GameError);
 	});
 	test('internal error', () => {
-		document.getElementById('gamePlayer1')?.remove();
+		document.getElementById(`${ElementIds.gamePlayer}1`)?.remove();
 		expect(() => {
 			gameInit();
 		}).toThrow(ConfigError);

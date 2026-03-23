@@ -3,6 +3,8 @@
 
 import { ConfigError } from './ConfigError';
 
+import { ElementIds } from '../clvq/ElementIds';
+
 type PlayerID = '1' | '2';
 
 export class ConfigGamePlayer {
@@ -12,25 +14,25 @@ export class ConfigGamePlayer {
 	public readonly materialCount: HTMLElement | null;
 
 	constructor(id: PlayerID) {
-		this.info = document.getElementById(`gamePlayer${id}`);
-		this.clock = document.getElementById(`gameClock${id}`);
-		this.material = document.getElementById(`gameMaterial${id}`);
-		this.materialCount = document.getElementById(`gameMaterialCount${id}`);
+		this.info = document.getElementById(`${ElementIds.gamePlayer}${id}`);
+		this.clock = document.getElementById(`${ElementIds.gameClock}${id}`);
+		this.material = document.getElementById(`${ElementIds.gameMaterial}${id}`);
+		this.materialCount = document.getElementById(`${ElementIds.gameMaterialCount}${id}`);
 		this.validate(id);
 	}
 
 	private validate(id: PlayerID): void {
 		if (!this.info) {
-			throw new ConfigError(`gamePlayer${id}: element not found`);
+			throw new ConfigError(`${ElementIds.gamePlayer}${id}: element not found`);
 		}
 		if (!this.clock) {
-			throw new ConfigError(`gameClock${id}: element not found`);
+			throw new ConfigError(`${ElementIds.gameClock}${id}: element not found`);
 		}
 		if (!this.material) {
-			throw new ConfigError(`gameMaterial${id}: element not found`);
+			throw new ConfigError(`${ElementIds.gameMaterial}${id}: element not found`);
 		}
 		if (!this.materialCount) {
-			throw new ConfigError(`gameMaterialCount${id}: element not found`);
+			throw new ConfigError(`${ElementIds.gameMaterialCount}${id}: element not found`);
 		}
 	}
 }

@@ -7,6 +7,7 @@ import { ConfigError  } from '../../config/ConfigError';
 import { ConfigGameUI } from '../../config/ConfigGameUI';
 
 import { mockConfigGameUI } from '../testing';
+import { ElementIds       } from '../../clvq/ElementIds';
 
 const board = document.createElement('div');
 
@@ -22,55 +23,55 @@ describe('ConfigGameUI', () => {
 
 describe('ConfigGameUI error', () => {
 	test('gameDescription', () => {
-		document.getElementById('gameDescription')?.remove();
+		document.getElementById(ElementIds.gameDescription)?.remove();
 		expect(() => {
 			new ConfigGameUI(board);
 		}).toThrow(ConfigError);
 	});
 	test('gameStatus', () => {
-		document.getElementById('gameStatus')?.remove();
+		document.getElementById(ElementIds.gameStatus)?.remove();
 		expect(() => {
 			new ConfigGameUI(board);
 		}).toThrow(ConfigError);
 	});
 	test('gameOutcome', () => {
-		document.getElementById('gameOutcome')?.remove();
+		document.getElementById(ElementIds.gameOutcome)?.remove();
 		expect(() => {
 			new ConfigGameUI(board);
 		}).toThrow(ConfigError);
 	});
 	test('gameReset', () => {
-		document.getElementById('gameReset')?.remove();
+		document.getElementById(ElementIds.gameReset)?.remove();
 		expect(() => {
 			new ConfigGameUI(board);
 		}).toThrow(ConfigError);
 	});
 	test('gameNavBackward', () => {
-		document.getElementById('gameNavBackward')?.remove();
+		document.getElementById(ElementIds.gameNavBackward)?.remove();
 		expect(() => {
 			new ConfigGameUI(board);
 		}).toThrow(ConfigError);
 	});
 	test('gameNavForward', () => {
-		document.getElementById('gameNavForward')?.remove();
+		document.getElementById(ElementIds.gameNavForward)?.remove();
 		expect(() => {
 			new ConfigGameUI(board);
 		}).toThrow(ConfigError);
 	});
 	test('gameFlipBoard', () => {
-		document.getElementById('gameFlipBoard')?.remove();
+		document.getElementById(ElementIds.gameFlipBoard)?.remove();
 		expect(() => {
 			new ConfigGameUI(board);
 		}).toThrow(ConfigError);
 	});
 	test('gameNavFirstMove', () => {
-		document.getElementById('gameNavFirstMove')?.remove();
+		document.getElementById(ElementIds.gameNavFirstMove)?.remove();
 		expect(() => {
 			new ConfigGameUI(board);
 		}).toThrow(ConfigError);
 	});
 	test('gameNavLastMove', () => {
-		document.getElementById('gameNavLastMove')?.remove();
+		document.getElementById(ElementIds.gameNavLastMove)?.remove();
 		expect(() => {
 			new ConfigGameUI(board);
 		}).toThrow(ConfigError);

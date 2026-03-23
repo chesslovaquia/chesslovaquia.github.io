@@ -2,6 +2,7 @@
 // See LICENSE file.
 
 import { clvqInternalError } from '../clvq/utils';
+import { ElementIds        } from '../clvq/ElementIds';
 
 import { screenLoad   } from './screen';
 import { screenResize } from './screen';
@@ -16,7 +17,7 @@ export function gameInit(): void {
 	if (loaded) {
 		console.debug('Screen loaded.');
 	} else {
-		const boardUI = document.getElementById('chessboard');
+		const boardUI = document.getElementById(ElementIds.chessboard);
 		if (boardUI) {
 			window.addEventListener('resize', () => screenResize(screenDelay));
 			try {

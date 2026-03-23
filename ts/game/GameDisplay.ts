@@ -2,6 +2,7 @@
 // See LICENSE file.
 
 import { w3ShowModal } from '../clvq/utils';
+import { ElementIds  } from '../clvq/ElementIds';
 
 import { GameEngine  } from '../engine/GameEngine';
 import { EngineColor } from '../engine/GameEngine';
@@ -76,7 +77,7 @@ export class GameDisplay {
 	private showOutcome(status: string) {
 		if (this.cfg.ui.outcome) {
 			this.cfg.ui.outcome.textContent = status;
-			w3ShowModal('gameOutcomeModal');
+			w3ShowModal(ElementIds.gameOutcomeModal);
 		}
 	}
 }

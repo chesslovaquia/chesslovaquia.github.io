@@ -1,6 +1,8 @@
 // Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com>
 // See LICENSE file.
 
+import { ElementIds } from './ElementIds';
+
 export function w3HideMenu(id: string): void {
 	let x = document.getElementById(id);
 	if (x) {
@@ -40,10 +42,10 @@ export function w3HideModal(id: string): void {
 }
 
 export function clvqInternalError(error: Error): void {
-	const display = document.getElementById('clvqInternalErrorMessage');
+	const display = document.getElementById(ElementIds.clvqInternalErrorMessage);
 	if (display) {
 		display.textContent = error.message;
-		w3ShowModal('clvqInternalError');
+		w3ShowModal(ElementIds.clvqInternalError);
 	} else {
 		console.error('clvqInternalErrorMessage element not found!');
 	}

@@ -11,17 +11,19 @@ import { GamePromotion } from '../../game/GamePromotion';
 import { GameMove      } from '../../game/GameMove';
 import { GameDisplay   } from '../../game/GameDisplay';
 
+import { ElementIds } from '../../clvq/ElementIds';
+
 let cfg: TestGameConfig;
 
 beforeEach(() => {
 	document.body.innerHTML = mockConfigGameUI() + `
-		<div id="whitePawnPromotion" style="display:none">
+		<div id="white${ElementIds.pawnPromotion}" style="display:none">
 			<span class="clvq-promotion-piece" data-piece="q"></span>
 			<span class="clvq-promotion-piece" data-piece="r"></span>
 			<span class="clvq-promotion-piece" data-piece="b"></span>
 			<span class="clvq-promotion-piece" data-piece="n"></span>
 		</div>
-		<div id="blackPawnPromotion" style="display:none">
+		<div id="black${ElementIds.pawnPromotion}" style="display:none">
 			<span class="clvq-promotion-piece" data-piece="q"></span>
 			<span class="clvq-promotion-piece" data-piece="r"></span>
 			<span class="clvq-promotion-piece" data-piece="b"></span>
@@ -46,7 +48,7 @@ describe('GamePromotion', () => {
 	test('showModal displays the modal', () => {
 		const promotion = newPromotion(cfg);
 		(promotion as any).showModal('white', vi.fn());
-		const modal = document.getElementById('whitePawnPromotion');
+		const modal = document.getElementById(`white${ElementIds.pawnPromotion}`);
 		expect(modal?.style.display).toBe('block');
 	});
 
@@ -54,10 +56,10 @@ describe('GamePromotion', () => {
 		const promotion = newPromotion(cfg);
 		const callback = vi.fn();
 		(promotion as any).showModal('white', callback);
-		const piece = document.querySelector('#whitePawnPromotion .clvq-promotion-piece[data-piece="q"]') as HTMLElement;
+		const piece = document.querySelector(`#white${ElementIds.pawnPromotion} .clvq-promotion-piece[data-piece="q"]`) as HTMLElement;
 		piece.click();
 		expect(callback).toHaveBeenCalledWith('q');
-		const modal = document.getElementById('whitePawnPromotion');
+		const modal = document.getElementById(`white${ElementIds.pawnPromotion}`);
 		expect(modal?.style.display).toBe('none');
 	});
 
@@ -65,7 +67,7 @@ describe('GamePromotion', () => {
 		const promotion = newPromotion(cfg);
 		const callback = vi.fn();
 		(promotion as any).showModal('white', callback);
-		const modal = document.getElementById('whitePawnPromotion')!;
+		const modal = document.getElementById(`white${ElementIds.pawnPromotion}`)!;
 		// Simulate a click on an element with an invalid piece value
 		const badElem = document.createElement('span');
 		badElem.classList.add('clvq-promotion-piece');
@@ -80,7 +82,7 @@ describe('GamePromotion', () => {
 		const callback = vi.fn();
 		// Register modal listener twice (simulates two promotions)
 		(promotion as any).showModal('white', callback);
-		const piece = document.querySelector('#whitePawnPromotion .clvq-promotion-piece[data-piece="q"]') as HTMLElement;
+		const piece = document.querySelector(`#white${ElementIds.pawnPromotion} .clvq-promotion-piece[data-piece="q"]`) as HTMLElement;
 		piece.click();
 		expect(callback).toHaveBeenCalledTimes(1);
 		// Re-show and click again — should fire exactly once more
