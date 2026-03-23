@@ -24,7 +24,7 @@ type StateData = {
 
 export interface GameState {
 	reset():             void;
-	save():              void;
+	save():              Promise<void>;
 	load():              Promise<boolean>;
 	setupNewGame():      Promise<boolean>;
 	getOrientation():    EngineColor;
@@ -67,10 +67,13 @@ export class GameStateImpl implements GameState {
 		}
 	}
 
-	public save(): void {
-		this.db.setItem(this.id, this.getState()).then(() => {
-			console.debug('State saved.')
-		});
+	public async save(): Promise<void> {
+		try {
+			await this.db.setItem(this.id, this.getState());
+			console.debug('State saved.');
+		} catch (err) {
+			console.error('State save error:', err);
+		}
 	}
 
 	private setState(state: StateData): void {
@@ -93,7 +96,7 @@ export class GameStateImpl implements GameState {
 	}
 
 	public async load(): Promise<boolean> {
-		this.setSetupData();
+		await this.setSetupData();
 		const state = await this.db.getItem(this.id);
 		if (state) {
 			this.setState(state);

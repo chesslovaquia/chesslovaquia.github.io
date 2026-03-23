@@ -36,6 +36,9 @@ export class ChessGame {
 
 	private active: boolean;
 
+	private readonly boardMoveHandler: (evt: Event) => void;
+	private readonly clockTimeoutHandler: (evt: Event) => void;
+
 	constructor(deps: GameDeps) {
 		this.active = false;
 		this.cfg = deps.cfg;
@@ -47,7 +50,20 @@ export class ChessGame {
 		this.move = new GameMove(this.engine, this.board);
 		this.display = new GameDisplay(this.cfg, this.engine, this.move);
 		this.promotion = new GamePromotion(this.state, this.move, this.display, this.nav);
+		this.boardMoveHandler = (evt: Event) => {
+			const e = evt as EventBoardMove;
+			this.doMove(e.detail);
+		};
+		this.clockTimeoutHandler = (evt: Event) => {
+			const e = evt as EventClockTimeout;
+			this.clockTimeout(e.detail.color);
+		};
 		this.setupEventListeners();
+	}
+
+	public destroy(): void {
+		EventBoardMove.Target.removeEventListener(EventBoardMove.Name, this.boardMoveHandler);
+		EventClockTimeout.Target.removeEventListener(EventClockTimeout.Name, this.clockTimeoutHandler);
 	}
 
 	public init(): void {
@@ -82,15 +98,9 @@ export class ChessGame {
 	private setupEventListeners(): void {
 		console.debug('Game setup event listeners.');
 		// Board events.
-		EventBoardMove.Target.addEventListener(EventBoardMove.Name, (evt: Event) => {
-			const e = evt as EventBoardMove;
-			this.doMove(e.detail);
-		});
+		EventBoardMove.Target.addEventListener(EventBoardMove.Name, this.boardMoveHandler);
 		// Clock events.
-		EventClockTimeout.Target.addEventListener(EventClockTimeout.Name, (evt: Event) => {
-			const e = evt as EventClockTimeout;
-			this.clockTimeout(e.detail.color);
-		});
+		EventClockTimeout.Target.addEventListener(EventClockTimeout.Name, this.clockTimeoutHandler);
 		// Game actions.
 		this.cfg.ui.gameReset?.addEventListener('click', () => this.reset());
 		this.cfg.ui.flipBoard?.addEventListener('click', () => this.flipBoard());

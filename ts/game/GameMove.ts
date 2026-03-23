@@ -25,7 +25,7 @@ export class GameMove {
 				promotion: promotion,
 			});
 			if (move) {
-				console.log('Move:', move);
+				console.debug('Move:', move);
 				this.board.update();
 			} else {
 				// Invalid move - reset position
@@ -44,7 +44,7 @@ export class GameMove {
 			this.board.update();
 			return true;
 		}
-		console.log('No move to undo!');
+		console.debug('No move to undo!');
 		return false;
 	}
 

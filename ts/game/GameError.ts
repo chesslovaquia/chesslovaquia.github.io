@@ -2,7 +2,7 @@
 // See LICENSE file.
 
 export class GameError extends Error {
-	constructor(msg) {
+	constructor(msg: string) {
 		super(`Game ERROR: ${msg}`);
 	}
 }

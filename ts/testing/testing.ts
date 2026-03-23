@@ -64,7 +64,7 @@ export class TestGameState implements GameState {
 		return;
 	}
 
-	public save(): void {
+	public async save(): Promise<void> {
 		return;
 	}
 

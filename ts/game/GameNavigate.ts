@@ -54,6 +54,9 @@ export class GameNavigate {
 
 	private navBackward(): void {
 		console.debug('Game nav backward.');
+		if (this.index <= 0) {
+			return;
+		}
 		if (this.index === this.pos.length - 1) {
 			utils.enableButton(this.ui.navForward);
 			utils.enableButton(this.ui.navLastMove);

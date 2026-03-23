@@ -2,7 +2,7 @@
 // See LICENSE file.
 
 export class ConfigError extends Error {
-	constructor(msg) {
+	constructor(msg: string) {
 		super(`Config ERROR: ${msg}`);
 	}
 }

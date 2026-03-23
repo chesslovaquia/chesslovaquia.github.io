@@ -6,26 +6,29 @@ import { test, expect, describe } from 'vitest';
 import { ClvqIndexedDB, Store } from '../../clvq/ClvqIndexedDB';
 
 test('open', () => {
-	new ClvqIndexedDB(Store.state);
+	const db = new ClvqIndexedDB(Store.state);
+	expect(db).toBeDefined();
 });
 
 describe('db', () => {
 	const db = new ClvqIndexedDB(Store.state);
-	test('setItem', () => {
-		db.setItem('test', 'ing');
+	test('setItem', async () => {
+		await expect(db.setItem('test', 'ing')).resolves.toBeUndefined();
 	});
-	test('hasItem', () => {
-		db.hasItem('testing');
+	test('hasItem', async () => {
+		await expect(db.hasItem('test')).resolves.toBe(true);
 	});
-	test('getItem', () => {
-		db.getItem('testing');
+	test('getItem', async () => {
+		await expect(db.getItem('test')).resolves.toBe('ing');
 	});
-	test('removeItem', () => {
-		db.removeItem('testing');
+	test('removeItem', async () => {
+		await expect(db.removeItem('test')).resolves.toBeUndefined();
+		await expect(db.hasItem('test')).resolves.toBe(false);
 	});
-	test('clearAll', () => {
-		db.clearAll();
+	test('clearAll', async () => {
+		await db.setItem('a', 1);
+		await db.setItem('b', 2);
+		await expect(db.clearAll()).resolves.toBeUndefined();
+		await expect(db.hasItem('a')).resolves.toBe(false);
 	});
 });
-
-

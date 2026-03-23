@@ -117,7 +117,6 @@ export class GameClock {
 			this.firstMoveInterval = setInterval(() => {
 				this.firstMoveTimer();
 			}, 100);
-			const turn = this.engine.turn();
 		}
 		// Clock timer.
 		this.interval = setInterval(() => {

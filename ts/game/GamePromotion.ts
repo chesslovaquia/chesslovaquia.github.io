@@ -39,22 +39,30 @@ export class GamePromotion {
 		this.finish(move, side, piece);
 	}
 
-	private showModal(side: BoardColor, callback: any): void {
+	private static readonly validPromotionPieces: BoardPromotionPiece[] = ['q', 'r', 'b', 'n'];
+
+	private showModal(side: BoardColor, callback: (piece: BoardPromotionPiece) => void): void {
 		console.log('Pawn promotion show modal:', side);
 		const modal = document.getElementById(`${side}PawnPromotion`);
 		if (modal) {
 			modal.style.display = 'block';
-			modal.addEventListener('click', (evt: MouseEvent) => {
+			const handler = (evt: MouseEvent) => {
 				console.log('Pawn promotion select:', evt.target);
 				if (evt.target) {
 					const elem = (evt.target as HTMLElement);
 					if (elem.classList.contains('clvq-promotion-piece')) {
 						const piece = elem.dataset.piece;
-						callback(piece);
+						if (!piece || !GamePromotion.validPromotionPieces.includes(piece as BoardPromotionPiece)) {
+							console.error('Pawn promotion invalid piece:', piece);
+							return;
+						}
+						modal.removeEventListener('click', handler);
+						callback(piece as BoardPromotionPiece);
 						modal.style.display = 'none';
 					}
 				}
-			})
+			};
+			modal.addEventListener('click', handler);
 		} else {
 			console.log('Pawn promotion ERROR:', side, 'modal not found.');
 		}

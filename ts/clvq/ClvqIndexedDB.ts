@@ -29,11 +29,10 @@ export class ClvqIndexedDB {
 					this.db = req.result;
 					resolve(this.db);
 				}
-				req.onupgradeneeded = (event) => {
-					const evt = (event as any);
-					if (evt.target) {
-						const db = evt.target.result as IDBDatabase;
-						this.upgrade(db);
+				req.onupgradeneeded = (event: IDBVersionChangeEvent) => {
+					const target = event.target as IDBOpenDBRequest;
+					if (target) {
+						this.upgrade(target.result);
 					}
 				}
 			});

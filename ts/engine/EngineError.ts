@@ -2,7 +2,7 @@
 // See LICENSE file.
 
 export class EngineError extends Error {
-	constructor(msg) {
+	constructor(msg: string) {
 		super(`Engine ERROR: ${msg}`);
 	}
 }

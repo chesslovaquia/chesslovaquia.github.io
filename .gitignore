@@ -4,3 +4,5 @@
 /coverage
 
 .hugo_build.lock
+
+/.claude

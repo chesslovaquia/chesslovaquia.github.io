@@ -142,8 +142,8 @@ export class GameCaptures {
 		if (idx <= 0) {
 			return;
 		}
-		this.setSidePosition(idx, 'w');
-		this.setSidePosition(idx, 'b');
+		await this.setSidePosition(idx, 'w');
+		await this.setSidePosition(idx, 'b');
 		this.updateCount(idx);
 	}
 
