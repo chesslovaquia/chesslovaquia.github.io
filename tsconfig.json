@@ -8,7 +8,7 @@
     /* Visit https://aka.ms/tsconfig to read more about this file */
     "target": "es2019",
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
