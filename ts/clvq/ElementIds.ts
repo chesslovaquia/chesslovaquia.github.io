@@ -22,6 +22,10 @@ export const ElementIds = {
 	gameOutcomeModal: 'gameOutcomeModal',
 	// Promotion modals — prepend board color ('white' or 'black')
 	pawnPromotion: 'PawnPromotion',
+	// Lichess auth
+	lichessLogin:  'lichessLogin',
+	lichessLogout: 'lichessLogout',
+	lichessUser:   'lichessUser',
 	// System / error
 	clvqInternalError:        'clvqInternalError',
 	clvqInternalErrorMessage: 'clvqInternalErrorMessage',

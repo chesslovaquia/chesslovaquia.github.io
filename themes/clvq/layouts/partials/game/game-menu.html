@@ -25,6 +25,14 @@
 		{{- with index site.Menus $menuID }}
 			{{- partial "inline/menu/walk.html" (dict "page" $page "menuBtnClass" $menuBtnClass "menuEntries" .) }}
 		{{- end }}
+		<!-- Lichess auth -->
+		<div id="lichessUser" class="w3-bar-item w3-text-lime" style="display:none"></div>
+		<a id="lichessLogin" href="javascript:void(0)"
+			class="w3-bar-item {{ $menuBtnClass }}"
+			onclick="Clvq.lichessLogin()">Login with lichess</a>
+		<a id="lichessLogout" href="javascript:void(0)"
+			class="w3-bar-item {{ $menuBtnClass }}" style="display:none"
+			onclick="Clvq.lichessLogout()">Logout</a>
 	</div>
 </div>
 

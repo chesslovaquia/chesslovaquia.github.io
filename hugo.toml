@@ -42,5 +42,8 @@ target = "assets/events"
 source = "ts/engine"
 target = "assets/engine"
 [[module.mounts]]
+source = "ts/lichess"
+target = "assets/lichess"
+[[module.mounts]]
 source = "node_modules/chessground"
 target = "assets/chessground"

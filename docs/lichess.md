@@ -12,17 +12,17 @@
 
 ---
 
-## Phase 1 — Authentication (OAuth2 + PKCE)
+## Phase 1 — Authentication (OAuth2 + PKCE) ✓ DONE
 
 The entire integration is gated on this.
 
-- Implement PKCE flow in the browser: generate `code_verifier` → derive `code_challenge` → redirect to `https://lichess.org/oauth` → receive authorization code → exchange for token at `https://lichess.org/api/token`
-- Store the access token in `localStorage`
-- Add a "Login with lichess" button to the UI
-- Add a logout action that clears the token
-- Fetch and display the logged-in user's profile (`/api/account`) — username, rating, title
+- ✓ Implement PKCE flow in the browser: generate `code_verifier` → derive `code_challenge` → redirect to `https://lichess.org/oauth` → receive authorization code → exchange for token at `https://lichess.org/api/token`
+- ✓ Store the access token in `localStorage`
+- ✓ Add a "Login with lichess" button to the UI
+- ✓ Add a logout action that clears the token
+- ✓ Fetch and display the logged-in user's profile (`/api/account`) — username, rating, title
 
-**New module:** `ts/lichess/LichessAuth.ts`
+**Module:** `ts/lichess/LichessAuth.ts`
 
 ---
 
@@ -102,7 +102,7 @@ Once games are being played, this becomes useful:
 ## Work Order
 
 ```
-Phase 1 — Auth (PKCE flow, token storage, user profile)
+Phase 1 — Auth (PKCE flow, token storage, user profile)          ✓ DONE
 Phase 2 — API/Stream layer (HTTP client, NDJSON reader)
 Phase 3 — Game flow (seek, challenge, resign, draw)
 Phase 4 — Board integration (online mode, opponent moves, clock sync)

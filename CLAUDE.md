@@ -47,6 +47,9 @@ site/
 │   ├── engine/          # Chess engine abstraction (chess.js)
 │   ├── config/          # DOM element discovery and validation
 │   ├── events/          # Custom event definitions
+│   ├── lichess/         # Lichess integration modules
+│   │   ├── LichessAuth.ts    # OAuth2 PKCE authentication
+│   │   └── LichessError.ts   # Lichess-specific error class
 │   └── testing/         # Vitest test files (*_test.ts)
 ├── js/                  # Plain JS: service worker, asset loader
 ├── hugo/                # Hugo build, dev, install scripts
@@ -72,6 +75,7 @@ site/
 
 ```
 Clvq (app entry point)
+├── LichessAuth   → OAuth2 PKCE authentication (lichess.org)
 └── ChessGame (game orchestrator)
     ├── GameState     → IndexedDB persistence
     ├── GameEngine    → chess.js (move validation, FEN, game status)
@@ -89,7 +93,7 @@ Clvq (app entry point)
 - **Event-driven** — Custom DOM events (`EventBoardMove`, `EventClockTimeout`) decouple modules.
 - **Interface-based** — Abstract interfaces for `GameBoard`, `GameEngine`, `GameState` allow swapping implementations.
 - **Early config validation** — `ConfigGameUI` / `ConfigGamePlayer` discover and validate DOM elements at init, throwing `ConfigError` immediately for missing elements.
-- **Strict error hierarchy** — `ClvqError`, `GameError`, `EngineError`, `ConfigError` extend a common base.
+- **Strict error hierarchy** — `ClvqError`, `GameError`, `EngineError`, `ConfigError`, `LichessError` extend a common base.
 
 ---
 
@@ -134,7 +138,7 @@ Hugo TypeScript assets are served via module mounts defined in `hugo.toml`. The 
 - **IndexedDB:** `fake-indexeddb` package used in all tests
 - **Coverage:** Istanbul HTML report, covers `ts/**/*.ts` excluding test files
 
-Always run `make check` before committing. It covers TypeScript, HTML, CSS, and shell script validation plus the full test suite.
+Always run `make check` before committing. It covers TypeScript, HTML, CSS, and shell script validation plus the full test suite. This is the final gate for any modification — all changes must pass `make check` before they are considered done. Set `CLVQ_ROOT=http://localhost` when running locally (e.g. `CLVQ_ROOT=http://localhost make check`).
 
 ---
 
@@ -144,10 +148,10 @@ Always run `make check` before committing. It covers TypeScript, HTML, CSS, and 
 |---|---|---|
 | lichess.org | Partial | Chessground board component is from lichess; board textures sourced from lila repo |
 | chess.com | Planned | No API integration yet |
-| lichess API | Planned | No OAuth or API calls implemented yet |
+| lichess API | Phase 1 done | OAuth2 PKCE auth implemented (`LichessAuth`); token + user stored in localStorage; login/logout in game menu |
 | chess.com API | Planned | No OAuth or API calls implemented yet |
 
-The app is currently fully standalone. All game state lives in the browser (IndexedDB). External platform integrations are the primary planned extension.
+The app is currently fully standalone for game play. OAuth2 authentication with lichess is implemented (Phase 1); streaming and board integration are next.
 
 ---
 
@@ -191,3 +195,4 @@ The app is currently fully standalone. All game state lives in the browser (Inde
 - Never use raw string IDs in `document.getElementById()` — always use `ElementIds.*` from `ts/clvq/ElementIds.ts`.
 - `ChessGame` registers static event listeners (`EventBoardMove`, `EventClockTimeout`) in the constructor. Call `destroy()` before reinitializing a game instance to prevent listener stacking.
 - Board textures and Chessground CSS are vendored via `vendor/lila.sh` — do not edit them directly.
+- `LichessAuth` uses `window.location` directly; tests must use `vi.stubGlobal('location', ...)` + `vi.unstubAllGlobals()` in `afterEach` to avoid leaking location mocks across test files. The `redirect(url)` method is `protected` specifically to allow `vi.spyOn` in tests.
