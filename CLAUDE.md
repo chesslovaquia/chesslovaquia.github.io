@@ -146,6 +146,8 @@ Hugo TypeScript assets are served via module mounts defined in `hugo.toml`. The 
 
 Always run `make check` before committing. It covers TypeScript, HTML, CSS, and shell script validation plus the full test suite. This is the final gate for any modification — all changes must pass `make check` before they are considered done. Set `CLVQ_ROOT=http://localhost` when running locally (e.g. `CLVQ_ROOT=http://localhost make check`).
 
+**Checking results:** `make check` produces verbose output — do not try to read it line by line to judge success. Always check the exit code: run it as `CLVQ_ROOT=http://localhost make check; echo "EXIT: $?"` and look for `EXIT: 0`. If it fails, run `npx vitest run` directly to get a focused test failure report.
+
 ---
 
 ## External Integrations (Current Status)
@@ -154,7 +156,7 @@ Always run `make check` before committing. It covers TypeScript, HTML, CSS, and 
 |---|---|---|
 | lichess.org | Partial | Chessground board component is from lichess; board textures sourced from lila repo |
 | chess.com | Planned | No API integration yet |
-| lichess API | Phase 1 done | OAuth2 PKCE auth implemented (`LichessAuth`); token + user stored in localStorage; login/logout in site nav (`menu.html`) |
+| lichess API | Phase 2 done | OAuth2 PKCE auth (`LichessAuth`); HTTP client with token injection + 429 handling (`LichessClient`); NDJSON streaming with reconnect (`LichessStream`) |
 | chess.com API | Planned | No OAuth or API calls implemented yet |
 
 The app is currently fully standalone for game play. OAuth2 authentication with lichess is implemented (Phase 1); streaming and board integration are next.

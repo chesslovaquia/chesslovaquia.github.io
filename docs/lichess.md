@@ -26,17 +26,18 @@ The entire integration is gated on this.
 
 ---
 
-## Phase 2 — API & Streaming Layer
+## Phase 2 — API & Streaming Layer ✓ DONE
 
 A thin HTTP + NDJSON streaming client, no third-party library needed.
 
-- HTTP client wrapper with bearer token injection and rate-limit (HTTP 429) handling
-- NDJSON stream reader (read line-by-line, parse JSON, dispatch events)
-- Two persistent streams to manage:
+- ✓ HTTP client wrapper with bearer token injection and rate-limit (HTTP 429) handling
+- ✓ NDJSON stream reader (read line-by-line, parse JSON, dispatch events)
+- ✓ Two persistent streams to manage:
   - **Event stream** (`/api/stream/event`) — receives incoming challenges
   - **Game stream** (`/api/board/game/stream/{gameId}`) — receives live game updates
+- ✓ Exponential backoff reconnect (capped at 60s) on disconnect
 
-**New modules:** `ts/lichess/LichessClient.ts`, `ts/lichess/LichessStream.ts`
+**Modules:** `ts/lichess/LichessClient.ts`, `ts/lichess/LichessStream.ts`
 
 ---
 
@@ -103,7 +104,7 @@ Once games are being played, this becomes useful:
 
 ```
 Phase 1 — Auth (PKCE flow, token storage, user profile)          ✓ DONE
-Phase 2 — API/Stream layer (HTTP client, NDJSON reader)
+Phase 2 — API/Stream layer (HTTP client, NDJSON reader)           ✓ DONE
 Phase 3 — Game flow (seek, challenge, resign, draw)
 Phase 4 — Board integration (online mode, opponent moves, clock sync)
 Phase 5 — UI (login, mode selector, challenge modal, opponent info)
