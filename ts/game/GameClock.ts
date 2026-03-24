@@ -308,4 +308,10 @@ export class GameClock {
 	public disableFirstMoveTimer(): void {
 		this.firstMove = false;
 	}
+
+	public syncTimes(wtimeMs: number, btimeMs: number): void {
+		this.time['w'] = Math.floor(wtimeMs / 100);
+		this.time['b'] = Math.floor(btimeMs / 100);
+		this.update(this.engine.turn());
+	}
 }

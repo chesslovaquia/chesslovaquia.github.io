@@ -5,7 +5,8 @@ import { ChessgroundBoard } from '../board/ChessgroundBoard';
 
 import { ChessjsEngine } from '../engine/ChessjsEngine';
 
-import { GameBoard } from '../board/GameBoard';
+import { GameBoard  } from '../board/GameBoard';
+import { BoardColor } from '../board/GameBoard';
 
 import { GameEngine } from '../engine/GameEngine';
 
@@ -16,12 +17,14 @@ import { GameState     } from './GameState';
 import { GameStateImpl } from './GameState';
 
 export type GameDeps = {
-	cfg:    GameConfig,
-	engine: GameEngine,
-	board:  GameBoard,
-	clock:  GameClock,
-	nav:    GameNavigate,
-	state:  GameState,
+	cfg:          GameConfig,
+	engine:       GameEngine,
+	board:        GameBoard,
+	clock:        GameClock,
+	nav:          GameNavigate,
+	state:        GameState,
+	onMove?:      (uci: string) => Promise<void>,
+	playerColor?: BoardColor,
 };
 
 export function newGameDeps(boardUI: HTMLElement): GameDeps {

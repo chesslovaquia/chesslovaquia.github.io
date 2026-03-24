@@ -74,6 +74,30 @@ export class GameDisplay {
 		}
 	}
 
+	public onlineGameOver(reason: string, winner?: string): void {
+		let text: string;
+		switch (reason) {
+			case 'resign':
+				text = winner ? `${winner === 'white' ? 'White' : 'Black'} wins by resignation.` : 'Resignation.';
+				break;
+			case 'outoftime':
+				text = winner ? `${winner === 'white' ? 'White' : 'Black'} wins on time.` : 'Out of time.';
+				break;
+			case 'draw':
+				text = 'Draw.';
+				break;
+			case 'aborted':
+				text = 'Game aborted.';
+				break;
+			default:
+				text = `Game over: ${reason}.`;
+				break;
+		}
+		this.clear();
+		this.showOutcome(text);
+		this.setStatus(text);
+	}
+
 	private showOutcome(status: string) {
 		if (this.cfg.ui.outcome) {
 			this.cfg.ui.outcome.textContent = status;

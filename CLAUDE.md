@@ -159,10 +159,10 @@ Always run `make check` before committing. It covers TypeScript, HTML, CSS, and 
 |---|---|---|
 | lichess.org | Partial | Chessground board component is from lichess; board textures sourced from lila repo |
 | chess.com | Planned | No API integration yet |
-| lichess API | Phase 3 done | OAuth2 PKCE auth (`LichessAuth`); HTTP client with token injection + 429 handling (`LichessClient`); NDJSON streaming with reconnect (`LichessStream`); game flow — seek, challenge, resign, draw, takeback (`LichessGame`) |
+| lichess API | Phase 4 done | OAuth2 PKCE auth (`LichessAuth`); HTTP client with token injection + 429 handling (`LichessClient`); NDJSON streaming with reconnect (`LichessStream`); game flow — seek, challenge, resign, draw, takeback (`LichessGame`); board integration — `LichessGameState`, `EventOpponentMove`, `EventGameOver`, `GameClock.syncTimes()`, `ChessGame` online-mode wiring (`onMove`, `playerColor`, `doOpponentMove`) |
 | chess.com API | Planned | No OAuth or API calls implemented yet |
 
-The app is currently fully standalone for game play. Lichess Phases 1–3 are complete (auth, API/streaming layer, game flow); Phase 4 (board integration) is next.
+The app is currently fully standalone for game play. Lichess Phases 1–4 are complete; Phase 5 (UI — mode selector, challenge modal, opponent info panel) is next.
 
 ---
 

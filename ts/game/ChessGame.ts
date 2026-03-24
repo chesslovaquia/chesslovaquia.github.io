@@ -1,8 +1,9 @@
 // Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com>
 // See LICENSE file.
 
-import { GameBoard } from '../board/GameBoard';
-import { BoardMove } from '../board/GameBoard';
+import { GameBoard  } from '../board/GameBoard';
+import { BoardColor } from '../board/GameBoard';
+import { BoardMove  } from '../board/GameBoard';
 
 import { GameEngine  } from '../engine/GameEngine';
 import { EngineColor } from '../engine/GameEngine';
@@ -10,6 +11,8 @@ import { EngineMove  } from '../engine/GameEngine';
 
 import { EventBoardMove    } from '../events/EventBoardMove';
 import { EventClockTimeout } from '../events/EventClockTimeout';
+import { EventOpponentMove } from '../events/EventOpponentMove';
+import { EventGameOver     } from '../events/EventGameOver';
 
 import { GameDeps      } from './GameDeps';
 import { GameConfig    } from './GameConfig';
@@ -24,32 +27,38 @@ import { GameNavigate  } from './GameNavigate';
 import * as utils from '../clvq/utils';
 
 export class ChessGame {
-	private readonly cfg: GameConfig;
-	private readonly engine: GameEngine;
-	private readonly board: GameBoard;
-	private readonly clock: GameClock;
-	private readonly nav: GameNavigate;
-	private readonly state: GameState;
-	private readonly move: GameMove;
-	private readonly promotion: GamePromotion;
-	private readonly display: GameDisplay;
+	private readonly cfg:         GameConfig;
+	private readonly engine:      GameEngine;
+	private readonly board:       GameBoard;
+	private readonly clock:       GameClock;
+	private readonly nav:         GameNavigate;
+	private readonly state:       GameState;
+	private readonly move:        GameMove;
+	private readonly promotion:   GamePromotion;
+	private readonly display:     GameDisplay;
+	private readonly onMove?:     (uci: string) => Promise<void>;
+	private readonly playerColor?: BoardColor;
 
 	private active: boolean;
 
-	private readonly boardMoveHandler: (evt: Event) => void;
+	private readonly boardMoveHandler:    (evt: Event) => void;
 	private readonly clockTimeoutHandler: (evt: Event) => void;
+	private readonly opponentMoveHandler: (evt: Event) => void;
+	private readonly gameOverHandler:     (evt: Event) => void;
 
 	constructor(deps: GameDeps) {
-		this.active = false;
-		this.cfg = deps.cfg;
-		this.engine = deps.engine;
-		this.board = deps.board;
-		this.clock = deps.clock;
-		this.nav = deps.nav;
-		this.state = deps.state;
-		this.move = new GameMove(this.engine, this.board);
-		this.display = new GameDisplay(this.cfg, this.engine, this.move);
-		this.promotion = new GamePromotion(this.state, this.move, this.display, this.nav);
+		this.active      = false;
+		this.cfg         = deps.cfg;
+		this.engine      = deps.engine;
+		this.board       = deps.board;
+		this.clock       = deps.clock;
+		this.nav         = deps.nav;
+		this.state       = deps.state;
+		this.onMove      = deps.onMove;
+		this.playerColor = deps.playerColor;
+		this.move        = new GameMove(this.engine, this.board);
+		this.display     = new GameDisplay(this.cfg, this.engine, this.move);
+		this.promotion   = new GamePromotion(this.state, this.move, this.display, this.nav);
 		this.boardMoveHandler = (evt: Event) => {
 			const e = evt as EventBoardMove;
 			this.doMove(e.detail);
@@ -58,12 +67,22 @@ export class ChessGame {
 			const e = evt as EventClockTimeout;
 			this.clockTimeout(e.detail.color);
 		};
+		this.opponentMoveHandler = (evt: Event) => {
+			const e = evt as EventOpponentMove;
+			this.doOpponentMove(e.detail);
+		};
+		this.gameOverHandler = (evt: Event) => {
+			const e = evt as EventGameOver;
+			this.onGameOver(e.detail.reason, e.detail.winner);
+		};
 		this.setupEventListeners();
 	}
 
 	public destroy(): void {
 		EventBoardMove.Target.removeEventListener(EventBoardMove.Name, this.boardMoveHandler);
 		EventClockTimeout.Target.removeEventListener(EventClockTimeout.Name, this.clockTimeoutHandler);
+		EventOpponentMove.Target.removeEventListener(EventOpponentMove.Name, this.opponentMoveHandler);
+		EventGameOver.Target.removeEventListener(EventGameOver.Name, this.gameOverHandler);
 	}
 
 	public init(): void {
@@ -101,6 +120,9 @@ export class ChessGame {
 		EventBoardMove.Target.addEventListener(EventBoardMove.Name, this.boardMoveHandler);
 		// Clock events.
 		EventClockTimeout.Target.addEventListener(EventClockTimeout.Name, this.clockTimeoutHandler);
+		// Online mode events.
+		EventOpponentMove.Target.addEventListener(EventOpponentMove.Name, this.opponentMoveHandler);
+		EventGameOver.Target.addEventListener(EventGameOver.Name, this.gameOverHandler);
 		// Game actions.
 		this.cfg.ui.gameReset?.addEventListener('click', () => this.reset());
 		this.cfg.ui.flipBoard?.addEventListener('click', () => this.flipBoard());
@@ -139,7 +161,58 @@ export class ChessGame {
 	private saveState(): void {
 		this.nav.addPosition();
 		this.state.save();
+		if (this.onMove) {
+			const uci = this.buildLastMoveUCI();
+			if (uci) {
+				this.onMove(uci).catch((err: unknown) => console.error('Move submit error:', err));
+				this.disableBoard();
+			}
+		}
 		console.debug('Game state saved.');
+	}
+
+	private buildLastMoveUCI(): string {
+		const last = this.engine.lastMove();
+		if (!last) return '';
+		const moves = this.engine.getState();
+		const lastSAN = moves.length > 0 ? moves[moves.length - 1] : '';
+		const promoMatch = lastSAN.match(/=([QRBNqrbn])/);
+		const piece = promoMatch ? promoMatch[1].toLowerCase() : '';
+		return last.from + last.to + piece;
+	}
+
+	// Handles an opponent move received from the lichess stream.
+	// Does not trigger the promotion dialog or the onMove submission.
+	private doOpponentMove(move: EngineMove): void {
+		console.debug('Game opponent move:', move);
+		if (!this.active) {
+			this.start();
+		}
+		this.move.exec(move.from, move.to, move.promotion);
+		const turn = this.engine.turn();
+		this.clock.move(turn);
+		if (this.engine.isGameOver()) {
+			this.stop();
+		} else {
+			this.nav.addPosition();
+			this.state.save();
+			if (this.isMyTurn()) {
+				this.enableBoard();
+			}
+		}
+		this.display.updateStatus();
+	}
+
+	private onGameOver(reason: string, winner?: string): void {
+		if (!this.active) return;
+		console.debug('Game online game over:', reason, winner);
+		this.stop();
+		this.display.onlineGameOver(reason, winner);
+	}
+
+	private isMyTurn(): boolean {
+		if (!this.playerColor) return true;
+		return this.move.turnColor() === this.playerColor;
 	}
 
 	private reset(): void {
@@ -175,6 +248,9 @@ export class ChessGame {
 		console.debug('Game start.');
 		this.display.setDescription(this.state.gameDescription());
 		this.enableBoard();
+		if (!this.isMyTurn()) {
+			this.board.disable();
+		}
 		this.clock.start();
 		this.active = true;
 	}
