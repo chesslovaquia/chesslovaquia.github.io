@@ -55,6 +55,9 @@ site/
 │   ├── events/          # Custom event definitions
 │   ├── lichess/         # Lichess integration modules
 │   │   ├── LichessAuth.ts    # OAuth2 PKCE authentication
+│   │   ├── LichessClient.ts  # HTTP client with bearer token injection + 429 handling
+│   │   ├── LichessStream.ts  # NDJSON stream reader with exponential backoff reconnect
+│   │   ├── LichessGame.ts    # Game flow: seek, challenge, in-game actions, stream routing
 │   │   └── LichessError.ts   # Lichess-specific error class
 │   └── testing/         # Vitest test files (*_test.ts)
 ├── js/                  # Plain JS: service worker, asset loader
@@ -156,10 +159,10 @@ Always run `make check` before committing. It covers TypeScript, HTML, CSS, and 
 |---|---|---|
 | lichess.org | Partial | Chessground board component is from lichess; board textures sourced from lila repo |
 | chess.com | Planned | No API integration yet |
-| lichess API | Phase 2 done | OAuth2 PKCE auth (`LichessAuth`); HTTP client with token injection + 429 handling (`LichessClient`); NDJSON streaming with reconnect (`LichessStream`) |
+| lichess API | Phase 3 done | OAuth2 PKCE auth (`LichessAuth`); HTTP client with token injection + 429 handling (`LichessClient`); NDJSON streaming with reconnect (`LichessStream`); game flow — seek, challenge, resign, draw, takeback (`LichessGame`) |
 | chess.com API | Planned | No OAuth or API calls implemented yet |
 
-The app is currently fully standalone for game play. OAuth2 authentication with lichess is implemented (Phase 1); streaming and board integration are next.
+The app is currently fully standalone for game play. Lichess Phases 1–3 are complete (auth, API/streaming layer, game flow); Phase 4 (board integration) is next.
 
 ---
 

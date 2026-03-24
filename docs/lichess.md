@@ -41,13 +41,13 @@ A thin HTTP + NDJSON streaming client, no third-party library needed.
 
 ---
 
-## Phase 3 — Game Flow (Seek & Challenge)
+## Phase 3 — Game Flow (Seek & Challenge) ✓ DONE
 
-- Create a seek for a casual game (`POST /api/board/seek`) — picks a random opponent
-- Accept incoming challenges from the event stream
-- Abort, resign, offer/accept draw, offer/accept takeback
+- ✓ Create a seek for a casual game (`POST /api/board/seek`) — picks a random opponent
+- ✓ Accept incoming challenges from the event stream
+- ✓ Abort, resign, offer/accept draw, offer/accept takeback
 
-**New module:** `ts/lichess/LichessGame.ts`
+**Module:** `ts/lichess/LichessGame.ts`
 
 ---
 
@@ -105,7 +105,7 @@ Once games are being played, this becomes useful:
 ```
 Phase 1 — Auth (PKCE flow, token storage, user profile)          ✓ DONE
 Phase 2 — API/Stream layer (HTTP client, NDJSON reader)           ✓ DONE
-Phase 3 — Game flow (seek, challenge, resign, draw)
+Phase 3 — Game flow (seek, challenge, resign, draw)               ✓ DONE
 Phase 4 — Board integration (online mode, opponent moves, clock sync)
 Phase 5 — UI (login, mode selector, challenge modal, opponent info)
 Phase 6 — History & PGN (optional, post-core)
