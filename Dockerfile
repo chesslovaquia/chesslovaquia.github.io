@@ -47,6 +47,11 @@ RUN chmod -v 0755 /usr/local/bin/user-login.sh
 RUN install -v -m 0750 -o devel -g devel -d /opt/clvq
 RUN install -v -m 0750 -o devel -g devel -d /opt/clvq/site
 
+RUN ln -vsf /home/devel/.local/bin/uvx /usr/local/bin/uvx \
+	&& ln -vsf /home/devel/.local/bin/uv /usr/local/bin/uv
+
+RUN ln -vsf /home/devel/.local/npm/node_modules/.bin/claude /usr/local/bin/claude
+
 USER devel:devel
 WORKDIR /home/devel
 
@@ -56,6 +61,14 @@ ENV HOME=/home/devel
 RUN npm version
 RUN npx --version
 RUN hugo version
+
+RUN wget -O - https://astral.sh/uv/install.sh | sh
+RUN /usr/local/bin/uv --version
+
+RUN install -v -d -m 0750 ${HOME}/.local/npm
+RUN cd ${HOME}/.local/npm && npm install @anthropic-ai/claude-code
+
+RUN /usr/local/bin/claude --version
 
 ENV CLVQ_ROOT=http://localhost:8000
 

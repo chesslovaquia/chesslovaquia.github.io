@@ -2,7 +2,6 @@
 /resources
 /node_modules
 /coverage
+/docker/data
 
 .hugo_build.lock
-
-/.claude
