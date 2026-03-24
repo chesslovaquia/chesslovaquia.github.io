@@ -4,6 +4,12 @@
 
 ---
 
+## Agent Instructions
+
+- **Keep this file up to date.** Any time you discover a non-obvious pitfall, learn a project convention, or make a structural decision, add it to the relevant section of this file without waiting to be asked.
+
+---
+
 ## Project Overview
 
 Chesslovaquia is a Progressive Web App (PWA) built as a Hugo static site with TypeScript. Players can play chess locally with a full clock and game state, with the long-term goal of connecting to external platforms (lichess.org and chess.com) so players can use one board for both online and over-the-board games.
@@ -148,7 +154,7 @@ Always run `make check` before committing. It covers TypeScript, HTML, CSS, and 
 |---|---|---|
 | lichess.org | Partial | Chessground board component is from lichess; board textures sourced from lila repo |
 | chess.com | Planned | No API integration yet |
-| lichess API | Phase 1 done | OAuth2 PKCE auth implemented (`LichessAuth`); token + user stored in localStorage; login/logout in game menu |
+| lichess API | Phase 1 done | OAuth2 PKCE auth implemented (`LichessAuth`); token + user stored in localStorage; login/logout in site nav (`menu.html`) |
 | chess.com API | Planned | No OAuth or API calls implemented yet |
 
 The app is currently fully standalone for game play. OAuth2 authentication with lichess is implemented (Phase 1); streaming and board integration are next.
@@ -178,6 +184,7 @@ The app is currently fully standalone for game play. OAuth2 authentication with 
 ### HTML & Layouts
 
 - Hugo partials live in `themes/clvq/layouts/partials/`. Game UI is split into `game/` (navbar, players, status) and `modal/` (promotion, outcome, setup, errors).
+- Navigation split: `partials/menu.html` is the site-wide top nav (used by all non-game pages via `header.html`); `partials/game/game-menu.html` is the game-page nav. Lichess auth UI (`lichessLogin`, `lichessLogout`, `lichessUser`) lives in `menu.html`.
 - The `id=` attributes in HTML templates are the source of truth for DOM element IDs — they must match the `ElementIds.*` constants in `ts/clvq/ElementIds.ts` exactly.
 - Use only documented w3.css classes. For layout needs not covered by w3.css (e.g. flexbox), use an inline `style=` or add a class to `themes/clvq/assets/css/clvq.css` — do not invent w3.css class names.
 - Modal-specific JS (slider listeners, submit handlers) is written as inline `<script>` blocks directly inside the partial — this is the established pattern for `modal/` partials.
@@ -196,3 +203,5 @@ The app is currently fully standalone for game play. OAuth2 authentication with 
 - `ChessGame` registers static event listeners (`EventBoardMove`, `EventClockTimeout`) in the constructor. Call `destroy()` before reinitializing a game instance to prevent listener stacking.
 - Board textures and Chessground CSS are vendored via `vendor/lila.sh` — do not edit them directly.
 - `LichessAuth` uses `window.location` directly; tests must use `vi.stubGlobal('location', ...)` + `vi.unstubAllGlobals()` in `afterEach` to avoid leaking location mocks across test files. The `redirect(url)` method is `protected` specifically to allow `vi.spyOn` in tests.
+- w3.css overrides `position: relative` on `.w3-dropdown-click` to `position: static` when it is inside a `.w3-bar`. This breaks absolute positioning of `.w3-dropdown-content`. Fix with an inline `style="position:relative"` on the dropdown-click container.
+- `$menuBtnClass` (from `site.Params.menuBtnClass`) already includes `w3-button`. Do not prepend `w3-button` again — use `w3-bar-item {{ $menuBtnClass }}` for bar items, not `w3-button {{ $menuBtnClass }}`.
