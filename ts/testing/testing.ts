@@ -95,6 +95,16 @@ export class TestGameState implements GameState {
 	public gameDescription(): string {
 		return 't15+10';
 	}
+
+	public async saveToHistory(
+		_white:      string,
+		_black:      string,
+		_result:     string,
+		_source?:    'local' | 'lichess',
+		_lichessId?: string,
+	): Promise<void> {
+		return;
+	}
 }
 
 export function mockGameDeps(cfg: TestGameConfig): GameDeps {

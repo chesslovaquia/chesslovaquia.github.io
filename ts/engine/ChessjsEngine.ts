@@ -136,6 +136,11 @@ export class ChessjsEngine implements GameEngine {
 		return undefined;
 	}
 
+	public pgn(headers: Record<string, string> = {}): string {
+		Object.entries(headers).forEach(([k, v]) => this.game.setHeader(k, v));
+		return this.game.pgn();
+	}
+
 	public getState(): MovesSAN {
 		return this.game.history();
 	}

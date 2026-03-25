@@ -101,6 +101,17 @@ export class LichessGameState implements GameState {
 		return `Lichess: vs ${this.opponentName}${rating}`;
 	}
 
+	// Lichess games are retrieved via LichessHistory.fetchGames() — no local save needed.
+	public async saveToHistory(
+		_white:      string,
+		_black:      string,
+		_result:     string,
+		_source?:    'local' | 'lichess',
+		_lichessId?: string,
+	): Promise<void> {
+		return;
+	}
+
 	public getPlayerColor(): BoardColor {
 		return this.playerColor === 'w' ? 'white' : 'black';
 	}

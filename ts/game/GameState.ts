@@ -15,6 +15,9 @@ import { NavState     } from './GameNavigate';
 
 import { ClvqIndexedDB, Store } from '../clvq/ClvqIndexedDB';
 
+import { GameHistory  } from './GameHistory';
+import { HistoryRecord } from './GameHistory';
+
 type StateData = {
 	moves:       MovesSAN,
 	clock:       ClockState,
@@ -30,15 +33,23 @@ export interface GameState {
 	getOrientation():    EngineColor;
 	toggleOrientation(): void;
 	gameDescription():   string;
+	saveToHistory(
+		white:      string,
+		black:      string,
+		result:     string,
+		source?:    'local' | 'lichess',
+		lichessId?: string,
+	): Promise<void>;
 }
 
 export class GameStateImpl implements GameState {
-	private readonly id:     string;
-	private readonly engine: GameEngine;
-	private readonly clock:  GameClock;
-	private readonly db:     ClvqIndexedDB;
-	private readonly setup:  GameSetup;
-	private readonly nav:    GameNavigate;
+	private readonly id:      string;
+	private readonly engine:  GameEngine;
+	private readonly clock:   GameClock;
+	private readonly db:      ClvqIndexedDB;
+	private readonly setup:   GameSetup;
+	private readonly nav:     GameNavigate;
+	private readonly history: GameHistory;
 
 	private orientation: EngineColor;
 
@@ -49,6 +60,7 @@ export class GameStateImpl implements GameState {
 		this.nav         = nav;
 		this.db          = new ClvqIndexedDB(Store.state);
 		this.setup       = new GameSetup();
+		this.history     = new GameHistory();
 		this.orientation = 'w';
 	}
 
@@ -134,5 +146,43 @@ export class GameStateImpl implements GameState {
 
 	public gameDescription(): string {
 		return this.setup.description();
+	}
+
+	public async saveToHistory(
+		white:      string,
+		black:      string,
+		result:     string,
+		source:     'local' | 'lichess' = 'local',
+		lichessId?: string,
+	): Promise<void> {
+		try {
+			const now  = new Date();
+			const date = now.toISOString();
+			const pgnDate = `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, '0')}.${String(now.getDate()).padStart(2, '0')}`;
+			const headers: Record<string, string> = {
+				Date:        pgnDate,
+				White:       white,
+				Black:       black,
+				Result:      result,
+				TimeControl: this.setup.timeControlDesc(),
+				Event:       this.setup.description(),
+			};
+			const pgn = this.engine.pgn(headers);
+			const record: HistoryRecord = {
+				id:          `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+				date,
+				white,
+				black,
+				result,
+				timeControl: this.setup.timeControlDesc(),
+				pgn,
+				source,
+				lichessId,
+			};
+			await this.history.save(record);
+			console.debug('History saved:', record.id);
+		} catch (err) {
+			console.error('History save error:', err);
+		}
 	}
 }

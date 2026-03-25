@@ -25,8 +25,8 @@ export class LichessClient {
 		return this.request('POST', path, body, false, extra);
 	}
 
-	public async getStream(path: string): Promise<ReadableStream<Uint8Array>> {
-		const resp = await this.request('GET', path, undefined, true);
+	public async getStream(path: string, extra: Record<string, string> = {}): Promise<ReadableStream<Uint8Array>> {
+		const resp = await this.request('GET', path, undefined, true, extra);
 		if (!resp.body) {
 			throw new LichessError(`Stream response has no body: ${path}`);
 		}

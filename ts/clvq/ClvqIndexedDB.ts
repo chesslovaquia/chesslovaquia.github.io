@@ -2,10 +2,11 @@
 // See LICENSE file.
 
 const dbName    = 'clvqDB';
-const dbVersion = 1;
+const dbVersion = 2;
 
 export enum Store {
-	state = 'state',
+	state   = 'state',
+	history = 'history',
 }
 
 export class ClvqIndexedDB {
@@ -91,6 +92,17 @@ export class ClvqIndexedDB {
 		return new Promise((resolve, reject) => {
 			const req = store.delete(key);
 			req.onsuccess = () => resolve();
+			req.onerror = () => reject(req.error);
+		});
+	}
+
+	public async getAll(): Promise<any[]> {
+		const db = await this.getDB();
+		const transaction = db.transaction([this.store], 'readonly');
+		const store = transaction.objectStore(this.store);
+		return new Promise((resolve, reject) => {
+			const req = store.getAll();
+			req.onsuccess = () => resolve((req.result as any[]).map((r: any) => r.value));
 			req.onerror = () => reject(req.error);
 		});
 	}

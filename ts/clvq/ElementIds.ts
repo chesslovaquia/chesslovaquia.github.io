@@ -39,6 +39,9 @@ export const ElementIds = {
 	gameAbort:       'gameAbort',
 	gameOfferDraw:   'gameOfferDraw',
 	gamePlayerRating: 'gamePlayerRating',
+	// Game history modal
+	gameHistoryModal: 'gameHistoryModal',
+	gameHistoryList:  'gameHistoryList',
 	// System / error
 	clvqInternalError:        'clvqInternalError',
 	clvqInternalErrorMessage: 'clvqInternalErrorMessage',

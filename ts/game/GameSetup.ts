@@ -51,6 +51,13 @@ export class GameSetup {
 		return 'NOGAME';
 	}
 
+	public timeControlDesc(): string {
+		if (this.data) {
+			return `${this.data.time}+${this.data.increment}`;
+		}
+		return '-';
+	}
+
 	public setState(data: SetupData) {
 		console.debug('Setup set state:', data);
 		this.data = data;

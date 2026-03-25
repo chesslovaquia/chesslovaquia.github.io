@@ -81,13 +81,13 @@ This is the core wiring into the existing game architecture.
 
 ---
 
-## Phase 6 — Game History & PGN
+## Phase 6 — Game History & PGN ✓ DONE
 
 Once games are being played, this becomes useful:
 
-- Fetch completed games from lichess (`/api/games/user/{username}`)
-- PGN export using moves SAN already stored in game state
-- Display game archive locally
+- ✓ Fetch completed games from lichess (`/api/games/user/{username}`)
+- ✓ PGN export using moves SAN already stored in game state
+- ✓ Display game archive locally
 
 ---
 
@@ -111,7 +111,7 @@ Phase 2 — API/Stream layer (HTTP client, NDJSON reader)           ✓ DONE
 Phase 3 — Game flow (seek, challenge, resign, draw)               ✓ DONE
 Phase 4 — Board integration (online mode, opponent moves, clock sync)  ✓ DONE
 Phase 5 — UI (login, mode selector, challenge modal, opponent info)    ✓ DONE
-Phase 6 — History & PGN (optional, post-core)
+Phase 6 — History & PGN (game archive, PGN export, lichess fetch)  ✓ DONE
 ```
 
 Phases 1–3 can be developed and tested in isolation without touching the existing game code.

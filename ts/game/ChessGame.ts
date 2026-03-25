@@ -38,6 +38,8 @@ export class ChessGame {
 	private readonly display:     GameDisplay;
 	private readonly onMove?:     (uci: string) => Promise<void>;
 	private readonly playerColor?: BoardColor;
+	private readonly white:       string;
+	private readonly black:       string;
 
 	private active: boolean;
 
@@ -56,6 +58,8 @@ export class ChessGame {
 		this.state       = deps.state;
 		this.onMove      = deps.onMove;
 		this.playerColor = deps.playerColor;
+		this.white       = deps.white ?? 'White';
+		this.black       = deps.black ?? 'Black';
 		this.move        = new GameMove(this.engine, this.board);
 		this.display     = new GameDisplay(this.cfg, this.engine, this.move);
 		this.promotion   = new GamePromotion(this.state, this.move, this.display, this.nav);
@@ -151,11 +155,30 @@ export class ChessGame {
 			if (this.engine.isGameOver()) {
 				// Game over.
 				this.stop();
+				if (!this.onMove) {
+					this.saveHistory(this.computeResult(), 'local');
+				}
 			}
 			// Save state
 			this.saveState();
 		}
 		this.display.updateStatus();
+	}
+
+	private computeResult(): string {
+		if (this.engine.isCheckmate()) {
+			return this.engine.turn() === 'w' ? '0-1' : '1-0';
+		}
+		if (this.engine.isDraw() || this.engine.isStalemate() ||
+			this.engine.isThreefoldRepetition() || this.engine.isInsufficientMaterial()) {
+			return '1/2-1/2';
+		}
+		return '*';
+	}
+
+	private saveHistory(result: string, source: 'local' | 'lichess', lichessId?: string): void {
+		this.state.saveToHistory(this.white, this.black, result, source, lichessId)
+			.catch((err: unknown) => console.error('History save error:', err));
 	}
 
 	private saveState(): void {
@@ -266,6 +289,10 @@ export class ChessGame {
 		console.debug('Game clock timeout:', color);
 		this.stop();
 		this.display.clockTimeout(color);
+		if (!this.onMove) {
+			const result = color === 'w' ? '0-1' : '1-0';
+			this.saveHistory(result, 'local');
+		}
 	}
 
 	private toggleOrientation(): void {

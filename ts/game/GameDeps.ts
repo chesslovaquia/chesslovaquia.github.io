@@ -25,6 +25,8 @@ export type GameDeps = {
 	state:        GameState,
 	onMove?:      (uci: string) => Promise<void>,
 	playerColor?: BoardColor,
+	white?:       string,
+	black?:       string,
 };
 
 export function newGameDeps(boardUI: HTMLElement): GameDeps {

@@ -31,7 +31,8 @@ export interface GameEngine {
 	isStalemate():            boolean;
 	isThreefoldRepetition():  boolean;
 	isInsufficientMaterial(): boolean;
-	getState():               MovesSAN;
-	setState(m: MovesSAN):    void;
-	capturedPiece():          BoardPiece | undefined;
+	getState():                                MovesSAN;
+	setState(m: MovesSAN):                     void;
+	capturedPiece():                           BoardPiece | undefined;
+	pgn(headers: Record<string, string>):      string;
 }

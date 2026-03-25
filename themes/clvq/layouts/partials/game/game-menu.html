@@ -28,6 +28,12 @@
 			onclick="Clvq.w3HideModal('gameMenu'); Clvq.w3ShowModal('lichessSeekModal')">
 			Play on Lichess
 		</a>
+		<!-- Game History -->
+		<a href="javascript:void(0)"
+			class="w3-bar-item {{ $menuBtnClass }}"
+			onclick="Clvq.w3HideModal('gameMenu'); Clvq.loadHistory()">
+			History
+		</a>
 		<!-- Online game actions (hidden until an online game is active) -->
 		<div id="gameActionsBar" style="display:none">
 			<a id="gameAbort" href="javascript:void(0)"

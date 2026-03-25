@@ -42,6 +42,7 @@ site/
 │   ├── game/            # Game orchestration and state machine
 │   │   ├── ChessGame.ts      # Main game class (entry point)
 │   │   ├── GameState.ts      # IndexedDB persistence
+│   │   ├── GameHistory.ts    # Game history archive (IndexedDB Store.history)
 │   │   ├── GameEngine.ts     # chess.js wrapper
 │   │   ├── GameBoard.ts      # Chessground integration
 │   │   ├── GameClock.ts      # Time controls
@@ -58,6 +59,7 @@ site/
 │   │   ├── LichessClient.ts  # HTTP client with bearer token injection + 429 handling
 │   │   ├── LichessStream.ts  # NDJSON stream reader with exponential backoff reconnect
 │   │   ├── LichessGame.ts    # Game flow: seek, challenge, in-game actions, stream routing
+│   │   ├── LichessHistory.ts # Fetch game history from lichess API, save to GameHistory
 │   │   └── LichessError.ts   # Lichess-specific error class
 │   └── testing/         # Vitest test files (*_test.ts)
 ├── js/                  # Plain JS: service worker, asset loader
@@ -159,10 +161,10 @@ Always run `make check` before committing. It covers TypeScript, HTML, CSS, and 
 |---|---|---|
 | lichess.org | Partial | Chessground board component is from lichess; board textures sourced from lila repo |
 | chess.com | Planned | No API integration yet |
-| lichess API | Phases 1–5 done | OAuth2 PKCE auth (`LichessAuth`); HTTP client with token injection + 429 handling (`LichessClient`); NDJSON streaming with reconnect (`LichessStream`); game flow — seek, challenge, resign, draw, takeback (`LichessGame`); board integration — `LichessGameState`, `EventOpponentMove`, `EventGameOver`, `GameClock.syncTimes()`, `ChessGame` online-mode wiring (`onMove`, `playerColor`, `doOpponentMove`); UI — seek modal, challenge modal, opponent info panel, game actions bar (abort/resign/draw) |
+| lichess API | Phases 1–6 done | OAuth2 PKCE auth (`LichessAuth`); HTTP client with token injection + 429 handling (`LichessClient`); NDJSON streaming with reconnect (`LichessStream`); game flow — seek, challenge, resign, draw, takeback (`LichessGame`); board integration — `LichessGameState`, `EventOpponentMove`, `EventGameOver`, `GameClock.syncTimes()`, `ChessGame` online-mode wiring (`onMove`, `playerColor`, `doOpponentMove`); UI — seek modal, challenge modal, opponent info panel, game actions bar (abort/resign/draw); game history — `GameHistory` (IndexedDB), `LichessHistory` (fetch from API), PGN export via `Clvq.exportPgn()`, history modal |
 | chess.com API | Planned | No OAuth or API calls implemented yet |
 
-The app is currently fully standalone for game play. Lichess Phases 1–5 are complete; Phase 6 (game history & PGN) is next.
+The app is currently fully standalone for game play. Lichess Phases 1–6 are complete.
 
 ---
 
@@ -210,3 +212,8 @@ The app is currently fully standalone for game play. Lichess Phases 1–5 are co
 - `LichessAuth` uses `window.location` directly; tests must use `vi.stubGlobal('location', ...)` + `vi.unstubAllGlobals()` in `afterEach` to avoid leaking location mocks across test files. The `redirect(url)` method is `protected` specifically to allow `vi.spyOn` in tests.
 - w3.css overrides `position: relative` on `.w3-dropdown-click` to `position: static` when it is inside a `.w3-bar`. This breaks absolute positioning of `.w3-dropdown-content`. Fix with an inline `style="position:relative"` on the dropdown-click container.
 - `$menuBtnClass` (from `site.Params.menuBtnClass`) already includes `w3-button`. Do not prepend `w3-button` again — use `w3-bar-item {{ $menuBtnClass }}` for bar items, not `w3-button {{ $menuBtnClass }}`.
+- `ClvqIndexedDB` is versioned (`dbVersion`). Adding a new `Store` enum value auto-creates the store on upgrade because `upgrade()` iterates `Object.values(Store)`. Bump `dbVersion` whenever the schema changes.
+- `GameHistory` tests must call `new ClvqIndexedDB(Store.history).clearAll()` in `beforeEach` — IndexedDB is shared across all test files via `fake-indexeddb`. Likewise, `LichessHistory` tests must mock `GameHistory.prototype.save` to prevent cross-test contamination.
+- `LichessGameState` implements `GameState` — any new method added to the `GameState` interface must also be added to `LichessGameState` (and `TestGameState` in `testing.ts`).
+- `ChessGame.saveHistory()` is only called for local games (`!this.onMove`). Online lichess games are retrieved via `LichessHistory.fetchGames()` — do not double-save them.
+- `engine.pgn(headers)` calls chess.js `setHeader()` which mutates the Chess instance. Headers persist across subsequent `pgn()` calls on the same instance. This is fine for `saveToHistory()` since it only runs once per game.
