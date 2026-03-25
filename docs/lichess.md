@@ -66,15 +66,18 @@ This is the core wiring into the existing game architecture.
 
 ---
 
-## Phase 5 — UI Changes
+## Phase 5 — UI Changes ✓ DONE
 
-Minimal new UI needed:
+- ✓ **Login/logout area** in the navbar (shows username + rating when logged in)
+- ✓ **"Play on Lichess" mode selector** — `lichessSeekModal` in the game menu with Rapid presets (10+0, 15+10, 30+0, 30+20); calls `Clvq.lichessSeek()`
+- ✓ **Incoming challenge notification** — `lichessChallengeModal` modal populated by `LichessGame.onChallenge` callback; Accept/Decline call `Clvq.lichessAcceptChallenge()` / `Clvq.lichessDeclineChallenge()`
+- ✓ **Opponent info panel** — `gamePlayerRating1`/`gamePlayerRating2` elements in player bars, populated on `onGameFull` by `Clvq.setPlayerRatingUI()`; `GameDisplay.setOpponentInfo()` also available for `ChessGame` use
+- ✓ **Game actions:** `gameActionsBar` container with Resign, Abort, Offer Draw; shown on `onGameStart`, hidden on `onGameFinish`
 
-- **Login/logout area** in the navbar (shows username + rating when logged in)
-- **"Play on lichess" mode selector** in the game setup modal — replaces the local time sliders with time control presets (Rapid 10+0, 15+10, etc.)
-- **Incoming challenge notification** — a modal or banner when a challenge arrives from the event stream
-- **Opponent info panel** — opponent username and rating displayed in the player sidebar
-- **Game actions:** Resign, Offer Draw, Abort buttons (only relevant in online mode)
+**Modules changed:** `ts/clvq/Clvq.ts`, `ts/clvq/ElementIds.ts`, `ts/game/GameDisplay.ts`
+**Partials added:** `modal/game-setup-lichess.html`, `modal/lichess-challenge.html`
+**Partials changed:** `game/game-menu.html`, `game/game-player.html`, `game/game-modals.html`
+**Tests added:** `ts/testing/game/GameDisplay_test.ts`, `ts/testing/clvq/Clvq_test.ts`
 
 ---
 
@@ -106,8 +109,8 @@ Once games are being played, this becomes useful:
 Phase 1 — Auth (PKCE flow, token storage, user profile)          ✓ DONE
 Phase 2 — API/Stream layer (HTTP client, NDJSON reader)           ✓ DONE
 Phase 3 — Game flow (seek, challenge, resign, draw)               ✓ DONE
-Phase 4 — Board integration (online mode, opponent moves, clock sync)
-Phase 5 — UI (login, mode selector, challenge modal, opponent info)
+Phase 4 — Board integration (online mode, opponent moves, clock sync)  ✓ DONE
+Phase 5 — UI (login, mode selector, challenge modal, opponent info)    ✓ DONE
 Phase 6 — History & PGN (optional, post-core)
 ```
 

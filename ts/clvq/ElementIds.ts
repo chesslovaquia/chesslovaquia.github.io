@@ -26,6 +26,19 @@ export const ElementIds = {
 	lichessLogin:  'lichessLogin',
 	lichessLogout: 'lichessLogout',
 	lichessUser:   'lichessUser',
+	// Lichess seek modal
+	lichessSeekModal: 'lichessSeekModal',
+	// Lichess challenge modal
+	lichessChallengeModal:    'lichessChallengeModal',
+	lichessChallengerName:    'lichessChallengerName',
+	lichessChallengerRating:  'lichessChallengerRating',
+	lichessChallengeTimeCtrl: 'lichessChallengeTimeCtrl',
+	// Online game actions bar — append player number ('1' or '2') for rating
+	gameActionsBar:  'gameActionsBar',
+	gameResign:      'gameResign',
+	gameAbort:       'gameAbort',
+	gameOfferDraw:   'gameOfferDraw',
+	gamePlayerRating: 'gamePlayerRating',
 	// System / error
 	clvqInternalError:        'clvqInternalError',
 	clvqInternalErrorMessage: 'clvqInternalErrorMessage',

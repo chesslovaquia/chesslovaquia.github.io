@@ -22,6 +22,30 @@
 			onclick="Clvq.w3ToggleMenu('gameMenu')">
 			Reset
 		</a>
+		<!-- Play on Lichess -->
+		<a href="javascript:void(0)"
+			class="w3-bar-item {{ $menuBtnClass }}"
+			onclick="Clvq.w3HideModal('gameMenu'); Clvq.w3ShowModal('lichessSeekModal')">
+			Play on Lichess
+		</a>
+		<!-- Online game actions (hidden until an online game is active) -->
+		<div id="gameActionsBar" style="display:none">
+			<a id="gameAbort" href="javascript:void(0)"
+				class="w3-bar-item {{ $menuBtnClass }}"
+				onclick="Clvq.lichessAbort()">
+				Abort
+			</a>
+			<a id="gameResign" href="javascript:void(0)"
+				class="w3-bar-item {{ $menuBtnClass }}"
+				onclick="Clvq.lichessResign()">
+				Resign
+			</a>
+			<a id="gameOfferDraw" href="javascript:void(0)"
+				class="w3-bar-item {{ $menuBtnClass }}"
+				onclick="Clvq.lichessOfferDraw()">
+				Offer Draw
+			</a>
+		</div>
 		{{- with index site.Menus $menuID }}
 			{{- partial "inline/menu/walk.html" (dict "page" $page "menuBtnClass" $menuBtnClass "menuEntries" .) }}
 		{{- end }}

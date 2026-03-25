@@ -98,6 +98,33 @@ export class GameDisplay {
 		this.setStatus(text);
 	}
 
+	public setOpponentInfo(playerNum: 1 | 2, name: string, rating?: number, title?: string): void {
+		const nameEl   = document.getElementById(ElementIds.gamePlayer + String(playerNum));
+		const ratingEl = document.getElementById(ElementIds.gamePlayerRating + String(playerNum));
+		if (nameEl) {
+			nameEl.textContent = title ? `${title} ${name}` : name;
+		}
+		if (ratingEl) {
+			if (rating) {
+				ratingEl.textContent  = `(${rating})`;
+				ratingEl.style.display = '';
+			} else {
+				ratingEl.textContent  = '';
+				ratingEl.style.display = 'none';
+			}
+		}
+	}
+
+	public showActionsBar(): void {
+		const el = document.getElementById(ElementIds.gameActionsBar);
+		if (el) el.style.display = '';
+	}
+
+	public hideActionsBar(): void {
+		const el = document.getElementById(ElementIds.gameActionsBar);
+		if (el) el.style.display = 'none';
+	}
+
 	private showOutcome(status: string) {
 		if (this.cfg.ui.outcome) {
 			this.cfg.ui.outcome.textContent = status;

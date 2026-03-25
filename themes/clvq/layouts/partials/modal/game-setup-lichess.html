@@ -1,0 +1,33 @@
+{{- $page := .page }}
+{{- $btnClass := $page.Site.Params.btnClass }}
+{{- $modalContentClass := $page.Site.Params.modalContentClass }}
+<div id="lichessSeekModal" class="w3-modal">
+	<div class="{{ $modalContentClass }} w3-center">
+		<div class="w3-container">
+			<p>Choose a time control to seek a game:</p>
+		</div>
+		<div class="w3-container w3-bar">
+			<button class="{{ $btnClass }} w3-bar-item" style="margin:2px"
+				onclick="lichessSeek(10, 0)">10+0</button>
+			<button class="{{ $btnClass }} w3-bar-item" style="margin:2px"
+				onclick="lichessSeek(15, 10)">15+10</button>
+		</div>
+		<div class="w3-container w3-bar">
+			<button class="{{ $btnClass }} w3-bar-item" style="margin:2px"
+				onclick="lichessSeek(30, 0)">30+0</button>
+			<button class="{{ $btnClass }} w3-bar-item" style="margin:2px"
+				onclick="lichessSeek(30, 20)">30+20</button>
+		</div>
+		<div class="w3-container w3-bar">
+			<button class="{{ $btnClass }} w3-bar-item" style="margin:2px"
+				onclick="Clvq.w3HideModal('lichessSeekModal')">Cancel</button>
+		</div>
+	</div>
+</div>
+<script>
+	function lichessSeek(timeMinutes, incrementSeconds) {
+		console.debug('Lichess seek:', timeMinutes, incrementSeconds);
+		Clvq.w3HideModal('lichessSeekModal');
+		Clvq.lichessSeek(timeMinutes, incrementSeconds);
+	}
+</script>

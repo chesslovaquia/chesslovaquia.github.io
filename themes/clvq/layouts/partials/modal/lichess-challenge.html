@@ -1,0 +1,21 @@
+{{- $page := .page }}
+{{- $btnClass := $page.Site.Params.btnClass }}
+{{- $modalContentClass := $page.Site.Params.modalContentClass }}
+<div id="lichessChallengeModal" class="w3-modal">
+	<div class="{{ $modalContentClass }} w3-center">
+		<div class="w3-container">
+			<p>
+				<span id="lichessChallengerName" class="w3-text-lime"></span>
+				<span id="lichessChallengerRating" class="w3-text-grey w3-small"></span>
+				challenges you!
+			</p>
+			<p id="lichessChallengeTimeCtrl" class="w3-small"></p>
+		</div>
+		<div class="w3-container w3-bar">
+			<button class="{{ $btnClass }} w3-bar-item" style="margin:2px"
+				onclick="Clvq.lichessDeclineChallenge()">Decline</button>
+			<button class="{{ $btnClass }} w3-bar-item" style="margin:2px"
+				onclick="Clvq.lichessAcceptChallenge()">Accept</button>
+		</div>
+	</div>
+</div>

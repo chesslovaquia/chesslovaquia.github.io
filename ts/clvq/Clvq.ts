@@ -9,15 +9,30 @@ import { ClvqLocalStorage } from './ClvqLocalStorage';
 import { ElementIds       } from './ElementIds';
 
 import { LichessAuth } from '../lichess/LichessAuth';
+import { LichessClient } from '../lichess/LichessClient';
+import { LichessStream } from '../lichess/LichessStream';
+import { LichessGame   } from '../lichess/LichessGame';
+import type { LichessChallenge, LichessGameFull } from '../lichess/LichessGame';
 
 import { GameSetup } from '../game/GameSetup';
 
+export type ClvqDeps = {
+	lichessGame?: LichessGame;
+};
+
 export class Clvq {
 	private readonly auth: LichessAuth;
+	private lichessGameInst: LichessGame | null;
+	private pendingChallengeId: string | null = null;
+	private activeGameId: string | null = null;
 
-	constructor() {
+	constructor(deps?: ClvqDeps) {
 		console.debug('Clvq loaded.');
 		this.auth = new LichessAuth(new ClvqLocalStorage());
+		this.lichessGameInst = deps?.lichessGame ?? null;
+		if (this.lichessGameInst) {
+			this.setupLichessCallbacks(this.lichessGameInst);
+		}
 		this.auth.handleCallback()
 			.then(() => { this.updateLichessUI(); })
 			.catch((err: unknown) => { console.error('Lichess callback error:', err); });
@@ -69,6 +84,122 @@ export class Clvq {
 			desc: `${days} ${unit}`,
 			correspondence: true,
 		});
+	}
+
+	// --- Lichess online play ---
+
+	public lichessSeek(timeMinutes: number, incrementSeconds: number): void {
+		const game = this.getLichessGame();
+		game.seek({ time: timeMinutes, increment: incrementSeconds })
+			.catch((err: unknown) => { console.error('Lichess seek error:', err); });
+	}
+
+	public lichessAcceptChallenge(): void {
+		if (!this.pendingChallengeId) return;
+		const id = this.pendingChallengeId;
+		this.pendingChallengeId = null;
+		w3HideModal(ElementIds.lichessChallengeModal);
+		this.getLichessGame().acceptChallenge(id)
+			.catch((err: unknown) => { console.error('Lichess accept challenge error:', err); });
+	}
+
+	public lichessDeclineChallenge(): void {
+		if (!this.pendingChallengeId) return;
+		const id = this.pendingChallengeId;
+		this.pendingChallengeId = null;
+		w3HideModal(ElementIds.lichessChallengeModal);
+		this.getLichessGame().declineChallenge(id)
+			.catch((err: unknown) => { console.error('Lichess decline challenge error:', err); });
+	}
+
+	public lichessResign(): void {
+		if (!this.activeGameId) return;
+		this.getLichessGame().resign(this.activeGameId)
+			.catch((err: unknown) => { console.error('Lichess resign error:', err); });
+	}
+
+	public lichessAbort(): void {
+		if (!this.activeGameId) return;
+		this.getLichessGame().abort(this.activeGameId)
+			.catch((err: unknown) => { console.error('Lichess abort error:', err); });
+	}
+
+	public lichessOfferDraw(): void {
+		if (!this.activeGameId) return;
+		this.getLichessGame().offerOrAcceptDraw(this.activeGameId)
+			.catch((err: unknown) => { console.error('Lichess offer draw error:', err); });
+	}
+
+	// --- Private helpers ---
+
+	private getLichessGame(): LichessGame {
+		if (!this.lichessGameInst) {
+			const client = new LichessClient(this.auth);
+			const stream = new LichessStream(client);
+			this.lichessGameInst = new LichessGame(client, stream);
+			this.setupLichessCallbacks(this.lichessGameInst);
+			this.lichessGameInst.startEventStream();
+		}
+		return this.lichessGameInst;
+	}
+
+	private setupLichessCallbacks(game: LichessGame): void {
+		game.onChallenge((challenge: LichessChallenge) => {
+			this.pendingChallengeId = challenge.id;
+			const nameEl   = document.getElementById(ElementIds.lichessChallengerName);
+			const ratingEl = document.getElementById(ElementIds.lichessChallengerRating);
+			const timeEl   = document.getElementById(ElementIds.lichessChallengeTimeCtrl);
+			if (nameEl) {
+				nameEl.textContent = challenge.challenger.username;
+			}
+			if (ratingEl) {
+				ratingEl.textContent = challenge.challenger.rating
+					? `(${challenge.challenger.rating})`
+					: '';
+			}
+			if (timeEl) {
+				const tc = challenge.timeControl;
+				if (tc.limit !== undefined && tc.increment !== undefined) {
+					timeEl.textContent = `${Math.floor(tc.limit / 60)}+${tc.increment}`;
+				} else {
+					timeEl.textContent = tc.type;
+				}
+			}
+			w3ShowModal(ElementIds.lichessChallengeModal);
+		});
+
+		game.onGameStart((gameId: string) => {
+			this.activeGameId = gameId;
+			const bar = document.getElementById(ElementIds.gameActionsBar);
+			if (bar) bar.style.display = '';
+		});
+
+		game.onGameFinish((_gameId: string) => {
+			this.activeGameId = null;
+			const bar = document.getElementById(ElementIds.gameActionsBar);
+			if (bar) bar.style.display = 'none';
+		});
+
+		game.onGameFull((gameFull: LichessGameFull) => {
+			this.setPlayerRatingUI('1', gameFull.white.username, gameFull.white.rating);
+			this.setPlayerRatingUI('2', gameFull.black.username, gameFull.black.rating);
+		});
+	}
+
+	private setPlayerRatingUI(num: '1' | '2', name: string, rating?: number): void {
+		const nameEl   = document.getElementById(ElementIds.gamePlayer + num);
+		const ratingEl = document.getElementById(ElementIds.gamePlayerRating + num);
+		if (nameEl) {
+			nameEl.textContent = name;
+		}
+		if (ratingEl) {
+			if (rating) {
+				ratingEl.textContent   = `(${rating})`;
+				ratingEl.style.display = '';
+			} else {
+				ratingEl.style.display = 'none';
+			}
+		}
 	}
 
 	private updateLichessUI(): void {

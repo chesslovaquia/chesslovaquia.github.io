@@ -16,11 +16,13 @@ export function mockConfigGameUI(): string {
 	<div id="chessboard"></div>
 
 	<div id="gamePlayer1"></div>
+	<div id="gamePlayerRating1" style="display:none"></div>
 	<div id="gameClock1"></div>
 	<div id="gameMaterial1"></div>
 	<div id="gameMaterialCount1"></div>
 
 	<div id="gamePlayer2"></div>
+	<div id="gamePlayerRating2" style="display:none"></div>
 	<div id="gameClock2"></div>
 	<div id="gameMaterial2"></div>
 	<div id="gameMaterialCount2"></div>
@@ -30,6 +32,12 @@ export function mockConfigGameUI(): string {
 	<div id="gameOutcome"></div>
 
 	<a id="gameReset"></a>
+
+	<div id="gameActionsBar" style="display:none">
+		<button id="gameResign"></button>
+		<button id="gameAbort"></button>
+		<button id="gameOfferDraw"></button>
+	</div>
 
 	<button id="gameNavBackward"></button>
 	<button id="gameNavForward"></button>
