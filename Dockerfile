@@ -39,7 +39,6 @@ RUN groupadd -o -g ${DEVEL_GID} devel \
 	&& chmod -v 0750 /home/devel
 
 RUN printf 'umask %s\n' '027' >>/home/devel/.profile
-RUN printf "export PS1='%s '\n" '\u@\h:\W\$' >>/home/devel/.profile
 
 COPY ./docker/user-login.sh /usr/local/bin/user-login.sh
 RUN chmod -v 0755 /usr/local/bin/user-login.sh
@@ -64,6 +63,8 @@ RUN hugo version
 
 RUN wget -O - https://astral.sh/uv/install.sh | sh
 RUN /usr/local/bin/uv --version
+
+ENV CLVQ_CLAUDE_UPGRADE=260325
 
 RUN install -v -d -m 0750 ${HOME}/.local/npm
 RUN cd ${HOME}/.local/npm && npm install @anthropic-ai/claude-code
