@@ -34,11 +34,11 @@ export class GameNavigate {
 	private index: number;
 	private moves: BoardMove[];
 
-	constructor(ui: ConfigGameUI, board: GameBoard, engine: GameEngine) {
+	constructor(ui: ConfigGameUI, board: GameBoard, engine: GameEngine, captures: GameCaptures) {
 		this.ui = ui;
 		this.board = board;
 		this.engine = engine;
-		this.captures = new GameCaptures(this.ui, this.engine);
+		this.captures = captures;
 		this.pos = [];
 		this.index = -1;
 		this.moves = [];

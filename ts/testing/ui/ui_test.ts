@@ -1,6 +1,7 @@
 // Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com>
 // See LICENSE file.
 
+/// <reference types="node" />
 import { readFileSync } from 'fs';
 
 import { test, describe, expect, beforeEach } from 'vitest';
@@ -9,18 +10,6 @@ import { ConfigError  } from '../../config/ConfigError';
 import { ConfigGameUI } from '../../config/ConfigGameUI';
 
 import { mockConfigGameUI } from '../testing';
-
-import { Window } from 'happy-dom';
-
-const window = new Window({
-	settings: {
-		disableJavaScriptFileLoading: true,
-		disableCSSFileLoading: true,
-		disableComputedStyleRendering: true,
-	}
-});
-
-global.document = window.document as any;
 
 function uiTest(kind: string): void {
 	test(kind, () => {

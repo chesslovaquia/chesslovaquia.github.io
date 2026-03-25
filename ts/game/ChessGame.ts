@@ -83,6 +83,7 @@ export class ChessGame {
 	}
 
 	public destroy(): void {
+		this.clock.stop();
 		EventBoardMove.Target.removeEventListener(EventBoardMove.Name, this.boardMoveHandler);
 		EventClockTimeout.Target.removeEventListener(EventClockTimeout.Name, this.clockTimeoutHandler);
 		EventOpponentMove.Target.removeEventListener(EventOpponentMove.Name, this.opponentMoveHandler);

@@ -48,7 +48,7 @@ warn-and-skip), making behavior inconsistent.
 
 ---
 
-### 3. Inject Hidden Dependencies (Fix Broken DI)
+### 3. Inject Hidden Dependencies (Fix Broken DI) ✓ Done
 
 **Problem:** The project uses dependency injection via `GameDeps` for `ChessGame`, but
 several modules create their own dependencies internally, breaking the pattern:
@@ -61,6 +61,19 @@ several modules create their own dependencies internally, breaking the pattern:
 - Add `GameCaptures` to `GameDeps` and inject into `GameNavigate`
 - Add `GameSetup` and `GameHistory` to `GameDeps` and inject into `GameState`
 - Update `mockGameDeps()` in `ts/testing/testing.ts`
+
+**Implemented:** `GameCaptures`, `GameSetup`, and `GameHistory` added as fields on `GameDeps`.
+`newGameDeps()` creates all three and passes them to their respective constructors.
+`GameNavigate` constructor now accepts `captures: GameCaptures` as a fourth parameter;
+`GameStateImpl` constructor now accepts `setup: GameSetup` and `history: GameHistory`.
+`mockGameDeps()` required no changes — it delegates to `newGameDeps()` and inherits the
+new wiring automatically. Also fixed three pre-existing test issues uncovered during this work:
+`ChessGame.destroy()` now calls `clock.stop()` to clear intervals; `ChessGame_test.ts` uses
+`vi.useFakeTimers()` + `game.destroy()` in beforeEach/afterEach to prevent timer leaks;
+`ui_test.ts` no longer replaces `global.document` (which was corrupting event routing in
+co-tenant test files via the shared vmThreads worker). Also fixed pre-existing TypeScript
+errors: `GameCaptures.ts` `.at()` calls replaced with ES2019-compatible indexing;
+`ui_test.ts` adds `/// <reference types="node" />` for the `fs` import.
 
 ---
 

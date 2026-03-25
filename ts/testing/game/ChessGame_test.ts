@@ -9,18 +9,25 @@ import { TestGameConfig   } from '../testing';
 
 import { ChessGame } from '../../game/ChessGame';
 
+let game: ChessGame | undefined;
+
 function newTestGame(cfg: TestGameConfig): ChessGame {
-	return new ChessGame(mockGameDeps(cfg));
+	game = new ChessGame(mockGameDeps(cfg));
+	return game;
 }
 
 let cfg: TestGameConfig;
 
 beforeEach(() => {
+	vi.useFakeTimers();
 	document.body.innerHTML = mockConfigGameUI();
 	cfg = new TestGameConfig();
 });
 
 afterEach(() => {
+	game?.destroy();
+	game = undefined;
+	vi.useRealTimers();
 	vi.restoreAllMocks();
 });
 

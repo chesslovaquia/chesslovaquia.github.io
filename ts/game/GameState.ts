@@ -53,14 +53,14 @@ export class GameStateImpl implements GameState {
 
 	private orientation: EngineColor;
 
-	constructor(engine: GameEngine, clock: GameClock, nav: GameNavigate) {
+	constructor(engine: GameEngine, clock: GameClock, nav: GameNavigate, setup: GameSetup, history: GameHistory) {
 		this.id          = 'current';
 		this.engine      = engine;
 		this.clock       = clock;
 		this.nav         = nav;
 		this.db          = new ClvqIndexedDB(Store.state);
-		this.setup       = new GameSetup();
-		this.history     = new GameHistory();
+		this.setup       = setup;
+		this.history     = history;
 		this.orientation = 'w';
 	}
 

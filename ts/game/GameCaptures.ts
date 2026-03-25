@@ -84,10 +84,12 @@ export class GameCaptures {
 
 	private addCount(turn: EngineColor, side: EngineColor, capture: CapturedPiece): void {
 		// Opponent.
-		let current = this.count[turn].at(-1) || 0;
+		const turnCount = this.count[turn];
+		let current = (turnCount.length > 0 ? turnCount[turnCount.length - 1] : undefined) || 0;
 		this.count[turn].push(current);
 		// Side.
-		current = this.count[side].at(-1) || 0;
+		const sideCount = this.count[side];
+		current = (sideCount.length > 0 ? sideCount[sideCount.length - 1] : undefined) || 0;
 		if (this.promotion[side] > 0) {
 			current += this.promotion[side];
 			this.promotion[side] = 0;
@@ -163,8 +165,8 @@ export class GameCaptures {
 
 	private async updateCount(idx: number): Promise<void> {
 		this.clearAllCount();
-		const wCount = this.count['w'].at(idx) || 0;
-		const bCount = this.count['b'].at(idx) || 0;
+		const wCount = this.count['w'][idx] || 0;
+		const bCount = this.count['b'][idx] || 0;
 		let diff = wCount - bCount;
 		if (diff === 0) {
 			return;

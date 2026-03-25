@@ -5,7 +5,26 @@
       "Bash(CLVQ_ROOT=http://localhost make check)",
       "Bash(CLVQ_ROOT=http://localhost make test)",
       "Bash(echo \"EXIT: $?\")",
-      "Bash(wc -l /opt/clvq/site/ts/testing/**/*_test.ts)"
+      "Bash(wc -l /opt/clvq/site/ts/testing/**/*_test.ts)",
+      "Bash(ts/mkdeps.sh)",
+      "Bash(npm test:*)",
+      "Bash(echo \"EXIT CODE: $?\")",
+      "Bash(for i:*)",
+      "Bash(do node_modules/.bin/vitest run ts/testing/lichess/LichessGameState_test.ts ts/testing/game/ChessGame_test.ts)",
+      "Bash(done)",
+      "Bash(do node_modules/.bin/vitest run ts/testing/lichess/LichessGameState_test.ts ts/testing/game/game_test.ts)",
+      "Bash(do node_modules/.bin/vitest run ts/testing/lichess/LichessGameState_test.ts ts/testing/game/GameCaptures_test.ts)",
+      "Bash(do node_modules/.bin/vitest run ts/testing/lichess/)",
+      "Bash(do node_modules/.bin/vitest run ts/testing/lichess/ ts/testing/game/)",
+      "Bash(do node_modules/.bin/vitest run ts/testing/lichess/ ts/testing/game/ ts/testing/ui/)",
+      "Bash(do node_modules/.bin/vitest run ts/testing/lichess/LichessGameState_test.ts ts/testing/ui/ui_test.ts)",
+      "Bash(do node_modules/.bin/vitest run)",
+      "Bash(npx tsc:*)",
+      "Bash(node_modules/.bin/tsc --version)",
+      "Bash(node_modules/.bin/tsc --noEmit)",
+      "Bash(echo \"TSC EXIT: $?\")",
+      "Bash(do CLVQ_ROOT=http://localhost make test)",
+      "Bash(echo \"Run $i EXIT: $?\")"
     ]
   }
 }
