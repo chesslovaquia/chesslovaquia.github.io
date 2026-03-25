@@ -144,7 +144,7 @@ method resets then throws, but the caller can't recover to the pre-call state.
 - `document.body.innerHTML = mockConfigGameUI()` in 8+ test `beforeEach` blocks
 - Mock factories (`mockAuth()`, `mockClient()`) defined locally in 3 separate files
 - `TestGameState` is too minimal — all methods are no-ops
-- Missing dedicated tests for `GameMove`, `GameBoard`, `LichessStream`, events
+- Missing dedicated tests for `GameMove`, `GameBoard`, `NdjsonReader`, events
 
 **Files:** `ts/testing/testing.ts`, `ts/testing/*_test.ts`
 
