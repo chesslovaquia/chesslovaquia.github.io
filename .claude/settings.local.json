@@ -4,7 +4,8 @@
       "Bash(npx vitest:*)",
       "Bash(CLVQ_ROOT=http://localhost make check)",
       "Bash(CLVQ_ROOT=http://localhost make test)",
-      "Bash(echo \"EXIT: $?\")"
+      "Bash(echo \"EXIT: $?\")",
+      "Bash(wc -l /opt/clvq/site/ts/testing/**/*_test.ts)"
     ]
   }
 }
