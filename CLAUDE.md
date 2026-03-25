@@ -149,9 +149,9 @@ Hugo TypeScript assets are served via module mounts defined in `hugo.toml`. The 
 - **IndexedDB:** `fake-indexeddb` package used in all tests
 - **Coverage:** Istanbul HTML report, covers `ts/**/*.ts` excluding test files
 
-Always run `make check` before committing. It covers TypeScript, HTML, CSS, and shell script validation plus the full test suite. This is the final gate for any modification — all changes must pass `make check` before they are considered done. Set `CLVQ_ROOT=http://localhost` when running locally (e.g. `CLVQ_ROOT=http://localhost make check`).
+Always run `make test` before committing. It covers TypeScript, HTML, CSS, and shell script validation plus the full test suite. This is the final gate for any modification — all changes must pass `make test` before they are considered done. Set `CLVQ_ROOT=http://localhost` when running locally (e.g. `CLVQ_ROOT=http://localhost make test`).
 
-**Checking results:** `make check` produces verbose output — do not try to read it line by line to judge success. Always check the exit code: run it as `CLVQ_ROOT=http://localhost make check; echo "EXIT: $?"` and look for `EXIT: 0`. If it fails, run `npx vitest run` directly to get a focused test failure report.
+**Checking results:** `make test` produces verbose output — do not try to read it line by line to judge success. Always check the exit code: run it as `CLVQ_ROOT=http://localhost make test; echo "EXIT: $?"` and look for `EXIT: 0`. If it fails, run `npx vitest run` directly to get a focused test failure report.
 
 ---
 
