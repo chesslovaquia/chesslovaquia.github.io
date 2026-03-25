@@ -29,7 +29,7 @@ signature is load-bearing for test call sites that spread typed objects into
 
 ---
 
-### 2. Extract Shared NDJSON Parser
+### 2. Extract Shared NDJSON Parser ✓ Done
 
 **Problem:** `LichessStream.readNdjson()` and `LichessHistory.readNdjson()` duplicate
 the same decode-split-trim-parse logic. They also differ in error handling (throw vs
@@ -41,6 +41,10 @@ warn-and-skip), making behavior inconsistent.
 - Create `ts/lichess/NdjsonReader.ts` with a shared parse function
 - Accept an error strategy parameter (`'throw' | 'skip'`)
 - Replace both inline implementations
+
+**Implemented:** Created `ts/lichess/NdjsonReader.ts` with `readNdjson<T>(stream, onLine, options?)`.
+`LichessStream` calls it with `{ signal, onError: 'throw' }`; `LichessHistory` calls it with
+`{ onError: 'skip' }` and collects results via a push callback.
 
 ---
 

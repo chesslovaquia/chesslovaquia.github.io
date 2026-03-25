@@ -2,7 +2,7 @@
 // See LICENSE file.
 
 import { LichessClient } from './LichessClient';
-import { LichessError  } from './LichessError';
+import { readNdjson    } from './NdjsonReader';
 
 export type StreamEvent    = { type: string; [key: string]: unknown };
 export type StreamCallback = (event: StreamEvent) => void;
@@ -93,42 +93,6 @@ export class LichessStream {
 		signal:  AbortSignal,
 	): Promise<void> {
 		const body = await this.client.getStream(path);
-		await this.readNdjson(body, onEvent, signal);
-	}
-
-	private async readNdjson(
-		stream:  ReadableStream<Uint8Array>,
-		onEvent: StreamCallback,
-		signal:  AbortSignal,
-	): Promise<void> {
-		const reader  = stream.getReader();
-		const decoder = new TextDecoder();
-		let buffer    = '';
-
-		const onAbort = (): void => { void reader.cancel(); };
-		signal.addEventListener('abort', onAbort);
-
-		try {
-			while (true) {
-				const { done, value } = await reader.read();
-				if (done) break;
-				buffer += decoder.decode(value, { stream: true });
-				const lines = buffer.split('\n');
-				buffer = lines.pop() ?? '';
-				for (const line of lines) {
-					const trimmed = line.trim();
-					if (!trimmed) continue;
-					try {
-						const event = JSON.parse(trimmed) as StreamEvent;
-						onEvent(event);
-					} catch {
-						throw new LichessError(`Invalid NDJSON line: ${trimmed}`);
-					}
-				}
-			}
-		} finally {
-			signal.removeEventListener('abort', onAbort);
-			reader.releaseLock();
-		}
+		await readNdjson<StreamEvent>(body, onEvent, { signal, onError: 'throw' });
 	}
 }

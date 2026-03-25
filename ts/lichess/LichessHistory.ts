@@ -3,6 +3,7 @@
 
 import { LichessAuth   } from './LichessAuth';
 import { LichessClient } from './LichessClient';
+import { readNdjson    } from './NdjsonReader';
 
 import { GameHistory   } from '../game/GameHistory';
 import { HistoryRecord } from '../game/GameHistory';
@@ -66,7 +67,8 @@ export class LichessHistory {
 		}
 		const path   = `/api/games/user/${user.id}?max=${max}&pgnInJson=true&clocks=false&evals=false`;
 		const stream = await this.client.getStream(path, { 'Accept': 'application/x-ndjson' });
-		const games  = await this.readNdjson(stream);
+		const games: LichessHistoryGame[] = [];
+		await readNdjson<LichessHistoryGame>(stream, g => games.push(g), { onError: 'skip' });
 		const records: HistoryRecord[] = [];
 		for (const game of games) {
 			const record = this.toHistoryRecord(game);
@@ -97,31 +99,5 @@ export class LichessHistory {
 		};
 	}
 
-	private async readNdjson(stream: ReadableStream<Uint8Array>): Promise<LichessHistoryGame[]> {
-		const reader  = stream.getReader();
-		const decoder = new TextDecoder();
-		const games: LichessHistoryGame[] = [];
-		let buffer = '';
-		try {
-			while (true) {
-				const { done, value } = await reader.read();
-				if (done) break;
-				buffer += decoder.decode(value, { stream: true });
-				const lines = buffer.split('\n');
-				buffer = lines.pop() ?? '';
-				for (const line of lines) {
-					const trimmed = line.trim();
-					if (!trimmed) continue;
-					try {
-						games.push(JSON.parse(trimmed) as LichessHistoryGame);
-					} catch {
-						console.warn('LichessHistory: skipping invalid JSON line');
-					}
-				}
-			}
-		} finally {
-			reader.releaseLock();
-		}
-		return games;
-	}
+
 }
