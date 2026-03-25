@@ -44,6 +44,33 @@ export type LichessGameState = {
 	btakeback?: boolean;
 };
 
+// Internal narrowed event types for type-safe stream routing
+type ChallengeStreamEvent  = StreamEvent & { type: 'challenge';  challenge: LichessChallenge };
+type GameStartStreamEvent  = StreamEvent & { type: 'gameStart';  game: { gameId: string } };
+type GameFinishStreamEvent = StreamEvent & { type: 'gameFinish'; game: { gameId: string } };
+type GameFullStreamEvent   = StreamEvent & { type: 'gameFull' } & LichessGameFull;
+type GameStateStreamEvent  = StreamEvent & { type: 'gameState' } & LichessGameState;
+
+function isChallengeEvent(e: StreamEvent): e is ChallengeStreamEvent {
+	return e.type === 'challenge' && typeof (e as ChallengeStreamEvent).challenge === 'object';
+}
+
+function isGameStartEvent(e: StreamEvent): e is GameStartStreamEvent {
+	return e.type === 'gameStart' && typeof (e as GameStartStreamEvent).game === 'object';
+}
+
+function isGameFinishEvent(e: StreamEvent): e is GameFinishStreamEvent {
+	return e.type === 'gameFinish' && typeof (e as GameFinishStreamEvent).game === 'object';
+}
+
+function isGameFullEvent(e: StreamEvent): e is GameFullStreamEvent {
+	return e.type === 'gameFull' && typeof (e as GameFullStreamEvent).id === 'string';
+}
+
+function isGameStateEvent(e: StreamEvent): e is GameStateStreamEvent {
+	return e.type === 'gameState' && typeof (e as GameStateStreamEvent).moves === 'string';
+}
+
 type ChallengeCallback  = (challenge: LichessChallenge) => void;
 type GameStartCallback  = (gameId: string) => void;
 type GameFinishCallback = (gameId: string) => void;
@@ -183,18 +210,21 @@ export class LichessGame {
 	private handleEventStreamEvent(event: StreamEvent): void {
 		switch (event.type) {
 			case 'challenge': {
-				const payload = event as unknown as { challenge: LichessChallenge };
-				this.challengeCallback?.(payload.challenge);
+				if (isChallengeEvent(event)) {
+					this.challengeCallback?.(event.challenge);
+				}
 				break;
 			}
 			case 'gameStart': {
-				const payload = event as unknown as { game: { gameId: string } };
-				this.gameStartCallback?.(payload.game.gameId);
+				if (isGameStartEvent(event)) {
+					this.gameStartCallback?.(event.game.gameId);
+				}
 				break;
 			}
 			case 'gameFinish': {
-				const payload = event as unknown as { game: { gameId: string } };
-				this.gameFinishCallback?.(payload.game.gameId);
+				if (isGameFinishEvent(event)) {
+					this.gameFinishCallback?.(event.game.gameId);
+				}
 				break;
 			}
 			default:
@@ -205,32 +235,33 @@ export class LichessGame {
 	private handleGameStreamEvent(event: StreamEvent): void {
 		switch (event.type) {
 			case 'gameFull': {
-				const payload = event as unknown as LichessGameFull;
-				this.gameFullCallback?.(payload);
+				if (isGameFullEvent(event)) {
+					this.gameFullCallback?.(event);
+				}
 				break;
 			}
 			case 'gameState': {
-				const state = event as unknown as LichessGameState;
+				if (isGameStateEvent(event)) {
+					if (event.wdraw && !this.lastWdraw) {
+						this.drawOfferCallback?.('white');
+					}
+					if (event.bdraw && !this.lastBdraw) {
+						this.drawOfferCallback?.('black');
+					}
+					if (event.wtakeback && !this.lastWtakeback) {
+						this.takebackCallback?.('white');
+					}
+					if (event.btakeback && !this.lastBtakeback) {
+						this.takebackCallback?.('black');
+					}
 
-				if (state.wdraw && !this.lastWdraw) {
-					this.drawOfferCallback?.('white');
-				}
-				if (state.bdraw && !this.lastBdraw) {
-					this.drawOfferCallback?.('black');
-				}
-				if (state.wtakeback && !this.lastWtakeback) {
-					this.takebackCallback?.('white');
-				}
-				if (state.btakeback && !this.lastBtakeback) {
-					this.takebackCallback?.('black');
-				}
+					this.lastWdraw     = event.wdraw     ?? false;
+					this.lastBdraw     = event.bdraw     ?? false;
+					this.lastWtakeback = event.wtakeback ?? false;
+					this.lastBtakeback = event.btakeback ?? false;
 
-				this.lastWdraw     = state.wdraw     ?? false;
-				this.lastBdraw     = state.bdraw     ?? false;
-				this.lastWtakeback = state.wtakeback ?? false;
-				this.lastBtakeback = state.btakeback ?? false;
-
-				this.gameStateCallback?.(state);
+					this.gameStateCallback?.(event);
+				}
 				break;
 			}
 			default:

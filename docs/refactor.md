@@ -7,7 +7,7 @@ Each item includes the problem, where it lives, and what to do about it.
 
 ## Priority: High
 
-### 1. Type-Safe Lichess Event Routing
+### 1. Type-Safe Lichess Event Routing ✓ Done
 
 **Problem:** `LichessGame.ts` uses double-cast `as unknown as Type` to route stream
 events. The root `StreamEvent` type is `{ type: string; [key: string]: unknown }` —
@@ -19,6 +19,13 @@ no compile-time safety if the lichess API shape changes.
 - Replace `StreamEvent` with a discriminated union over all known event types
 - Add type guard functions for each variant
 - Remove all `as unknown as` casts from event routing
+
+**Implemented:** Added five `StreamEvent &` intersection types (`ChallengeStreamEvent`,
+`GameStartStreamEvent`, `GameFinishStreamEvent`, `GameFullStreamEvent`,
+`GameStateStreamEvent`) and corresponding type guard functions in `LichessGame.ts`.
+All five `as unknown as` casts removed. `LichessStream.ts` unchanged — its index
+signature is load-bearing for test call sites that spread typed objects into
+`StreamEvent`.
 
 ---
 
