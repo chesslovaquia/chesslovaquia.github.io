@@ -149,9 +149,10 @@ broken for the session.
 
 **Problem:** `EngineColor` ('w'/'b') to `BoardColor` ('white'/'black') conversion is
 duplicated in `GameMove.ts`, `GamePromotion.ts`, `GameDisplay.ts`, and others.
-`Record<EngineColor, T>` appears 15+ times with no shared type alias.
+`Record<EngineColor, T>` appears ~12 times with no shared type alias.
 
-**Files:** `ts/game/GameMove.ts`, `ts/game/GamePromotion.ts`, `ts/game/GameDisplay.ts`
+**Files:** `ts/engine/ChessjsEngine.ts`, `ts/game/GameMove.ts`, `ts/game/GameDisplay.ts`,
+`ts/game/ChessGame.ts`, `ts/board/ChessgroundBoard.ts`
 
 **Action:**
 - Create `ts/engine/ColorUtils.ts` with `toBoard()` and `toEngine()` helpers
@@ -177,9 +178,9 @@ method resets then throws, but the caller can't recover to the pre-call state.
 ### 9. Reduce Test Infrastructure Duplication
 
 **Problem:**
-- `document.body.innerHTML = mockConfigGameUI()` in 8+ test `beforeEach` blocks
-- Mock factories (`mockAuth()`, `mockClient()`) defined locally in 3 separate files
-- `TestGameState` is too minimal — all methods are no-ops
+- `document.body.innerHTML = mockConfigGameUI()` in 11 test `beforeEach` blocks
+- Mock factories (`mockAuth()`, `mockClient()`, `mockLichessGame()`) defined locally in
+  `LichessUIBridge_test.ts`, `Clvq_test.ts`, `LichessGameState_test.ts`
 - Missing dedicated tests for `GameMove`, `GameBoard`, `NdjsonReader`, events
 
 **Files:** `ts/testing/testing.ts`, `ts/testing/*_test.ts`
@@ -187,7 +188,6 @@ method resets then throws, but the caller can't recover to the pre-call state.
 **Action:**
 - Add `setupGameTestDOM()` helper to `testing.ts`
 - Centralize `mockLichessAuth()`, `mockLichessClient()`, `mockLichessGame()` in `testing.ts`
-- Make `TestGameState` configurable (builder pattern or per-test return values)
 - Add test files for missing units
 
 ---
@@ -225,19 +225,19 @@ using `ElementIds.*` constants and defeats static analysis.
 ### 12. DRY Config Validation
 
 **Problem:** `ConfigGameUI.validate()` and `ConfigGamePlayer.validate()` repeat the
-same if-null-throw pattern 14 times.
+same if-null-throw pattern 13 times.
 
 **Files:** `ts/config/ConfigGameUI.ts`, `ts/config/ConfigGamePlayer.ts`
 
 **Action:**
 - Extract `requireElement(el: HTMLElement | null, name: string): HTMLElement` helper
-- Replace all 14 checks with single-line calls
+- Replace all 13 checks with single-line calls
 
 ---
 
 ### 13. Add Logging Abstraction
 
-**Problem:** 68 `console.debug` calls scattered across the codebase with no way to
+**Problem:** 67 `console.debug` calls scattered across the codebase with no way to
 filter by severity or disable in production.
 
 **Files:** Throughout `ts/`
@@ -252,11 +252,11 @@ filter by severity or disable in production.
 ### 14. Handle Fire-and-Forget Promise Rejections
 
 **Problem:** Several places silently discard promise rejections:
-- `GameNavigate.ts:195` — `.then(() => { return; })` with no `.catch()`
+- `GameCaptures.ts:197` — `.then(() => { return; })` with no `.catch()`
 - `GameSetup.ts:44` — `removeItem()` not awaited
 - `GameState.ts:128` — `save()` fire-and-forget during setup
 
-**Files:** `ts/game/GameNavigate.ts`, `ts/game/GameSetup.ts`, `ts/game/GameState.ts`
+**Files:** `ts/game/GameCaptures.ts`, `ts/game/GameSetup.ts`, `ts/game/GameState.ts`
 
 **Action:**
 - Add `.catch(err => console.error(...))` to all fire-and-forget promises
