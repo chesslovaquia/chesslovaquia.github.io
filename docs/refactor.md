@@ -437,7 +437,7 @@ type checking.
 - **GameDisplay** — well-isolated, read-only rendering
 - **Custom event pattern** — static `Name`/`Target` on event classes
 - **Hugo asset pipeline** — correct, don't replace with raw `tsc`
-- **Desktop/mobile layout split** — appropriate for the responsive strategy
+- **Desktop/mobile layout split** — being replaced by a single responsive layout (see `docs/ui-refactor.md`)
 - **Error class hierarchy** — `GameError`/`EngineError`/`ConfigError` extend `Error` directly while `LichessError` extends `ClvqError`. No code uses `instanceof ClvqError` to catch all app errors, so unifying has zero practical benefit.
 - **ChessGame orchestrator size** — 311 lines with focused methods, doing its job as an orchestrator
 - **GameClock size** — 321 lines for a single-purpose clock class with short methods
