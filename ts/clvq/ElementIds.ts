@@ -20,8 +20,9 @@ export const ElementIds = {
 	gameNavFirstMove: 'gameNavFirstMove',
 	gameNavLastMove:  'gameNavLastMove',
 	gameOutcomeModal: 'gameOutcomeModal',
-	// Promotion modals — prepend board color ('white' or 'black')
-	pawnPromotion: 'PawnPromotion',
+	// Promotion modals
+	promotionWhite: 'whitePawnPromotion',
+	promotionBlack: 'blackPawnPromotion',
 	// Lichess auth
 	lichessLogin:  'lichessLogin',
 	lichessLogout: 'lichessLogout',

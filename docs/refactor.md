@@ -258,7 +258,7 @@ sync assertion since `setPosition` no longer returns a Promise.
 
 ---
 
-### 11. Add Explicit Promotion Modal ElementIds
+### 11. Add Explicit Promotion Modal ElementIds ✓ Done
 
 **Problem:** `GamePromotion.ts` builds modal IDs via template literal
 `` `${side}${ElementIds.pawnPromotion}` `` — violates the project convention of
@@ -269,6 +269,13 @@ using `ElementIds.*` constants and defeats static analysis.
 **Action:**
 - Add `promotionWhite` and `promotionBlack` to `ElementIds`
 - Replace template literal concatenation
+
+**Implemented:** Removed `pawnPromotion: 'PawnPromotion'` from `ElementIds` and replaced with
+`promotionWhite: 'whitePawnPromotion'` and `promotionBlack: 'blackPawnPromotion'`. `GamePromotion.ts`
+`showModal()` now resolves the modal ID via a ternary (`side === 'white' ? ElementIds.promotionWhite :
+ElementIds.promotionBlack`) instead of string concatenation. `GamePromotion_test.ts` updated to use
+the new constants throughout. HTML partial unchanged — it already generates the matching IDs
+(`whitePawnPromotion`, `blackPawnPromotion`) via the `$side` template variable.
 
 ---
 

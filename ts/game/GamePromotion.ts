@@ -47,7 +47,8 @@ export class GamePromotion {
 
 	private showModal(side: BoardColor, callback: (piece: BoardPromotionPiece) => void): void {
 		console.log('Pawn promotion show modal:', side);
-		const modal = document.getElementById(`${side}${ElementIds.pawnPromotion}`);
+		const modalId = side === 'white' ? ElementIds.promotionWhite : ElementIds.promotionBlack;
+		const modal = document.getElementById(modalId);
 		if (modal) {
 			modal.style.display = 'block';
 			const handler = (evt: MouseEvent) => {
