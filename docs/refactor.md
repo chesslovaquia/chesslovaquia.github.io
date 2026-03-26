@@ -287,7 +287,7 @@ same if-null-throw pattern 13 times.
 
 ### 13. Add Logging Abstraction
 
-**Problem:** 67 `console.debug` calls scattered across the codebase with no way to
+**Problem:** 68 `console.debug` calls scattered across the codebase with no way to
 filter by severity or disable in production.
 
 **Files:** Throughout `ts/`
@@ -301,12 +301,21 @@ filter by severity or disable in production.
 
 ### 14. Handle Fire-and-Forget Promise Rejections
 
-**Problem:** Several places silently discard promise rejections:
-- `GameCaptures.ts:197` — `.then(() => { return; })` with no `.catch()`
+**Problem:** Several places silently discard promise rejections (9 locations across 5 files):
 - `GameSetup.ts:44` — `removeItem()` not awaited
+- `GameState.ts:68` — `removeItem()` not awaited
+- `GameState.ts:69` — `removeGame()` not awaited
 - `GameState.ts:128` — `save()` fire-and-forget during setup
+- `GameState.ts:144` — `save()` fire-and-forget in `toggleOrientation()`
+- `ChessGame.ts:187` — `state.save()` fire-and-forget in `saveState()`
+- `ChessGame.ts:222` — `state.save()` fire-and-forget in `doOpponentMove()`
+- `GamePromotion.ts:83` — `state.save()` fire-and-forget in `saveState()`
+- `setup.ts:16` — `.then()` without `.catch()`
 
-**Files:** `ts/game/GameCaptures.ts`, `ts/game/GameSetup.ts`, `ts/game/GameState.ts`
+Note: the original `GameCaptures.ts:197` issue was fixed by item #10 (async removal).
+
+**Files:** `ts/game/GameSetup.ts`, `ts/game/GameState.ts`, `ts/game/ChessGame.ts`,
+`ts/game/GamePromotion.ts`, `ts/game/setup.ts`
 
 **Action:**
 - Add `.catch(err => console.error(...))` to all fire-and-forget promises
