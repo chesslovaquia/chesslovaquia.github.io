@@ -3,6 +3,15 @@ import { defineConfig } from 'vitest/config';
 export default defineConfig({
 	test: {
 		environment: 'happy-dom',
+		environmentOptions: {
+			happyDOM: {
+				settings: {
+					disableCSSFileLoading: true,
+					disableJavaScriptFileLoading: true,
+					handleDisabledFileLoadingAsSuccess: true,
+				},
+			},
+		},
 		setupFiles: 'ts/testing/testing-setup.ts',
 		silent: 'passed-only',
 		pool: 'vmThreads',
