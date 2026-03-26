@@ -1,7 +1,7 @@
 // Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com>
 // See LICENSE file.
 
-import { ConfigError      } from './ConfigError';
+import { requireElement   } from './ConfigError';
 import { ConfigGamePlayer } from './ConfigGamePlayer';
 
 import { ElementIds } from '../clvq/ElementIds';
@@ -41,32 +41,14 @@ export class ConfigGameUI {
 	}
 
 	private validate(): void {
-		if (!this.description) {
-			throw new ConfigError('ConfigGameUI gameDescription not found.');
-		}
-		if (!this.status) {
-			throw new ConfigError('ConfigGameUI gameStatus not found.');
-		}
-		if (!this.outcome) {
-			throw new ConfigError('ConfigGameUI gameOutcome not found.');
-		}
-		if (!this.gameReset) {
-			throw new ConfigError('ConfigGameUI gameReset not found.');
-		}
-		if (!this.navBackward) {
-			throw new ConfigError('ConfigGameUI navBackward not found.');
-		}
-		if (!this.navForward) {
-			throw new ConfigError('ConfigGameUI navForward not found.');
-		}
-		if (!this.flipBoard) {
-			throw new ConfigError('ConfigGameUI flipBoard not found.');
-		}
-		if (!this.navFirstMove) {
-			throw new ConfigError('ConfigGameUI navFirstMove not found.');
-		}
-		if (!this.navLastMove) {
-			throw new ConfigError('ConfigGameUI navLastMove not found.');
-		}
+		requireElement(this.description,  'ConfigGameUI gameDescription');
+		requireElement(this.status,       'ConfigGameUI gameStatus');
+		requireElement(this.outcome,      'ConfigGameUI gameOutcome');
+		requireElement(this.gameReset,    'ConfigGameUI gameReset');
+		requireElement(this.navBackward,  'ConfigGameUI navBackward');
+		requireElement(this.navForward,   'ConfigGameUI navForward');
+		requireElement(this.flipBoard,    'ConfigGameUI flipBoard');
+		requireElement(this.navFirstMove, 'ConfigGameUI navFirstMove');
+		requireElement(this.navLastMove,  'ConfigGameUI navLastMove');
 	}
 }

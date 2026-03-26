@@ -279,7 +279,7 @@ the new constants throughout. HTML partial unchanged — it already generates th
 
 ---
 
-### 12. DRY Config Validation
+### 12. DRY Config Validation ✓ Done
 
 **Problem:** `ConfigGameUI.validate()` and `ConfigGamePlayer.validate()` repeat the
 same if-null-throw pattern 13 times.
@@ -289,6 +289,11 @@ same if-null-throw pattern 13 times.
 **Action:**
 - Extract `requireElement(el: HTMLElement | null, name: string): HTMLElement` helper
 - Replace all 13 checks with single-line calls
+
+**Implemented:** Added `requireElement(el, name)` as a named export in `ts/config/ConfigError.ts`
+(natural home — it throws `ConfigError`). `ConfigGameUI.validate()` now has 9 single-line
+`requireElement` calls; `ConfigGamePlayer.validate()` has 4. Both classes no longer import
+`ConfigError` directly. No test changes required — all 20 existing config tests pass unchanged.
 
 ---
 

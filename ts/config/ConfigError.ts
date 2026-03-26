@@ -6,3 +6,10 @@ export class ConfigError extends Error {
 		super(`Config ERROR: ${msg}`);
 	}
 }
+
+export function requireElement(el: HTMLElement | null, name: string): HTMLElement {
+	if (!el) {
+		throw new ConfigError(`${name} not found.`);
+	}
+	return el;
+}

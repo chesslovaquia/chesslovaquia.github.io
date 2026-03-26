@@ -1,7 +1,7 @@
 // Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com>
 // See LICENSE file.
 
-import { ConfigError } from './ConfigError';
+import { requireElement } from './ConfigError';
 
 import { ElementIds } from '../clvq/ElementIds';
 
@@ -22,17 +22,9 @@ export class ConfigGamePlayer {
 	}
 
 	private validate(id: PlayerID): void {
-		if (!this.info) {
-			throw new ConfigError(`${ElementIds.gamePlayer}${id}: element not found`);
-		}
-		if (!this.clock) {
-			throw new ConfigError(`${ElementIds.gameClock}${id}: element not found`);
-		}
-		if (!this.material) {
-			throw new ConfigError(`${ElementIds.gameMaterial}${id}: element not found`);
-		}
-		if (!this.materialCount) {
-			throw new ConfigError(`${ElementIds.gameMaterialCount}${id}: element not found`);
-		}
+		requireElement(this.info,          `${ElementIds.gamePlayer}${id}`);
+		requireElement(this.clock,         `${ElementIds.gameClock}${id}`);
+		requireElement(this.material,      `${ElementIds.gameMaterial}${id}`);
+		requireElement(this.materialCount, `${ElementIds.gameMaterialCount}${id}`);
 	}
 }
