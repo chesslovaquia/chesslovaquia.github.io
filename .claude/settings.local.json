@@ -33,7 +33,13 @@
       "Bash(CLVQ_ROOT=http://localhost ts/check.sh)",
       "Bash(grep -l 'document.body.innerHTML = mockConfigGameUI\\(\\)' /opt/clvq/site/ts/testing/*/*.ts)",
       "Bash(CLVQ_ROOT=http://localhost npx vitest run)",
-      "Bash(grep -E \"\\\\.\\(md|txt|json\\)$\")"
+      "Bash(grep -E \"\\\\.\\(md|txt|json\\)$\")",
+      "Bash(wc -l /opt/clvq/site/ts/testing/*_test.ts)",
+      "Bash(grep -r 'export default' /opt/clvq/site/ts --include=*.ts)",
+      "Bash(grep -r ^exports /opt/clvq/site/ts --include=*.ts)",
+      "Bash(grep -n \"catch.*err.*unknown\" /opt/clvq/site/ts/**/*.ts)",
+      "Bash(awk 'NR > 50 && NR < 100 {count++} END {if \\(count\\) print \"\"File has 50+ lines\"\"}' /opt/clvq/site/ts/game/ChessGame.ts)",
+      "Bash(find /opt/clvq/site/ts -type f -name \"*.ts\" ! -name \"*_test.ts\" -exec wc -l {} +)"
     ]
   }
 }

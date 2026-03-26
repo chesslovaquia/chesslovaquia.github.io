@@ -14,8 +14,14 @@ class ClvqDevel {
 	}
 }
 
+declare global {
+	interface Window {
+		ClvqDevel: ClvqDevel;
+	}
+}
+
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-	(window as any).ClvqDevel = new ClvqDevel();
+	window.ClvqDevel = new ClvqDevel();
 	logger.debug('ClvqDevel loaded.');
 });

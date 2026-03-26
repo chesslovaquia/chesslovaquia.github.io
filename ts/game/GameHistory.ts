@@ -16,10 +16,10 @@ export type HistoryRecord = {
 }
 
 export class GameHistory {
-	private readonly db: ClvqIndexedDB;
+	private readonly db: ClvqIndexedDB<HistoryRecord>;
 
 	constructor() {
-		this.db = new ClvqIndexedDB(Store.history);
+		this.db = new ClvqIndexedDB<HistoryRecord>(Store.history);
 	}
 
 	public async save(record: HistoryRecord): Promise<void> {
@@ -27,7 +27,7 @@ export class GameHistory {
 	}
 
 	public async list(): Promise<HistoryRecord[]> {
-		const all = await this.db.getAll() as HistoryRecord[];
+		const all = await this.db.getAll();
 		return all.sort((a, b) => b.date.localeCompare(a.date));
 	}
 

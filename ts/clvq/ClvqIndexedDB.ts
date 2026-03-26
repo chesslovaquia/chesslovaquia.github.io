@@ -9,7 +9,7 @@ export enum Store {
 	history = 'history',
 }
 
-export class ClvqIndexedDB {
+export class ClvqIndexedDB<T> {
 	private readonly store: Store;
 
 	private db:      IDBDatabase | null;
@@ -63,7 +63,7 @@ export class ClvqIndexedDB {
 		});
 	}
 
-	public async getItem(key: string): Promise<any> {
+	public async getItem(key: string): Promise<T | null> {
 		const db = await this.getDB();
 		const transaction = db.transaction([this.store], 'readonly');
 		const store = transaction.objectStore(this.store);
@@ -77,7 +77,7 @@ export class ClvqIndexedDB {
 		});
 	}
 
-	public async setItem(key: string, val: any): Promise<void> {
+	public async setItem(key: string, val: T): Promise<void> {
 		const db = await this.getDB();
 		const transaction = db.transaction([this.store], 'readwrite');
 		const store = transaction.objectStore(this.store);
@@ -99,13 +99,15 @@ export class ClvqIndexedDB {
 		});
 	}
 
-	public async getAll(): Promise<any[]> {
+	public async getAll(): Promise<T[]> {
 		const db = await this.getDB();
 		const transaction = db.transaction([this.store], 'readonly');
 		const store = transaction.objectStore(this.store);
 		return new Promise((resolve, reject) => {
 			const req = store.getAll();
-			req.onsuccess = () => resolve((req.result as any[]).map((r: any) => r.value));
+			req.onsuccess = () => resolve(
+				(req.result as Array<{ key: string; value: T }>).map((r) => r.value),
+			);
 			req.onerror = () => reject(req.error);
 		});
 	}

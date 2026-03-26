@@ -24,7 +24,7 @@ describe('GameHistory', () => {
 	let history: GameHistory;
 
 	beforeEach(async () => {
-		await new ClvqIndexedDB(Store.history).clearAll();
+		await new ClvqIndexedDB<HistoryRecord>(Store.history).clearAll();
 		history = new GameHistory();
 	});
 

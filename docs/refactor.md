@@ -361,6 +361,76 @@ already imported and used in the surrounding catch block. Added
 
 ---
 
+### 15. ClvqIndexedDB Generic Types ✓ Done
+
+**Problem:** 6 `any` types in `ClvqIndexedDB` — the only real type safety gap in the codebase.
+`getItem` returned `Promise<any>`, `setItem` took `val: any`, `getAll` returned `Promise<any[]>`.
+
+**Files:** `ts/clvq/ClvqIndexedDB.ts`, `ts/game/GameState.ts`, `ts/game/GameSetup.ts`,
+`ts/game/GameHistory.ts`, `ts/testing/clvq/db_test.ts`, `ts/testing/game/GameHistory_test.ts`
+
+**Action:**
+- Add type parameter `T` to `ClvqIndexedDB<T>`
+- Type-safe signatures: `getItem → Promise<T | null>`, `setItem(val: T)`, `getAll → Promise<T[]>`
+- Update construction sites with concrete types
+
+**Implemented:** `ClvqIndexedDB<T>` generic class. `getItem` returns `Promise<T | null>`,
+`setItem` takes `val: T`, `getAll` returns `Promise<T[]>`. Internal `getAll` cast changed
+from `(req.result as any[]).map((r: any) => r.value)` to typed
+`(req.result as Array<{ key: string; value: T }>).map((r) => r.value)`. Updated construction
+sites: `GameStateImpl` uses `ClvqIndexedDB<StateData>`, `GameSetup` uses
+`ClvqIndexedDB<SetupData>`, `GameHistory` uses `ClvqIndexedDB<HistoryRecord>`. Removed
+downstream `as HistoryRecord[]` cast in `GameHistory.list()`. `GameSetup.getGame()` uses
+`?? undefined` to convert `null` return to `undefined` (matching the field type). Test
+instances use `ClvqIndexedDB<unknown>` since they exercise DB mechanics, not type safety.
+
+---
+
+### 16. GameClock.update() Unnecessary `async` ✓ Done
+
+**Problem:** `private async update(turn: EngineColor): Promise<void>` contains no `await` —
+only DOM manipulation. Same issue fixed for GameCaptures in item #10.
+
+**File:** `ts/game/GameClock.ts`
+
+**Action:** Remove `async` keyword, change return type to `void`.
+
+**Implemented:** Removed `async` and `Promise<void>` from `update()` — now returns `void`.
+All 6 callers already ignore the return value; no changes needed elsewhere.
+
+---
+
+### 17. ChessGame Missing `.catch()` ✓ Done
+
+**Problem:** Two promise chains in `ChessGame` had no error handling, inconsistent with the
+9 locations fixed in item #14.
+
+**File:** `ts/game/ChessGame.ts`
+
+**Action:** Add `.catch()` to both `.then()` chains.
+
+**Implemented:** Added `.catch((err: unknown) => logger.error('Game load error:', err))` to
+`state.load().then(...)` in `init()`, and `.catch((err: unknown) => logger.error('Game setup
+error:', err))` to `state.setupNewGame().then(...)` in `setup()`.
+
+---
+
+### 18. `(window as any)` Global Exposure ✓ Done
+
+**Problem:** `main.ts` and `devel.ts` used `(window as any)` to attach globals, bypassing
+type checking.
+
+**Files:** `ts/clvq/main.ts`, `ts/clvq/devel.ts`
+
+**Action:** Add `declare global { interface Window { ... } }` augmentation, remove `as any`.
+
+**Implemented:** Added `declare global { interface Window { Clvq: Clvq } }` in `main.ts` and
+`declare global { interface Window { ClvqDevel: ClvqDevel } }` in `devel.ts`. Replaced
+`(window as any).Clvq` with `window.Clvq` and `(window as any).ClvqDevel` with
+`window.ClvqDevel`.
+
+---
+
 ## Not Refactoring (Things That Are Fine)
 
 - **Overall architecture** — event-driven, interface-based DI, early config validation
@@ -368,3 +438,9 @@ already imported and used in the surrounding catch block. Added
 - **Custom event pattern** — static `Name`/`Target` on event classes
 - **Hugo asset pipeline** — correct, don't replace with raw `tsc`
 - **Desktop/mobile layout split** — appropriate for the responsive strategy
+- **Error class hierarchy** — `GameError`/`EngineError`/`ConfigError` extend `Error` directly while `LichessError` extends `ClvqError`. No code uses `instanceof ClvqError` to catch all app errors, so unifying has zero practical benefit.
+- **ChessGame orchestrator size** — 311 lines with focused methods, doing its job as an orchestrator
+- **GameClock size** — 321 lines for a single-purpose clock class with short methods
+- **DOMHelper / EventManager abstractions** — premature; each pattern appears in few places
+- **Import style** (`import * as utils` vs named imports) — style preference, not a defect
+- **GameCaptures / HistoryManager splitting** — both well-focused at ~200 and ~100 lines

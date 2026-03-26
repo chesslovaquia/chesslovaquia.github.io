@@ -143,7 +143,7 @@ export class GameClock {
 		return false;
 	}
 
-	private async update(turn: EngineColor): Promise<void> {
+	private update(turn: EngineColor): void {
 		if (this.firstMove) {
 			if (turn === 'b') {
 				if (this.side['w'].clock) {

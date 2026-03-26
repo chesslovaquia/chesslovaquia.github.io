@@ -117,7 +117,7 @@ export class ChessGame {
 			} else {
 				this.setup();
 			}
-		});
+		}).catch((err: unknown) => logger.error('Game load error:', err));
 	}
 
 	private setupEventListeners(): void {
@@ -266,7 +266,7 @@ export class ChessGame {
 			} else {
 				window.location.assign('/');
 			}
-		});
+		}).catch((err: unknown) => logger.error('Game setup error:', err));
 	}
 
 	private start(): void {

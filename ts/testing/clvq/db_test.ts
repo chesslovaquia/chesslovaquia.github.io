@@ -6,12 +6,12 @@ import { test, expect, describe, vi } from 'vitest';
 import { ClvqIndexedDB, Store } from '../../clvq/ClvqIndexedDB';
 
 test('open', () => {
-	const db = new ClvqIndexedDB(Store.state);
+	const db = new ClvqIndexedDB<unknown>(Store.state);
 	expect(db).toBeDefined();
 });
 
 describe('db', () => {
-	const db = new ClvqIndexedDB(Store.state);
+	const db = new ClvqIndexedDB<unknown>(Store.state);
 	test('setItem', async () => {
 		await expect(db.setItem('test', 'ing')).resolves.toBeUndefined();
 	});
@@ -35,7 +35,7 @@ describe('db', () => {
 
 describe('failure recovery', () => {
 	test('clears cached promise on open failure, allowing retry', async () => {
-		const db = new ClvqIndexedDB(Store.state);
+		const db = new ClvqIndexedDB<unknown>(Store.state);
 
 		// Mock indexedDB.open to fail asynchronously (mimics real IDB behavior)
 		const openSpy = vi.spyOn(globalThis.indexedDB, 'open').mockImplementationOnce(() => {

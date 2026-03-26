@@ -48,7 +48,7 @@ export class GameStateImpl implements GameState {
 	private readonly id:      string;
 	private readonly engine:  GameEngine;
 	private readonly clock:   GameClock;
-	private readonly db:      ClvqIndexedDB;
+	private readonly db:      ClvqIndexedDB<StateData>;
 	private readonly setup:   GameSetup;
 	private readonly nav:     GameNavigate;
 	private readonly history: GameHistory;
@@ -60,7 +60,7 @@ export class GameStateImpl implements GameState {
 		this.engine      = engine;
 		this.clock       = clock;
 		this.nav         = nav;
-		this.db          = new ClvqIndexedDB(Store.state);
+		this.db          = new ClvqIndexedDB<StateData>(Store.state);
 		this.setup       = setup;
 		this.history     = history;
 		this.orientation = 'w';

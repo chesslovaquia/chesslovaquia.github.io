@@ -17,13 +17,13 @@ export type SetupData = {
 
 export class GameSetup {
 	private readonly id: string;
-	private readonly db: ClvqIndexedDB;
+	private readonly db: ClvqIndexedDB<SetupData>;
 
 	private data: SetupData | undefined;
 
 	constructor() {
 		this.id = 'setup';
-		this.db = new ClvqIndexedDB(Store.state);
+		this.db = new ClvqIndexedDB<SetupData>(Store.state);
 		this.data = undefined;
 	}
 
@@ -36,7 +36,7 @@ export class GameSetup {
 
 	public async getGame(): Promise<SetupData> {
 		logger.debug('Setup get game.');
-		this.data = await this.db.getItem(this.id);
+		this.data = await this.db.getItem(this.id) ?? undefined;
 		return this.data as SetupData;
 	}
 
