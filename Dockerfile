@@ -1,7 +1,9 @@
 FROM debian:forky-20260316-slim
 
 LABEL maintainer="Jeremías Casteglione <jrmsdev@gmail.com>"
-LABEL version="250909"
+LABEL version="250325"
+
+ENV CLVQ_UPGRADE=260325
 
 USER root:root
 WORKDIR /root
@@ -11,7 +13,7 @@ ENV HOME=/root
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-ENV APT_INSTALL='bash openssl ca-certificates media-types less wget npm make shellcheck zip unzip'
+ENV APT_INSTALL='bash openssl ca-certificates media-types less wget python3 npm make shellcheck zip unzip git'
 
 RUN apt-get clean \
 	&& apt-get update -yy \
