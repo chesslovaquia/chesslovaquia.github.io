@@ -7,6 +7,7 @@
 ## Agent Instructions
 
 - **Keep this file up to date.** Any time you discover a non-obvious pitfall, learn a project convention, or make a structural decision, add it to the relevant section of this file without waiting to be asked.
+- **How to apply:** Treat CLAUDE.md updates as part of the definition of done for every task, the same as running `make test`.
 
 ---
 
