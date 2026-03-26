@@ -320,7 +320,7 @@ warn/error always output).
 
 ---
 
-### 14. Handle Fire-and-Forget Promise Rejections
+### 14. Handle Fire-and-Forget Promise Rejections ✓ Done
 
 **Problem:** Several places silently discard promise rejections (9 locations across 5 files):
 - `GameSetup.ts:44` — `removeItem()` not awaited
@@ -341,6 +341,23 @@ Note: the original `GameCaptures.ts:197` issue was fixed by item #10 (async remo
 **Action:**
 - Add `.catch(err => console.error(...))` to all fire-and-forget promises
 - Or await them if the caller can handle the error
+
+**Implemented:** Where the caller is already `async`, replaced fire-and-forget with `await`:
+`GameSetup.removeGame()` now `await`s `db.removeItem()` (rejection propagates to caller);
+`GameState.setupNewGame()` now `await`s `this.save()`. Where the caller is sync and cannot
+be awaited, chained `.catch((err: unknown) => logger.error('...', err))`:
+`GameState.reset()` adds `.catch()` to both `db.removeItem()` (`'State reset error:'`) and
+`setup.removeGame()` (`'State setup remove error:'`); `GameState.toggleOrientation()`,
+`ChessGame.saveState()`, `ChessGame.doOpponentMove()`, and `GamePromotion.saveState()`
+all add `.catch((err: unknown) => logger.error('State save error:', err))` to `state.save()`
+calls (defensive — `save()` has internal try/catch and never rejects, but the `.catch()`
+is present for correctness). `setup.ts` chains `.catch((err: unknown) =>
+clvqInternalError(err as Error))` on the `getGame().then()` call — `clvqInternalError` was
+already imported and used in the surrounding catch block. Added
+`ts/testing/game/GameSetup_test.ts` (2 tests: resolves and clears data, rejects when
+`removeItem` rejects) and `ts/testing/game/GameState_test.ts` (2 tests: `reset()` logs
+`'State reset error:'` when `removeItem` rejects, logs `'State setup remove error:'` when
+`removeGame` rejects).
 
 ---
 

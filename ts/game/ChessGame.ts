@@ -185,7 +185,7 @@ export class ChessGame {
 
 	private saveState(): void {
 		this.nav.addPosition();
-		this.state.save();
+		this.state.save().catch((err: unknown) => logger.error('State save error:', err));
 		if (this.onMove) {
 			const uci = this.buildLastMoveUCI();
 			if (uci) {
@@ -220,7 +220,7 @@ export class ChessGame {
 			this.stop();
 		} else {
 			this.nav.addPosition();
-			this.state.save();
+			this.state.save().catch((err: unknown) => logger.error('State save error:', err));
 			if (this.isMyTurn()) {
 				this.enableBoard();
 			}

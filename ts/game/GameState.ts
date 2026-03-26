@@ -67,8 +67,8 @@ export class GameStateImpl implements GameState {
 	}
 
 	public reset(): void {
-		this.db.removeItem(this.id);
-		this.setup.removeGame();
+		this.db.removeItem(this.id).catch((err: unknown) => logger.error('State reset error:', err));
+		this.setup.removeGame().catch((err: unknown) => logger.error('State setup remove error:', err));
 	}
 
 	private getState(): StateData {
@@ -127,7 +127,7 @@ export class GameStateImpl implements GameState {
 			if (game.correspondence) {
 				this.clock.disableFirstMoveTimer();
 			}
-			this.save();
+			await this.save();
 			return true;
 		}
 		return false;
@@ -143,7 +143,7 @@ export class GameStateImpl implements GameState {
 		} else {
 			this.orientation = 'w';
 		}
-		this.save();
+		this.save().catch((err: unknown) => logger.error('State save error:', err));
 	}
 
 	public gameDescription(): string {

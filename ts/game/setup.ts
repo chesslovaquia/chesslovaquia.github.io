@@ -22,7 +22,7 @@ window.addEventListener('pageshow', () => {
 			} else {
 				logger.debug('No active game.');
 			}
-		});
+		}).catch((err: unknown) => clvqInternalError(err as Error));
 	} catch (error) {
 		clvqInternalError(error as Error);
 		throw error;

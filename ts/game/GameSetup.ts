@@ -43,7 +43,7 @@ export class GameSetup {
 	public async removeGame(): Promise<void> {
 		logger.debug('Setup remove game.');
 		this.data = undefined;
-		this.db.removeItem(this.id);
+		await this.db.removeItem(this.id);
 	}
 
 	public description(): string {

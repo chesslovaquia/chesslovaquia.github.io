@@ -205,7 +205,7 @@ The app is currently fully standalone for game play. Lichess Phases 1–6 are co
 
 - Hugo's asset pipeline compiles TypeScript — do not add a separate `tsconfig.json` build step.
 - `ConfigGameUI` validates DOM elements at init; tests must provide a complete mock DOM. Use `setupGameTestDOM()` from `ts/testing/testing.ts` in `beforeEach` — do not call `document.body.innerHTML = mockConfigGameUI()` directly. For lichess UI tests use `setupLichessTestDOM()`. If a test needs extra DOM elements on top (e.g. `GamePromotion_test.ts`), append them with `document.body.innerHTML += '...'` after `setupGameTestDOM()`.
-- `GameState.save()` returns `Promise<void>` — callers that fire-and-forget it are fine for autosave, but don't assume state is persisted synchronously after the call returns.
+- `GameState.save()` returns `Promise<void>` and has an internal `try/catch` that never re-throws. Sync callers fire-and-forget it with `.catch((err: unknown) => logger.error('State save error:', err))` for consistency; async callers `await` it. Either way, state is not persisted synchronously — don't assume it is after the call returns.
 - `GameState.load()` and `setSetupData()` are both async; always `await` them in sequence to avoid race conditions.
 - `fake-indexeddb` must be imported in test setup (`ts/testing/testing-setup.ts`) before any storage code runs.
 - Never use raw string IDs in `document.getElementById()` — always use `ElementIds.*` from `ts/clvq/ElementIds.ts`.

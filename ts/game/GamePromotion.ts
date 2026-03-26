@@ -83,7 +83,7 @@ export class GamePromotion {
 	}
 
 	private saveState(): void {
-		this.state.save();
+		this.state.save().catch((err: unknown) => logger.error('State save error:', err));
 		logger.debug('Pawn promotion state saved.');
 	}
 }
