@@ -64,7 +64,7 @@ RUN hugo version
 RUN wget -O - https://astral.sh/uv/install.sh | sh
 RUN /usr/local/bin/uv --version
 
-ENV CLVQ_CLAUDE_UPGRADE=260325
+ENV CLVQ_CLAUDE_UPGRADE=260325.1
 
 RUN install -v -d -m 0750 ${HOME}/.local/npm
 RUN cd ${HOME}/.local/npm && npm install @anthropic-ai/claude-code
