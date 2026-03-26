@@ -56,22 +56,46 @@ export class HistoryManager {
 	private renderHistoryList(records: HistoryRecord[]): void {
 		const listEl = document.getElementById(ElementIds.gameHistoryList);
 		if (!listEl) return;
+		listEl.replaceChildren();
 		if (records.length === 0) {
 			listEl.innerHTML = '<p class="w3-text-grey">No games yet.</p>';
 			return;
 		}
-		const rows = records.map((r, i) => {
+		records.forEach((r, i) => {
 			const dateStr = r.date.slice(0, 10);
 			const src     = r.source === 'lichess' ? ' [lichess]' : '';
-			return `<div class="w3-bar w3-border-bottom w3-small" style="padding:4px 0">` +
-				`<span class="w3-bar-item">${dateStr}${src}</span>` +
-				`<span class="w3-bar-item w3-bold">${r.white} vs ${r.black}</span>` +
-				`<span class="w3-bar-item">${r.result}</span>` +
-				`<span class="w3-bar-item w3-text-grey">${r.timeControl}</span>` +
-				`<button class="w3-bar-item w3-button w3-small w3-right" ` +
-				`onclick="Clvq.exportPgn(${i})">PGN</button>` +
-				`</div>`;
+
+			const rowDiv = document.createElement('div');
+			rowDiv.className = 'w3-bar w3-border-bottom w3-small';
+			rowDiv.style.padding = '4px 0';
+
+			const dateSpan = document.createElement('span');
+			dateSpan.className = 'w3-bar-item';
+			dateSpan.textContent = dateStr + src;
+
+			const nameSpan = document.createElement('span');
+			nameSpan.className = 'w3-bar-item w3-bold';
+			nameSpan.textContent = r.white + ' vs ' + r.black;
+
+			const resultSpan = document.createElement('span');
+			resultSpan.className = 'w3-bar-item';
+			resultSpan.textContent = r.result;
+
+			const tcSpan = document.createElement('span');
+			tcSpan.className = 'w3-bar-item w3-text-grey';
+			tcSpan.textContent = r.timeControl;
+
+			const pgnBtn = document.createElement('button');
+			pgnBtn.className = 'w3-bar-item w3-button w3-small w3-right';
+			pgnBtn.textContent = 'PGN';
+			pgnBtn.addEventListener('click', () => { this.exportPgn(i); });
+
+			rowDiv.appendChild(dateSpan);
+			rowDiv.appendChild(nameSpan);
+			rowDiv.appendChild(resultSpan);
+			rowDiv.appendChild(tcSpan);
+			rowDiv.appendChild(pgnBtn);
+			listEl.appendChild(rowDiv);
 		});
-		listEl.innerHTML = rows.join('');
 	}
 }

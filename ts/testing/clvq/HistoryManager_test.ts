@@ -116,6 +116,31 @@ describe('HistoryManager.load', () => {
 	});
 });
 
+// --- renderHistoryList XSS safety ---
+
+describe('HistoryManager.renderHistoryList XSS safety', () => {
+	test('player names containing HTML are rendered as text, not injected', async () => {
+		const xssRecord = makeRecord({
+			white: '<script>alert(1)</script>',
+			black: '<img src=x onerror=alert(2)>',
+		});
+		vi.spyOn(GameHistory.prototype, 'list').mockResolvedValue([xssRecord]);
+
+		const mgr = new HistoryManager();
+		mgr.load();
+
+		await vi.waitFor(() => {
+			const list = document.getElementById('gameHistoryList')!;
+			expect(list.innerHTML).not.toContain('<script>');
+			expect(list.innerHTML).not.toContain('<img');
+			const nameSpan = list.querySelector('.w3-bold');
+			expect(nameSpan).not.toBeNull();
+			expect(nameSpan!.textContent).toContain('<script>alert(1)</script>');
+			expect(nameSpan!.textContent).toContain('<img src=x onerror=alert(2)>');
+		});
+	});
+});
+
 // --- loadFromLichess ---
 
 describe('HistoryManager.loadFromLichess', () => {

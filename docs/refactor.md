@@ -106,7 +106,7 @@ worker assignment when new test files were added. Both now use `vi.stubGlobal`.
 
 ---
 
-### 5. Fix XSS in History Rendering
+### 5. Fix XSS in History Rendering ✓ Done
 
 **Problem:** `Clvq.renderHistoryList()` builds HTML via string concatenation with
 inline `onclick=` handlers and unescaped player names. If player names contain
@@ -117,6 +117,15 @@ malicious content, it executes.
 **Action:**
 - Replace string concatenation with `document.createElement()` + `addEventListener()`
 - Remove all inline event handlers from generated HTML
+
+**Implemented:** `HistoryManager.renderHistoryList()` rewritten to use
+`listEl.replaceChildren()` + `createElement`/`textContent` for every element.
+All user-controlled fields (`r.white`, `r.black`, `r.result`, `r.timeControl`)
+are now set via `.textContent`, which escapes HTML automatically. The inline
+`onclick="Clvq.exportPgn(${i})"` attribute was replaced with
+`pgnBtn.addEventListener('click', () => this.exportPgn(i))`. Added one new test
+in `HistoryManager_test.ts` verifying that player names containing `<script>` and
+`<img onerror=...>` are not injected as raw HTML.
 
 ---
 
