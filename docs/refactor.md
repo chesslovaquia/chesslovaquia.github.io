@@ -131,7 +131,7 @@ in `HistoryManager_test.ts` verifying that player names containing `<script>` an
 
 ## Priority: Medium
 
-### 6. Fix ClvqIndexedDB Failed Promise Caching
+### 6. Fix ClvqIndexedDB Failed Promise Caching ✓ Done
 
 **Problem:** `getDB()` caches the promise from `indexedDB.open()`. If it rejects, the
 same failed promise is returned on every subsequent call — the database is permanently
@@ -142,6 +142,13 @@ broken for the session.
 **Action:**
 - Clear the cached promise on rejection
 - Or implement lazy retry with backoff
+
+**Implemented:** Added `this.promise = null;` in `req.onerror` before calling `reject()`.
+Concurrent awaiters that already hold a reference to the rejected promise still receive
+the rejection correctly; only new callers after the failure get a fresh open attempt.
+Added a `'failure recovery'` test in `ts/testing/clvq/db_test.ts` that mocks
+`indexedDB.open` to fail, verifies rejection, then confirms the next call retries
+successfully.
 
 ---
 

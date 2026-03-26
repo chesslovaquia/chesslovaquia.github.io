@@ -25,7 +25,10 @@ export class ClvqIndexedDB {
 		if (!this.promise) {
 			this.promise = new Promise((resolve, reject) => {
 				const req = indexedDB.open(dbName, dbVersion);
-				req.onerror = () => reject(req.error);
+				req.onerror = () => {
+					this.promise = null;
+					reject(req.error);
+				};
 				req.onsuccess = () => {
 					this.db = req.result;
 					resolve(this.db);
