@@ -7,12 +7,10 @@ if ! test -s "${datadir}/claude.json"; then
 	touch "${datadir}/claude.json"
 fi
 exec docker run -it --rm -u devel \
-	--name clvq-site \
 	--hostname clvq.local \
 	-e "TERM=${TERM}" \
 	-v "${datadir}/claude:/home/devel/.claude" \
 	-v "${datadir}/claude.json:/home/devel/.claude.json" \
 	-v "${PWD}:/opt/clvq/site" \
 	--workdir /opt/clvq/site \
-	-p 127.0.0.1:8045:8045 \
 	clvq/site

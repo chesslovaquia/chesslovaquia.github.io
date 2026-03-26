@@ -77,7 +77,7 @@ errors: `GameCaptures.ts` `.at()` calls replaced with ES2019-compatible indexing
 
 ---
 
-### 4. Split Clvq.ts Into Focused Classes
+### 4. Split Clvq.ts Into Focused Classes ✓ Done
 
 **Problem:** `Clvq.ts` (299 lines) is a grab-bag: game setup, lichess auth lifecycle,
 history management, UI callbacks, PGN export, modal toggling. Hard to test any piece
@@ -89,6 +89,20 @@ in isolation.
 - Extract lichess UI callbacks (lines 214-254) into `LichessUIBridge`
 - Extract history rendering and PGN export into `HistoryManager`
 - Keep `Clvq` as a thin orchestrator that wires the pieces together
+
+**Implemented:** Created `ts/lichess/LichessUIBridge.ts` — owns `onChallenge`,
+`onGameStart`, `onGameFinish`, `onGameFull` callback registration and DOM updates,
+`updateUI()` (auth state display), `acceptChallenge/declineChallenge/resign/abort/offerDraw`
+action methods, and `pendingChallengeId`/`activeGameId` state as readonly getters.
+Created `ts/clvq/HistoryManager.ts` — owns `historyRecords`, `load()`,
+`loadFromLichess(auth)`, `exportPgn(index)`, and `renderHistoryList()`.
+`Clvq.ts` reduced from 299 to ~130 lines; guards reading `bridge.pendingChallengeId`
+and `bridge.activeGameId` stay in `Clvq` to preserve lazy `getLichessGame()` init.
+Added `ts/testing/lichess/LichessUIBridge_test.ts` (20 tests) and
+`ts/testing/clvq/HistoryManager_test.ts` (9 tests). Also fixed `screen_test.ts` and
+`game_test.ts` which used bare `window.location.pathname = '...'` assignment — a
+silent no-op on happy-dom's real Location object, exposed by the change in vmThreads
+worker assignment when new test files were added. Both now use `vi.stubGlobal`.
 
 ---
 

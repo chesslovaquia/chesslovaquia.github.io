@@ -1,7 +1,7 @@
 // Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com>
 // See LICENSE file.
 
-import { test, expect, beforeEach, describe } from 'vitest';
+import { vi, test, expect, beforeEach, afterEach, describe } from 'vitest';
 
 import { mockConfigGameUI } from '../testing';
 
@@ -13,15 +13,19 @@ import { gameInit   } from '../../game/game';
 import { ElementIds } from '../../clvq/ElementIds';
 
 beforeEach(() => {
+	vi.stubGlobal('location', { search: '', pathname: '/play/mobile/', href: '', assign: vi.fn() });
 	document.body.innerHTML = mockConfigGameUI();
-	window.location.pathname = '/play/mobile/';
 	window.innerWidth = 360;
 	window.innerHeight = 640;
 });
 
+afterEach(() => {
+	vi.unstubAllGlobals();
+});
+
 describe('game', () => {
 	test('screen load', () => {
-		window.location.pathname = '/';
+		vi.stubGlobal('location', { search: '', pathname: '/', href: '', assign: vi.fn() });
 		window.innerWidth = 640;
 		window.innerHeight = 360;
 		gameInit();

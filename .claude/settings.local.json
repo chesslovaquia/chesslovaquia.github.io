@@ -24,7 +24,13 @@
       "Bash(node_modules/.bin/tsc --noEmit)",
       "Bash(echo \"TSC EXIT: $?\")",
       "Bash(do CLVQ_ROOT=http://localhost make test)",
-      "Bash(echo \"Run $i EXIT: $?\")"
+      "Bash(echo \"Run $i EXIT: $?\")",
+      "Bash(grep -v \"^$\")",
+      "Bash(CLVQ_ROOT=http://localhost ts/build-check.sh)",
+      "Bash(CLVQ_ROOT=http://localhost hugo/check-build.sh)",
+      "Bash(CLVQ_ROOT=http://localhost ts/test.sh)",
+      "Bash(CLVQ_ROOT=http://localhost shellcheck ./*.sh docker/*.sh hugo/*.sh ts/*.sh vendor/*.sh)",
+      "Bash(CLVQ_ROOT=http://localhost ts/check.sh)"
     ]
   }
 }

@@ -1,14 +1,18 @@
 // Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com>
 // See LICENSE file.
 
-import { test, describe, expect, beforeEach } from 'vitest';
+import { vi, test, describe, expect, beforeEach, afterEach } from 'vitest';
 
 import * as screen from '../../game/screen';
 
 const noDelay = 0;
 
 beforeEach(() => {
-	window.location.pathname = '/';
+	vi.stubGlobal('location', { search: '', pathname: '/', href: '', assign: vi.fn() });
+});
+
+afterEach(() => {
+	vi.unstubAllGlobals();
 });
 
 test('screenLoad', async () => {
