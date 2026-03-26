@@ -119,7 +119,7 @@ export class GameCaptures {
 		return elem;
 	}
 
-	private async updateMaterial(side: EngineColor, piece: BoardPiece): Promise<void> {
+	private updateMaterial(side: EngineColor, piece: BoardPiece): void {
 		const elem = this.getPieceElement(side, piece);
 		this.side[side].material!.appendChild(elem);
 	}
@@ -139,23 +139,23 @@ export class GameCaptures {
 		this.setPosition(idx);
 	}
 
-	public async setPosition(idx: number): Promise<void> {
+	public setPosition(idx: number): void {
 		this.index = idx;
 		this.clearAllMaterial();
 		this.clearAllCount();
 		if (idx <= 0) {
 			return;
 		}
-		await this.setSidePosition(idx, 'w');
-		await this.setSidePosition(idx, 'b');
+		this.setSidePosition(idx, 'w');
+		this.setSidePosition(idx, 'b');
 		this.updateCount(idx);
 	}
 
-	private async setSidePosition(idx: number, side: EngineColor): Promise<void> {
+	private setSidePosition(idx: number, side: EngineColor): void {
 		for (let i = 0; i <= idx; i++) {
 			const piece = this.captures[side][i];
 			if (piece) {
-				await this.updateMaterial(side, piece);
+				this.updateMaterial(side, piece);
 			}
 		}
 	}
@@ -165,7 +165,7 @@ export class GameCaptures {
 		this.side['b'].materialCount!.textContent = '';
 	}
 
-	private async updateCount(idx: number): Promise<void> {
+	private updateCount(idx: number): void {
 		this.clearAllCount();
 		const wCount = this.count['w'][idx] || 0;
 		const bCount = this.count['b'][idx] || 0;
@@ -196,7 +196,7 @@ export class GameCaptures {
 			this.side = {'w': this.p1, 'b': this.p2};
 			this.orientation = 'w';
 		}
-		this.setPosition(this.getIndex()).then(() => { return; });
+		this.setPosition(this.getIndex());
 	}
 
 }

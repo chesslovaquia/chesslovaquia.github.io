@@ -237,7 +237,7 @@ wraps the Chessground canvas library and is covered indirectly via `ChessGame_te
 
 ## Priority: Low
 
-### 10. Remove Unnecessary Async in GameCaptures
+### 10. Remove Unnecessary Async in GameCaptures ✓ Done
 
 **Problem:** `updateMaterial()` and `updateCount()` are marked `async` but only do
 DOM manipulation. `GameNavigate` then `await`s them in a loop, adding latency for
@@ -248,6 +248,13 @@ no reason.
 **Action:**
 - Drop `async` keyword from both methods
 - Remove corresponding `await` calls in `GameNavigate`
+
+**Implemented:** Removed `async`/`Promise<void>` from `updateMaterial()`, `updateCount()`,
+`setSidePosition()` (and its internal `await`), and `setPosition()` — all four now return
+`void`. `flip()` fire-and-forget `.then(() => { return; })` replaced with a direct call.
+`GameNavigate` required no changes — its callers already omitted `await`. Updated
+`GameCaptures_test.ts`: the `'setPosition awaits setSidePosition'` test was rewritten as a
+sync assertion since `setPosition` no longer returns a Promise.
 
 ---
 

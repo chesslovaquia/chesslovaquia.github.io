@@ -37,12 +37,11 @@ describe('GameCaptures', () => {
 		expect(captures.getIndex()).toBe(0);
 	});
 
-	test('setPosition awaits setSidePosition', async () => {
+	test('setPosition completes without error', () => {
 		const deps = mockGameDeps(cfg);
 		const captures = (deps.nav as any).captures;
 		captures.addPosition();
-		// setPosition should complete without error
-		await expect(captures.setPosition(0)).resolves.toBeUndefined();
+		expect(() => captures.setPosition(0)).not.toThrow();
 	});
 
 	test('setState restores captures state', () => {
