@@ -6,13 +6,13 @@ import { test, describe, expect, beforeEach } from 'vitest';
 import { ConfigError  } from '../../config/ConfigError';
 import { ConfigGameUI } from '../../config/ConfigGameUI';
 
-import { mockConfigGameUI } from '../testing';
+import { setupGameTestDOM } from '../testing';
 import { ElementIds       } from '../../clvq/ElementIds';
 
 const board = document.createElement('div');
 
 beforeEach(() => {
-	document.body.innerHTML = mockConfigGameUI();
+	setupGameTestDOM();
 });
 
 describe('ConfigGameUI', () => {

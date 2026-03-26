@@ -203,7 +203,7 @@ The app is currently fully standalone for game play. Lichess Phases 1–6 are co
 ## Common Pitfalls
 
 - Hugo's asset pipeline compiles TypeScript — do not add a separate `tsconfig.json` build step.
-- `ConfigGameUI` validates DOM elements at init; tests must provide a complete mock DOM via `mockConfigGameUI()`.
+- `ConfigGameUI` validates DOM elements at init; tests must provide a complete mock DOM. Use `setupGameTestDOM()` from `ts/testing/testing.ts` in `beforeEach` — do not call `document.body.innerHTML = mockConfigGameUI()` directly. For lichess UI tests use `setupLichessTestDOM()`. If a test needs extra DOM elements on top (e.g. `GamePromotion_test.ts`), append them with `document.body.innerHTML += '...'` after `setupGameTestDOM()`.
 - `GameState.save()` returns `Promise<void>` — callers that fire-and-forget it are fine for autosave, but don't assume state is persisted synchronously after the call returns.
 - `GameState.load()` and `setSetupData()` are both async; always `await` them in sequence to avoid race conditions.
 - `fake-indexeddb` must be imported in test setup (`ts/testing/testing-setup.ts`) before any storage code runs.
@@ -217,6 +217,7 @@ The app is currently fully standalone for game play. Lichess Phases 1–6 are co
 - `ClvqIndexedDB` is versioned (`dbVersion`). Adding a new `Store` enum value auto-creates the store on upgrade because `upgrade()` iterates `Object.values(Store)`. Bump `dbVersion` whenever the schema changes.
 - `GameHistory` tests must call `new ClvqIndexedDB(Store.history).clearAll()` in `beforeEach` — IndexedDB is shared across all test files via `fake-indexeddb`. Likewise, `LichessHistory` tests must mock `GameHistory.prototype.save` to prevent cross-test contamination.
 - `LichessGameState` implements `GameState` — any new method added to the `GameState` interface must also be added to `LichessGameState` (and `TestGameState` in `testing.ts`).
+- Shared test mock factories live in `ts/testing/testing.ts`: `mockLichessAuth()`, `mockLichessClient()`, `mockLichessGame()` (returns `{ game, cbs }` where `cbs` captures registered callbacks), and `setupLichessTestDOM()`. Do not redefine these locally in new test files — import them from `testing.ts`.
 - `ChessGame.saveHistory()` is only called for local games (`!this.onMove`). Online lichess games are retrieved via `LichessHistory.fetchGames()` — do not double-save them.
 - `engine.pgn(headers)` calls chess.js `setHeader()` which mutates the Chess instance. Headers persist across subsequent `pgn()` calls on the same instance. This is fine for `saveToHistory()` since it only runs once per game.
 - chess.js 1.x `Chess.move(san)` **throws** `Error` for invalid moves — it does not return null. Always wrap calls in a try-catch when move validity is uncertain; do not rely on a falsy return value.

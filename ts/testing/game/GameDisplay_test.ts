@@ -3,7 +3,7 @@
 
 import { test, expect, beforeEach, describe } from 'vitest';
 
-import { mockConfigGameUI } from '../testing';
+import { setupGameTestDOM } from '../testing';
 import { TestGameConfig   } from '../testing';
 
 import { GameConfig  } from '../../game/GameConfig';
@@ -15,7 +15,7 @@ let cfg: TestGameConfig;
 let display: GameDisplay;
 
 beforeEach(() => {
-	document.body.innerHTML = mockConfigGameUI();
+	setupGameTestDOM();
 	cfg = new TestGameConfig();
 	document.body.appendChild(cfg.boardUI);
 	const gameCfg = new GameConfig(cfg.boardUI);

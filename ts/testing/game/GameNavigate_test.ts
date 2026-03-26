@@ -3,14 +3,14 @@
 
 import { vi, test, expect, beforeEach, afterEach, describe } from 'vitest';
 
-import { mockConfigGameUI } from '../testing';
+import { setupGameTestDOM } from '../testing';
 import { mockGameDeps     } from '../testing';
 import { TestGameConfig   } from '../testing';
 
 let cfg: TestGameConfig;
 
 beforeEach(() => {
-	document.body.innerHTML = mockConfigGameUI();
+	setupGameTestDOM();
 	cfg = new TestGameConfig();
 });
 

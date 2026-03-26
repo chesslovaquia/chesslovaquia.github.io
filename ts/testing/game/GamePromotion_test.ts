@@ -3,7 +3,7 @@
 
 import { vi, test, expect, beforeEach, afterEach, describe } from 'vitest';
 
-import { mockConfigGameUI } from '../testing';
+import { setupGameTestDOM } from '../testing';
 import { mockGameDeps     } from '../testing';
 import { TestGameConfig   } from '../testing';
 
@@ -16,7 +16,8 @@ import { ElementIds } from '../../clvq/ElementIds';
 let cfg: TestGameConfig;
 
 beforeEach(() => {
-	document.body.innerHTML = mockConfigGameUI() + `
+	setupGameTestDOM();
+	document.body.innerHTML += `
 		<div id="white${ElementIds.pawnPromotion}" style="display:none">
 			<span class="clvq-promotion-piece" data-piece="q"></span>
 			<span class="clvq-promotion-piece" data-piece="r"></span>

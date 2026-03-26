@@ -6,11 +6,11 @@ import { test, describe, expect, beforeEach } from 'vitest';
 import { ConfigError      } from '../../config/ConfigError';
 import { ConfigGamePlayer } from '../../config/ConfigGamePlayer';
 
-import { mockConfigGameUI } from '../testing';
+import { setupGameTestDOM } from '../testing';
 import { ElementIds       } from '../../clvq/ElementIds';
 
 beforeEach(() => {
-	document.body.innerHTML = mockConfigGameUI();
+	setupGameTestDOM();
 });
 
 describe('ConfigGamePlayer', () => {

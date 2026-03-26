@@ -4,58 +4,12 @@
 import { vi, test, expect, beforeEach, afterEach, describe } from 'vitest';
 
 import { Clvq } from '../../clvq/Clvq';
-import { LichessGame } from '../../lichess/LichessGame';
-import type { LichessChallenge, LichessGameFull } from '../../lichess/LichessGame';
 
-type Callbacks = {
-	challenge?:  (challenge: LichessChallenge) => void;
-	gameStart?:  (gameId: string) => void;
-	gameFinish?: (gameId: string) => void;
-	gameFull?:   (event: LichessGameFull) => void;
-};
-
-function mockLichessGame(): { game: LichessGame; cbs: Callbacks } {
-	const cbs: Callbacks = {};
-	const game = {
-		seek:               vi.fn(() => Promise.resolve()),
-		acceptChallenge:    vi.fn(() => Promise.resolve()),
-		declineChallenge:   vi.fn(() => Promise.resolve()),
-		resign:             vi.fn(() => Promise.resolve()),
-		abort:              vi.fn(() => Promise.resolve()),
-		offerOrAcceptDraw:  vi.fn(() => Promise.resolve()),
-		startEventStream:   vi.fn(),
-		stopAll:            vi.fn(),
-		onChallenge:        vi.fn((cb: (c: LichessChallenge) => void) => { cbs.challenge  = cb; }),
-		onGameStart:        vi.fn((cb: (id: string) => void)         => { cbs.gameStart  = cb; }),
-		onGameFinish:       vi.fn((cb: (id: string) => void)         => { cbs.gameFinish = cb; }),
-		onGameFull:         vi.fn((cb: (e: LichessGameFull) => void) => { cbs.gameFull   = cb; }),
-		onGameState:        vi.fn(),
-		onDrawOffer:        vi.fn(),
-		onTakebackOffer:    vi.fn(),
-	} as unknown as LichessGame;
-	return { game, cbs };
-}
-
-function setupDOM(): void {
-	document.body.innerHTML = `
-		<div id="lichessLogin"></div>
-		<div id="lichessLogout" style="display:none"></div>
-		<div id="lichessUser" style="display:none"></div>
-		<div id="lichessChallengeModal" style="display:none"></div>
-		<span id="lichessChallengerName"></span>
-		<span id="lichessChallengerRating"></span>
-		<p id="lichessChallengeTimeCtrl"></p>
-		<div id="gameActionsBar" style="display:none"></div>
-		<div id="gamePlayer1"></div>
-		<div id="gamePlayerRating1" style="display:none"></div>
-		<div id="gamePlayer2"></div>
-		<div id="gamePlayerRating2" style="display:none"></div>
-	`;
-}
+import { mockLichessGame, setupLichessTestDOM } from '../../testing/testing';
 
 beforeEach(() => {
 	vi.stubGlobal('location', { search: '', pathname: '/', href: '' });
-	setupDOM();
+	setupLichessTestDOM();
 	localStorage.clear();
 });
 

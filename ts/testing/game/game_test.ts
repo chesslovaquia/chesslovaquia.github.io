@@ -3,7 +3,7 @@
 
 import { vi, test, expect, beforeEach, afterEach, describe } from 'vitest';
 
-import { mockConfigGameUI } from '../testing';
+import { setupGameTestDOM } from '../testing';
 
 import { ConfigError } from '../../config/ConfigError';
 
@@ -14,7 +14,7 @@ import { ElementIds } from '../../clvq/ElementIds';
 
 beforeEach(() => {
 	vi.stubGlobal('location', { search: '', pathname: '/play/mobile/', href: '', assign: vi.fn() });
-	document.body.innerHTML = mockConfigGameUI();
+	setupGameTestDOM();
 	window.innerWidth = 360;
 	window.innerHeight = 640;
 });

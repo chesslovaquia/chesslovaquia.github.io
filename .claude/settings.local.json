@@ -30,7 +30,9 @@
       "Bash(CLVQ_ROOT=http://localhost hugo/check-build.sh)",
       "Bash(CLVQ_ROOT=http://localhost ts/test.sh)",
       "Bash(CLVQ_ROOT=http://localhost shellcheck ./*.sh docker/*.sh hugo/*.sh ts/*.sh vendor/*.sh)",
-      "Bash(CLVQ_ROOT=http://localhost ts/check.sh)"
+      "Bash(CLVQ_ROOT=http://localhost ts/check.sh)",
+      "Bash(grep -l 'document.body.innerHTML = mockConfigGameUI\\(\\)' /opt/clvq/site/ts/testing/*/*.ts)",
+      "Bash(CLVQ_ROOT=http://localhost npx vitest run)"
     ]
   }
 }

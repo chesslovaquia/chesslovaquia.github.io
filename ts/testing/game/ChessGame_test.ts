@@ -3,7 +3,7 @@
 
 import { vi, test, expect, beforeEach, describe, afterEach } from 'vitest';
 
-import { mockConfigGameUI } from '../testing';
+import { setupGameTestDOM } from '../testing';
 import { mockGameDeps     } from '../testing';
 import { TestGameConfig   } from '../testing';
 
@@ -20,7 +20,7 @@ let cfg: TestGameConfig;
 
 beforeEach(() => {
 	vi.useFakeTimers();
-	document.body.innerHTML = mockConfigGameUI();
+	setupGameTestDOM();
 	cfg = new TestGameConfig();
 });
 

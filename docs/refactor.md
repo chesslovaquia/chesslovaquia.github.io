@@ -202,7 +202,7 @@ after partial-replay failure.
 
 ---
 
-### 9. Reduce Test Infrastructure Duplication
+### 9. Reduce Test Infrastructure Duplication ✓ Done
 
 **Problem:**
 - `document.body.innerHTML = mockConfigGameUI()` in 11 test `beforeEach` blocks
@@ -216,6 +216,22 @@ after partial-replay failure.
 - Add `setupGameTestDOM()` helper to `testing.ts`
 - Centralize `mockLichessAuth()`, `mockLichessClient()`, `mockLichessGame()` in `testing.ts`
 - Add test files for missing units
+
+**Implemented:** Added `setupGameTestDOM()` to `testing.ts` and updated 9 test files
+(`ConfigGamePlayer`, `ConfigGameUI`, `ChessGame`, `GameCaptures`, `GameClock`,
+`GameDisplay`, `GameNavigate`, `GamePromotion`, `game`) to use it instead of the raw
+`document.body.innerHTML = mockConfigGameUI()` pattern. `GamePromotion_test.ts` appends
+its extra promotion HTML via `+=` after `setupGameTestDOM()`. Added
+`mockLichessAuth(loggedIn?)`, `mockLichessClient()`, `mockLichessGame()`,
+`setupLichessTestDOM()`, and `LichessCallbacks` type to `testing.ts`; removed the
+identical local definitions from `LichessUIBridge_test.ts` and `Clvq_test.ts`. Both
+files now import the shared factories from `testing.ts`. Added three new test files:
+`ts/testing/lichess/NdjsonReader_test.ts` (8 tests: happy path, chunked input, skip/throw
+error strategies, pre-aborted signal, abort-after-first-line);
+`ts/testing/game/GameMove_test.ts` (7 tests: exec valid/null/throw, undo true/false,
+turnColor white/black); `ts/testing/events/events_test.ts` (16 tests: Name, Target,
+detail, and dispatch for all four event classes). `ChessgroundBoard` skipped — it
+wraps the Chessground canvas library and is covered indirectly via `ChessGame_test.ts`.
 
 ---
 
