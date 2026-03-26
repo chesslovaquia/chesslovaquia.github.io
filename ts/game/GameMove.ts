@@ -5,6 +5,8 @@ import { GameEngine } from '../engine/GameEngine';
 
 import { toBoard } from '../engine/ColorUtils';
 
+import { logger } from '../clvq/Logger';
+
 import { GameBoard           } from '../board/GameBoard';
 import { BoardSquare         } from '../board/GameBoard';
 import { BoardPromotionPiece } from '../board/GameBoard';
@@ -27,15 +29,15 @@ export class GameMove {
 				promotion: promotion,
 			});
 			if (move) {
-				console.debug('Move:', move);
+				logger.debug('Move:', move);
 				this.board.update();
 			} else {
 				// Invalid move - reset position
-				console.error('Invalid move, reset position.');
+				logger.error('Invalid move, reset position.');
 				this.board.reset();
 			}
 		} catch (error) {
-			console.error('Invalid move:', error);
+			logger.error('Invalid move:', error);
 			// Reset board to current position
 			this.board.reset();
 		}
@@ -46,7 +48,7 @@ export class GameMove {
 			this.board.update();
 			return true;
 		}
-		console.debug('No move to undo!');
+		logger.debug('No move to undo!');
 		return false;
 	}
 

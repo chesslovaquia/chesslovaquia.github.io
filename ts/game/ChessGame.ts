@@ -24,6 +24,7 @@ import { GameState     } from './GameState';
 import { GameClock     } from './GameClock';
 import { GameNavigate  } from './GameNavigate';
 
+import { logger } from '../clvq/Logger';
 import * as utils from '../clvq/utils';
 
 export class ChessGame {
@@ -91,18 +92,18 @@ export class ChessGame {
 	}
 
 	public init(): void {
-		console.debug('Game init.');
+		logger.debug('Game init.');
 		this.board.init();
 		this.disableBoard();
 		this.nav.addPosition();
 		this.state.load().then((done) => {
-			console.debug('Game load done:', done);
+			logger.debug('Game load done:', done);
 			if (done) {
 				this.board.update();
 				this.display.updateStatus();
 				const orientation = this.state.getOrientation();
 				if (orientation === 'b') {
-					console.debug('Game load flip board.');
+					logger.debug('Game load flip board.');
 					this.toggleOrientation();
 				}
 				if (this.engine.isGameOver()) {
@@ -120,7 +121,7 @@ export class ChessGame {
 	}
 
 	private setupEventListeners(): void {
-		console.debug('Game setup event listeners.');
+		logger.debug('Game setup event listeners.');
 		// Board events.
 		EventBoardMove.Target.addEventListener(EventBoardMove.Name, this.boardMoveHandler);
 		// Clock events.
@@ -134,7 +135,7 @@ export class ChessGame {
 	}
 
 	private doMove(move: EngineMove): void {
-		console.debug('Game move:', move);
+		logger.debug('Game move:', move);
 		if (!this.active) {
 			this.start();
 		}
@@ -143,10 +144,10 @@ export class ChessGame {
 	}
 
 	private afterMove(move: EngineMove) {
-		console.debug('Game after move.');
+		logger.debug('Game after move.');
 		if (this.engine.isPromotion()) {
 			// Pawn promotion.
-			console.debug('Move was pawn promotion.');
+			logger.debug('Move was pawn promotion.');
 			this.promotion.handle(move);
 		} else {
 			const turn = this.engine.turn();
@@ -179,7 +180,7 @@ export class ChessGame {
 
 	private saveHistory(result: string, source: 'local' | 'lichess', lichessId?: string): void {
 		this.state.saveToHistory(this.white, this.black, result, source, lichessId)
-			.catch((err: unknown) => console.error('History save error:', err));
+			.catch((err: unknown) => logger.error('History save error:', err));
 	}
 
 	private saveState(): void {
@@ -188,11 +189,11 @@ export class ChessGame {
 		if (this.onMove) {
 			const uci = this.buildLastMoveUCI();
 			if (uci) {
-				this.onMove(uci).catch((err: unknown) => console.error('Move submit error:', err));
+				this.onMove(uci).catch((err: unknown) => logger.error('Move submit error:', err));
 				this.disableBoard();
 			}
 		}
-		console.debug('Game state saved.');
+		logger.debug('Game state saved.');
 	}
 
 	private buildLastMoveUCI(): string {
@@ -208,7 +209,7 @@ export class ChessGame {
 	// Handles an opponent move received from the lichess stream.
 	// Does not trigger the promotion dialog or the onMove submission.
 	private doOpponentMove(move: EngineMove): void {
-		console.debug('Game opponent move:', move);
+		logger.debug('Game opponent move:', move);
 		if (!this.active) {
 			this.start();
 		}
@@ -229,7 +230,7 @@ export class ChessGame {
 
 	private onGameOver(reason: string, winner?: string): void {
 		if (!this.active) return;
-		console.debug('Game online game over:', reason, winner);
+		logger.debug('Game online game over:', reason, winner);
 		this.stop();
 		this.display.onlineGameOver(reason, winner);
 	}
@@ -240,7 +241,7 @@ export class ChessGame {
 	}
 
 	private reset(): void {
-		console.log('Game reset!');
+		logger.debug('Game reset!');
 		this.state.reset();
 		window.location.assign('/');
 	}
@@ -259,7 +260,7 @@ export class ChessGame {
 
 	private setup(): void {
 		this.state.setupNewGame().then((done) => {
-			console.debug('Game setup done:', done);
+			logger.debug('Game setup done:', done);
 			if (done) {
 				this.start();
 			} else {
@@ -269,7 +270,7 @@ export class ChessGame {
 	}
 
 	private start(): void {
-		console.debug('Game start.');
+		logger.debug('Game start.');
 		this.display.setDescription(this.state.gameDescription());
 		this.enableBoard();
 		if (!this.isMyTurn()) {
@@ -280,14 +281,14 @@ export class ChessGame {
 	}
 
 	private stop(): void {
-		console.debug('Game stop.');
+		logger.debug('Game stop.');
 		this.disableBoard();
 		this.clock.stop();
 		this.active = false;
 	}
 
 	private clockTimeout(color: EngineColor): void {
-		console.debug('Game clock timeout:', color);
+		logger.debug('Game clock timeout:', color);
 		this.stop();
 		this.display.clockTimeout(color);
 		if (!this.onMove) {
@@ -303,7 +304,7 @@ export class ChessGame {
 	}
 
 	private flipBoard(): void {
-		console.debug('Game flip board.');
+		logger.debug('Game flip board.');
 		this.toggleOrientation();
 		this.state.toggleOrientation();
 	}

@@ -13,6 +13,7 @@ import { BoardPromotionPiece } from '../board/GameBoard';
 import { GameCaptures  } from './GameCaptures';
 import { CapturesState } from './GameCaptures';
 
+import { logger } from '../clvq/Logger';
 import * as utils from '../clvq/utils';
 
 type BoardPositions = string[];
@@ -53,7 +54,7 @@ export class GameNavigate {
 	}
 
 	private navBackward(): void {
-		console.debug('Game nav backward.');
+		logger.debug('Game nav backward.');
 		if (this.index <= 0) {
 			return;
 		}
@@ -72,7 +73,7 @@ export class GameNavigate {
 	}
 
 	private navFirstMove(): void {
-		console.debug('Game nav first move.');
+		logger.debug('Game nav first move.');
 		this.board.disable();
 		this.index = 0;
 		this.board.setPosition(this.pos[this.index], undefined);
@@ -84,7 +85,7 @@ export class GameNavigate {
 	}
 
 	private navForward(): void {
-		console.debug('Game nav forward.');
+		logger.debug('Game nav forward.');
 		this.index++;
 		this.board.setPosition(this.pos[this.index], this.moves[this.index - 1]);
 		this.captures.setPosition(this.index);
@@ -100,7 +101,7 @@ export class GameNavigate {
 	}
 
 	private navLastMove(): void {
-		console.debug('Game nav last move.');
+		logger.debug('Game nav last move.');
 		this.index = this.pos.length - 1;
 		this.board.setPosition(this.pos[this.index], this.moves[this.index - 1]);
 		this.captures.setPosition(this.index);
@@ -112,7 +113,7 @@ export class GameNavigate {
 	}
 
 	public addPosition(): void {
-		console.debug('Game nav add position.');
+		logger.debug('Game nav add position.');
 		const lastMove = this.engine.lastMove();
 		if (lastMove) {
 			this.moves.push(lastMove);
@@ -149,7 +150,7 @@ export class GameNavigate {
 	}
 
 	public addPromotion(side: EngineColor, piece: BoardPromotionPiece): void {
-		console.debug('Game nav add promotion:', side, piece);
+		logger.debug('Game nav add promotion:', side, piece);
 		this.captures.addPromotion(side, piece);
 		this.addPosition();
 	}

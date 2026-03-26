@@ -3,6 +3,8 @@
 
 import { clvqInternalError } from './utils';
 
+import { logger } from './Logger';
+
 import { ClvqError } from './ClvqError';
 
 class ClvqDevel {
@@ -15,5 +17,5 @@ class ClvqDevel {
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
 	(window as any).ClvqDevel = new ClvqDevel();
-	console.debug('ClvqDevel loaded.');
+	logger.debug('ClvqDevel loaded.');
 });

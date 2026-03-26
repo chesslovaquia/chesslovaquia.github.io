@@ -5,6 +5,8 @@ import { w3ToggleMenu } from './utils';
 import { w3ShowModal  } from './utils';
 import { w3HideModal  } from './utils';
 
+import { logger } from './Logger';
+
 import { ClvqLocalStorage } from './ClvqLocalStorage';
 import { HistoryManager   } from './HistoryManager';
 
@@ -27,7 +29,7 @@ export class Clvq {
 	private lichessGameInst: LichessGame | null;
 
 	constructor(deps?: ClvqDeps) {
-		console.debug('Clvq loaded.');
+		logger.debug('Clvq loaded.');
 		this.auth    = new LichessAuth(new ClvqLocalStorage());
 		this.bridge  = new LichessUIBridge(this.auth);
 		this.history = new HistoryManager();
@@ -37,7 +39,7 @@ export class Clvq {
 		}
 		this.auth.handleCallback()
 			.then(() => { this.bridge.updateUI(); })
-			.catch((err: unknown) => { console.error('Lichess callback error:', err); });
+			.catch((err: unknown) => { logger.error('Lichess callback error:', err); });
 		this.bridge.updateUI();
 	}
 
@@ -55,7 +57,7 @@ export class Clvq {
 
 	public lichessLogin(): void {
 		this.auth.login().catch((err: unknown) => {
-			console.error('Lichess login error:', err);
+			logger.error('Lichess login error:', err);
 		});
 	}
 
@@ -93,7 +95,7 @@ export class Clvq {
 	public lichessSeek(timeMinutes: number, incrementSeconds: number): void {
 		const game = this.getLichessGame();
 		game.seek({ time: timeMinutes, increment: incrementSeconds })
-			.catch((err: unknown) => { console.error('Lichess seek error:', err); });
+			.catch((err: unknown) => { logger.error('Lichess seek error:', err); });
 	}
 
 	public lichessAcceptChallenge(): void {

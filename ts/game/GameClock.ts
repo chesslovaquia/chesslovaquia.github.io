@@ -8,6 +8,8 @@ import { BySide } from '../engine/ColorUtils';
 
 import { EventClockTimeout } from '../events/EventClockTimeout';
 
+import { logger } from '../clvq/Logger';
+
 import { ConfigGameUI     } from '../config/ConfigGameUI';
 import { ConfigGamePlayer } from '../config/ConfigGamePlayer';
 
@@ -71,7 +73,7 @@ export class GameClock {
 	}
 
 	private init(): void {
-		console.debug('Clock init.');
+		logger.debug('Clock init.');
 		if (this.side['w'].clock) {
 			this.side['w'].clock.textContent = this.format(this.initialTime);
 		}
@@ -89,7 +91,7 @@ export class GameClock {
 	}
 
 	public move(turn: EngineColor): void {
-		console.debug('Clock move:', turn);
+		logger.debug('Clock move:', turn);
 		if (this.increment > 0) {
 			const other = turn === 'w' ? 'b' : 'w';
 			this.time[other] += this.increment;
@@ -110,10 +112,10 @@ export class GameClock {
 
 	public start(): boolean {
 		if (this.interval) {
-			console.warn('Clock tried to start again!');
+			logger.warn('Clock tried to start again!');
 			return false;
 		}
-		console.debug('Clock start:', this.firstMoveTime, this.time);
+		logger.debug('Clock start:', this.firstMoveTime, this.time);
 		// First move timer.
 		if (this.firstMove) {
 			this.firstMoveInterval = setInterval(() => {
@@ -132,7 +134,7 @@ export class GameClock {
 			clearInterval(this.firstMoveInterval);
 		}
 		if (this.interval) {
-			console.debug('Clock stop.');
+			logger.debug('Clock stop.');
 			clearInterval(this.interval);
 			this.interval = null;
 			this.update(this.engine.turn());
@@ -220,7 +222,7 @@ export class GameClock {
 	}
 
 	public setState(s: ClockState): void {
-		console.debug('Clock set state:', s);
+		logger.debug('Clock set state:', s);
 		this.initialTime   = s.initialTime;
 		this.increment     = s.increment;
 		this.time          = s.time;
@@ -239,7 +241,7 @@ export class GameClock {
 	private setTimeDiff(tstamp: number): void {
 		const turn = this.engine.turn();
 		const diff = Math.floor(Date.now() - tstamp) / 100;
-		console.debug('Clock set time diff:', turn, diff);
+		logger.debug('Clock set time diff:', turn, diff);
 		if (this.firstMove) {
 			this.firstMoveTime[turn] -= diff;
 			if (this.firstMoveTime[turn] <= 0) {
@@ -280,7 +282,7 @@ export class GameClock {
 	}
 
 	private timeout(turn: EngineColor): void {
-		console.debug('Clock timeout:', turn);
+		logger.debug('Clock timeout:', turn);
 		const evt = new EventClockTimeout(turn);
 		EventClockTimeout.Target.dispatchEvent(evt);
 		this.firstMove = false;
@@ -291,7 +293,7 @@ export class GameClock {
 
 	public flip(): void {
 		const turn = this.engine.turn();
-		console.debug('Clock flip orientation:', this.orientation, ', turn:', turn);
+		logger.debug('Clock flip orientation:', this.orientation, ', turn:', turn);
 		if (this.firstMove) {
 			if (this.side[turn].info) {
 				this.side[turn].info.textContent = '';

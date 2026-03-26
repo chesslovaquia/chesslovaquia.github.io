@@ -1,6 +1,8 @@
 // Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com>
 // See LICENSE file.
 
+import { logger } from './Logger';
+
 import { ElementIds } from './ElementIds';
 
 export function w3HideMenu(id: string): void {
@@ -19,7 +21,7 @@ export function w3ToggleMenu(id: string): void {
 			x.classList.toggle('w3-show', true);
 		}
 	} else {
-		console.error('Clvq w3ToggleMenu ERROR:', id, 'not found');
+		logger.error('Clvq w3ToggleMenu ERROR:', id, 'not found');
 	}
 }
 
@@ -28,7 +30,7 @@ export function w3ShowModal(id: string): void {
 	if (x) {
 		x.classList.toggle('w3-show', true);
 	} else {
-		console.error('Clvq w3ShowModal ERROR:', id, 'not found');
+		logger.error('Clvq w3ShowModal ERROR:', id, 'not found');
 	}
 }
 
@@ -37,7 +39,7 @@ export function w3HideModal(id: string): void {
 	if (x) {
 		x.classList.toggle('w3-show', false);
 	} else {
-		console.error('Clvq w3HideModal ERROR:', id, 'not found');
+		logger.error('Clvq w3HideModal ERROR:', id, 'not found');
 	}
 }
 
@@ -47,7 +49,7 @@ export function clvqInternalError(error: Error): void {
 		display.textContent = error.message;
 		w3ShowModal(ElementIds.clvqInternalError);
 	} else {
-		console.error('clvqInternalErrorMessage element not found!');
+		logger.error('clvqInternalErrorMessage element not found!');
 	}
 }
 

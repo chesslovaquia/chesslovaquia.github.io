@@ -21,6 +21,8 @@ import type { LichessGameState as StateMsg } from './LichessGame';
 import { EventOpponentMove } from '../events/EventOpponentMove';
 import { EventGameOver     } from '../events/EventGameOver';
 
+import { logger } from '../clvq/Logger';
+
 // Statuses that end the game and are not detected locally by chess.js.
 const onlineGameOverStatuses = new Set([
 	'resign', 'outoftime', 'draw', 'stalemate', 'aborted',
@@ -64,7 +66,7 @@ export class LichessGameState implements GameState {
 
 	public reset(): void {
 		this.lichessGame.abort(this.gameId).catch((err: unknown) => {
-			console.error('Lichess abort error:', err);
+			logger.error('Lichess abort error:', err);
 		});
 	}
 

@@ -14,6 +14,8 @@ import { GameConfig } from '../game/GameConfig';
 
 import { EventBoardMove } from '../events/EventBoardMove';
 
+import { logger } from '../clvq/Logger';
+
 import { GameBoard           } from './GameBoard';
 import { BoardDests          } from './GameBoard';
 import { BoardMove           } from './GameBoard';
@@ -74,7 +76,7 @@ export class ChessgroundBoard implements GameBoard {
 
 	private afterMove(orig: cg.Key, dest: cg.Key, meta?: cg.MoveMetadata): void {
 		this.disableMoves();
-		console.debug('Board dispatch move event.');
+		logger.debug('Board dispatch move event.');
 		const data = {
 			from:      orig as BoardSquare,
 			to:        dest as BoardSquare,
@@ -90,12 +92,12 @@ export class ChessgroundBoard implements GameBoard {
 	}
 
 	private disableMoves(): void {
-		console.debug('Board disable moves.');
+		logger.debug('Board disable moves.');
 		this.board.set({ movable: { color: undefined } });
 	}
 
 	private enableMoves(): void {
-		console.debug('Board enable moves.');
+		logger.debug('Board enable moves.');
 		this.board.set({ movable: { color: this.turnColor() } });
 	}
 
@@ -108,7 +110,7 @@ export class ChessgroundBoard implements GameBoard {
 
 
 	public disable(): void {
-		console.debug('Board disable.');
+		logger.debug('Board disable.');
 		this.board.set({
 			movable: {
 				color: undefined,
@@ -121,7 +123,7 @@ export class ChessgroundBoard implements GameBoard {
 	}
 
 	public enable(): void {
-		console.debug('Board enable.');
+		logger.debug('Board enable.');
 		this.board.set({
 			movable: {
 				color: this.turnColor(),
@@ -168,7 +170,7 @@ export class ChessgroundBoard implements GameBoard {
 	}
 
 	public setPosition(fen: string, lastMove: BoardMove | undefined): void {
-		console.debug('Board set position:', fen, lastMove);
+		logger.debug('Board set position:', fen, lastMove);
 		let inCheck = false;
 		let turnColor = 'white';
 		if (lastMove) {
@@ -184,7 +186,7 @@ export class ChessgroundBoard implements GameBoard {
 	}
 
 	public flip(): void {
-		console.debug('Board flip orientation.');
+		logger.debug('Board flip orientation.');
 		this.board.toggleOrientation();
 	}
 }

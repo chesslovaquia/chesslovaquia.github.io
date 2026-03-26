@@ -1,6 +1,8 @@
 // Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com>
 // See LICENSE file.
 
+import { logger } from './Logger';
+
 import { ClvqError } from './ClvqError';
 
 export class ClvqLocalStorage {
@@ -9,7 +11,7 @@ export class ClvqLocalStorage {
 		try {
 			localStorage.setItem(key, val);
 		} catch(err) {
-			console.error(`ClvqLocalStorage setItem ${key}:`, err);
+			logger.error(`ClvqLocalStorage setItem ${key}:`, err);
 			throw new ClvqError(`${err}`);
 		}
 	}
@@ -22,7 +24,7 @@ export class ClvqLocalStorage {
 			}
 			return defaultValue;
 		} catch(err) {
-			console.error(`ClvqLocalStorage getItem ${key}:`, err);
+			logger.error(`ClvqLocalStorage getItem ${key}:`, err);
 			return defaultValue;
 		}
 	}
@@ -31,7 +33,7 @@ export class ClvqLocalStorage {
 		try {
 			localStorage.removeItem(key);
 		} catch(err) {
-			console.error(`ClvqLocalStorage removeItem ${key}:`, err);
+			logger.error(`ClvqLocalStorage removeItem ${key}:`, err);
 		}
 	}
 

@@ -297,7 +297,7 @@ same if-null-throw pattern 13 times.
 
 ---
 
-### 13. Add Logging Abstraction
+### 13. Add Logging Abstraction ✓ Done
 
 **Problem:** 68 `console.debug` calls scattered across the codebase with no way to
 filter by severity or disable in production.
@@ -308,6 +308,15 @@ filter by severity or disable in production.
 - Create minimal `Logger` interface with `debug()`, `warn()`, `error()`
 - Inject via constructors (or use a singleton with a level flag)
 - Replace raw `console.debug` calls
+
+**Implemented:** Created `ts/clvq/Logger.ts` with a `Logger` class (`debug()`, `warn()`,
+`error()`) and an exported `logger` singleton. Debug output is suppressed unless
+`localStorage.getItem('clvq.debug') === '1'`; `warn` and `error` always output.
+Replaced all `console.debug`, `console.warn`, `console.error`, and `console.log` calls
+across 22 production files (91 total calls, including 8 `console.log` calls in
+`GamePromotion.ts` and `main.ts` that were previously untracked). Added
+`ts/testing/clvq/Logger_test.ts` (7 tests: debug suppressed/enabled, multi-arg forwarding,
+warn/error always output).
 
 ---
 

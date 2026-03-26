@@ -2,6 +2,7 @@
 // See LICENSE file.
 
 import { clvqInternalError } from '../clvq/utils';
+import { logger            } from '../clvq/Logger';
 import { ElementIds        } from '../clvq/ElementIds';
 
 import { screenLoad   } from './screen';
@@ -15,13 +16,13 @@ import { newGameDeps } from './GameDeps';
 export function gameInit(): void {
 	const loaded = screenLoad(screenDelay);
 	if (loaded) {
-		console.debug('Screen loaded.');
+		logger.debug('Screen loaded.');
 	} else {
 		const boardUI = document.getElementById(ElementIds.chessboard);
 		if (boardUI) {
 			window.addEventListener('resize', () => screenResize(screenDelay));
 			try {
-				console.debug('game init board:', boardUI.id);
+				logger.debug('game init board:', boardUI.id);
 				const game = new ChessGame(newGameDeps(boardUI));
 				game.init();
 			} catch (error) {
@@ -29,7 +30,7 @@ export function gameInit(): void {
 				throw error;
 			}
 		} else {
-			console.error('game init board not found!');
+			logger.error('game init board not found!');
 			throw new GameError('Chess board not found!');
 		}
 	}

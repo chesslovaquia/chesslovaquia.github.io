@@ -3,6 +3,8 @@
 
 import { LichessError } from './LichessError';
 
+import { logger } from '../clvq/Logger';
+
 type NdjsonOptions = {
 	signal?:  AbortSignal;
 	onError?: 'throw' | 'skip';
@@ -39,7 +41,7 @@ export async function readNdjson<T>(
 					if (onError === 'throw') {
 						throw new LichessError(`Invalid NDJSON line: ${trimmed}`);
 					} else {
-						console.warn('NdjsonReader: skipping invalid JSON line');
+						logger.warn('NdjsonReader: skipping invalid JSON line');
 					}
 				}
 			}

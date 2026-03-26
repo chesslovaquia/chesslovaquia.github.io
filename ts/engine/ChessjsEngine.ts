@@ -19,6 +19,8 @@ import { MovesSAN    } from './GameEngine';
 
 import { toBoard } from './ColorUtils';
 
+import { logger } from '../clvq/Logger';
+
 export class ChessjsEngine implements GameEngine {
 	private readonly game: Chess;
 
@@ -144,7 +146,7 @@ export class ChessjsEngine implements GameEngine {
 	}
 
 	public setState(moves: MovesSAN): void {
-		console.debug('Engine load moves:', moves);
+		logger.debug('Engine load moves:', moves);
 		const snapshotFen = this.game.fen();
 		this.game.reset();
 		let gotError = '';

@@ -6,6 +6,8 @@ import { w3HideModal } from '../clvq/utils';
 
 import { ElementIds } from '../clvq/ElementIds';
 
+import { logger } from '../clvq/Logger';
+
 import { LichessAuth } from './LichessAuth';
 import { LichessGame } from './LichessGame';
 import type { LichessChallenge, LichessGameFull } from './LichessGame';
@@ -101,7 +103,7 @@ export class LichessUIBridge {
 		this._pendingChallengeId = null;
 		w3HideModal(ElementIds.lichessChallengeModal);
 		game.acceptChallenge(id)
-			.catch((err: unknown) => { console.error('Lichess accept challenge error:', err); });
+			.catch((err: unknown) => { logger.error('Lichess accept challenge error:', err); });
 	}
 
 	public declineChallenge(game: LichessGame): void {
@@ -109,22 +111,22 @@ export class LichessUIBridge {
 		this._pendingChallengeId = null;
 		w3HideModal(ElementIds.lichessChallengeModal);
 		game.declineChallenge(id)
-			.catch((err: unknown) => { console.error('Lichess decline challenge error:', err); });
+			.catch((err: unknown) => { logger.error('Lichess decline challenge error:', err); });
 	}
 
 	public resign(game: LichessGame): void {
 		game.resign(this._activeGameId!)
-			.catch((err: unknown) => { console.error('Lichess resign error:', err); });
+			.catch((err: unknown) => { logger.error('Lichess resign error:', err); });
 	}
 
 	public abort(game: LichessGame): void {
 		game.abort(this._activeGameId!)
-			.catch((err: unknown) => { console.error('Lichess abort error:', err); });
+			.catch((err: unknown) => { logger.error('Lichess abort error:', err); });
 	}
 
 	public offerDraw(game: LichessGame): void {
 		game.offerOrAcceptDraw(this._activeGameId!)
-			.catch((err: unknown) => { console.error('Lichess offer draw error:', err); });
+			.catch((err: unknown) => { logger.error('Lichess offer draw error:', err); });
 	}
 
 	private setPlayerRatingUI(num: '1' | '2', name: string, rating?: number): void {

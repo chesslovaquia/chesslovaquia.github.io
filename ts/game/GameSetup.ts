@@ -1,6 +1,8 @@
 // Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com>
 // See LICENSE file.
 
+import { logger } from '../clvq/Logger';
+
 import { ClvqIndexedDB, Store } from '../clvq/ClvqIndexedDB';
 
 import { screenLoad  } from './screen';
@@ -26,20 +28,20 @@ export class GameSetup {
 	}
 
 	public async newGame(data: SetupData): Promise<void> {
-		console.debug('Setup new game:', data);
+		logger.debug('Setup new game:', data);
 		this.data = data;
 		await this.db.setItem(this.id, this.data);
 		screenLoad(screenDelay);
 	}
 
 	public async getGame(): Promise<SetupData> {
-		console.debug('Setup get game.');
+		logger.debug('Setup get game.');
 		this.data = await this.db.getItem(this.id);
 		return this.data as SetupData;
 	}
 
 	public async removeGame(): Promise<void> {
-		console.debug('Setup remove game.');
+		logger.debug('Setup remove game.');
 		this.data = undefined;
 		this.db.removeItem(this.id);
 	}
@@ -59,7 +61,7 @@ export class GameSetup {
 	}
 
 	public setState(data: SetupData) {
-		console.debug('Setup set state:', data);
+		logger.debug('Setup set state:', data);
 		this.data = data;
 	}
 }

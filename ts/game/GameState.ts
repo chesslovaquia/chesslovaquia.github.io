@@ -13,6 +13,8 @@ import { SetupData    } from './GameSetup';
 import { GameNavigate } from './GameNavigate';
 import { NavState     } from './GameNavigate';
 
+import { logger } from '../clvq/Logger';
+
 import { ClvqIndexedDB, Store } from '../clvq/ClvqIndexedDB';
 
 import { GameHistory  } from './GameHistory';
@@ -82,9 +84,9 @@ export class GameStateImpl implements GameState {
 	public async save(): Promise<void> {
 		try {
 			await this.db.setItem(this.id, this.getState());
-			console.debug('State saved.');
+			logger.debug('State saved.');
 		} catch (err) {
-			console.error('State save error:', err);
+			logger.error('State save error:', err);
 		}
 	}
 
@@ -120,7 +122,7 @@ export class GameStateImpl implements GameState {
 	public async setupNewGame(): Promise<boolean> {
 		const game = await this.setup.getGame();
 		if (game) {
-			console.debug('State setup new game:', game);
+			logger.debug('State setup new game:', game);
 			this.clock.setupNewGame(game.time, game.increment);
 			if (game.correspondence) {
 				this.clock.disableFirstMoveTimer();
@@ -180,9 +182,9 @@ export class GameStateImpl implements GameState {
 				lichessId,
 			};
 			await this.history.save(record);
-			console.debug('History saved:', record.id);
+			logger.debug('History saved:', record.id);
 		} catch (err) {
-			console.error('History save error:', err);
+			logger.error('History save error:', err);
 		}
 	}
 }

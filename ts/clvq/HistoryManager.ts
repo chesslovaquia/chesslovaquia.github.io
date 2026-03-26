@@ -3,6 +3,8 @@
 
 import { w3ShowModal } from './utils';
 
+import { logger } from './Logger';
+
 import { ElementIds } from './ElementIds';
 
 import { LichessAuth   } from '../lichess/LichessAuth';
@@ -23,7 +25,7 @@ export class HistoryManager {
 				this.renderHistoryList(records);
 				w3ShowModal(ElementIds.gameHistoryModal);
 			})
-			.catch((err: unknown) => { console.error('Load history error:', err); });
+			.catch((err: unknown) => { logger.error('Load history error:', err); });
 	}
 
 	public loadFromLichess(auth: LichessAuth): void {
@@ -38,7 +40,7 @@ export class HistoryManager {
 					this.renderHistoryList(all);
 				});
 			})
-			.catch((err: unknown) => { console.error('Lichess history error:', err); });
+			.catch((err: unknown) => { logger.error('Lichess history error:', err); });
 	}
 
 	public exportPgn(index: number): void {

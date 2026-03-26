@@ -15,6 +15,8 @@ import { GameNavigate } from './GameNavigate';
 
 import { ElementIds } from '../clvq/ElementIds';
 
+import { logger } from '../clvq/Logger';
+
 export class GamePromotion {
 	private readonly state:   GameState;
 	private readonly move:    GameMove;
@@ -29,7 +31,7 @@ export class GamePromotion {
 	}
 
 	public handle(move: EngineMove): void {
-		console.log('Pawn promotion handle:', move);
+		logger.debug('Pawn promotion handle:', move);
 		this.move.undo();
 		const side: BoardColor = this.move.turnColor();
 		this.showModal(side, (selectedPiece) => {
@@ -38,7 +40,7 @@ export class GamePromotion {
 	}
 
 	private exec(move: EngineMove, side: BoardColor, piece: BoardPromotionPiece): void {
-		console.log('Pawn promotion exec:', move, side, piece);
+		logger.debug('Pawn promotion exec:', move, side, piece);
 		this.move.exec(move.from, move.to, piece);
 		this.finish(move, side, piece);
 	}
@@ -46,19 +48,19 @@ export class GamePromotion {
 	private static readonly validPromotionPieces: BoardPromotionPiece[] = ['q', 'r', 'b', 'n'];
 
 	private showModal(side: BoardColor, callback: (piece: BoardPromotionPiece) => void): void {
-		console.log('Pawn promotion show modal:', side);
+		logger.debug('Pawn promotion show modal:', side);
 		const modalId = side === 'white' ? ElementIds.promotionWhite : ElementIds.promotionBlack;
 		const modal = document.getElementById(modalId);
 		if (modal) {
 			modal.style.display = 'block';
 			const handler = (evt: MouseEvent) => {
-				console.log('Pawn promotion select:', evt.target);
+				logger.debug('Pawn promotion select:', evt.target);
 				if (evt.target) {
 					const elem = (evt.target as HTMLElement);
 					if (elem.classList.contains('clvq-promotion-piece')) {
 						const piece = elem.dataset.piece;
 						if (!piece || !GamePromotion.validPromotionPieces.includes(piece as BoardPromotionPiece)) {
-							console.error('Pawn promotion invalid piece:', piece);
+							logger.error('Pawn promotion invalid piece:', piece);
 							return;
 						}
 						modal.removeEventListener('click', handler);
@@ -69,12 +71,12 @@ export class GamePromotion {
 			};
 			modal.addEventListener('click', handler);
 		} else {
-			console.log('Pawn promotion ERROR:', side, 'modal not found.');
+			logger.debug('Pawn promotion ERROR:', side, 'modal not found.');
 		}
 	}
 
 	private finish(move: EngineMove, side: BoardColor, piece: BoardPromotionPiece): void {
-		console.log('Pawn promotion done:', move, side, piece);
+		logger.debug('Pawn promotion done:', move, side, piece);
 		this.display.updateStatus();
 		this.nav.addPromotion(toEngine(side), piece);
 		this.saveState();
@@ -82,6 +84,6 @@ export class GamePromotion {
 
 	private saveState(): void {
 		this.state.save();
-		console.debug('Pawn promotion state saved.');
+		logger.debug('Pawn promotion state saved.');
 	}
 }

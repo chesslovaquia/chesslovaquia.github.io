@@ -12,6 +12,8 @@ import { BoardPromotionPiece } from '../board/GameBoard';
 import { ConfigGameUI     } from '../config/ConfigGameUI';
 import { ConfigGamePlayer } from '../config/ConfigGamePlayer';
 
+import { logger } from '../clvq/Logger';
+
 type CapturedPiece = BoardPiece | '';
 
 const pieceValue: Record<BoardPiece, number> = {
@@ -66,14 +68,14 @@ export class GameCaptures {
 	}
 
 	public addPosition(): void {
-		console.debug('Game captures add position.');
+		logger.debug('Game captures add position.');
 		this.index++;
 		const turn = this.engine.turn();
 		const side = turn === 'w' ? 'b' : 'w';
 		this.captures[turn].push('');
 		const capture = this.engine.capturedPiece();
 		if (capture) {
-			console.debug('Game capture:', side, capture);
+			logger.debug('Game capture:', side, capture);
 			this.captures[side].push(capture);
 			this.addCount(turn, side, capture);
 			this.updateMaterial(side, capture);
@@ -183,7 +185,7 @@ export class GameCaptures {
 	}
 
 	public addPromotion(side: EngineColor, piece: BoardPromotionPiece): void {
-		console.debug('Captures add promotion:', side, piece);
+		logger.debug('Captures add promotion:', side, piece);
 		this.promotion[side] = pieceValue[piece] - pieceValue['p'];
 	}
 

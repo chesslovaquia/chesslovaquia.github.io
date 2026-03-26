@@ -3,6 +3,8 @@
 
 import { clvqInternalError } from '../clvq/utils';
 
+import { logger } from '../clvq/Logger';
+
 import { screenLoad  } from './screen';
 import { screenDelay } from './screen';
 
@@ -11,14 +13,14 @@ import { SetupData } from './GameSetup';
 
 window.addEventListener('pageshow', () => {
 	try {
-		console.debug('Game setup page.');
+		logger.debug('Game setup page.');
 		const setup = new GameSetup();
 		setup.getGame().then((game: SetupData) => {
 			if (game) {
-				console.debug('Game active:', game);
+				logger.debug('Game active:', game);
 				screenLoad(screenDelay);
 			} else {
-				console.debug('No active game.');
+				logger.debug('No active game.');
 			}
 		});
 	} catch (error) {
