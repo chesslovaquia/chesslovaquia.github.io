@@ -145,18 +145,21 @@ export class ChessjsEngine implements GameEngine {
 
 	public setState(moves: MovesSAN): void {
 		console.debug('Engine load moves:', moves);
+		const snapshotFen = this.game.fen();
 		this.game.reset();
 		let gotError = '';
 		moves.every(san => {
-			const move = this.game.move(san);
-			if (move) {
-				return true;
-			} else {
-				gotError = san;
-				return false;
-			}
+			try {
+				const move = this.game.move(san);
+				if (move) {
+					return true;
+				}
+			} catch { /* invalid move */ }
+			gotError = san;
+			return false;
 		});
 		if (gotError !== '') {
+			this.game.load(snapshotFen);
 			throw new EngineError(`Invalid move: ${gotError}`);
 		}
 	}

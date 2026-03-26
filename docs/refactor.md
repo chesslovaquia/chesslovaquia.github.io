@@ -178,7 +178,7 @@ with `BySide<T>` in `GameClock.ts` (3 fields + `ClockState` type) and `GameCaptu
 
 ---
 
-### 8. Make ChessjsEngine.setState() Transactional
+### 8. Make ChessjsEngine.setState() Transactional ✓ Done
 
 **Problem:** If move N in a replay is invalid, moves 1..N-1 are already applied. The
 method resets then throws, but the caller can't recover to the pre-call state.
@@ -189,6 +189,16 @@ method resets then throws, but the caller can't recover to the pre-call state.
 - Snapshot FEN before replaying
 - On error, restore the snapshot before throwing
 - Add test for partial-replay recovery
+
+**Implemented:** `setState()` now captures `this.game.fen()` into `snapshotFen` before
+calling `reset()`. On any invalid move, `this.game.load(snapshotFen)` restores the
+pre-call board position before throwing `EngineError`. Also fixed a latent bug: chess.js
+1.x throws `Error` for invalid moves rather than returning null, so the existing
+`if (move)` guard was dead code — the replay loop now wraps `this.game.move(san)` in a
+try-catch to catch both thrown errors and null returns, converting them to `EngineError`.
+Added `describe('ChessjsEngine.setState')` in `ts/testing/engine/ChessjsEngine_test.ts`
+with three tests: valid moves applied, error thrown on invalid move, and position restored
+after partial-replay failure.
 
 ---
 

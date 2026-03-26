@@ -4,6 +4,28 @@
 import { test, expect, describe } from 'vitest';
 
 import { ChessjsEngine } from '../../engine/ChessjsEngine';
+import { EngineError    } from '../../engine/EngineError';
+
+describe('ChessjsEngine.setState', () => {
+	test('applies valid moves', () => {
+		const engine = new ChessjsEngine();
+		engine.setState(['e4', 'e5', 'Nf3']);
+		expect(engine.getState()).toEqual(['e4', 'e5', 'Nf3']);
+	});
+
+	test('throws EngineError on invalid move', () => {
+		const engine = new ChessjsEngine();
+		expect(() => engine.setState(['e4', 'INVALID'])).toThrow(EngineError);
+	});
+
+	test('restores pre-call position on partial-replay failure', () => {
+		const engine = new ChessjsEngine();
+		engine.setState(['e4', 'e5']);
+		const originalFen = engine.fen();
+		expect(() => engine.setState(['e4', 'e5', 'INVALID'])).toThrow(EngineError);
+		expect(engine.fen()).toBe(originalFen);
+	});
+});
 
 describe('ChessjsEngine.pgn', () => {
 	test('returns a non-empty string', () => {
