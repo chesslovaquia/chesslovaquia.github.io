@@ -8,6 +8,8 @@ import * as cg from 'chessground/types';
 
 import { GameEngine } from '../engine/GameEngine';
 
+import { toBoard } from '../engine/ColorUtils';
+
 import { GameConfig } from '../game/GameConfig';
 
 import { EventBoardMove } from '../events/EventBoardMove';
@@ -84,7 +86,7 @@ export class ChessgroundBoard implements GameBoard {
 	}
 
 	private turnColor(): cg.Color {
-		return this.engine.turn() === 'w' ? 'white' : 'black';
+		return toBoard(this.engine.turn());
 	}
 
 	private disableMoves(): void {

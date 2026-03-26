@@ -6,6 +6,8 @@ import { BoardColor          } from '../board/GameBoard';
 
 import { EngineMove } from '../engine/GameEngine';
 
+import { toEngine } from '../engine/ColorUtils';
+
 import { GameDisplay  } from './GameDisplay';
 import { GameMove     } from './GameMove';
 import { GameState    } from './GameState';
@@ -73,8 +75,7 @@ export class GamePromotion {
 	private finish(move: EngineMove, side: BoardColor, piece: BoardPromotionPiece): void {
 		console.log('Pawn promotion done:', move, side, piece);
 		this.display.updateStatus();
-		const engineColor = side === 'white' ? 'w' : 'b';
-		this.nav.addPromotion(engineColor, piece);
+		this.nav.addPromotion(toEngine(side), piece);
 		this.saveState();
 	}
 

@@ -3,6 +3,8 @@
 
 import { GameEngine } from '../engine/GameEngine';
 
+import { toBoard } from '../engine/ColorUtils';
+
 import { GameBoard           } from '../board/GameBoard';
 import { BoardSquare         } from '../board/GameBoard';
 import { BoardPromotionPiece } from '../board/GameBoard';
@@ -49,6 +51,6 @@ export class GameMove {
 	}
 
 	public turnColor(): BoardColor {
-		return this.engine.turn() === 'w' ? 'white' : 'black';
+		return toBoard(this.engine.turn());
 	}
 }

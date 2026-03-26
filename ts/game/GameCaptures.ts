@@ -4,6 +4,8 @@
 import { GameEngine  } from '../engine/GameEngine';
 import { EngineColor } from '../engine/GameEngine';
 
+import { BySide } from '../engine/ColorUtils';
+
 import { BoardPiece          } from '../board/GameBoard';
 import { BoardPromotionPiece } from '../board/GameBoard';
 
@@ -31,8 +33,8 @@ const pieceSymbol: Record<BoardPiece, string> = {
 }
 
 export type CapturesState = {
-	captures: Record<EngineColor, CapturedPiece[]>,
-	count: Record<EngineColor, number[]>,
+	captures: BySide<CapturedPiece[]>,
+	count: BySide<number[]>,
 }
 
 export class GameCaptures {
@@ -40,10 +42,10 @@ export class GameCaptures {
 	private readonly p1: ConfigGamePlayer;
 	private readonly p2: ConfigGamePlayer;
 
-	private side: Record<EngineColor, ConfigGamePlayer>;
-	private captures: Record<EngineColor, CapturedPiece[]>;
-	private count: Record<EngineColor, number[]>;
-	private promotion: Record<EngineColor, number>;
+	private side: BySide<ConfigGamePlayer>;
+	private captures: BySide<CapturedPiece[]>;
+	private count: BySide<number[]>;
+	private promotion: BySide<number>;
 	private orientation: EngineColor;
 	private index: number;
 

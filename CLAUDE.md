@@ -182,6 +182,7 @@ The app is currently fully standalone for game play. Lichess Phases 1–6 are co
 ## Conventions
 
 - **PascalCase** for classes and types; **camelCase** for methods and variables.
+- Color conversion between `EngineColor` ('w'/'b') and `BoardColor` ('white'/'black') must go through `toBoard()` / `toEngine()` from `ts/engine/ColorUtils.ts`. Use `BySide<T>` (also from `ColorUtils.ts`) instead of `Record<EngineColor, T>` for side-keyed maps. Never write inline ternaries for these conversions.
 - No framework (React/Vue/etc.) — plain TypeScript with direct DOM manipulation.
 - Hugo handles the build pipeline; avoid bypassing it with raw `tsc` calls.
 - Test files live in `ts/testing/`, named `<Subject>_test.ts`.

@@ -17,6 +17,8 @@ import { EngineMove  } from './GameEngine';
 import { EngineColor } from './GameEngine';
 import { MovesSAN    } from './GameEngine';
 
+import { toBoard } from './ColorUtils';
+
 export class ChessjsEngine implements GameEngine {
 	private readonly game: Chess;
 
@@ -33,11 +35,7 @@ export class ChessjsEngine implements GameEngine {
 	}
 
 	private turnColor(): BoardColor {
-		if (this.game.turn() === 'w') {
-			return 'white';
-		} else {
-			return 'black';
-		}
+		return toBoard(this.game.turn());
 	}
 
 	private boardMove(from: BoardSquare, to: BoardSquare): BoardMove {

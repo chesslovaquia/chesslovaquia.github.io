@@ -4,6 +4,8 @@
 import { GameEngine  } from '../engine/GameEngine';
 import { EngineColor } from '../engine/GameEngine';
 
+import { toBoard } from '../engine/ColorUtils';
+
 import type { BoardSquare         } from '../board/GameBoard';
 import type { BoardColor          } from '../board/GameBoard';
 import type { BoardPromotionPiece } from '../board/GameBoard';
@@ -113,7 +115,7 @@ export class LichessGameState implements GameState {
 	}
 
 	public getPlayerColor(): BoardColor {
-		return this.playerColor === 'w' ? 'white' : 'black';
+		return toBoard(this.playerColor);
 	}
 
 	private handleGameFull(full: LichessGameFull): void {

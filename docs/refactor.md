@@ -152,7 +152,7 @@ successfully.
 
 ---
 
-### 7. Consolidate Color Conversion
+### 7. Consolidate Color Conversion ✓ Done
 
 **Problem:** `EngineColor` ('w'/'b') to `BoardColor` ('white'/'black') conversion is
 duplicated in `GameMove.ts`, `GamePromotion.ts`, `GameDisplay.ts`, and others.
@@ -165,6 +165,16 @@ duplicated in `GameMove.ts`, `GamePromotion.ts`, `GameDisplay.ts`, and others.
 - Create `ts/engine/ColorUtils.ts` with `toBoard()` and `toEngine()` helpers
 - Create shared `BySide<T> = Record<EngineColor, T>` type alias
 - Replace all inline conversions and repeated Record types
+
+**Implemented:** Created `ts/engine/ColorUtils.ts` exporting `toBoard(EngineColor):
+BoardColor`, `toEngine(BoardColor): EngineColor`, and `BySide<T> = Record<EngineColor, T>`.
+Replaced inline ternary/if-else conversions in `ChessjsEngine.ts` (`turnColor()`),
+`GameMove.ts` (`turnColor()`), `ChessgroundBoard.ts` (`turnColor()`),
+`GamePromotion.ts` (`finish()` inverse conversion), and `LichessGameState.ts`
+(`getPlayerColor()`). Replaced all `Record<EngineColor, T>` field and type declarations
+with `BySide<T>` in `GameClock.ts` (3 fields + `ClockState` type) and `GameCaptures.ts`
+(4 fields + `CapturesState` type). `GameDisplay.ts` winner-label inversions left as-is
+(logically inverted: 'w' turn → 'Black' wins — not a color conversion).
 
 ---
 

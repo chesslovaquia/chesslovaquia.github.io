@@ -4,6 +4,8 @@
 import { GameEngine  } from '../engine/GameEngine';
 import { EngineColor } from '../engine/GameEngine';
 
+import { BySide } from '../engine/ColorUtils';
+
 import { EventClockTimeout } from '../events/EventClockTimeout';
 
 import { ConfigGameUI     } from '../config/ConfigGameUI';
@@ -13,9 +15,9 @@ export type ClockState = {
 	tstamp:        number,
 	initialTime:   number,
 	increment:     number,
-	time:          Record<EngineColor, number>,
+	time:          BySide<number>,
 	firstMove:     boolean,
-	firstMoveTime: Record<EngineColor, number>,
+	firstMoveTime: BySide<number>,
 };
 
 const initialTime:      number = 900 * 10; // In seconds thenths.
@@ -41,12 +43,12 @@ export class GameClock {
 	private increment:   number;
 	private interval:    ReturnType<typeof setInterval> | null;
 
-	private side:  Record<EngineColor, ConfigGamePlayer>;
-	private time:  Record<EngineColor, number>;
-	private klass: Record<EngineColor, Status>;
+	private side:  BySide<ConfigGamePlayer>;
+	private time:  BySide<number>;
+	private klass: BySide<Status>;
 
 	private firstMove:         boolean;
-	private firstMoveTime:     Record<EngineColor, number>;
+	private firstMoveTime:     BySide<number>;
 	private firstMoveInterval: ReturnType<typeof setInterval> | null;
 
 	private orientation: EngineColor;
