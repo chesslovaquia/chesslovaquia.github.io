@@ -1,0 +1,30 @@
+/* Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com> */
+/* See LICENSE file. */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  background: var(--clvq-bg-0);
+  color: var(--clvq-text);
+  font-family: system-ui, sans-serif;
+  font-size: var(--clvq-font-md);
+  min-height: 100dvh;
+}
+
+button {
+  cursor: pointer;
+  font: inherit;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}

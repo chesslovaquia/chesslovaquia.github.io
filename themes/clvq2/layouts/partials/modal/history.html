@@ -1,0 +1,16 @@
+<div id="gameHistoryModal" class="modal-container">
+	<div class="modal-inner">
+		<div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:var(--clvq-space-sm);">
+			<span style="font-size:var(--clvq-font-lg);">Game History</span>
+			<button class="btn"
+				onclick="Clvq.w3HideModal('gameHistoryModal')"
+				aria-label="Close">&#10005;</button>
+		</div>
+		<div style="margin-bottom:var(--clvq-space-sm);">
+			<button class="btn" onclick="Clvq.loadLichessHistory()">Load from Lichess</button>
+		</div>
+		<div id="gameHistoryList">
+			<p style="color:var(--clvq-text-dim);">No games yet.</p>
+		</div>
+	</div>
+</div>

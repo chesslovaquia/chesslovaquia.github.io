@@ -1,0 +1,30 @@
+/* Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com> */
+/* See LICENSE file. */
+
+/* Narrow default: single column */
+.game-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  min-height: 100dvh;
+}
+
+/* Wide: board column left, controls column right */
+@media (min-width: 768px) {
+  .game-layout {
+    grid-template-columns: minmax(0, 1fr) minmax(300px, 400px);
+    grid-template-rows: 1fr;
+  }
+}
+
+.game-board-col {
+  display: flex;
+  flex-direction: column;
+  background: var(--clvq-bg-0);
+}
+
+.game-controls-col {
+  display: flex;
+  flex-direction: column;
+  padding: var(--clvq-space-sm);
+  background: var(--clvq-bg-1);
+}

@@ -1,0 +1,183 @@
+/* Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com> */
+/* See LICENSE file. */
+
+/* --- Buttons --- */
+
+.btn {
+  background: var(--clvq-bg-3);
+  color: var(--clvq-text);
+  border: 1px solid var(--clvq-bg-3);
+  border-radius: var(--clvq-radius);
+  padding: var(--clvq-space-xs) var(--clvq-space-sm);
+  cursor: pointer;
+  display: inline-block;
+}
+
+.btn:hover {
+  background: var(--clvq-accent);
+  color: #000;
+}
+
+.btn:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+/* --- Modals ---
+ * TypeScript's w3ShowModal/w3HideModal toggle the .w3-show class.
+ * Without w3.css we must define the hook here.
+ */
+.modal-container {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(0, 0, 0, 0.7);
+  place-items: center;
+}
+
+.modal-container.w3-show {
+  display: grid;
+}
+
+.modal-inner {
+  background: var(--clvq-bg-2);
+  border-radius: var(--clvq-radius);
+  padding: var(--clvq-space-lg);
+  max-width: 90vw;
+  width: 400px;
+}
+
+.modal-inner h3 {
+  margin-bottom: var(--clvq-space-sm);
+  color: var(--clvq-accent);
+}
+
+/* --- Game Menu Dropdown ---
+ * w3ToggleMenu adds/removes .w3-show on #gameMenu.
+ */
+.game-dropdown {
+  display: none;
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 100;
+  background: var(--clvq-bg-2);
+  padding: var(--clvq-space-sm);
+  border-radius: 0 0 0 var(--clvq-radius);
+  min-width: 200px;
+  max-height: 100dvh;
+  overflow-y: auto;
+}
+
+.game-dropdown.w3-show {
+  display: flex;
+  flex-direction: column;
+  gap: var(--clvq-space-xs);
+}
+
+/* --- Game Topbar --- */
+
+.game-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--clvq-space-xs) var(--clvq-space-sm);
+  background: var(--clvq-bg-1);
+}
+
+.game-description {
+  color: var(--clvq-accent);
+  font-size: var(--clvq-font-sm);
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.game-menu-toggle {
+  background: transparent;
+  border: none;
+  color: var(--clvq-text);
+  font-size: var(--clvq-font-lg);
+  padding: var(--clvq-space-xs);
+}
+
+/* --- Player Bar --- */
+
+.player-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--clvq-space-xs) var(--clvq-space-sm);
+  background: var(--clvq-bg-1);
+}
+
+.player-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.player-name {
+  color: var(--clvq-accent);
+  font-size: var(--clvq-font-sm);
+  font-weight: bold;
+}
+
+.player-rating {
+  color: var(--clvq-text-dim);
+  font-size: var(--clvq-font-sm);
+}
+
+.player-material {
+  display: flex;
+  align-items: center;
+  gap: var(--clvq-space-xs);
+  font-size: var(--clvq-font-sm);
+}
+
+.player-material-count {
+  color: var(--clvq-text-dim);
+}
+
+/* --- Game Controls --- */
+
+.game-controls {
+  display: flex;
+  gap: var(--clvq-space-xs);
+  padding: var(--clvq-space-sm);
+  flex-wrap: wrap;
+}
+
+/* --- Game Status --- */
+
+.game-status {
+  padding: var(--clvq-space-sm);
+  color: var(--clvq-accent);
+  text-align: center;
+  font-size: var(--clvq-font-sm);
+}
+
+/* --- Slider inputs (used in setup modals) --- */
+
+.clvq-slider {
+  width: 100%;
+  margin: var(--clvq-space-xs) 0;
+}
+
+/* --- Lichess user display --- */
+
+.lichess-user {
+  color: var(--clvq-accent);
+  font-size: var(--clvq-font-sm);
+  padding: var(--clvq-space-xs) 0;
+}
+
+/* --- Separator --- */
+
+.menu-sep {
+  border: none;
+  border-top: 1px solid var(--clvq-bg-3);
+  margin: var(--clvq-space-xs) 0;
+}

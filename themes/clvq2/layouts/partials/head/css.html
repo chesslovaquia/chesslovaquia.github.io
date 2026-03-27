@@ -1,0 +1,19 @@
+{{- $buildID := getenv "HUGO_CLVQ_BUILD" | default "UNSET" }}
+
+{{- $cdn := .Site.Params.cdn }}
+{{- $css_load := .Site.Params.css_load }}
+
+{{- range $resource := $css_load }}
+  {{- with resources.Get $resource }}
+    {{- if eq hugo.Environment "devel" }}
+      <link rel="stylesheet" href="{{ $cdn }}{{ .RelPermalink }}?v={{ $buildID }}">
+    {{- else }}
+      {{- with . | minify | fingerprint }}
+        <link rel="stylesheet"
+          href="{{ $cdn }}{{ .RelPermalink }}?v={{ $buildID }}"
+          integrity="{{ .Data.Integrity }}"
+          crossorigin="anonymous">
+      {{- end }}
+    {{- end }}
+  {{- end }}
+{{- end }}

@@ -194,22 +194,35 @@ pipeline resolves from both.
 
 ## Implementation Plan
 
-### Phase 1 — Scaffold and Basic Layout
+### Phase 1 — Scaffold and Basic Layout ✓ DONE
 
-1. Create `themes/clvq2/` directory structure.
-2. Write `variables.css` — define the design tokens (colors, spacing scale,
+1. ✓ Create `themes/clvq2/` directory structure.
+2. ✓ Write `variables.css` — define the design tokens (colors, spacing scale,
    font sizes, border radii).
-3. Write `reset.css` and `layout.css` — CSS grid system for the game page.
-4. Create `baseof.html` — clean `<html>` shell loading the new CSS.
-5. Create `page/game.html` — single responsive layout:
+3. ✓ Write `reset.css` and `layout.css` — CSS grid system for the game page.
+4. ✓ Create `baseof.html` — clean `<html>` shell loading the new CSS.
+5. ✓ Create `page/game.html` — single responsive layout:
    - CSS grid: on wide screens, board takes left column (~60%), controls take
      right; on narrow screens, single column with board on top.
    - Player info (name, clock, material) rendered directly above/below the
      board, not in a separate panel.
-6. Verify the board renders and Chessground initializes — all element IDs must
-   match `ElementIds.*`.
-7. Update `content/play/desktop.md` and `content/play/mobile.md` to both use
-   `layout: game` (or merge into a single `content/play.md`).
+6. ✓ All element IDs verified present in clvq2 build output — matches
+   `ElementIds.*` exactly. Hugo build clean; `make test` passes (274/274).
+7. ✓ Both `content/play/desktop.md` and `content/play/mobile.md` updated to
+   `layout: game`. Added `themes/clvq/layouts/page/game.html` as fallback so
+   the live clvq theme continues to serve both URLs correctly.
+
+Notes from implementation:
+- All 8 modals ported to `themes/clvq2/layouts/partials/modal/` with w3.css
+  classes replaced by `modal-container`/`modal-inner`. The `.w3-show` hook is
+  preserved in `components.css` — no TypeScript changes needed yet.
+- Pawn promotion modals use `style="display:none"` (TypeScript controls them
+  via `style.display` directly, not the `.w3-show` class).
+- Lichess auth IDs (`lichessLogin`, `lichessLogout`, `lichessUser`) consolidated
+  into the game menu dropdown — no separate site nav on the clvq2 game page.
+- Vendored fontawesome and `chessground.wood4.css` copied to top-level
+  `assets/` for shared access when clvq2 is the active theme.
+- To test: set `theme = "clvq2"` in `hugo.toml` and run `npm run dev`.
 
 ### Phase 2 — Components
 

@@ -1,0 +1,51 @@
+{{- $buildID := getenv "HUGO_CLVQ_BUILD" | default "UNSET" -}}
+{{- $cdn := .Site.Params.cdn -}}
+{{- $js_load := .Site.Params.js_load }}
+
+<!-- Development helper -->
+{{- $devel_ts := .Site.Params.devel_ts }}
+{{- if eq .Params.develPage "load" }}
+	{{- $js_load = $js_load | append $devel_ts }}
+{{- end }}
+
+<!-- Game app -->
+{{- $game_ts := .Site.Params.game_ts }}
+{{- $game_setup_ts := .Site.Params.game_setup_ts }}
+{{- if eq .Params.gamePage "load" }}
+	<!-- Load game app -->
+	{{- $js_load = $js_load | append $game_ts }}
+{{- else if eq .Params.gamePage "setup" }}
+	<!-- Load game setup -->
+	{{- $js_load = $js_load | append $game_setup_ts }}
+{{- end }}
+
+<!-- Build ts files -->
+
+{{- range $resource := $js_load }}
+	{{- with resources.Get $resource }}
+		{{- if eq hugo.Environment "devel" }}
+			{{- with . | js.Build }}
+				<script src="{{ $cdn }}{{ .RelPermalink }}?v={{ $buildID }}"></script>
+			{{- end }}
+		{{- else }}
+			{{- $opts := dict "minify" true }}
+			{{- with . | js.Build $opts | fingerprint }}
+				<script src="{{ $cdn }}{{ .RelPermalink }}?v={{ $buildID }}"
+					integrity="{{- .Data.Integrity }}"
+					crossorigin="anonymous"></script>
+			{{- end }}
+		{{- end }}
+	{{- end }}
+{{- end }}
+
+<!-- Parse templated js files -->
+
+<!-- Game assets loader -->
+{{- $gload_js := .Site.Params.game_loader_js }}
+{{- $gl := resources.Get $gload_js | resources.ExecuteAsTemplate $gload_js . -}}
+{{- $gl.Publish -}}
+
+<!-- PWA service worker -->
+{{- $sw_js := .Site.Params.sw_js }}
+{{- $sw := resources.Get $sw_js | resources.ExecuteAsTemplate $sw_js . -}}
+{{- $sw.Publish -}}

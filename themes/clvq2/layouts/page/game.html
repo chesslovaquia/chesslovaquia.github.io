@@ -1,0 +1,15 @@
+{{- define "main" }}
+<div class="game-layout">
+	<div class="game-board-col">
+		{{ partial "game/menu.html" (dict "page" .) }}
+		{{ partial "game/player.html" (dict "id" "2" "page" .) }}
+		{{ partial "game/board.html" . }}
+		{{ partial "game/player.html" (dict "id" "1" "page" .) }}
+	</div>
+	<div class="game-controls-col">
+		{{ partial "game/controls.html" (dict "page" .) }}
+		{{ partial "game/status.html" . }}
+	</div>
+</div>
+{{ partial "game/modals.html" (dict "page" .) }}
+{{- end }}

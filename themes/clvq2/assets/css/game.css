@@ -1,0 +1,53 @@
+.game-board {
+	position: relative;
+	width: 100%;
+	max-width: 100vh; /* Maximum size */
+	aspect-ratio: 1; /* Keeps it square */
+	margin: auto; /* Centers the board */
+}
+
+.game-board.timeout {
+	color: #fff;
+	background-color: #f44336;
+}
+
+.game-clock {
+	font-weight: bold;
+	color: #3a3a3a;
+}
+
+.game-clock.active {
+	color: #ccc;
+}
+
+.game-clock.warning {
+	color: #d2be0e;
+}
+
+.game-clock.alert {
+	color: #f44336;
+}
+
+.game-clock.timeout {
+	color: #fff;
+	background-color: #f44336;
+}
+
+.game-setup-button {
+	width: 6em;
+	margin: 2px;
+}
+
+@media (max-width: 400px) {
+	.game-setup-button {
+		font-size: 75%;
+	}
+}
+
+.game-material-white {
+	color: #cccccc;
+}
+
+.game-material-black {
+	color: #111111;
+}
