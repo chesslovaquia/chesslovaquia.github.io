@@ -51,7 +51,7 @@ RUN install -v -m 0750 -o devel -g devel -d /opt/clvq/site
 RUN ln -vsf /home/devel/.local/bin/uvx /usr/local/bin/uvx \
 	&& ln -vsf /home/devel/.local/bin/uv /usr/local/bin/uv
 
-RUN ln -vsf /home/devel/.local/npm/node_modules/.bin/claude /usr/local/bin/claude
+RUN ln -vsf /home/devel/.local/bin/claude /usr/local/bin/claude
 
 USER devel:devel
 WORKDIR /home/devel
@@ -63,13 +63,15 @@ RUN npm version
 RUN npx --version
 RUN hugo version
 
-RUN wget -O - https://astral.sh/uv/install.sh | sh
-RUN /usr/local/bin/uv --version
+#RUN wget -O - https://astral.sh/uv/install.sh | sh
+#RUN /usr/local/bin/uv --version
 
-ENV CLVQ_CLAUDE_UPGRADE=260326
+ENV CLVQ_CLAUDE_UPGRADE=260327
 
-RUN install -v -d -m 0750 ${HOME}/.local/npm
-RUN cd ${HOME}/.local/npm && npm install @anthropic-ai/claude-code
+RUN (mkdir -vp ${HOME}/.local/npm && cd ${HOME}/.local/npm && npm install @anthropic-ai/claude-code) \
+	&& ./.local/npm/node_modules/.bin/claude --version \
+	&& ./.local/npm/node_modules/.bin/claude install stable \
+	&& (cd ${HOME} && rm -rf ${HOME}/.local/npm)
 
 RUN /usr/local/bin/claude --version
 
