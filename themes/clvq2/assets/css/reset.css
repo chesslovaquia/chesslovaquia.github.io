@@ -16,6 +16,7 @@ body {
   color: var(--clvq-text);
   font-family: system-ui, sans-serif;
   font-size: var(--clvq-font-md);
+  line-height: 1.5;
   min-height: 100dvh;
 }
 

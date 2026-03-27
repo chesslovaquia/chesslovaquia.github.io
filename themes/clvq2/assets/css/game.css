@@ -1,53 +1,52 @@
+/* Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com> */
+/* See LICENSE file. */
+
 .game-board {
 	position: relative;
 	width: 100%;
-	max-width: 100vh; /* Maximum size */
-	aspect-ratio: 1; /* Keeps it square */
-	margin: auto; /* Centers the board */
+	max-width: min(100%, 100dvh);
+	aspect-ratio: 1;
+	margin: auto;
 }
 
 .game-board.timeout {
-	color: #fff;
-	background-color: #f44336;
+	outline: 3px solid var(--clvq-danger);
 }
 
 .game-clock {
+	font-family: var(--clvq-font-mono);
+	font-size: var(--clvq-font-xl);
 	font-weight: bold;
-	color: #3a3a3a;
+	font-variant-numeric: tabular-nums;
+	color: var(--clvq-clock-inactive);
+	transition: color var(--clvq-transition), background-color var(--clvq-transition);
+	min-width: 5ch;
+	text-align: right;
 }
 
 .game-clock.active {
-	color: #ccc;
+	color: var(--clvq-text);
 }
 
 .game-clock.warning {
-	color: #d2be0e;
+	color: var(--clvq-warning);
 }
 
 .game-clock.alert {
-	color: #f44336;
+	color: var(--clvq-danger);
 }
 
 .game-clock.timeout {
 	color: #fff;
-	background-color: #f44336;
-}
-
-.game-setup-button {
-	width: 6em;
-	margin: 2px;
-}
-
-@media (max-width: 400px) {
-	.game-setup-button {
-		font-size: 75%;
-	}
+	background-color: var(--clvq-danger);
+	padding: 0 var(--clvq-space-xs);
+	border-radius: var(--clvq-radius);
 }
 
 .game-material-white {
-	color: #cccccc;
+	color: var(--clvq-text);
 }
 
 .game-material-black {
-	color: #111111;
+	color: var(--clvq-text-dim);
 }

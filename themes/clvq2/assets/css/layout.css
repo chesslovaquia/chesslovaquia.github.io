@@ -19,6 +19,7 @@
 .game-board-col {
   display: flex;
   flex-direction: column;
+  justify-content: center;
   background: var(--clvq-bg-0);
 }
 

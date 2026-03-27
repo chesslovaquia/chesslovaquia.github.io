@@ -11,6 +11,7 @@
   --clvq-text-dim: #888;
   --clvq-danger: #e57373;
   --clvq-warning: #ffb74d;
+  --clvq-clock-inactive: #555;
   --clvq-radius: 8px;
   --clvq-space-xs: 4px;
   --clvq-space-sm: 8px;
@@ -20,4 +21,7 @@
   --clvq-font-sm: 0.875rem;
   --clvq-font-md: 1rem;
   --clvq-font-lg: 1.25rem;
+  --clvq-font-xl: 1.5rem;
+  --clvq-font-mono: ui-monospace, "Cascadia Code", monospace;
+  --clvq-transition: 0.15s ease;
 }

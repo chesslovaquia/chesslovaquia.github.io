@@ -11,6 +11,8 @@
   padding: var(--clvq-space-xs) var(--clvq-space-sm);
   cursor: pointer;
   display: inline-block;
+  transition: background var(--clvq-transition), color var(--clvq-transition),
+              border-color var(--clvq-transition);
 }
 
 .btn:hover {
@@ -116,6 +118,11 @@
   color: var(--clvq-text);
   font-size: var(--clvq-font-lg);
   padding: var(--clvq-space-xs);
+  transition: color var(--clvq-transition);
+}
+
+.game-menu-toggle:hover {
+  color: var(--clvq-accent);
 }
 
 /* --- Player Bar --- */
@@ -124,8 +131,10 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: var(--clvq-space-sm);
   padding: var(--clvq-space-xs) var(--clvq-space-sm);
   background: var(--clvq-bg-1);
+  border-bottom: 1px solid var(--clvq-bg-2);
 }
 
 .player-info {
@@ -135,7 +144,7 @@
 
 .player-name {
   color: var(--clvq-accent);
-  font-size: var(--clvq-font-sm);
+  font-size: var(--clvq-font-md);
   font-weight: bold;
 }
 
@@ -164,13 +173,18 @@
   flex-wrap: wrap;
 }
 
+.game-controls .btn {
+  min-width: 2.5rem;
+  text-align: center;
+}
+
 /* --- Game Status --- */
 
 .game-status {
-  padding: var(--clvq-space-sm);
+  padding: var(--clvq-space-md);
   color: var(--clvq-accent);
   text-align: center;
-  font-size: var(--clvq-font-sm);
+  font-size: var(--clvq-font-md);
 }
 
 /* --- Slider inputs (used in setup modals) --- */

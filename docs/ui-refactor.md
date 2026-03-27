@@ -244,13 +244,22 @@ Notes from implementation:
 - Game dropdown animates with `transform: translateY(-8px)` → `translateY(0)`.
 - `.w3-show` hooks removed from `components.css`; `.active` is now the sole toggle class.
 
-### Phase 3 — Polish
+### Phase 3 — Polish ✓ DONE
 
-1. Typography and spacing pass — consistent vertical rhythm.
-2. Clock styling — active/warning/alert/timeout states with the new palette.
-3. Player info — material icons, rating display.
-4. Transitions and micro-interactions (modal open/close, button hover).
-5. Dark/light theme toggle via custom property swap (stretch goal).
+1. ✓ Typography and spacing pass — `line-height: 1.5` on body; player name bumped to
+   `--clvq-font-md`; game status bumped to `--clvq-font-md`; consistent padding via tokens.
+2. ✓ Clock styling — active/warning/alert/timeout states use `--clvq-text`, `--clvq-warning`,
+   `--clvq-danger`; monospace font (`--clvq-font-mono`), 1.5rem size (`--clvq-font-xl`),
+   `font-variant-numeric: tabular-nums`; smooth `color`/`background-color` transitions.
+3. ✓ Player info — material colours use design tokens (black piece symbols visible on dark bg);
+   player bar gets subtle `border-bottom` separator and `gap`.
+4. ✓ Transitions and micro-interactions — `.btn` hover transition; menu toggle accent on hover;
+   board column vertically centred (`justify-content: center`) on desktop.
+5. Dark/light theme toggle — deferred to Phase 4 or later.
+
+New tokens added to `variables.css`: `--clvq-font-mono`, `--clvq-font-xl`, `--clvq-transition`,
+`--clvq-clock-inactive`. Board `max-width` fixed from broken `100vh` to `min(100%, 100dvh)`.
+Dead `.game-setup-button` rule removed from `game.css` (replaced by `.btn.setup-btn`).
 
 ### Phase 4 — Cutover
 
