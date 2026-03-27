@@ -6,20 +6,6 @@ params:
   btnClass: w3-button w3-round-large w3-hover-lime w3-hover-opacity w3-border w3-border-dark-grey
   menuBtnClass: w3-button w3-round-large w3-hover-lime w3-hover-opacity
   modalContentClass: w3-modal-content w3-round-large w3-padding-large w3-black w3-border w3-border-dark-grey
-  css_load:
-    - css/w3.css
-    - css/main.css
-    - css/clvq.css
-    - css/variables.css
-    - css/reset.css
-    - css/layout.css
-    - css/components.css
-    - chessground/assets/chessground.base.css
-    - chessground/assets/chessground.cburnett.css
-    - css/chessground.wood4.css
-    - css/game.css
-    - fontawesome/css/fontawesome.css
-    - fontawesome/css/solid.css
   sw_js: js/service-worker.js
   game_loader_js: js/assets-load.js
   js_load:
