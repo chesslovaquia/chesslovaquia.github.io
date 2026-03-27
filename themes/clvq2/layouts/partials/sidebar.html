@@ -1,0 +1,29 @@
+{{- /* Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com> */ -}}
+{{- /* See LICENSE file. */ -}}
+
+<nav id="mainSidebar" class="sidebar">
+	<a href="/" class="sidebar-home" aria-label="Home">
+		<img src="/clvq-192.png" alt="" class="sidebar-icon">
+	</a>
+
+	{{- range site.Menus.main }}
+		<a href="{{ .URL }}" class="btn sidebar-btn">{{ .Name }}</a>
+	{{- end }}
+
+	<hr class="sidebar-sep">
+
+	<a href="javascript:void(0)" class="btn sidebar-btn"
+		onclick="Clvq.w3HideMenu('mainSidebar'); Clvq.w3ShowModal('lichessSeekModal')">
+		Play on Lichess</a>
+	<a href="javascript:void(0)" class="btn sidebar-btn"
+		onclick="Clvq.w3HideMenu('mainSidebar'); Clvq.loadHistory()">History</a>
+
+	<hr class="sidebar-sep">
+
+	<!-- Lichess auth -->
+	<div id="lichessUser" class="lichess-user" style="display:none"></div>
+	<a id="lichessLogin" href="javascript:void(0)" class="btn sidebar-btn"
+		onclick="Clvq.lichessLogin()">Login to Lichess</a>
+	<a id="lichessLogout" href="javascript:void(0)" class="btn sidebar-btn" style="display:none"
+		onclick="Clvq.lichessLogout()">Logout</a>
+</nav>

@@ -1,9 +1,8 @@
+{{- /* Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com> */ -}}
+{{- /* See LICENSE file. */ -}}
 {{- $page := .page }}
-{{ partial "modal/error.html" . }}
 {{ partial "modal/promotion.html" (dict "side" "white") }}
 {{ partial "modal/promotion.html" (dict "side" "black") }}
 {{ partial "modal/outcome.html" (dict "page" $page) }}
-{{ partial "modal/setup-lichess.html" (dict "page" $page) }}
 {{ partial "modal/challenge.html" (dict "page" $page) }}
 {{ partial "modal/setup-custom.html" (dict "page" $page) }}
-{{ partial "modal/history.html" (dict "page" $page) }}

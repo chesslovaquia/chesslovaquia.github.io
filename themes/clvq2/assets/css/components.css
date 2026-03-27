@@ -61,43 +61,91 @@
   color: var(--clvq-accent);
 }
 
-/* --- Game Menu Dropdown ---
- * w3ToggleMenu adds/removes .active on #gameMenu.
+/* --- Sidebar ---
+ * w3ToggleMenu adds/removes .active on #mainSidebar (mobile).
+ * On desktop (768px+) the sidebar is always visible.
  */
-.game-dropdown {
+.sidebar {
   position: fixed;
   top: 0;
-  right: 0;
-  z-index: 100;
+  left: 0;
+  bottom: 0;
+  z-index: 90;
+  width: 220px;
+  background: var(--clvq-bg-1);
+  border-right: 1px solid var(--clvq-bg-3);
   display: flex;
   flex-direction: column;
   gap: var(--clvq-space-xs);
-  background: var(--clvq-bg-2);
   padding: var(--clvq-space-sm);
-  border-radius: 0 0 0 var(--clvq-radius);
-  min-width: 200px;
-  max-height: 100dvh;
   overflow-y: auto;
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  transform: translateY(-8px);
-  transition: opacity 0.2s, visibility 0.2s, transform 0.2s;
+  transform: translateX(-100%);
+  transition: transform 0.2s ease;
 }
 
-.game-dropdown.active {
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
-  transform: translateY(0);
+.sidebar.active {
+  transform: translateX(0);
 }
 
-/* --- Game Topbar --- */
+@media (min-width: 768px) {
+  .sidebar {
+    transform: translateX(0);
+  }
+}
 
-.game-topbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+.sidebar-home {
+  display: block;
+  margin-bottom: var(--clvq-space-xs);
+}
+
+.sidebar-icon {
+  width: 48px;
+  height: 48px;
+  display: block;
+}
+
+.sidebar-btn {
+  display: block;
+  width: 100%;
+  text-align: left;
+}
+
+.sidebar-sep {
+  border: none;
+  border-top: 1px solid var(--clvq-bg-3);
+  margin: var(--clvq-space-xs) 0;
+}
+
+/* --- Sidebar mobile toggle --- */
+
+.sidebar-toggle {
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 80;
+  background: var(--clvq-bg-1);
+  border: none;
+  color: var(--clvq-text);
+  font-size: var(--clvq-font-lg);
+  padding: var(--clvq-space-xs) var(--clvq-space-sm);
+  cursor: pointer;
+  transition: color var(--clvq-transition);
+}
+
+.sidebar-toggle:hover {
+  color: var(--clvq-accent);
+}
+
+@media (min-width: 768px) {
+  .sidebar-toggle {
+    display: none;
+  }
+}
+
+/* --- Game Description Bar --- */
+
+.game-description-bar {
   padding: var(--clvq-space-xs) var(--clvq-space-sm);
   background: var(--clvq-bg-1);
 }
@@ -105,24 +153,18 @@
 .game-description {
   color: var(--clvq-accent);
   font-size: var(--clvq-font-sm);
-  flex: 1;
-  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.game-menu-toggle {
-  background: transparent;
-  border: none;
-  color: var(--clvq-text);
-  font-size: var(--clvq-font-lg);
-  padding: var(--clvq-space-xs);
-  transition: color var(--clvq-transition);
-}
+/* --- Game Actions (controls column) --- */
 
-.game-menu-toggle:hover {
-  color: var(--clvq-accent);
+.game-actions {
+  display: flex;
+  gap: var(--clvq-space-xs);
+  padding: var(--clvq-space-sm);
+  flex-wrap: wrap;
 }
 
 /* --- Player Bar --- */

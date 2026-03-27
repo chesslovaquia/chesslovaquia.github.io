@@ -2,6 +2,8 @@
 // See LICENSE file.
 
 export const ElementIds = {
+	// Sidebar
+	mainSidebar: 'mainSidebar',
 	// Board
 	chessboard: 'chessboard',
 	// Player elements — append player number ('1' or '2')

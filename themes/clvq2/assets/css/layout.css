@@ -1,6 +1,18 @@
 /* Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com> */
 /* See LICENSE file. */
 
+/* --- Page content (offset for sidebar on desktop) --- */
+
+.page-content {
+  min-height: 100dvh;
+}
+
+@media (min-width: 768px) {
+  .page-content {
+    margin-left: 220px;
+  }
+}
+
 /* Narrow default: single column */
 .game-layout {
   display: grid;

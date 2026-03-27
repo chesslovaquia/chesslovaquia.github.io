@@ -116,9 +116,7 @@ Clvq (app entry point)
 make deps
 
 # Development server (Hugo with live reload)
-npm run dev
-# or
-make dev
+./hugo/devel.sh
 
 # Production build
 npm run build
@@ -192,11 +190,15 @@ The app is currently fully standalone for game play. Lichess Phases 1–6 are co
 
 ### HTML & Layouts
 
-- Hugo partials live in `themes/clvq2/layouts/partials/`. Game UI is split into `game/` (menu, players, status) and `modal/` (promotion, outcome, setup, errors).
-- CSS architecture: `variables.css` (design tokens), `reset.css`, `layout.css` (CSS grid), `components.css` (modals, dropdowns, buttons), `game.css` (board sizing, clock states). Design tokens include `--clvq-font-mono`, `--clvq-font-xl`, `--clvq-transition`, `--clvq-clock-inactive`; clock display uses monospace/tabular-nums at 1.5rem with colour transitions.
+- **Sidebar navigation:** `baseof.html` conditionally includes `sidebar.html` (left sidebar) and `sidebar-toggle.html` (mobile hamburger) on non-game pages. The game page (`gamePage: "load"`) hides the sidebar entirely and omits the `.page-content` offset — the game has its own controls. `global-modals.html` (error, seek, history modals) is always included.
+- **Sidebar contents:** Horse icon (home link), `site.Menus.main` nav links, "Play on Lichess" / "History" buttons, lichess auth section. Lichess auth IDs (`lichessLogin`, `lichessLogout`, `lichessUser`) live in `partials/sidebar.html`.
+- **Sidebar CSS:** `.sidebar` is fixed left, 220px wide, hidden on mobile via `transform: translateX(-100%)`, shown with `.active` class. Always visible on desktop (`@media min-width: 768px`). `.sidebar-toggle` hamburger is hidden on desktop.
+- **Game page layout:** `game/menu.html` is now a simple description bar (`.game-description-bar`) — no dropdown. Game action buttons (Reset, Abort, Resign, Offer Draw) live in `game/controls.html` below the nav buttons.
+- **Modals:** Page-global modals (error, seek, history) are in `global-modals.html` via `baseof.html`. Game-specific modals (promotion, outcome, challenge, setup-custom) remain in `game/modals.html`.
+- Hugo partials live in `themes/clvq2/layouts/partials/`. Game UI is split into `game/` (description bar, players, controls, status) and `modal/` (promotion, outcome, setup, errors).
+- CSS architecture: `variables.css` (design tokens), `reset.css`, `layout.css` (CSS grid + `.page-content` sidebar offset), `components.css` (sidebar, modals, buttons), `game.css` (board sizing, clock states). Design tokens include `--clvq-font-mono`, `--clvq-font-xl`, `--clvq-transition`, `--clvq-clock-inactive`; clock display uses monospace/tabular-nums at 1.5rem with colour transitions.
 - Home page (`_default/home.html`) includes time-control buttons via `partials/game/setup-buttons.html`.
-- Modal/dropdown system uses `.active` class toggle with CSS `opacity: 0; visibility: hidden` transitions in `components.css`.
-- Lichess auth IDs (`lichessLogin`, `lichessLogout`, `lichessUser`) live inside the game menu dropdown (`partials/game/menu.html`).
+- Modal system uses `.active` class toggle with CSS `opacity: 0; visibility: hidden` transitions in `components.css`. Sidebar uses the same `.active` toggle via `w3ToggleMenu`.
 - The `id=` attributes in HTML templates are the source of truth for DOM element IDs — they must match the `ElementIds.*` constants in `ts/clvq/ElementIds.ts` exactly.
 - Modal-specific JS (slider listeners, submit handlers) is written as inline `<script>` blocks directly inside the partial — this is the established pattern for `modal/` partials.
 - The pawn promotion modal uses Chessground's non-standard `<piece>` element for piece rendering — this is intentional and passes HTML validation via `.htmlvalidate.json` configuration.

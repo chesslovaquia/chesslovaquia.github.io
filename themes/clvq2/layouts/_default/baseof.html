@@ -5,6 +5,13 @@
 	{{- partial "head.html" . }}
 </head>
 <body>
-	{{- block "main" . }}{{ end }}
+	{{- if ne .Params.gamePage "load" }}
+		{{- partial "sidebar-toggle.html" . }}
+		{{- partial "sidebar.html" . }}
+	{{- end }}
+	<div class="{{ if ne .Params.gamePage "load" }}page-content{{ end }}">
+		{{- block "main" . }}{{ end }}
+	</div>
+	{{- partial "global-modals.html" . }}
 </body>
 </html>

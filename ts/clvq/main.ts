@@ -22,5 +22,5 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 window.addEventListener('pageshow', () => {
-	w3HideMenu('mobileMenu');
+	w3HideMenu('mainSidebar');
 });
