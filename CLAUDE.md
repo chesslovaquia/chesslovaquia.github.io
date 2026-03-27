@@ -25,7 +25,7 @@ Chesslovaquia is a Progressive Web App (PWA) built as a Hugo static site with Ty
 | Language | TypeScript 5.9+ |
 | Chess logic | chess.js 1.4.0 |
 | Board UI | Chessground 9.2.1 (lichess open source) |
-| CSS framework | w3.css |
+| CSS framework | CSS custom properties (no framework) |
 | Storage | IndexedDB (games), localStorage (config) |
 | Test runner | Vitest 3.2.4 + happy-dom |
 | Coverage | Istanbul |
@@ -65,7 +65,7 @@ site/
 │   └── testing/         # Vitest test files (*_test.ts)
 ├── js/                  # Plain JS: service worker, asset loader
 ├── hugo/                # Hugo build, dev, install scripts
-├── themes/clvq/         # Hugo theme (layouts, assets, static)
+├── themes/clvq2/        # Hugo theme (layouts, assets, CSS custom properties)
 ├── content/             # Hugo markdown pages
 ├── layouts/             # Top-level Hugo layouts
 ├── static/              # Images, icons, PWA manifest
@@ -188,15 +188,16 @@ The app is currently fully standalone for game play. Lichess Phases 1–6 are co
 - Hugo handles the build pipeline; avoid bypassing it with raw `tsc` calls.
 - Test files live in `ts/testing/`, named `<Subject>_test.ts`.
 - Copyright headers required on all source files.
-- Responsive layout: `content/play.md` uses `layout: game`; the active theme is `clvq2`, which provides a single CSS grid layout (`page/game.html`) that handles both desktop and mobile. `screen.ts` and the old `content/play/desktop.md` / `content/play/mobile.md` were removed in Phase 4. `GameSetup.newGame()` and `setup.ts` navigate to `/play/` directly via `window.location.assign('/play/')`.
+- Responsive layout: `content/play.md` uses `layout: game`; the `clvq2` theme provides a single CSS grid layout (`page/game.html`) that handles both desktop and mobile. `GameSetup.newGame()` and `setup.ts` navigate to `/play/` directly via `window.location.assign('/play/')`.
 
 ### HTML & Layouts
 
-- Hugo partials live in `themes/clvq/layouts/partials/`. Game UI is split into `game/` (navbar, players, status) and `modal/` (promotion, outcome, setup, errors).
-- **clvq2 theme** (active — Phases 1–4 complete): `themes/clvq2/` — no w3.css, CSS custom properties (`variables.css`), single responsive CSS grid layout (`layout.css`), modal/dropdown via `.active` class toggle with CSS opacity+visibility transitions in `components.css`. Home page (`_default/home.html`) includes time-control buttons via `partials/game/setup-buttons.html`. Vendored fontawesome and board texture CSS are in top-level `assets/` for shared access. Phase 3 added design tokens `--clvq-font-mono`, `--clvq-font-xl`, `--clvq-transition`, `--clvq-clock-inactive`; clock display uses monospace/tabular-nums at 1.5rem with colour transitions; `themes/clvq2/assets/css/game.css` is the clvq2-specific version (both themes each have their own `game.css`). `themes/clvq/` is kept for rollback — switch by changing `theme` in `hugo.toml`.
-- Navigation split (clvq theme): `partials/menu.html` is the site-wide top nav (used by all non-game pages via `header.html`); `partials/game/game-menu.html` is the game-page nav. Lichess auth UI (`lichessLogin`, `lichessLogout`, `lichessUser`) lives in `menu.html`. In the clvq2 theme, these Lichess auth IDs are consolidated inside the game menu dropdown (`partials/game/menu.html`) since clvq2 has no separate site nav on the game page.
+- Hugo partials live in `themes/clvq2/layouts/partials/`. Game UI is split into `game/` (menu, players, status) and `modal/` (promotion, outcome, setup, errors).
+- CSS architecture: `variables.css` (design tokens), `reset.css`, `layout.css` (CSS grid), `components.css` (modals, dropdowns, buttons), `game.css` (board sizing, clock states). Design tokens include `--clvq-font-mono`, `--clvq-font-xl`, `--clvq-transition`, `--clvq-clock-inactive`; clock display uses monospace/tabular-nums at 1.5rem with colour transitions.
+- Home page (`_default/home.html`) includes time-control buttons via `partials/game/setup-buttons.html`.
+- Modal/dropdown system uses `.active` class toggle with CSS `opacity: 0; visibility: hidden` transitions in `components.css`.
+- Lichess auth IDs (`lichessLogin`, `lichessLogout`, `lichessUser`) live inside the game menu dropdown (`partials/game/menu.html`).
 - The `id=` attributes in HTML templates are the source of truth for DOM element IDs — they must match the `ElementIds.*` constants in `ts/clvq/ElementIds.ts` exactly.
-- Use only documented w3.css classes. For layout needs not covered by w3.css (e.g. flexbox), use an inline `style=` or add a class to `themes/clvq/assets/css/clvq.css` — do not invent w3.css class names.
 - Modal-specific JS (slider listeners, submit handlers) is written as inline `<script>` blocks directly inside the partial — this is the established pattern for `modal/` partials.
 - The pawn promotion modal uses Chessground's non-standard `<piece>` element for piece rendering — this is intentional and passes HTML validation via `.htmlvalidate.json` configuration.
 
@@ -214,11 +215,9 @@ The app is currently fully standalone for game play. Lichess Phases 1–6 are co
 - Board textures and Chessground CSS are vendored via `vendor/lila.sh` — do not edit them directly.
 - `LichessAuth` uses `window.location` directly; tests must use `vi.stubGlobal('location', ...)` + `vi.unstubAllGlobals()` in `afterEach` to avoid leaking location mocks across test files. The `redirect(url)` method is `protected` specifically to allow `vi.spyOn` in tests.
 - Any test that reads or writes `window.location.pathname` must use `vi.stubGlobal('location', { search: '', pathname: '...', href: '', assign: vi.fn() })` — direct assignment (`window.location.pathname = '...'`) is a silent no-op on happy-dom's real `Location` object. When another test file in the same vmThreads worker has previously called `vi.unstubAllGlobals()`, the real Location is restored and bare assignment stops working, causing intermittent failures as the number of test files (and therefore worker assignments) changes.
-- w3.css overrides `position: relative` on `.w3-dropdown-click` to `position: static` when it is inside a `.w3-bar`. This breaks absolute positioning of `.w3-dropdown-content`. Fix with an inline `style="position:relative"` on the dropdown-click container.
-- **clvq2 modal/menu system:** `w3ShowModal`/`w3HideModal`/`w3ToggleMenu` in `ts/clvq/utils.ts` toggle the `.active` CSS class. The `clvq2` theme uses `opacity: 0; visibility: hidden` on `.modal-container` and `.game-dropdown` so transitions work — `.active` makes them visible. The old `clvq` theme has `.w3-modal.active { display: block !important }` in `clvq.css` for backward compat. The pawn promotion modals are a special case: TypeScript sets `style.display = 'block'/'none'` directly — they must start with `style="display:none"` inline, not `class="modal-container"`.
-- **clvq2 fontawesome path:** Vendored fontawesome CSS must live at `themes/clvq2/assets/fontawesome/css/` so that the `url("../webfonts/fa-solid-900.woff2")` reference in `solid.css` resolves correctly to `static/fontawesome/webfonts/fa-solid-900.woff2`. Do NOT place theme assets in the root-level `assets/` directory — Hugo's virtual FS only includes explicitly mounted paths (see `[[module.mounts]]` in `hugo.toml`), so root `assets/` is invisible to the pipeline.
-- **css_load dual-theme pattern:** `config/_default/config.yaml` lists CSS files for both themes. Files that don't exist in the active theme are silently skipped by `resources.Get`. clvq2-specific files (`css/variables.css`, `css/reset.css`, `css/layout.css`, `css/components.css`) live in `themes/clvq2/assets/`; clvq-specific files (`css/w3.css`, `css/main.css`, `css/clvq.css`) live in `themes/clvq/assets/`. Shared files (`chessground/`, `css/game.css`, `fontawesome/`) are found in whichever active theme has them.
-- `$menuBtnClass` (from `site.Params.menuBtnClass`) already includes `w3-button`. Do not prepend `w3-button` again — use `w3-bar-item {{ $menuBtnClass }}` for bar items, not `w3-button {{ $menuBtnClass }}`.
+- **Modal/menu system:** `w3ShowModal`/`w3HideModal`/`w3ToggleMenu` in `ts/clvq/utils.ts` toggle the `.active` CSS class. `.modal-container` and `.game-dropdown` use `opacity: 0; visibility: hidden` — `.active` makes them visible. The pawn promotion modals are a special case: TypeScript sets `style.display = 'block'/'none'` directly — they must start with `style="display:none"` inline, not `class="modal-container"`.
+- **Fontawesome path:** Vendored fontawesome CSS must live at `themes/clvq2/assets/fontawesome/css/` so that the `url("../webfonts/fa-solid-900.woff2")` reference in `solid.css` resolves correctly to `static/fontawesome/webfonts/fa-solid-900.woff2`. Do NOT place theme assets in the root-level `assets/` directory — Hugo's virtual FS only includes explicitly mounted paths (see `[[module.mounts]]` in `hugo.toml`), so root `assets/` is invisible to the pipeline.
+- **css_load:** `config/_default/config.yaml` lists CSS files to load. Files that don't exist in the active theme are silently skipped by `resources.Get`. Theme CSS (`css/variables.css`, `css/reset.css`, `css/layout.css`, `css/components.css`, `css/game.css`) lives in `themes/clvq2/assets/`; vendored files (`chessground/`, `fontawesome/`) also live in the theme.
 - `ClvqIndexedDB<T>` is generic and versioned (`dbVersion`). Always specify the value type at construction: `new ClvqIndexedDB<StateData>(Store.state)`, `new ClvqIndexedDB<HistoryRecord>(Store.history)`. Use `ClvqIndexedDB<unknown>` only in tests that exercise DB mechanics rather than type safety. Adding a new `Store` enum value auto-creates the store on upgrade because `upgrade()` iterates `Object.values(Store)`. Bump `dbVersion` whenever the schema changes.
 - `GameHistory` tests must call `new ClvqIndexedDB<HistoryRecord>(Store.history).clearAll()` in `beforeEach` — IndexedDB is shared across all test files via `fake-indexeddb`. Likewise, `LichessHistory` tests must mock `GameHistory.prototype.save` to prevent cross-test contamination.
 - `LichessGameState` implements `GameState` — any new method added to the `GameState` interface must also be added to `LichessGameState` (and `TestGameState` in `testing.ts`).
