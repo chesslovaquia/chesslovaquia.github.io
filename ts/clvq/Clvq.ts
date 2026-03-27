@@ -2,6 +2,7 @@
 // See LICENSE file.
 
 import { w3ToggleMenu } from './utils';
+import { w3HideMenu   } from './utils';
 import { w3ShowModal  } from './utils';
 import { w3HideModal  } from './utils';
 
@@ -45,6 +46,10 @@ export class Clvq {
 
 	public w3ToggleMenu(id: string): void {
 		w3ToggleMenu(id);
+	}
+
+	public w3HideMenu(id: string): void {
+		w3HideMenu(id);
 	}
 
 	public w3HideModal(id: string): void {
