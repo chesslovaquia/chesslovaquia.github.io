@@ -40,7 +40,8 @@
       "Bash(grep -n \"catch.*err.*unknown\" /opt/clvq/site/ts/**/*.ts)",
       "Bash(awk 'NR > 50 && NR < 100 {count++} END {if \\(count\\) print \"\"File has 50+ lines\"\"}' /opt/clvq/site/ts/game/ChessGame.ts)",
       "Bash(find /opt/clvq/site/ts -type f -name \"*.ts\" ! -name \"*_test.ts\" -exec wc -l {} +)",
-      "Bash(bash hugo/build.sh 2>&1)"
+      "Bash(bash hugo/build.sh 2>&1)",
+      "Bash(grep -r \"screenLoad\\\\|screenResize\\\\|screen\" /opt/clvq/site/themes --include=*.html -l)"
     ]
   }
 }

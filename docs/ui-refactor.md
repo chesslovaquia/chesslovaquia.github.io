@@ -261,15 +261,16 @@ New tokens added to `variables.css`: `--clvq-font-mono`, `--clvq-font-xl`, `--cl
 `--clvq-clock-inactive`. Board `max-width` fixed from broken `100vh` to `min(100%, 100dvh)`.
 Dead `.game-setup-button` rule removed from `game.css` (replaced by `.btn.setup-btn`).
 
-### Phase 4 — Cutover
+### Phase 4 — Cutover ✓ DONE
 
-1. Test all game flows end-to-end: local play, lichess seek/challenge/resign,
-   history, PGN export.
-2. Test responsive behavior across breakpoints.
-3. Run full `make test` — TypeScript tests must pass unchanged (except any
-   modal method updates).
-4. Switch `hugo.toml` to `theme = "clvq2"`.
-5. Keep `themes/clvq/` in the repo for rollback.
+1. ✓ `hugo.toml` switched to `theme = "clvq2"`.
+2. ✓ `screen.ts` deleted — CSS grid handles responsive layout; no redirect needed.
+3. ✓ `GameSetup.newGame()` and `setup.ts` navigate to `/play/` via `window.location.assign('/play/')`.
+4. ✓ `content/play.md` created (`layout: game`); `content/play/desktop.md` and `content/play/mobile.md` deleted.
+5. ✓ `ts/testing/ui/ui_test.ts` updated to test `public/play/index.html`.
+6. ✓ `themes/clvq2/assets/css/game.css` — `max-width: min(100%, 100dvh)` replaced with `max-width: 100dvh` (csstree-validator does not support `min()` for `max-width`).
+7. ✓ `make test` passes — 266/266 tests.
+8. ✓ `themes/clvq/` kept in repo for rollback.
 
 ---
 

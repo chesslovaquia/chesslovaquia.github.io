@@ -13,10 +13,8 @@ import { gameInit   } from '../../game/game';
 import { ElementIds } from '../../clvq/ElementIds';
 
 beforeEach(() => {
-	vi.stubGlobal('location', { search: '', pathname: '/play/mobile/', href: '', assign: vi.fn() });
+	vi.stubGlobal('location', { search: '', pathname: '/play/', href: '', assign: vi.fn() });
 	setupGameTestDOM();
-	window.innerWidth = 360;
-	window.innerHeight = 640;
 });
 
 afterEach(() => {
@@ -24,12 +22,6 @@ afterEach(() => {
 });
 
 describe('game', () => {
-	test('screen load', () => {
-		vi.stubGlobal('location', { search: '', pathname: '/', href: '', assign: vi.fn() });
-		window.innerWidth = 640;
-		window.innerHeight = 360;
-		gameInit();
-	});
 	test('init', () => {
 		gameInit();
 	});

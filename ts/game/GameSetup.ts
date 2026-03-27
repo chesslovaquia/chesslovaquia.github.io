@@ -5,9 +5,6 @@ import { logger } from '../clvq/Logger';
 
 import { ClvqIndexedDB, Store } from '../clvq/ClvqIndexedDB';
 
-import { screenLoad  } from './screen';
-import { screenDelay } from './screen';
-
 export type SetupData = {
 	time:            number,
 	increment:       number,
@@ -31,7 +28,7 @@ export class GameSetup {
 		logger.debug('Setup new game:', data);
 		this.data = data;
 		await this.db.setItem(this.id, this.data);
-		screenLoad(screenDelay);
+		window.location.assign('/play/');
 	}
 
 	public async getGame(): Promise<SetupData> {

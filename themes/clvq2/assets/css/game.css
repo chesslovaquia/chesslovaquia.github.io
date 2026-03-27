@@ -4,7 +4,7 @@
 .game-board {
 	position: relative;
 	width: 100%;
-	max-width: min(100%, 100dvh);
+	max-width: 100dvh;
 	aspect-ratio: 1;
 	margin: auto;
 }
