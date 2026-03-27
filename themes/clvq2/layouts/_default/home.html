@@ -1,3 +1,12 @@
 {{- define "main" }}
-<main>{{ .Content }}</main>
+{{- $buildID := getenv "HUGO_CLVQ_BUILD" | default "UNSET" }}
+<main>
+	{{ partial "game/setup-buttons.html" (dict "page" .) }}
+</main>
+<script>
+	if ('serviceWorker' in navigator) {
+		navigator.serviceWorker.register('/js/service-worker.js?v={{ $buildID }}');
+	}
+</script>
+<script src="/js/assets-load.js?v={{ $buildID }}"></script>
 {{- end }}

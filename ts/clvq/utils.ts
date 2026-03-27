@@ -8,17 +8,17 @@ import { ElementIds } from './ElementIds';
 export function w3HideMenu(id: string): void {
 	let x = document.getElementById(id);
 	if (x) {
-		x.classList.toggle('w3-show', false);
+		x.classList.toggle('active', false);
 	}
 }
 
 export function w3ToggleMenu(id: string): void {
 	let x = document.getElementById(id);
 	if (x) {
-		if (x.classList.contains("w3-show")) {
-			x.classList.toggle('w3-show', false);
+		if (x.classList.contains("active")) {
+			x.classList.toggle('active', false);
 		} else {
-			x.classList.toggle('w3-show', true);
+			x.classList.toggle('active', true);
 		}
 	} else {
 		logger.error('Clvq w3ToggleMenu ERROR:', id, 'not found');
@@ -28,7 +28,7 @@ export function w3ToggleMenu(id: string): void {
 export function w3ShowModal(id: string): void {
 	let x = document.getElementById(id);
 	if (x) {
-		x.classList.toggle('w3-show', true);
+		x.classList.toggle('active', true);
 	} else {
 		logger.error('Clvq w3ShowModal ERROR:', id, 'not found');
 	}
@@ -37,7 +37,7 @@ export function w3ShowModal(id: string): void {
 export function w3HideModal(id: string): void {
 	let x = document.getElementById(id);
 	if (x) {
-		x.classList.toggle('w3-show', false);
+		x.classList.toggle('active', false);
 	} else {
 		logger.error('Clvq w3HideModal ERROR:', id, 'not found');
 	}

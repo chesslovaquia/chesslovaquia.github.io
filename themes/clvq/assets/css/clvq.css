@@ -16,3 +16,6 @@
 	background-size: contain;
 	object-fit: contain;
 }
+
+/* Backward compat: TypeScript now toggles .active instead of .w3-show */
+.w3-modal.active { display: block !important; }

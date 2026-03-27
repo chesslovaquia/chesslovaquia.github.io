@@ -24,20 +24,26 @@
 }
 
 /* --- Modals ---
- * TypeScript's w3ShowModal/w3HideModal toggle the .w3-show class.
- * Without w3.css we must define the hook here.
+ * TypeScript's w3ShowModal/w3HideModal toggle the .active class.
+ * Uses opacity+visibility so CSS transitions work.
  */
 .modal-container {
-  display: none;
   position: fixed;
   inset: 0;
   z-index: 100;
-  background: rgba(0, 0, 0, 0.7);
+  display: grid;
   place-items: center;
+  background: rgba(0, 0, 0, 0.7);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.2s, visibility 0.2s;
 }
 
-.modal-container.w3-show {
-  display: grid;
+.modal-container.active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
 }
 
 .modal-inner {
@@ -54,26 +60,34 @@
 }
 
 /* --- Game Menu Dropdown ---
- * w3ToggleMenu adds/removes .w3-show on #gameMenu.
+ * w3ToggleMenu adds/removes .active on #gameMenu.
  */
 .game-dropdown {
-  display: none;
   position: fixed;
   top: 0;
   right: 0;
   z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: var(--clvq-space-xs);
   background: var(--clvq-bg-2);
   padding: var(--clvq-space-sm);
   border-radius: 0 0 0 var(--clvq-radius);
   min-width: 200px;
   max-height: 100dvh;
   overflow-y: auto;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(-8px);
+  transition: opacity 0.2s, visibility 0.2s, transform 0.2s;
 }
 
-.game-dropdown.w3-show {
-  display: flex;
-  flex-direction: column;
-  gap: var(--clvq-space-xs);
+.game-dropdown.active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0);
 }
 
 /* --- Game Topbar --- */
@@ -180,4 +194,18 @@
   border: none;
   border-top: 1px solid var(--clvq-bg-3);
   margin: var(--clvq-space-xs) 0;
+}
+
+/* --- Setup (home page) time control buttons --- */
+
+.setup-grid {
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  gap: var(--clvq-space-xs);
+  justify-content: center;
+  padding: var(--clvq-space-md);
+}
+
+.setup-btn {
+  min-width: 5em;
 }

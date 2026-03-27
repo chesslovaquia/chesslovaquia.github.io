@@ -224,15 +224,25 @@ Notes from implementation:
   `assets/` for shared access when clvq2 is the active theme.
 - To test: set `theme = "clvq2"` in `hugo.toml` and run `npm run dev`.
 
-### Phase 2 — Components
+### Phase 2 — Components ✓ DONE
 
-1. Build the modal system in pure CSS/JS — a `<dialog>` element or a custom
-   `data-modal` pattern with CSS transitions. Update `Clvq.ts` modal methods.
-2. Port all 8 modals to the new `modal/` partials.
-3. Build the menu — single icon that opens a slide-out panel or dropdown with:
-   lichess login/logout, reset, play on lichess, history, online actions.
-4. Style time control buttons for the home/setup page.
-5. Port the move navigation bar (5 buttons) — make it compact, icon-only.
+1. ✓ Build the modal system — custom `data-modal` pattern with CSS
+   opacity+visibility transitions. `ts/clvq/utils.ts` updated to toggle `.active`
+   class instead of `.w3-show`. `themes/clvq/assets/css/clvq.css` gets a
+   `.w3-modal.active` compat rule so the live clvq theme keeps working.
+2. ✓ All 8 modals ported (completed in Phase 1).
+3. ✓ Game menu built (completed in Phase 1).
+4. ✓ Time control buttons: `themes/clvq2/layouts/partials/game/setup-buttons.html`
+   (12 buttons in a CSS grid); `themes/clvq2/layouts/_default/home.html`
+   implements the home page with PWA registration and asset loader.
+5. ✓ Move navigation bar (5 buttons, icon-only) ported (completed in Phase 1).
+
+Notes from implementation:
+- Modal system uses `opacity: 0; visibility: hidden` (not `display: none`) so
+  CSS `transition` works. `.modal-container.active` makes the modal visible.
+  Pawn promotion modals still use `style.display` directly — unchanged.
+- Game dropdown animates with `transform: translateY(-8px)` → `translateY(0)`.
+- `.w3-show` hooks removed from `components.css`; `.active` is now the sole toggle class.
 
 ### Phase 3 — Polish
 
