@@ -37,6 +37,7 @@ check: build
 	@echo "node `node --version`"
 	ts/build-check.sh
 	hugo/check-build.sh
+	hugo/check-themes.sh
 
 .PHONY: test
 test: check
