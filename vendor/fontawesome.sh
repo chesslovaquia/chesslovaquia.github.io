@@ -7,7 +7,7 @@ fa_version='7.2.0'
 fa_url="https://use.fontawesome.com/releases/v${fa_version}/fontawesome-free-${fa_version}-web.zip"
 
 fa_src="vendor/tmp/fontawesome-free-${fa_version}-web"
-fa_theme_dst='themes/clvq2/assets/fontawesome'
+fa_theme_dst='themes/clvq1/assets/fontawesome'
 fa_static_dst='static/fontawesome'
 
 mkdir -vp vendor/tmp

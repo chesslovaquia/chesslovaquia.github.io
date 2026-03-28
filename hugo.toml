@@ -1,7 +1,7 @@
 baseURL = "http://localhost:8045"
 locale = "en-us"
 title = "Chesslovaquia"
-theme = "clvq2"
+theme = "clvq1"
 
 disableKinds = [
 	"section",

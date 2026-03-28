@@ -65,7 +65,7 @@ site/
 │   └── testing/         # Vitest test files (*_test.ts)
 ├── js/                  # Plain JS: service worker, asset loader
 ├── hugo/                # Hugo build, dev, install scripts
-├── themes/clvq2/        # Hugo theme (layouts, assets, CSS custom properties)
+├── themes/clvq1/        # Hugo theme (layouts, assets, CSS custom properties)
 ├── content/             # Hugo markdown pages
 ├── layouts/             # Top-level Hugo layouts
 ├── static/              # Images, icons, PWA manifest
@@ -186,7 +186,7 @@ The app is currently fully standalone for game play. Lichess Phases 1–6 are co
 - Hugo handles the build pipeline; avoid bypassing it with raw `tsc` calls.
 - Test files live in `ts/testing/`, named `<Subject>_test.ts`.
 - Copyright headers required on all source files.
-- Responsive layout: `content/play.md` uses `layout: game`; the `clvq2` theme provides a single CSS grid layout (`page/game.html`) that handles both desktop and mobile. `GameSetup.newGame()` and `setup.ts` navigate to `/play/` directly via `window.location.assign('/play/')`.
+- Responsive layout: `content/play.md` uses `layout: game`; the `clvq1` theme provides a single CSS grid layout (`page/game.html`) that handles both desktop and mobile. `GameSetup.newGame()` and `setup.ts` navigate to `/play/` directly via `window.location.assign('/play/')`.
 
 ### HTML & Layouts
 
@@ -195,7 +195,7 @@ The app is currently fully standalone for game play. Lichess Phases 1–6 are co
 - **Sidebar CSS:** `.sidebar` is fixed left, 220px wide, hidden on mobile via `transform: translateX(-100%)`, shown with `.active` class. Always visible on desktop (`@media min-width: 768px`). `.sidebar-toggle` hamburger is hidden on desktop.
 - **Game page layout:** `game/menu.html` is now a simple description bar (`.game-description-bar`) — no dropdown. Game action buttons (Reset, Abort, Resign, Offer Draw) live in `game/controls.html` below the nav buttons.
 - **Modals:** Page-global modals (error, seek, history) are in `global-modals.html` via `baseof.html`. Game-specific modals (promotion, outcome, challenge, setup-custom) remain in `game/modals.html`.
-- Hugo partials live in `themes/clvq2/layouts/partials/`. Game UI is split into `game/` (description bar, players, controls, status) and `modal/` (promotion, outcome, setup, errors).
+- Hugo partials live in `themes/clvq1/layouts/partials/`. Game UI is split into `game/` (description bar, players, controls, status) and `modal/` (promotion, outcome, setup, errors).
 - CSS architecture: `variables.css` (design tokens), `reset.css`, `layout.css` (CSS grid + `.page-content` sidebar offset), `components.css` (sidebar, modals, buttons), `game.css` (board sizing, clock states). Design tokens include `--clvq-font-mono`, `--clvq-font-xl`, `--clvq-transition`, `--clvq-clock-inactive`; clock display uses monospace/tabular-nums at 1.5rem with colour transitions.
 - Home page (`_default/home.html`) includes time-control buttons via `partials/game/setup-buttons.html`.
 - Modal system uses `.active` class toggle with CSS `opacity: 0; visibility: hidden` transitions in `components.css`. Sidebar uses the same `.active` toggle via `w3ToggleMenu`.
@@ -219,8 +219,8 @@ The app is currently fully standalone for game play. Lichess Phases 1–6 are co
 - `LichessAuth` uses `window.location` directly; tests must use `vi.stubGlobal('location', ...)` + `vi.unstubAllGlobals()` in `afterEach` to avoid leaking location mocks across test files. The `redirect(url)` method is `protected` specifically to allow `vi.spyOn` in tests.
 - Any test that reads or writes `window.location.pathname` must use `vi.stubGlobal('location', { search: '', pathname: '...', href: '', assign: vi.fn() })` — direct assignment (`window.location.pathname = '...'`) is a silent no-op on happy-dom's real `Location` object. When another test file in the same vmThreads worker has previously called `vi.unstubAllGlobals()`, the real Location is restored and bare assignment stops working, causing intermittent failures as the number of test files (and therefore worker assignments) changes.
 - **Modal/menu system:** `w3ShowModal`/`w3HideModal`/`w3ToggleMenu` in `ts/clvq/utils.ts` toggle the `.active` CSS class. `.modal-container` and `.game-dropdown` use `opacity: 0; visibility: hidden` — `.active` makes them visible. The pawn promotion modals are a special case: TypeScript sets `style.display = 'block'/'none'` directly — they must start with `style="display:none"` inline, not `class="modal-container"`.
-- **Fontawesome path:** Vendored fontawesome CSS must live at `themes/clvq2/assets/fontawesome/css/` so that the `url("../webfonts/fa-solid-900.woff2")` reference in `solid.css` resolves correctly to `static/fontawesome/webfonts/fa-solid-900.woff2`. Do NOT place theme assets in the root-level `assets/` directory — Hugo's virtual FS only includes explicitly mounted paths (see `[[module.mounts]]` in `hugo.toml`), so root `assets/` is invisible to the pipeline.
-- **css_load:** `params.css_load` is defined in the theme's `config.yaml` (`themes/clvq2/config.yaml`). Hugo's config merge uses the theme's list as the default since the site-level config (`config/_default/config.yaml`) does not define `css_load`. Theme CSS lives in `themes/clvq2/assets/`; chessground CSS comes from the site-level module mount (`node_modules/chessground` -> `assets/chessground`). JS/TS params (`js_load`, `game_ts`, `sw_js`, etc.) are shared and live in `config/_default/config.yaml`.
+- **Fontawesome path:** Vendored fontawesome CSS must live at `themes/clvq1/assets/fontawesome/css/` so that the `url("../webfonts/fa-solid-900.woff2")` reference in `solid.css` resolves correctly to `static/fontawesome/webfonts/fa-solid-900.woff2`. Do NOT place theme assets in the root-level `assets/` directory — Hugo's virtual FS only includes explicitly mounted paths (see `[[module.mounts]]` in `hugo.toml`), so root `assets/` is invisible to the pipeline.
+- **css_load:** `params.css_load` is defined in the theme's `config.yaml` (`themes/clvq1/config.yaml`). Hugo's config merge uses the theme's list as the default since the site-level config (`config/_default/config.yaml`) does not define `css_load`. Theme CSS lives in `themes/clvq1/assets/`; chessground CSS comes from the site-level module mount (`node_modules/chessground` -> `assets/chessground`). JS/TS params (`js_load`, `game_ts`, `sw_js`, etc.) are shared and live in `config/_default/config.yaml`.
 - `ClvqIndexedDB<T>` is generic and versioned (`dbVersion`). Always specify the value type at construction: `new ClvqIndexedDB<StateData>(Store.state)`, `new ClvqIndexedDB<HistoryRecord>(Store.history)`. Use `ClvqIndexedDB<unknown>` only in tests that exercise DB mechanics rather than type safety. Adding a new `Store` enum value auto-creates the store on upgrade because `upgrade()` iterates `Object.values(Store)`. Bump `dbVersion` whenever the schema changes.
 - `GameHistory` tests must call `new ClvqIndexedDB<HistoryRecord>(Store.history).clearAll()` in `beforeEach` — IndexedDB is shared across all test files via `fake-indexeddb`. Likewise, `LichessHistory` tests must mock `GameHistory.prototype.save` to prevent cross-test contamination.
 - `LichessGameState` implements `GameState` — any new method added to the `GameState` interface must also be added to `LichessGameState` (and `TestGameState` in `testing.ts`).

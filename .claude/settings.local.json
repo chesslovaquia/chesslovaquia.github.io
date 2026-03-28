@@ -45,7 +45,7 @@
       "Bash(CLVQ_ROOT=http://localhost hugo/check-themes.sh)",
       "Bash(grep -r css_load /opt/clvq/site/ --include=*.yaml --include=*.toml --include=*.json)",
       "Bash(grep -r theme /opt/clvq/site/ts --include=*.ts)",
-      "Bash(grep -r \"site.Params\\\\|theme\\\\|clvq2\" /opt/clvq/site/themes --include=*.html)",
+      "Bash(grep -r \"site.Params\\\\|theme\\\\|clvq1\" /opt/clvq/site/themes --include=*.html)",
       "Bash(find /opt/clvq/site/docs -type f -name *.md)",
       "Bash(grep -r clvqb /opt/clvq/site --include=*.md --include=*.txt --exclude-dir=node_modules --exclude-dir=.git --exclude-dir=docker --exclude-dir=public)",
       "Bash(ls:*)"
