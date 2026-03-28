@@ -9,6 +9,10 @@ import { w3HideModal  } from './utils';
 import { logger } from './Logger';
 
 import { ClvqLocalStorage } from './ClvqLocalStorage';
+import { ElementIds } from './ElementIds';
+
+import { PlayModeStorage, PlayModeLabels } from './PlayMode';
+import type { PlayMode } from './PlayMode';
 
 import { LichessAuth    } from '../lichess/LichessAuth';
 import { LichessClient  } from '../lichess/LichessClient';
@@ -25,12 +29,15 @@ export type ClvqDeps = {
 export class Clvq {
 	private readonly auth: LichessAuth;
 	private readonly bridge: LichessUIBridge;
+	private readonly playMode: PlayModeStorage;
 	private lichessGameInst: LichessGame | null;
 
 	constructor(deps?: ClvqDeps) {
 		logger.debug('Clvq loaded.');
-		this.auth    = new LichessAuth(new ClvqLocalStorage());
-		this.bridge  = new LichessUIBridge(this.auth);
+		const ls = new ClvqLocalStorage();
+		this.auth     = new LichessAuth(ls);
+		this.bridge   = new LichessUIBridge(this.auth);
+		this.playMode = new PlayModeStorage(ls);
 		this.lichessGameInst = deps?.lichessGame ?? null;
 		if (this.lichessGameInst) {
 			this.bridge.setup(this.lichessGameInst);
@@ -39,6 +46,7 @@ export class Clvq {
 			.then(() => { this.bridge.updateUI(); })
 			.catch((err: unknown) => { logger.error('Lichess callback error:', err); });
 		this.bridge.updateUI();
+		this.initPlayModeUI();
 	}
 
 	public w3ToggleMenu(id: string): void {
@@ -92,6 +100,50 @@ export class Clvq {
 		});
 	}
 
+	// --- Play mode ---
+
+	public play(timeMinutes: number, incrementSeconds: number): void {
+		const mode = this.playMode.getMode();
+		if (mode === 'lichess') {
+			if (!this.auth.isLoggedIn()) {
+				this.showLoginPrompt();
+				return;
+			}
+			this.hideLoginPrompt();
+			this.lichessSeek(timeMinutes, incrementSeconds);
+		} else {
+			this.gameSetup(timeMinutes, incrementSeconds);
+		}
+	}
+
+	public playCorrespondence(days: number): void {
+		const mode = this.playMode.getMode();
+		if (mode === 'lichess') {
+			if (!this.auth.isLoggedIn()) {
+				this.showLoginPrompt();
+				return;
+			}
+			this.hideLoginPrompt();
+			this.lichessSeekCorrespondence(days);
+		} else {
+			this.gameSetupCorrespondence(days);
+		}
+	}
+
+	public playModeToggle(): void {
+		w3ToggleMenu(ElementIds.playModeDropdown);
+	}
+
+	public playModeSelect(mode: PlayMode): void {
+		this.playMode.setMode(mode);
+		const label = document.getElementById(ElementIds.playModeLabel);
+		if (label) {
+			label.textContent = PlayModeLabels[mode];
+		}
+		w3HideMenu(ElementIds.playModeDropdown);
+		this.hideLoginPrompt();
+	}
+
 	// --- Lichess online play ---
 
 	public lichessSeek(timeMinutes: number, incrementSeconds: number): void {
@@ -125,7 +177,35 @@ export class Clvq {
 		this.bridge.offerDraw(this.getLichessGame());
 	}
 
+	public lichessSeekCorrespondence(days: number): void {
+		const game = this.getLichessGame();
+		game.seek({ time: 0, increment: 0, days })
+			.catch((err: unknown) => { logger.error('Lichess correspondence seek error:', err); });
+	}
+
 	// --- Private helpers ---
+
+	private initPlayModeUI(): void {
+		const mode  = this.playMode.getMode();
+		const label = document.getElementById(ElementIds.playModeLabel);
+		if (label) {
+			label.textContent = PlayModeLabels[mode];
+		}
+	}
+
+	private showLoginPrompt(): void {
+		const el = document.getElementById(ElementIds.playModeLoginPrompt);
+		if (el) {
+			el.style.display = '';
+		}
+	}
+
+	private hideLoginPrompt(): void {
+		const el = document.getElementById(ElementIds.playModeLoginPrompt);
+		if (el) {
+			el.style.display = 'none';
+		}
+	}
 
 	private getLichessGame(): LichessGame {
 		if (!this.lichessGameInst) {

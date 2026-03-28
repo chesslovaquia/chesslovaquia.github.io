@@ -292,6 +292,62 @@
   margin: var(--clvq-space-xs) 0;
 }
 
+/* --- Play Mode Selector (home page) --- */
+
+.play-mode-selector {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  padding: var(--clvq-space-md) var(--clvq-space-md) 0;
+}
+
+.play-mode-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--clvq-space-xs);
+}
+
+.play-mode-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 50;
+  background: var(--clvq-bg-2);
+  border: 1px solid var(--clvq-bg-3);
+  border-radius: var(--clvq-radius);
+  min-width: 10rem;
+  display: flex;
+  flex-direction: column;
+  gap: var(--clvq-space-xs);
+  padding: var(--clvq-space-xs);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.15s, visibility 0.15s;
+}
+
+.play-mode-dropdown.active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.play-mode-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.play-mode-login-prompt {
+  text-align: center;
+  padding: var(--clvq-space-xs) var(--clvq-space-md);
+  color: var(--clvq-text-dim);
+  font-size: var(--clvq-font-sm);
+  margin: 0;
+}
+
 /* --- Setup (home page) time control buttons --- */
 
 .setup-grid {

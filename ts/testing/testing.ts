@@ -184,5 +184,9 @@ export function setupLichessTestDOM(): void {
 		<div id="gamePlayerRating1" style="display:none"></div>
 		<div id="gamePlayer2"></div>
 		<div id="gamePlayerRating2" style="display:none"></div>
+		<div id="playModeSelector"></div>
+		<span id="playModeLabel">Over the board</span>
+		<div id="playModeDropdown"></div>
+		<p id="playModeLoginPrompt" style="display:none"></p>
 	`;
 }

@@ -4,11 +4,12 @@
 import { vi, test, expect, beforeEach, afterEach, describe } from 'vitest';
 
 import { Clvq } from '../../clvq/Clvq';
+import { GameSetup } from '../../game/GameSetup';
 
 import { mockLichessGame, setupLichessTestDOM } from '../../testing/testing';
 
 beforeEach(() => {
-	vi.stubGlobal('location', { search: '', pathname: '/', href: '' });
+	vi.stubGlobal('location', { search: '', pathname: '/', href: '', assign: vi.fn() });
 	setupLichessTestDOM();
 	localStorage.clear();
 });
@@ -17,6 +18,142 @@ afterEach(() => {
 	vi.restoreAllMocks();
 	vi.unstubAllGlobals();
 	localStorage.clear();
+});
+
+// --- play() dispatch ---
+
+describe('Clvq.play', () => {
+	test('dispatches to gameSetup in otb mode', () => {
+		const { game } = mockLichessGame();
+		const clvq = new Clvq({ lichessGame: game });
+		const spy = vi.spyOn(GameSetup.prototype, 'newGame').mockImplementation(() => {});
+		clvq.play(10, 5);
+		expect(spy).toHaveBeenCalledWith({
+			time: 600,
+			increment: 5,
+			desc: '10+5',
+		});
+	});
+
+	test('dispatches to lichessSeek in lichess mode when logged in', () => {
+		localStorage.setItem('lichess_token', 'test-token');
+		const { game } = mockLichessGame();
+		const clvq = new Clvq({ lichessGame: game });
+		localStorage.setItem('clvq.play_mode', 'lichess');
+		clvq.play(15, 10);
+		expect(game.seek).toHaveBeenCalledWith({ time: 15, increment: 10 });
+	});
+
+	test('shows login prompt in lichess mode when not logged in', () => {
+		const { game } = mockLichessGame();
+		const clvq = new Clvq({ lichessGame: game });
+		localStorage.setItem('clvq.play_mode', 'lichess');
+		clvq.play(10, 0);
+		expect(game.seek).not.toHaveBeenCalled();
+		expect(document.getElementById('playModeLoginPrompt')?.style.display).toBe('');
+	});
+});
+
+// --- playCorrespondence() dispatch ---
+
+describe('Clvq.playCorrespondence', () => {
+	test('dispatches to gameSetupCorrespondence in otb mode', () => {
+		const { game } = mockLichessGame();
+		const clvq = new Clvq({ lichessGame: game });
+		const spy = vi.spyOn(GameSetup.prototype, 'newGame').mockImplementation(() => {});
+		clvq.playCorrespondence(3);
+		expect(spy).toHaveBeenCalledWith({
+			time: 259200,
+			increment: 0,
+			desc: '3 days',
+			correspondence: true,
+		});
+	});
+
+	test('dispatches to lichess correspondence seek when logged in', () => {
+		localStorage.setItem('lichess_token', 'test-token');
+		const { game } = mockLichessGame();
+		const clvq = new Clvq({ lichessGame: game });
+		localStorage.setItem('clvq.play_mode', 'lichess');
+		clvq.playCorrespondence(5);
+		expect(game.seek).toHaveBeenCalledWith({ time: 0, increment: 0, days: 5 });
+	});
+
+	test('shows login prompt for lichess correspondence when not logged in', () => {
+		const { game } = mockLichessGame();
+		const clvq = new Clvq({ lichessGame: game });
+		localStorage.setItem('clvq.play_mode', 'lichess');
+		clvq.playCorrespondence(3);
+		expect(game.seek).not.toHaveBeenCalled();
+		expect(document.getElementById('playModeLoginPrompt')?.style.display).toBe('');
+	});
+});
+
+// --- playModeToggle ---
+
+describe('Clvq.playModeToggle', () => {
+	test('toggles active class on dropdown', () => {
+		const { game } = mockLichessGame();
+		const clvq = new Clvq({ lichessGame: game });
+		const dropdown = document.getElementById('playModeDropdown')!;
+		expect(dropdown.classList.contains('active')).toBe(false);
+		clvq.playModeToggle();
+		expect(dropdown.classList.contains('active')).toBe(true);
+		clvq.playModeToggle();
+		expect(dropdown.classList.contains('active')).toBe(false);
+	});
+});
+
+// --- playModeSelect ---
+
+describe('Clvq.playModeSelect', () => {
+	test('updates label to Lichess', () => {
+		const { game } = mockLichessGame();
+		const clvq = new Clvq({ lichessGame: game });
+		clvq.playModeSelect('lichess');
+		expect(document.getElementById('playModeLabel')?.textContent).toBe('Lichess');
+	});
+
+	test('updates label to Over the board', () => {
+		const { game } = mockLichessGame();
+		const clvq = new Clvq({ lichessGame: game });
+		clvq.playModeSelect('lichess');
+		clvq.playModeSelect('otb');
+		expect(document.getElementById('playModeLabel')?.textContent).toBe('Over the board');
+	});
+
+	test('persists selected mode', () => {
+		const { game } = mockLichessGame();
+		const clvq = new Clvq({ lichessGame: game });
+		clvq.playModeSelect('lichess');
+		expect(localStorage.getItem('clvq.play_mode')).toBe('lichess');
+	});
+
+	test('hides login prompt when switching to otb', () => {
+		const { game } = mockLichessGame();
+		const clvq = new Clvq({ lichessGame: game });
+		localStorage.setItem('clvq.play_mode', 'lichess');
+		clvq.play(10, 0); // triggers login prompt
+		clvq.playModeSelect('otb');
+		expect(document.getElementById('playModeLoginPrompt')?.style.display).toBe('none');
+	});
+});
+
+// --- initPlayModeUI ---
+
+describe('Clvq initPlayModeUI', () => {
+	test('sets label from persisted mode on construction', () => {
+		localStorage.setItem('clvq.play_mode', 'lichess');
+		const { game } = mockLichessGame();
+		new Clvq({ lichessGame: game });
+		expect(document.getElementById('playModeLabel')?.textContent).toBe('Lichess');
+	});
+
+	test('defaults label to Over the board', () => {
+		const { game } = mockLichessGame();
+		new Clvq({ lichessGame: game });
+		expect(document.getElementById('playModeLabel')?.textContent).toBe('Over the board');
+	});
 });
 
 // --- lichessResign ---

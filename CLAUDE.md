@@ -87,6 +87,7 @@ site/
 
 ```
 Clvq (app entry point)
+├── PlayModeStorage → Play mode persistence (otb / lichess, localStorage)
 ├── LichessAuth   → OAuth2 PKCE authentication (lichess.org)
 └── ChessGame (game orchestrator)
     ├── GameState     → IndexedDB persistence
@@ -160,7 +161,7 @@ Always run `make test` before committing. It covers TypeScript, HTML, CSS, and s
 |---|---|---|
 | lichess.org | Partial | Chessground board component is from lichess; board textures sourced from lila repo |
 | chess.com | Planned | No API integration yet |
-| lichess API | Phases 1–6 done | OAuth2 PKCE auth (`LichessAuth`); HTTP client with token injection + 429 handling (`LichessClient`); NDJSON streaming with reconnect (`LichessStream`); game flow — seek, challenge, resign, draw, takeback (`LichessGame`); board integration — `LichessGameState`, `EventOpponentMove`, `EventGameOver`, `GameClock.syncTimes()`, `ChessGame` online-mode wiring (`onMove`, `playerColor`, `doOpponentMove`); UI — seek modal, challenge modal, opponent info panel, game actions bar (abort/resign/draw); game history — `GameHistory` (IndexedDB), `LichessHistory` (fetch from API) |
+| lichess API | Phases 1–6 done | OAuth2 PKCE auth (`LichessAuth`); HTTP client with token injection + 429 handling (`LichessClient`); NDJSON streaming with reconnect (`LichessStream`); game flow — seek (incl. correspondence via `days`), challenge, resign, draw, takeback (`LichessGame`); board integration — `LichessGameState`, `EventOpponentMove`, `EventGameOver`, `GameClock.syncTimes()`, `ChessGame` online-mode wiring (`onMove`, `playerColor`, `doOpponentMove`); UI — unified play mode selector, challenge modal, opponent info panel, game actions bar (abort/resign/draw); game history — `GameHistory` (IndexedDB), `LichessHistory` (fetch from API) |
 | chess.com API | Planned | No OAuth or API calls implemented yet |
 
 The app is currently fully standalone for game play. Lichess Phases 1–6 are complete.
@@ -190,11 +191,12 @@ The app is currently fully standalone for game play. Lichess Phases 1–6 are co
 
 ### HTML & Layouts
 
-- **Sidebar navigation:** `baseof.html` conditionally includes `sidebar.html` (left sidebar) and `sidebar-toggle.html` (mobile hamburger) on non-game pages. The game page (`gamePage: "load"`) hides the sidebar entirely and omits the `.page-content` offset — the game has its own controls. `global-modals.html` (error, seek modals) is always included.
-- **Sidebar contents:** Horse icon (home link), `site.Menus.main` nav links, "Play on Lichess" button, lichess auth section. Lichess auth IDs (`lichessLogin`, `lichessLogout`, `lichessUser`) live in `partials/sidebar.html`.
+- **Sidebar navigation:** `baseof.html` conditionally includes `sidebar.html` (left sidebar) and `sidebar-toggle.html` (mobile hamburger) on non-game pages. The game page (`gamePage: "load"`) hides the sidebar entirely and omits the `.page-content` offset — the game has its own controls. `global-modals.html` (error modal) is always included.
+- **Sidebar contents:** Horse icon (home link), `site.Menus.main` nav links, lichess auth section. Lichess auth IDs (`lichessLogin`, `lichessLogout`, `lichessUser`) live in `partials/sidebar.html`.
 - **Sidebar CSS:** `.sidebar` is fixed left, 220px wide, hidden on mobile via `transform: translateX(-100%)`, shown with `.active` class. Always visible on desktop (`@media min-width: 768px`). `.sidebar-toggle` hamburger is hidden on desktop.
 - **Game page layout:** `game/menu.html` is now a simple description bar (`.game-description-bar`) — no dropdown. Game action buttons (Reset, Abort, Resign, Offer Draw) live in `game/controls.html` below the nav buttons.
-- **Modals:** Page-global modals (error, seek, history) are in `global-modals.html` via `baseof.html`. Game-specific modals (promotion, outcome, challenge, setup-custom) remain in `game/modals.html`.
+- **Play mode selector:** The home page (`setup-buttons.html`) has a dropdown above the setup grid that lets the user choose between "Over the board" and "Lichess" (extensible to Chess.com, etc.). The selected mode is persisted in `localStorage` key `clvq.play_mode` via `PlayModeStorage` (`ts/clvq/PlayMode.ts`). All setup buttons call `Clvq.play()` / `Clvq.playCorrespondence()` which dispatch to local or lichess game creation based on the active mode. The dropdown uses `.play-mode-dropdown` with the same `.active` class toggle as other dropdowns/modals. When lichess mode is selected but the user is not logged in, a login prompt (`playModeLoginPrompt`) is shown inline.
+- **Modals:** Page-global modals (error) are in `global-modals.html` via `baseof.html`. Game-specific modals (promotion, outcome, challenge, setup-custom) remain in `game/modals.html`.
 - Hugo partials live in `themes/clvq1/layouts/partials/`. Game UI is split into `game/` (description bar, players, controls, status) and `modal/` (promotion, outcome, setup, errors).
 - CSS architecture: `variables.css` (design tokens), `reset.css`, `layout.css` (CSS grid + `.page-content` sidebar offset), `components.css` (sidebar, modals, buttons), `game.css` (board sizing, clock states). Design tokens include `--clvq-font-mono`, `--clvq-font-xl`, `--clvq-transition`, `--clvq-clock-inactive`; clock display uses monospace/tabular-nums at 1.5rem with colour transitions.
 - Home page (`_default/home.html`) includes time-control buttons via `partials/game/setup-buttons.html`.

@@ -30,8 +30,11 @@ export const ElementIds = {
 	lichessLogin:  'lichessLogin',
 	lichessLogout: 'lichessLogout',
 	lichessUser:   'lichessUser',
-	// Lichess seek modal
-	lichessSeekModal: 'lichessSeekModal',
+	// Play mode selector
+	playModeSelector:    'playModeSelector',
+	playModeDropdown:    'playModeDropdown',
+	playModeLabel:       'playModeLabel',
+	playModeLoginPrompt: 'playModeLoginPrompt',
 	// Lichess challenge modal
 	lichessChallengeModal:    'lichessChallengeModal',
 	lichessChallengerName:    'lichessChallengerName',

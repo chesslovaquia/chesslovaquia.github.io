@@ -8,6 +8,7 @@ import type { StreamEvent } from './LichessStream';
 export type SeekParams = {
 	time:      number;
 	increment: number;
+	days?:     number;
 	color?:    'white' | 'black' | 'random';
 	variant?:  string;
 };
@@ -135,11 +136,15 @@ export class LichessGame {
 
 	public async seek(params: SeekParams): Promise<void> {
 		const body = new URLSearchParams({
-			time:      String(params.time),
-			increment: String(params.increment),
-			color:     params.color   ?? 'random',
-			variant:   params.variant ?? 'standard',
+			color:   params.color   ?? 'random',
+			variant: params.variant ?? 'standard',
 		});
+		if (params.days !== undefined) {
+			body.set('days', String(params.days));
+		} else {
+			body.set('time',      String(params.time));
+			body.set('increment', String(params.increment));
+		}
 		await this.client.post('/api/board/seek', body);
 	}
 
