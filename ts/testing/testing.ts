@@ -151,7 +151,9 @@ export function mockLichessClient(): LichessClient {
 export function mockLichessGame(): { game: LichessGame; cbs: LichessCallbacks } {
 	const cbs: LichessCallbacks = {};
 	const game = {
-		seek:               vi.fn(() => Promise.resolve()),
+		seek:               vi.fn(() => Promise.resolve('mock-game-id')),
+		cancelSeek:         vi.fn(),
+		isSeeking:          false,
 		acceptChallenge:    vi.fn(() => Promise.resolve()),
 		declineChallenge:   vi.fn(() => Promise.resolve()),
 		resign:             vi.fn(() => Promise.resolve()),

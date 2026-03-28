@@ -57,7 +57,7 @@ site/
 │   ├── events/          # Custom event definitions
 │   ├── lichess/         # Lichess integration modules
 │   │   ├── LichessAuth.ts    # OAuth2 PKCE authentication
-│   │   ├── LichessClient.ts  # HTTP client with bearer token injection + 429 handling
+│   │   ├── LichessClient.ts  # HTTP client with bearer token injection + 429 handling (get/post/postStream/getStream)
 │   │   ├── LichessStream.ts  # NDJSON stream reader with exponential backoff reconnect
 │   │   ├── LichessGame.ts    # Game flow: seek, challenge, in-game actions, stream routing
 │   │   ├── LichessHistory.ts # Fetch game history from lichess API, save to GameHistory
@@ -230,7 +230,8 @@ The app is currently fully standalone for game play. Lichess Phases 1–6 are co
 - `ChessGame.saveHistory()` is only called for local games (`!this.onMove`). Online lichess games are retrieved via `LichessHistory.fetchGames()` — do not double-save them.
 - `engine.pgn(headers)` calls chess.js `setHeader()` which mutates the Chess instance. Headers persist across subsequent `pgn()` calls on the same instance. This is fine for `saveToHistory()` since it only runs once per game.
 - chess.js 1.x `Chess.move(san)` **throws** `Error` for invalid moves — it does not return null. Always wrap calls in a try-catch when move validity is uncertain; do not rely on a falsy return value.
-- All NDJSON parsing for lichess streams goes through `ts/lichess/NdjsonReader.ts` (`readNdjson<T>`). Use `onError: 'throw'` for live streams (throws `LichessError`) and `onError: 'skip'` for batch history fetches. Do not add inline decode/parse loops to new lichess classes.
+- All NDJSON parsing for lichess streams goes through `ts/lichess/NdjsonReader.ts` (`readNdjson<T>`). Use `onError: 'throw'` for live streams (throws `LichessError`) and `onError: 'skip'` for batch history fetches and the seek stream. Do not add inline decode/parse loops to new lichess classes.
+- The lichess `/api/board/seek` endpoint is a **streaming POST** — it sends keepalive newlines while waiting, then a JSON line `{"id":"gameId"}` when matched, then closes. `LichessGame.seek()` uses `client.postStream()` + `readNdjson` to hold the connection open until a game ID arrives. Use `cancelSeek()` to abort an in-progress seek. The `isSeeking` getter indicates whether a seek is active. `stopAll()` also cancels any active seek.
 - Lichess stream event routing in `LichessGame.ts` uses `StreamEvent &` intersection types plus type guard functions instead of `as unknown as` casts. Adding a new event type requires both a variant type (e.g. `type FooStreamEvent = StreamEvent & { type: 'foo'; ... }`) and a corresponding `isFooEvent` guard. `LichessStream.ts` keeps its `[key: string]: unknown` index signature — do not remove it; it is required for test call sites that spread typed objects into `StreamEvent`.
 - `ChessGame.destroy()` calls `clock.stop()` to clear intervals. Tests that call `game.init()` (which may invoke `clock.start()`) must call `game.destroy()` in `afterEach` — otherwise the `setInterval` leaks into later test files sharing the same vmThreads worker, corrupting happy-dom's event routing and causing intermittent failures in unrelated tests.
 - `vi.useFakeTimers()` must be active in any test that starts the game clock. Use `vi.useFakeTimers()` in `beforeEach` and `vi.useRealTimers()` in `afterEach` (after `game.destroy()`). This prevents real `setInterval` callbacks from firing after tests end.

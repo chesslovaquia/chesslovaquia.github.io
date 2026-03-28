@@ -2,7 +2,9 @@
 // See LICENSE file.
 
 import { LichessClient } from './LichessClient';
+import { LichessError  } from './LichessError';
 import { LichessStream  } from './LichessStream';
+import { readNdjson    } from './NdjsonReader';
 import type { StreamEvent } from './LichessStream';
 
 export type SeekParams = {
@@ -92,6 +94,8 @@ export class LichessGame {
 	private drawOfferCallback?:  DrawOfferCallback;
 	private takebackCallback?:   TakebackCallback;
 
+	private seekController: AbortController | null = null;
+
 	private lastWdraw:     boolean = false;
 	private lastBdraw:     boolean = false;
 	private lastWtakeback: boolean = false;
@@ -134,7 +138,9 @@ export class LichessGame {
 
 	// --- Seek ---
 
-	public async seek(params: SeekParams): Promise<void> {
+	public async seek(params: SeekParams): Promise<string> {
+		this.cancelSeek();
+
 		const body = new URLSearchParams({
 			color:   params.color   ?? 'random',
 			variant: params.variant ?? 'standard',
@@ -145,7 +151,36 @@ export class LichessGame {
 			body.set('time',      String(params.time));
 			body.set('increment', String(params.increment));
 		}
-		await this.client.post('/api/board/seek', body);
+
+		const controller = new AbortController();
+		this.seekController = controller;
+
+		try {
+			const stream = await this.client.postStream('/api/board/seek', body);
+			let gameId = '';
+			await readNdjson<{ id: string }>(stream, (event) => {
+				if (event.id) {
+					gameId = event.id;
+				}
+			}, { signal: controller.signal, onError: 'skip' });
+			if (!gameId) {
+				throw new LichessError('Seek stream closed without a game ID');
+			}
+			return gameId;
+		} finally {
+			this.seekController = null;
+		}
+	}
+
+	public cancelSeek(): void {
+		if (this.seekController) {
+			this.seekController.abort();
+			this.seekController = null;
+		}
+	}
+
+	public get isSeeking(): boolean {
+		return this.seekController !== null;
 	}
 
 	// --- Challenge management ---
@@ -207,6 +242,7 @@ export class LichessGame {
 	}
 
 	public stopAll(): void {
+		this.cancelSeek();
 		this.stream.closeAll();
 	}
 

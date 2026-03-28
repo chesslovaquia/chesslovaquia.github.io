@@ -25,6 +25,18 @@ export class LichessClient {
 		return this.request('POST', path, body, false, extra);
 	}
 
+	public async postStream(path: string, body?: URLSearchParams): Promise<ReadableStream<Uint8Array>> {
+		const extra: Record<string, string> = {};
+		if (body !== undefined) {
+			extra['Content-Type'] = 'application/x-www-form-urlencoded';
+		}
+		const resp = await this.request('POST', path, body, false, extra);
+		if (!resp.body) {
+			throw new LichessError(`Stream response has no body: ${path}`);
+		}
+		return resp.body;
+	}
+
 	public async getStream(path: string, extra: Record<string, string> = {}): Promise<ReadableStream<Uint8Array>> {
 		const resp = await this.request('GET', path, undefined, true, extra);
 		if (!resp.body) {

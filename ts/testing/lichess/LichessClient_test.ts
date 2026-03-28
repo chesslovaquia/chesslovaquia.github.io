@@ -86,6 +86,65 @@ describe('LichessClient.post', () => {
 	});
 });
 
+describe('LichessClient.postStream', () => {
+	test('returns response body ReadableStream', async () => {
+		const stream = new ReadableStream<Uint8Array>();
+		vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
+			new Response(stream, { status: 200 }),
+		);
+		const result = await newClient().postStream('/api/board/seek', new URLSearchParams({ time: '10' }));
+		expect(result).toBeInstanceOf(ReadableStream);
+	});
+
+	test('sends POST with Content-Type and Authorization', async () => {
+		vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
+			new Response(new ReadableStream(), { status: 200 }),
+		);
+		const body = new URLSearchParams({ time: '10' });
+		await newClient('tok').postStream('/api/board/seek', body);
+		expect(globalThis.fetch).toHaveBeenCalledWith(
+			'https://lichess.org/api/board/seek',
+			expect.objectContaining({
+				method: 'POST',
+				body,
+				headers: expect.objectContaining({
+					'Authorization': 'Bearer tok',
+					'Content-Type': 'application/x-www-form-urlencoded',
+				}),
+			}),
+		);
+	});
+
+	test('throws LichessError on non-ok response', async () => {
+		vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
+			new Response('', { status: 400 }),
+		);
+		await expect(
+			newClient().postStream('/api/board/seek', new URLSearchParams()),
+		).rejects.toBeInstanceOf(LichessError);
+	});
+
+	test('throws rate-limit LichessError on 429', async () => {
+		vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
+			new Response('', { status: 429 }),
+		);
+		await expect(
+			newClient().postStream('/api/board/seek', new URLSearchParams()),
+		).rejects.toSatisfy(
+			(e: unknown) => e instanceof LichessError && (e as Error).message.includes('429'),
+		);
+	});
+
+	test('throws LichessError when response has no body', async () => {
+		vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
+			{ ok: true, status: 200, body: null } as unknown as Response,
+		);
+		await expect(
+			newClient().postStream('/api/board/seek'),
+		).rejects.toBeInstanceOf(LichessError);
+	});
+});
+
 describe('LichessClient.getStream', () => {
 	test('returns response body ReadableStream', async () => {
 		const stream = new ReadableStream<Uint8Array>();

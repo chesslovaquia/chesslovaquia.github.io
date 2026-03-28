@@ -10,9 +10,27 @@ import { LichessGame    } from '../../lichess/LichessGame';
 import type { StreamCallback } from '../../lichess/LichessStream';
 import type { LichessChallenge, LichessGameFull, LichessGameState } from '../../lichess/LichessGame';
 
-function mockClient(postImpl?: () => Promise<Response>): LichessClient {
+const encoder = new TextEncoder();
+
+function seekStream(gameId: string): ReadableStream<Uint8Array> {
+	return new ReadableStream<Uint8Array>({
+		start(controller) {
+			controller.enqueue(encoder.encode('\n'));
+			controller.enqueue(encoder.encode(`{"id":"${gameId}"}\n`));
+			controller.close();
+		},
+	});
+}
+
+type MockClientOpts = {
+	postImpl?:       () => Promise<Response>;
+	postStreamImpl?: () => Promise<ReadableStream<Uint8Array>>;
+};
+
+function mockClient(opts: MockClientOpts = {}): LichessClient {
 	return {
-		post: vi.fn(postImpl ?? (() => Promise.resolve(new Response('', { status: 200 })))),
+		post:       vi.fn(opts.postImpl       ?? (() => Promise.resolve(new Response('', { status: 200 })))),
+		postStream: vi.fn(opts.postStreamImpl ?? (() => Promise.resolve(seekStream('game123')))),
 	} as unknown as LichessClient;
 }
 
@@ -42,34 +60,104 @@ afterEach(() => {
 // --- seek ---
 
 describe('LichessGame.seek', () => {
-	test('posts to /api/board/seek with correct params', async () => {
+	test('calls postStream on /api/board/seek with correct params', async () => {
 		const client = mockClient();
 		const game = newGame(client);
 		await game.seek({ time: 10, increment: 0 });
-		expect(client.post).toHaveBeenCalledWith(
+		expect(client.postStream).toHaveBeenCalledWith(
 			'/api/board/seek',
 			expect.any(URLSearchParams),
 		);
-		const body = (client.post as ReturnType<typeof vi.fn>).mock.calls[0][1] as URLSearchParams;
+		const body = (client.postStream as ReturnType<typeof vi.fn>).mock.calls[0][1] as URLSearchParams;
 		expect(body.get('time')).toBe('10');
 		expect(body.get('increment')).toBe('0');
 		expect(body.get('color')).toBe('random');
 		expect(body.get('variant')).toBe('standard');
 	});
 
+	test('returns the game ID from the stream', async () => {
+		const client = mockClient();
+		const game = newGame(client);
+		const gameId = await game.seek({ time: 10, increment: 0 });
+		expect(gameId).toBe('game123');
+	});
+
+	test('skips keepalive empty lines', async () => {
+		const client = mockClient({
+			postStreamImpl: () => {
+				const stream = new ReadableStream<Uint8Array>({
+					start(controller) {
+						controller.enqueue(encoder.encode('\n\n\n'));
+						controller.enqueue(encoder.encode('{"id":"afterKeepAlive"}\n'));
+						controller.close();
+					},
+				});
+				return Promise.resolve(stream);
+			},
+		});
+		const game = newGame(client);
+		const gameId = await game.seek({ time: 5, increment: 3 });
+		expect(gameId).toBe('afterKeepAlive');
+	});
+
 	test('passes through custom color and variant', async () => {
 		const client = mockClient();
 		const game = newGame(client);
 		await game.seek({ time: 15, increment: 10, color: 'white', variant: 'chess960' });
-		const body = (client.post as ReturnType<typeof vi.fn>).mock.calls[0][1] as URLSearchParams;
+		const body = (client.postStream as ReturnType<typeof vi.fn>).mock.calls[0][1] as URLSearchParams;
 		expect(body.get('color')).toBe('white');
 		expect(body.get('variant')).toBe('chess960');
 	});
 
-	test('propagates LichessError when post rejects', async () => {
-		const client = mockClient(() => Promise.reject(new LichessError('rate limited')));
+	test('throws LichessError when stream closes without game ID', async () => {
+		const client = mockClient({
+			postStreamImpl: () => {
+				const stream = new ReadableStream<Uint8Array>({
+					start(controller) { controller.close(); },
+				});
+				return Promise.resolve(stream);
+			},
+		});
 		const game = newGame(client);
 		await expect(game.seek({ time: 10, increment: 0 })).rejects.toBeInstanceOf(LichessError);
+	});
+
+	test('propagates LichessError when postStream rejects', async () => {
+		const client = mockClient({
+			postStreamImpl: () => Promise.reject(new LichessError('rate limited')),
+		});
+		const game = newGame(client);
+		await expect(game.seek({ time: 10, increment: 0 })).rejects.toBeInstanceOf(LichessError);
+	});
+
+	test('isSeeking is false after seek resolves', async () => {
+		const game = newGame(mockClient());
+		await game.seek({ time: 10, increment: 0 });
+		expect(game.isSeeking).toBe(false);
+	});
+
+	test('isSeeking is false after seek rejects', async () => {
+		const client = mockClient({
+			postStreamImpl: () => Promise.reject(new LichessError('fail')),
+		});
+		const game = newGame(client);
+		try { await game.seek({ time: 10, increment: 0 }); } catch { /* expected */ }
+		expect(game.isSeeking).toBe(false);
+	});
+});
+
+// --- cancelSeek ---
+
+describe('LichessGame.cancelSeek', () => {
+	test('does not throw when no seek is active', () => {
+		const game = newGame();
+		expect(() => game.cancelSeek()).not.toThrow();
+	});
+
+	test('isSeeking is false after cancel', () => {
+		const game = newGame();
+		game.cancelSeek();
+		expect(game.isSeeking).toBe(false);
 	});
 });
 
@@ -84,7 +172,7 @@ describe('LichessGame.acceptChallenge', () => {
 	});
 
 	test('propagates LichessError on failure', async () => {
-		const client = mockClient(() => Promise.reject(new LichessError('fail')));
+		const client = mockClient({ postImpl: () => Promise.reject(new LichessError('fail')) });
 		const game = newGame(client);
 		await expect(game.acceptChallenge('abc123')).rejects.toBeInstanceOf(LichessError);
 	});
@@ -235,6 +323,21 @@ describe('LichessGame.stopAll', () => {
 		const stream = mockStream();
 		const game = newGame(undefined, stream);
 		game.stopAll();
+		expect(stream.closeAll).toHaveBeenCalled();
+	});
+
+	test('cancels active seek', () => {
+		const stream = mockStream();
+		const game = newGame(undefined, stream);
+		// Start a seek that hangs (never closes)
+		const client = mockClient({
+			postStreamImpl: () => Promise.resolve(new ReadableStream<Uint8Array>({ start() {} })),
+		});
+		const gameWithSeek = newGame(client, stream);
+		void gameWithSeek.seek({ time: 10, increment: 0 });
+		expect(gameWithSeek.isSeeking).toBe(true);
+		gameWithSeek.stopAll();
+		expect(gameWithSeek.isSeeking).toBe(false);
 		expect(stream.closeAll).toHaveBeenCalled();
 	});
 });
