@@ -15,7 +15,7 @@
 
 .game-clock {
 	font-family: var(--clvq-font-mono);
-	font-size: var(--clvq-font-xl);
+	font-size: var(--clvq-font-sm);
 	font-weight: bold;
 	font-variant-numeric: tabular-nums;
 	color: var(--clvq-clock-inactive);
