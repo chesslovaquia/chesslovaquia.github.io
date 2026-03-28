@@ -43,15 +43,4 @@ describe('GameCaptures', () => {
 		captures.addPosition();
 		expect(() => captures.setPosition(0)).not.toThrow();
 	});
-
-	test('setState restores captures state', () => {
-		const deps = mockGameDeps(cfg);
-		const captures = (deps.nav as any).captures;
-		captures.addPosition();
-		const state = captures.getState();
-		captures.setState(state);
-		const restored = captures.getState();
-		expect(restored.captures).toEqual(state.captures);
-		expect(restored.count).toEqual(state.count);
-	});
 });

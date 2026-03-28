@@ -5,13 +5,10 @@ import { GameEngine  } from '../engine/GameEngine';
 import { EngineColor } from '../engine/GameEngine';
 import { MovesSAN    } from '../engine/GameEngine';
 
-import { GameError    } from './GameError';
 import { GameClock    } from './GameClock';
 import { ClockState   } from './GameClock';
 import { GameSetup    } from './GameSetup';
-import { SetupData    } from './GameSetup';
 import { GameNavigate } from './GameNavigate';
-import { NavState     } from './GameNavigate';
 
 import { logger } from '../clvq/Logger';
 
@@ -21,10 +18,11 @@ import { GameHistory  } from './GameHistory';
 import { HistoryRecord } from './GameHistory';
 
 type StateData = {
-	moves:       MovesSAN,
-	clock:       ClockState,
-	nav:         NavState,
-	orientation: EngineColor,
+	moves:           MovesSAN,
+	clock:           ClockState,
+	orientation:     EngineColor,
+	description:     string,
+	timeControlDesc: string,
 }
 
 export interface GameState {
@@ -53,31 +51,35 @@ export class GameStateImpl implements GameState {
 	private readonly nav:     GameNavigate;
 	private readonly history: GameHistory;
 
-	private orientation: EngineColor;
+	private orientation:     EngineColor;
+	private description:     string;
+	private timeControlDesc: string;
 
 	constructor(engine: GameEngine, clock: GameClock, nav: GameNavigate, setup: GameSetup, history: GameHistory) {
-		this.id          = 'current';
-		this.engine      = engine;
-		this.clock       = clock;
-		this.nav         = nav;
-		this.db          = new ClvqIndexedDB<StateData>(Store.state);
-		this.setup       = setup;
-		this.history     = history;
-		this.orientation = 'w';
+		this.id              = 'current';
+		this.engine          = engine;
+		this.clock           = clock;
+		this.nav             = nav;
+		this.db              = new ClvqIndexedDB<StateData>(Store.state);
+		this.setup           = setup;
+		this.history         = history;
+		this.orientation     = 'w';
+		this.description     = '';
+		this.timeControlDesc = '-';
 	}
 
 	public reset(): void {
 		this.db.removeItem(this.id).catch((err: unknown) => logger.error('State reset error:', err));
-		this.setup.removeGame().catch((err: unknown) => logger.error('State setup remove error:', err));
+		this.setup.removeGame();
 	}
 
 	private getState(): StateData {
-		const moves = this.engine.getState();
 		return {
-			moves: moves,
-			clock: this.clock.getState(),
-			nav: this.nav.getState(),
-			orientation: this.orientation,
+			moves:           this.engine.getState(),
+			clock:           this.clock.getState(),
+			orientation:     this.orientation,
+			description:     this.description,
+			timeControlDesc: this.timeControlDesc,
 		}
 	}
 
@@ -91,26 +93,20 @@ export class GameStateImpl implements GameState {
 	}
 
 	private setState(state: StateData): void {
+		this.description     = state.description;
+		this.timeControlDesc = state.timeControlDesc;
+		this.orientation     = state.orientation;
+		// Replay moves one at a time, rebuilding nav positions.
 		if (state.moves) {
-			this.engine.setState(state.moves);
+			this.engine.setState(state.moves, () => {
+				this.nav.addPosition();
+			});
 		}
-		if (state.nav) {
-			this.nav.setState(state.nav);
-		}
-		this.orientation = state.orientation;
 		// Set clock state at the end so clock turn is correct.
 		this.clock.setState(state.clock);
 	}
 
-	private async setSetupData(): Promise<void> {
-		const data = await this.setup.getGame();
-		if (data) {
-			this.setup.setState(data);
-		}
-	}
-
 	public async load(): Promise<boolean> {
-		await this.setSetupData();
 		const state = await this.db.getItem(this.id);
 		if (state) {
 			this.setState(state);
@@ -120,9 +116,11 @@ export class GameStateImpl implements GameState {
 	}
 
 	public async setupNewGame(): Promise<boolean> {
-		const game = await this.setup.getGame();
+		const game = this.setup.getGame();
 		if (game) {
 			logger.debug('State setup new game:', game);
+			this.description     = game.desc;
+			this.timeControlDesc = `${game.time}+${game.increment}`;
 			this.clock.setupNewGame(game.time, game.increment);
 			if (game.correspondence) {
 				this.clock.disableFirstMoveTimer();
@@ -147,7 +145,7 @@ export class GameStateImpl implements GameState {
 	}
 
 	public gameDescription(): string {
-		return this.setup.description();
+		return this.description || 'NOGAME';
 	}
 
 	public async saveToHistory(
@@ -166,8 +164,8 @@ export class GameStateImpl implements GameState {
 				White:       white,
 				Black:       black,
 				Result:      result,
-				TimeControl: this.setup.timeControlDesc(),
-				Event:       this.setup.description(),
+				TimeControl: this.timeControlDesc,
+				Event:       this.description,
 			};
 			const pgn = this.engine.pgn(headers);
 			const record: HistoryRecord = {
@@ -176,7 +174,7 @@ export class GameStateImpl implements GameState {
 				white,
 				black,
 				result,
-				timeControl: this.setup.timeControlDesc(),
+				timeControl: this.timeControlDesc,
 				pgn,
 				source,
 				lichessId,

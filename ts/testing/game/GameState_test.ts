@@ -8,17 +8,18 @@ import { GameStateImpl  } from '../../game/GameState';
 import { GameSetup      } from '../../game/GameSetup';
 import { logger         } from '../../clvq/Logger';
 
-import type { GameEngine  } from '../../engine/GameEngine';
-import type { GameClock   } from '../../game/GameClock';
+import type { GameEngine   } from '../../engine/GameEngine';
+import type { GameClock    } from '../../game/GameClock';
 import type { GameNavigate } from '../../game/GameNavigate';
-import type { GameHistory } from '../../game/GameHistory';
+import type { GameHistory  } from '../../game/GameHistory';
 
-function makeState(setup: GameSetup): GameStateImpl {
+function makeState(setup?: GameSetup): GameStateImpl {
 	const engine = {
 		getState: vi.fn(() => []),
 		setState: vi.fn(),
 		turn:     vi.fn(() => 'w'),
 		pgn:      vi.fn(() => ''),
+		fen:      vi.fn(() => 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'),
 	} as unknown as GameEngine;
 	const clock = {
 		getState:              vi.fn(() => ({})),
@@ -32,7 +33,6 @@ function makeState(setup: GameSetup): GameStateImpl {
 	} as unknown as GameClock;
 	const nav = {
 		getState:     vi.fn(() => ({})),
-		setState:     vi.fn(),
 		addPosition:  vi.fn(),
 		addPromotion: vi.fn(),
 		flip:         vi.fn(),
@@ -42,19 +42,19 @@ function makeState(setup: GameSetup): GameStateImpl {
 		list:   vi.fn().mockResolvedValue([]),
 		delete: vi.fn().mockResolvedValue(undefined),
 	} as unknown as GameHistory;
-	return new GameStateImpl(engine, clock, nav, setup, history);
+	return new GameStateImpl(engine, clock, nav, setup ?? new GameSetup(), history);
 }
 
 describe('GameStateImpl.reset', () => {
 	afterEach(() => {
 		vi.restoreAllMocks();
+		sessionStorage.clear();
 	});
 
 	test('logs error when removeItem rejects', async () => {
 		const err = new Error('idb remove error');
 		vi.spyOn(ClvqIndexedDB.prototype, 'removeItem').mockRejectedValue(err);
-		const setup = { removeGame: vi.fn().mockResolvedValue(undefined) } as unknown as GameSetup;
-		const state = makeState(setup);
+		const state = makeState();
 		const errorSpy = vi.spyOn(logger, 'error');
 		state.reset();
 		await vi.waitFor(() => {
@@ -62,15 +62,11 @@ describe('GameStateImpl.reset', () => {
 		});
 	});
 
-	test('logs error when removeGame rejects', async () => {
-		const err = new Error('setup remove error');
+	test('clears sessionStorage on reset', () => {
+		sessionStorage.setItem('clvq.setup', JSON.stringify({ time: 600, increment: 0, desc: '10+0' }));
 		vi.spyOn(ClvqIndexedDB.prototype, 'removeItem').mockResolvedValue(undefined);
-		const setup = { removeGame: vi.fn().mockRejectedValue(err) } as unknown as GameSetup;
-		const state = makeState(setup);
-		const errorSpy = vi.spyOn(logger, 'error');
+		const state = makeState();
 		state.reset();
-		await vi.waitFor(() => {
-			expect(errorSpy).toHaveBeenCalledWith('State setup remove error:', err);
-		});
+		expect(sessionStorage.getItem('clvq.setup')).toBeNull();
 	});
 });

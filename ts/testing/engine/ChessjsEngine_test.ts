@@ -25,6 +25,27 @@ describe('ChessjsEngine.setState', () => {
 		expect(() => engine.setState(['e4', 'e5', 'INVALID'])).toThrow(EngineError);
 		expect(engine.fen()).toBe(originalFen);
 	});
+
+	test('calls afterEach callback after each move', () => {
+		const engine = new ChessjsEngine();
+		const fens: string[] = [];
+		engine.setState(['e4', 'e5', 'Nf3'], () => {
+			fens.push(engine.fen());
+		});
+		expect(fens).toHaveLength(3);
+		// Each FEN should differ — positions change after each move.
+		expect(fens[0]).not.toBe(fens[1]);
+		expect(fens[1]).not.toBe(fens[2]);
+	});
+
+	test('does not call afterEach on invalid move', () => {
+		const engine = new ChessjsEngine();
+		const calls: number[] = [];
+		expect(() => engine.setState(['e4', 'INVALID'], () => {
+			calls.push(1);
+		})).toThrow(EngineError);
+		expect(calls).toHaveLength(1); // Only called for 'e4', not 'INVALID'
+	});
 });
 
 describe('ChessjsEngine.pgn', () => {

@@ -118,7 +118,7 @@ export class GameNavigate {
 		if (lastMove) {
 			this.moves.push(lastMove);
 		}
-		this.pos.push(this.board.getFen());
+		this.pos.push(this.engine.fen());
 		this.index++;
 		if (this.index === 1) {
 			utils.enableButton(this.ui.navBackward);
@@ -134,19 +134,6 @@ export class GameNavigate {
 			moves: this.moves,
 			captures: this.captures.getState(),
 		};
-	}
-
-	public setState(state: NavState): void {
-		if (state.pos) {
-			this.pos   = state.pos;
-			this.index = state.index;
-			this.moves = state.moves;
-			if (this.index >= 1) {
-				utils.enableButton(this.ui.navBackward);
-				utils.enableButton(this.ui.navFirstMove);
-			}
-			this.captures.setState(state.captures);
-		}
 	}
 
 	public addPromotion(side: EngineColor, piece: BoardPromotionPiece): void {

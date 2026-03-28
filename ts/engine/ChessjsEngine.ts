@@ -145,7 +145,7 @@ export class ChessjsEngine implements GameEngine {
 		return this.game.history();
 	}
 
-	public setState(moves: MovesSAN): void {
+	public setState(moves: MovesSAN, afterEach?: () => void): void {
 		logger.debug('Engine load moves:', moves);
 		const snapshotFen = this.game.fen();
 		this.game.reset();
@@ -154,6 +154,7 @@ export class ChessjsEngine implements GameEngine {
 			try {
 				const move = this.game.move(san);
 				if (move) {
+					afterEach?.();
 					return true;
 				}
 			} catch { /* invalid move */ }

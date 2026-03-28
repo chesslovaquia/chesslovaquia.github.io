@@ -57,14 +57,11 @@ describe('GameNavigate', () => {
 		expect(state2.index).toBe(1);
 	});
 
-	test('setState restores nav state', () => {
+	test('addPosition records engine FEN', () => {
 		const deps = mockGameDeps(cfg);
 		deps.nav.addPosition();
-		deps.nav.addPosition();
 		const state = deps.nav.getState();
-		deps.nav.setState(state);
-		const restored = deps.nav.getState();
-		expect(restored.index).toBe(state.index);
-		expect(restored.pos).toEqual(state.pos);
+		expect(state.pos.length).toBe(1);
+		expect(state.pos[0]).toBe(deps.engine.fen());
 	});
 });

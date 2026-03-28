@@ -133,14 +133,6 @@ export class GameCaptures {
 		}
 	}
 
-	public setState(state: CapturesState): void {
-		this.captures = state.captures;
-		this.count = state.count;
-		this.clearAllMaterial();
-		const idx = this.captures['w'].length - 1;
-		this.setPosition(idx);
-	}
-
 	public setPosition(idx: number): void {
 		this.index = idx;
 		this.clearAllMaterial();

@@ -26,7 +26,7 @@ Chesslovaquia is a Progressive Web App (PWA) built as a Hugo static site with Ty
 | Chess logic | chess.js 1.4.0 |
 | Board UI | Chessground 9.2.1 (lichess open source) |
 | CSS framework | CSS custom properties (no framework) |
-| Storage | IndexedDB (games), localStorage (config) |
+| Storage | IndexedDB (game state + history), sessionStorage (game setup), localStorage (config) |
 | Test runner | Vitest 3.2.4 + happy-dom |
 | Coverage | Istanbul |
 | Containerization | Docker (Debian slim) |
@@ -42,7 +42,7 @@ site/
 │   ├── clvq/            # Core framework: storage, errors, system info
 │   ├── game/            # Game orchestration and state machine
 │   │   ├── ChessGame.ts      # Main game class (entry point)
-│   │   ├── GameState.ts      # IndexedDB persistence
+│   │   ├── GameState.ts      # IndexedDB persistence (moves + clock + orientation + description)
 │   │   ├── GameHistory.ts    # Game history archive (IndexedDB Store.history)
 │   │   ├── GameEngine.ts     # chess.js wrapper
 │   │   ├── GameBoard.ts      # Chessground integration
@@ -210,7 +210,8 @@ The app is currently fully standalone for game play. Lichess Phases 1–6 are co
 - Hugo's asset pipeline compiles TypeScript — do not add a separate `tsconfig.json` build step.
 - `ConfigGameUI` validates DOM elements at init; tests must provide a complete mock DOM. Use `setupGameTestDOM()` from `ts/testing/testing.ts` in `beforeEach` — do not call `document.body.innerHTML = mockConfigGameUI()` directly. For lichess UI tests use `setupLichessTestDOM()`. If a test needs extra DOM elements on top (e.g. `GamePromotion_test.ts`), append them with `document.body.innerHTML += '...'` after `setupGameTestDOM()`.
 - `GameState.save()` returns `Promise<void>` and has an internal `try/catch` that never re-throws. Sync callers fire-and-forget it with `.catch((err: unknown) => logger.error('State save error:', err))` for consistency; async callers `await` it. Either way, state is not persisted synchronously — don't assume it is after the call returns.
-- `GameState.load()` and `setSetupData()` are both async; always `await` them in sequence to avoid race conditions.
+- `GameState.load()` is async (reads from IndexedDB). On load, moves are replayed one at a time via `engine.setState(moves, afterEach)` — the callback rebuilds `GameNavigate` positions and `GameCaptures` state from the engine at each step. Nav/captures state is not persisted; it is derived from the move list.
+- `GameSetup` uses `sessionStorage` (key `clvq.setup`) to pass time control configuration from the home page to the game page during navigation. Setup data only persists within the browser tab session. The actual game state (moves, clock, orientation, description) is persisted in IndexedDB by `GameState` — this is what survives page reloads and tab closures. `GameNavigate` and `GameCaptures` do not persist their state; they are rebuilt from the move list on load.
 - `fake-indexeddb` must be imported in test setup (`ts/testing/testing-setup.ts`) before any storage code runs.
 - Never use raw string IDs in `document.getElementById()` — always use `ElementIds.*` from `ts/clvq/ElementIds.ts`.
 - `ChessGame` registers static event listeners (`EventBoardMove`, `EventClockTimeout`) in the constructor. Call `destroy()` before reinitializing a game instance to prevent listener stacking.
