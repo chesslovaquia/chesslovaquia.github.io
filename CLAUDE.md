@@ -160,7 +160,7 @@ Always run `make test` before committing. It covers TypeScript, HTML, CSS, and s
 |---|---|---|
 | lichess.org | Partial | Chessground board component is from lichess; board textures sourced from lila repo |
 | chess.com | Planned | No API integration yet |
-| lichess API | Phases 1–6 done | OAuth2 PKCE auth (`LichessAuth`); HTTP client with token injection + 429 handling (`LichessClient`); NDJSON streaming with reconnect (`LichessStream`); game flow — seek, challenge, resign, draw, takeback (`LichessGame`); board integration — `LichessGameState`, `EventOpponentMove`, `EventGameOver`, `GameClock.syncTimes()`, `ChessGame` online-mode wiring (`onMove`, `playerColor`, `doOpponentMove`); UI — seek modal, challenge modal, opponent info panel, game actions bar (abort/resign/draw); game history — `GameHistory` (IndexedDB), `LichessHistory` (fetch from API), PGN export via `Clvq.exportPgn()`, history modal |
+| lichess API | Phases 1–6 done | OAuth2 PKCE auth (`LichessAuth`); HTTP client with token injection + 429 handling (`LichessClient`); NDJSON streaming with reconnect (`LichessStream`); game flow — seek, challenge, resign, draw, takeback (`LichessGame`); board integration — `LichessGameState`, `EventOpponentMove`, `EventGameOver`, `GameClock.syncTimes()`, `ChessGame` online-mode wiring (`onMove`, `playerColor`, `doOpponentMove`); UI — seek modal, challenge modal, opponent info panel, game actions bar (abort/resign/draw); game history — `GameHistory` (IndexedDB), `LichessHistory` (fetch from API) |
 | chess.com API | Planned | No OAuth or API calls implemented yet |
 
 The app is currently fully standalone for game play. Lichess Phases 1–6 are complete.
@@ -190,8 +190,8 @@ The app is currently fully standalone for game play. Lichess Phases 1–6 are co
 
 ### HTML & Layouts
 
-- **Sidebar navigation:** `baseof.html` conditionally includes `sidebar.html` (left sidebar) and `sidebar-toggle.html` (mobile hamburger) on non-game pages. The game page (`gamePage: "load"`) hides the sidebar entirely and omits the `.page-content` offset — the game has its own controls. `global-modals.html` (error, seek, history modals) is always included.
-- **Sidebar contents:** Horse icon (home link), `site.Menus.main` nav links, "Play on Lichess" / "History" buttons, lichess auth section. Lichess auth IDs (`lichessLogin`, `lichessLogout`, `lichessUser`) live in `partials/sidebar.html`.
+- **Sidebar navigation:** `baseof.html` conditionally includes `sidebar.html` (left sidebar) and `sidebar-toggle.html` (mobile hamburger) on non-game pages. The game page (`gamePage: "load"`) hides the sidebar entirely and omits the `.page-content` offset — the game has its own controls. `global-modals.html` (error, seek modals) is always included.
+- **Sidebar contents:** Horse icon (home link), `site.Menus.main` nav links, "Play on Lichess" button, lichess auth section. Lichess auth IDs (`lichessLogin`, `lichessLogout`, `lichessUser`) live in `partials/sidebar.html`.
 - **Sidebar CSS:** `.sidebar` is fixed left, 220px wide, hidden on mobile via `transform: translateX(-100%)`, shown with `.active` class. Always visible on desktop (`@media min-width: 768px`). `.sidebar-toggle` hamburger is hidden on desktop.
 - **Game page layout:** `game/menu.html` is now a simple description bar (`.game-description-bar`) — no dropdown. Game action buttons (Reset, Abort, Resign, Offer Draw) live in `game/controls.html` below the nav buttons.
 - **Modals:** Page-global modals (error, seek, history) are in `global-modals.html` via `baseof.html`. Game-specific modals (promotion, outcome, challenge, setup-custom) remain in `game/modals.html`.

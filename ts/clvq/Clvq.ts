@@ -9,7 +9,6 @@ import { w3HideModal  } from './utils';
 import { logger } from './Logger';
 
 import { ClvqLocalStorage } from './ClvqLocalStorage';
-import { HistoryManager   } from './HistoryManager';
 
 import { LichessAuth    } from '../lichess/LichessAuth';
 import { LichessClient  } from '../lichess/LichessClient';
@@ -26,14 +25,12 @@ export type ClvqDeps = {
 export class Clvq {
 	private readonly auth: LichessAuth;
 	private readonly bridge: LichessUIBridge;
-	private readonly history: HistoryManager;
 	private lichessGameInst: LichessGame | null;
 
 	constructor(deps?: ClvqDeps) {
 		logger.debug('Clvq loaded.');
 		this.auth    = new LichessAuth(new ClvqLocalStorage());
 		this.bridge  = new LichessUIBridge(this.auth);
-		this.history = new HistoryManager();
 		this.lichessGameInst = deps?.lichessGame ?? null;
 		if (this.lichessGameInst) {
 			this.bridge.setup(this.lichessGameInst);
@@ -126,21 +123,6 @@ export class Clvq {
 	public lichessOfferDraw(): void {
 		if (!this.bridge.activeGameId) return;
 		this.bridge.offerDraw(this.getLichessGame());
-	}
-
-	// --- Game history ---
-
-	public loadHistory(): void {
-		this.history.load();
-	}
-
-	public loadLichessHistory(): void {
-		if (!this.auth.isLoggedIn()) return;
-		this.history.loadFromLichess(this.auth);
-	}
-
-	public exportPgn(index: number): void {
-		this.history.exportPgn(index);
 	}
 
 	// --- Private helpers ---
