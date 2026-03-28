@@ -305,3 +305,30 @@
 .setup-btn {
   min-width: 5em;
 }
+
+/* --- History List --- */
+
+.history-empty {
+  color: var(--clvq-text-dim);
+}
+
+.history-row {
+  display: flex;
+  align-items: center;
+  gap: var(--clvq-space-xs);
+  padding: var(--clvq-space-xs) 0;
+  border-bottom: 1px solid var(--clvq-bg-3);
+  font-size: var(--clvq-font-sm);
+}
+
+.history-name {
+  font-weight: bold;
+}
+
+.history-tc {
+  color: var(--clvq-text-dim);
+}
+
+.history-pgn {
+  margin-left: auto;
+}

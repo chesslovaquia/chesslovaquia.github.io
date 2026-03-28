@@ -133,7 +133,7 @@ describe('HistoryManager.renderHistoryList XSS safety', () => {
 			const list = document.getElementById('gameHistoryList')!;
 			expect(list.innerHTML).not.toContain('<script>');
 			expect(list.innerHTML).not.toContain('<img');
-			const nameSpan = list.querySelector('.w3-bold');
+			const nameSpan = list.querySelector('.history-name');
 			expect(nameSpan).not.toBeNull();
 			expect(nameSpan!.textContent).toContain('<script>alert(1)</script>');
 			expect(nameSpan!.textContent).toContain('<img src=x onerror=alert(2)>');

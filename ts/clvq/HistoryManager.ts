@@ -60,7 +60,7 @@ export class HistoryManager {
 		if (!listEl) return;
 		listEl.replaceChildren();
 		if (records.length === 0) {
-			listEl.innerHTML = '<p class="w3-text-grey">No games yet.</p>';
+			listEl.innerHTML = '<p class="history-empty">No games yet.</p>';
 			return;
 		}
 		records.forEach((r, i) => {
@@ -68,27 +68,26 @@ export class HistoryManager {
 			const src     = r.source === 'lichess' ? ' [lichess]' : '';
 
 			const rowDiv = document.createElement('div');
-			rowDiv.className = 'w3-bar w3-border-bottom w3-small';
-			rowDiv.style.padding = '4px 0';
+			rowDiv.className = 'history-row';
 
 			const dateSpan = document.createElement('span');
-			dateSpan.className = 'w3-bar-item';
+			dateSpan.className = 'history-date';
 			dateSpan.textContent = dateStr + src;
 
 			const nameSpan = document.createElement('span');
-			nameSpan.className = 'w3-bar-item w3-bold';
+			nameSpan.className = 'history-name';
 			nameSpan.textContent = r.white + ' vs ' + r.black;
 
 			const resultSpan = document.createElement('span');
-			resultSpan.className = 'w3-bar-item';
+			resultSpan.className = 'history-result';
 			resultSpan.textContent = r.result;
 
 			const tcSpan = document.createElement('span');
-			tcSpan.className = 'w3-bar-item w3-text-grey';
+			tcSpan.className = 'history-tc';
 			tcSpan.textContent = r.timeControl;
 
 			const pgnBtn = document.createElement('button');
-			pgnBtn.className = 'w3-bar-item w3-button w3-small w3-right';
+			pgnBtn.className = 'btn history-pgn';
 			pgnBtn.textContent = 'PGN';
 			pgnBtn.addEventListener('click', () => { this.exportPgn(i); });
 

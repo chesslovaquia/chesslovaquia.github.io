@@ -37,7 +37,6 @@ check: build
 	@echo "node `node --version`"
 	ts/build-check.sh
 	hugo/check-build.sh
-	hugo/check-themes.sh
 
 .PHONY: test
 test: check
@@ -46,7 +45,6 @@ test: check
 .PHONY: vendor
 vendor:
 	./vendor/lila.sh
-	./vendor/w3css.sh
 	./vendor/fontawesome.sh
 
 .PHONY: upgrade
