@@ -35,6 +35,9 @@ export const ElementIds = {
 	playModeDropdown:    'playModeDropdown',
 	playModeLabel:       'playModeLabel',
 	playModeLoginPrompt: 'playModeLoginPrompt',
+	// Lichess seek modal
+	lichessSeekModal:    'lichessSeekModal',
+	lichessSeekTimeCtrl: 'lichessSeekTimeCtrl',
 	// Lichess challenge modal
 	lichessChallengeModal:    'lichessChallengeModal',
 	lichessChallengerName:    'lichessChallengerName',

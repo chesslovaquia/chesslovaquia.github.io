@@ -18,6 +18,50 @@ afterEach(() => {
 	localStorage.clear();
 });
 
+// --- showSeekModal / hideSeekModal ---
+
+describe('LichessUIBridge seek modal', () => {
+	test('showSeekModal sets time control text and adds .active class', () => {
+		const auth = mockLichessAuth();
+		const bridge = new LichessUIBridge(auth);
+		bridge.showSeekModal('15+10');
+		expect(document.getElementById('lichessSeekTimeCtrl')?.textContent).toBe('15+10');
+		expect(document.getElementById('lichessSeekModal')?.classList.contains('active')).toBe(true);
+	});
+
+	test('hideSeekModal removes .active class', () => {
+		const auth = mockLichessAuth();
+		const bridge = new LichessUIBridge(auth);
+		bridge.showSeekModal('3+2');
+		bridge.hideSeekModal();
+		expect(document.getElementById('lichessSeekModal')?.classList.contains('active')).toBe(false);
+	});
+
+	test('onGameStart hides seek modal', () => {
+		const auth = mockLichessAuth();
+		const bridge = new LichessUIBridge(auth);
+		const { game, cbs } = mockLichessGame();
+		bridge.setup(game);
+		bridge.showSeekModal('10+0');
+		vi.stubGlobal('location', { assign: vi.fn() });
+		cbs.gameStart!('game-seek-1');
+		expect(document.getElementById('lichessSeekModal')?.classList.contains('active')).toBe(false);
+		vi.unstubAllGlobals();
+	});
+
+	test('onGameStart navigates to /play/', () => {
+		const auth = mockLichessAuth();
+		const bridge = new LichessUIBridge(auth);
+		const { game, cbs } = mockLichessGame();
+		bridge.setup(game);
+		const assignFn = vi.fn();
+		vi.stubGlobal('location', { assign: assignFn });
+		cbs.gameStart!('game-seek-2');
+		expect(assignFn).toHaveBeenCalledWith('/play/');
+		vi.unstubAllGlobals();
+	});
+});
+
 // --- setup: challenge callback ---
 
 describe('LichessUIBridge challenge callback', () => {

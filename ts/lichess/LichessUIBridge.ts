@@ -56,6 +56,8 @@ export class LichessUIBridge {
 
 		game.onGameStart((gameId: string) => {
 			this._activeGameId = gameId;
+			this.hideSeekModal();
+			window.location.assign('/play/');
 			const bar = document.getElementById(ElementIds.gameActionsBar);
 			if (bar) bar.style.display = '';
 		});
@@ -70,6 +72,16 @@ export class LichessUIBridge {
 			this.setPlayerRatingUI('1', gameFull.white.username, gameFull.white.rating);
 			this.setPlayerRatingUI('2', gameFull.black.username, gameFull.black.rating);
 		});
+	}
+
+	public showSeekModal(timeDesc: string): void {
+		const el = document.getElementById(ElementIds.lichessSeekTimeCtrl);
+		if (el) el.textContent = timeDesc;
+		w3ShowModal(ElementIds.lichessSeekModal);
+	}
+
+	public hideSeekModal(): void {
+		w3HideModal(ElementIds.lichessSeekModal);
 	}
 
 	public updateUI(): void {

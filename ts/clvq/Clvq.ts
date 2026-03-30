@@ -148,8 +148,12 @@ export class Clvq {
 
 	public lichessSeek(timeMinutes: number, incrementSeconds: number): void {
 		const game = this.getLichessGame();
+		this.bridge.showSeekModal(`${timeMinutes}+${incrementSeconds}`);
 		game.seek({ time: timeMinutes, increment: incrementSeconds })
-			.catch((err: unknown) => { logger.error('Lichess seek error:', err); });
+			.catch((err: unknown) => {
+				this.bridge.hideSeekModal();
+				logger.error('Lichess seek error:', err);
+			});
 	}
 
 	public lichessAcceptChallenge(): void {
@@ -179,8 +183,20 @@ export class Clvq {
 
 	public lichessSeekCorrespondence(days: number): void {
 		const game = this.getLichessGame();
+		const unit = days === 1 ? 'day' : 'days';
+		this.bridge.showSeekModal(`${days} ${unit}`);
 		game.seek({ time: 0, increment: 0, days })
-			.catch((err: unknown) => { logger.error('Lichess correspondence seek error:', err); });
+			.catch((err: unknown) => {
+				this.bridge.hideSeekModal();
+				logger.error('Lichess correspondence seek error:', err);
+			});
+	}
+
+	public lichessCancelSeek(): void {
+		this.bridge.hideSeekModal();
+		if (this.lichessGameInst) {
+			this.lichessGameInst.cancelSeek();
+		}
 	}
 
 	// --- Private helpers ---

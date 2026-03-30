@@ -177,6 +177,8 @@ export function setupLichessTestDOM(): void {
 		<div id="lichessLogin"></div>
 		<div id="lichessLogout" style="display:none"></div>
 		<div id="lichessUser" style="display:none"></div>
+		<div id="lichessSeekModal"></div>
+		<p id="lichessSeekTimeCtrl"></p>
 		<div id="lichessChallengeModal" style="display:none"></div>
 		<span id="lichessChallengerName"></span>
 		<span id="lichessChallengerRating"></span>

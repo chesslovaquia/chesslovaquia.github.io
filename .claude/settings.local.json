@@ -48,7 +48,11 @@
       "Bash(grep -r \"site.Params\\\\|theme\\\\|clvq1\" /opt/clvq/site/themes --include=*.html)",
       "Bash(find /opt/clvq/site/docs -type f -name *.md)",
       "Bash(grep -r clvqb /opt/clvq/site --include=*.md --include=*.txt --exclude-dir=node_modules --exclude-dir=.git --exclude-dir=docker --exclude-dir=public)",
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "Bash(find /opt/clvq/site -name *play* -type f)",
+      "Bash(find /opt/clvq/site -path */js/game*.js -type f)",
+      "Bash(grep -r \"game_ts\\\\|game_setup_ts\" /opt/clvq/site --include=*.toml --include=*.yaml --include=*.yml)",
+      "Bash(grep -r \"LichessUIBridge\\\\|gameStart\\\\|gameFull\" /opt/clvq/site/ts --include=*.ts)"
     ]
   }
 }
