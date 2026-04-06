@@ -63,10 +63,10 @@ RUN npm version
 RUN npx --version
 RUN hugo version
 
-RUN wget -q -O - https://astral.sh/uv/install.sh | sh
-RUN .local/bin/uv --version
+#RUN wget -q -O - https://astral.sh/uv/install.sh | sh
+#RUN .local/bin/uv --version
 
-ENV CLVQ_CLAUDE_UPGRADE=260401
+ENV CLVQ_CLAUDE_UPGRADE=260406
 
 RUN install -v -d -m 0750 ${HOME}/.local/npm \
 	&& cd ${HOME}/.local/npm \
