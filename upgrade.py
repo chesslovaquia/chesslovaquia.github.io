@@ -11,6 +11,7 @@ Usage:
   python3 upgrade.py
 """
 
+import datetime
 import json
 import re
 import sys
@@ -127,12 +128,19 @@ def run_debian_forky():
     print("[debian forky slim]")
     current = read_current(DOCKERFILE, r"FROM debian:(\S+)")
     latest  = get_latest_debian_forky_slim()
-    return check(
+    changed = check(
         "debian", current, latest,
         DOCKERFILE,
         r"FROM debian:\S+",
         f"FROM debian:{latest}",
     )
+    if changed:
+        today = datetime.date.today().strftime("%y%m%d")
+        update_file(DOCKERFILE, r'LABEL version="\S+"', f'LABEL version="{today}"')
+        print(f"  updated   LABEL version -> {today}")
+        update_file(DOCKERFILE, r"ENV CLVQ_UPGRADE=\S+", f"ENV CLVQ_UPGRADE={today}")
+        print(f"  updated   CLVQ_UPGRADE -> {today}")
+    return changed
 
 
 def run_hugo():

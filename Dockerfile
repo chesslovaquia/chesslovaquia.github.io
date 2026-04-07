@@ -1,9 +1,9 @@
-FROM debian:forky-20260316-slim
+FROM debian:forky-20260406-slim
 
 LABEL maintainer="Jeremías Casteglione <jrmsdev@gmail.com>"
-LABEL version="250325"
+LABEL version="260407"
 
-ENV CLVQ_UPGRADE=260325
+ENV CLVQ_UPGRADE=260407
 
 USER root:root
 WORKDIR /root
