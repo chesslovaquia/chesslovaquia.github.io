@@ -74,6 +74,12 @@ def get_latest_hugo():
     return tag.lstrip("v")
 
 
+def get_latest_claude_code():
+    """Return the latest @anthropic-ai/claude-code version from the npm registry."""
+    data = fetch_json("https://registry.npmjs.org/@anthropic-ai/claude-code/latest")
+    return data["version"]  # e.g. "1.2.3"
+
+
 def get_latest_fontawesome():
     """Return the latest Font Awesome release version from GitHub."""
     data = fetch_json(
@@ -169,6 +175,18 @@ def run_fontawesome():
     )
 
 
+def run_claude_code():
+    print("[claude-code]")
+    current = read_current(DOCKERFILE, r"ENV CLVQ_CLAUDE_UPGRADE=(\S+)")
+    latest  = get_latest_claude_code()
+    return check(
+        "claude-code", current, latest,
+        DOCKERFILE,
+        r"ENV CLVQ_CLAUDE_UPGRADE=\S+",
+        f"ENV CLVQ_CLAUDE_UPGRADE={latest}",
+    )
+
+
 # ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
@@ -177,6 +195,7 @@ CHECKS = [
     run_debian_forky,
     run_hugo,
     run_fontawesome,
+    run_claude_code,
 ]
 
 
