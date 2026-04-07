@@ -158,6 +158,7 @@ export function mockLichessGame(): { game: LichessGame; cbs: LichessCallbacks } 
 		declineChallenge:   vi.fn(() => Promise.resolve()),
 		resign:             vi.fn(() => Promise.resolve()),
 		abort:              vi.fn(() => Promise.resolve()),
+		makeMove:           vi.fn(() => Promise.resolve()),
 		offerOrAcceptDraw:  vi.fn(() => Promise.resolve()),
 		startEventStream:   vi.fn(),
 		stopAll:            vi.fn(),
@@ -192,5 +193,7 @@ export function setupLichessTestDOM(): void {
 		<span id="playModeLabel">Over the board</span>
 		<div id="playModeDropdown"></div>
 		<p id="playModeLoginPrompt" style="display:none"></p>
+		<div id="lichessPlayingGames" style="display:none"></div>
+		<div id="lichessPlayingGamesList"></div>
 	`;
 }

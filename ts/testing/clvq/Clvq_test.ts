@@ -5,6 +5,7 @@ import { vi, test, expect, beforeEach, afterEach, describe } from 'vitest';
 
 import { Clvq } from '../../clvq/Clvq';
 import { GameSetup } from '../../game/GameSetup';
+import { LichessPlaying } from '../../lichess/LichessPlaying';
 
 import { mockLichessGame, setupLichessTestDOM } from '../../testing/testing';
 
@@ -375,5 +376,62 @@ describe('Clvq gameFull callback', () => {
 		});
 		expect(document.getElementById('gamePlayer2')?.textContent).toBe('Karpov');
 		expect(document.getElementById('gamePlayerRating2')?.textContent).toBe('(2780)');
+	});
+});
+
+// --- lichessResumeGame ---
+
+describe('Clvq.lichessResumeGame', () => {
+	test('persists game ID and navigates to /play/', () => {
+		const { game } = mockLichessGame();
+		const clvq = new Clvq({ lichessGame: game });
+		clvq.lichessResumeGame('resume-game-1');
+		expect(localStorage.getItem('lichess_game_id')).toBe('resume-game-1');
+		expect((window.location.assign as ReturnType<typeof vi.fn>)).toHaveBeenCalledWith('/play/');
+	});
+});
+
+// --- lichessFetchPlaying ---
+
+describe('Clvq.lichessFetchPlaying', () => {
+	test('does nothing when not logged in', async () => {
+		const { game } = mockLichessGame();
+		const clvq = new Clvq({ lichessGame: game });
+		const spy = vi.spyOn(LichessPlaying.prototype, 'fetchNowPlaying');
+		await clvq.lichessFetchPlaying();
+		expect(spy).not.toHaveBeenCalled();
+	});
+
+	test('hides container when no games', async () => {
+		localStorage.setItem('lichess_token', 'test-token');
+		const { game } = mockLichessGame();
+		const clvq = new Clvq({ lichessGame: game });
+		vi.spyOn(LichessPlaying.prototype, 'fetchNowPlaying').mockResolvedValue([]);
+		await clvq.lichessFetchPlaying();
+		expect(document.getElementById('lichessPlayingGames')?.style.display).toBe('none');
+	});
+
+	test('shows container and renders games when games exist', async () => {
+		localStorage.setItem('lichess_token', 'test-token');
+		const { game } = mockLichessGame();
+		const clvq = new Clvq({ lichessGame: game });
+		vi.spyOn(LichessPlaying.prototype, 'fetchNowPlaying').mockResolvedValue([
+			{
+				gameId:   'xyz789',
+				fullId:   'xyz789abc',
+				color:    'white',
+				fen:      '',
+				hasMoved: true,
+				isMyTurn: true,
+				lastMove: 'd2d4',
+				opponent: { id: 'rival', username: 'Rival', rating: 1600 },
+				speed:    'rapid',
+				variant:  { key: 'standard', name: 'Standard' },
+			},
+		]);
+		await clvq.lichessFetchPlaying();
+		expect(document.getElementById('lichessPlayingGames')?.style.display).toBe('');
+		expect(document.getElementById('lichessPlayingGamesList')?.innerHTML).toContain('Rival');
+		expect(document.getElementById('lichessPlayingGamesList')?.innerHTML).toContain('Your turn');
 	});
 });

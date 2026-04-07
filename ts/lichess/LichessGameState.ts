@@ -42,6 +42,7 @@ export class LichessGameState implements GameState {
 	private movesCount:      number;
 	private opponentName:    string;
 	private opponentRating:  number | undefined;
+	private loaded:          boolean;
 
 	constructor(
 		lichessGame:  LichessGame,
@@ -62,6 +63,7 @@ export class LichessGameState implements GameState {
 		this.movesCount     = 0;
 		this.opponentName   = 'Opponent';
 		this.opponentRating = undefined;
+		this.loaded         = false;
 	}
 
 	public reset(): void {
@@ -75,9 +77,13 @@ export class LichessGameState implements GameState {
 	}
 
 	public async load(): Promise<boolean> {
+		if (this.loaded) {
+			return true;
+		}
 		return new Promise<boolean>((resolve) => {
 			this.lichessGame.onGameFull((full) => {
 				this.handleGameFull(full);
+				this.loaded = true;
 				resolve(true);
 			});
 			this.lichessGame.onGameState((state) => {

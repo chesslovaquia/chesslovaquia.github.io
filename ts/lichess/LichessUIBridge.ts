@@ -4,6 +4,7 @@
 import { w3ShowModal } from '../clvq/utils';
 import { w3HideModal } from '../clvq/utils';
 
+import { ClvqLocalStorage } from '../clvq/ClvqLocalStorage';
 import { ElementIds } from '../clvq/ElementIds';
 
 import { logger } from '../clvq/Logger';
@@ -12,13 +13,21 @@ import { LichessAuth } from './LichessAuth';
 import { LichessGame } from './LichessGame';
 import type { LichessChallenge, LichessGameFull } from './LichessGame';
 
+const StorageKey = {
+	gameId: 'lichess_game_id',
+} as const;
+
 export class LichessUIBridge {
 	private readonly auth: LichessAuth;
+	private readonly storage: ClvqLocalStorage;
 	private _pendingChallengeId: string | null = null;
 	private _activeGameId: string | null = null;
 
-	constructor(auth: LichessAuth) {
-		this.auth = auth;
+	constructor(auth: LichessAuth, storage: ClvqLocalStorage) {
+		this.auth    = auth;
+		this.storage = storage;
+		const stored = storage.getItem(StorageKey.gameId);
+		this._activeGameId = stored !== '' ? stored : null;
 	}
 
 	get pendingChallengeId(): string | null {
@@ -26,6 +35,14 @@ export class LichessUIBridge {
 	}
 
 	get activeGameId(): string | null {
+		return this._activeGameId;
+	}
+
+	public hasActiveGame(): boolean {
+		return this._activeGameId !== null;
+	}
+
+	public getActiveGameId(): string | null {
 		return this._activeGameId;
 	}
 
@@ -56,6 +73,7 @@ export class LichessUIBridge {
 
 		game.onGameStart((gameId: string) => {
 			this._activeGameId = gameId;
+			this.storage.setItem(StorageKey.gameId, gameId);
 			this.hideSeekModal();
 			window.location.assign('/play/');
 			const bar = document.getElementById(ElementIds.gameActionsBar);
@@ -64,6 +82,7 @@ export class LichessUIBridge {
 
 		game.onGameFinish((_gameId: string) => {
 			this._activeGameId = null;
+			this.storage.removeItem(StorageKey.gameId);
 			const bar = document.getElementById(ElementIds.gameActionsBar);
 			if (bar) bar.style.display = 'none';
 		});

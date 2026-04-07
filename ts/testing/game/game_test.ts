@@ -15,10 +15,12 @@ import { ElementIds } from '../../clvq/ElementIds';
 beforeEach(() => {
 	vi.stubGlobal('location', { search: '', pathname: '/play/', href: '', assign: vi.fn() });
 	setupGameTestDOM();
+	localStorage.clear();
 });
 
 afterEach(() => {
 	vi.unstubAllGlobals();
+	localStorage.clear();
 });
 
 describe('game', () => {

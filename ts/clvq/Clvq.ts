@@ -18,6 +18,8 @@ import { LichessAuth    } from '../lichess/LichessAuth';
 import { LichessClient  } from '../lichess/LichessClient';
 import { LichessStream  } from '../lichess/LichessStream';
 import { LichessGame    } from '../lichess/LichessGame';
+import { LichessPlaying } from '../lichess/LichessPlaying';
+import type { NowPlayingGame } from '../lichess/LichessPlaying';
 import { LichessUIBridge } from '../lichess/LichessUIBridge';
 
 import { GameSetup } from '../game/GameSetup';
@@ -36,7 +38,7 @@ export class Clvq {
 		logger.debug('Clvq loaded.');
 		const ls = new ClvqLocalStorage();
 		this.auth     = new LichessAuth(ls);
-		this.bridge   = new LichessUIBridge(this.auth);
+		this.bridge   = new LichessUIBridge(this.auth, ls);
 		this.playMode = new PlayModeStorage(ls);
 		this.lichessGameInst = deps?.lichessGame ?? null;
 		if (this.lichessGameInst) {
@@ -181,6 +183,20 @@ export class Clvq {
 		this.bridge.offerDraw(this.getLichessGame());
 	}
 
+	public lichessResumeGame(gameId: string): void {
+		const ls = new ClvqLocalStorage();
+		ls.setItem('lichess_game_id', gameId);
+		window.location.assign('/play/');
+	}
+
+	public async lichessFetchPlaying(): Promise<void> {
+		if (!this.auth.isLoggedIn()) return;
+		const client  = new LichessClient(this.auth);
+		const playing = new LichessPlaying(client);
+		const games   = await playing.fetchNowPlaying();
+		this.displayPlayingGames(games);
+	}
+
 	public lichessSeekCorrespondence(days: number): void {
 		const game = this.getLichessGame();
 		const unit = days === 1 ? 'day' : 'days';
@@ -221,6 +237,33 @@ export class Clvq {
 		if (el) {
 			el.style.display = 'none';
 		}
+	}
+
+	private displayPlayingGames(games: NowPlayingGame[]): void {
+		const container = document.getElementById(ElementIds.lichessPlayingGames);
+		const list      = document.getElementById(ElementIds.lichessPlayingGamesList);
+		if (!container || !list) return;
+
+		if (games.length === 0) {
+			container.style.display = 'none';
+			return;
+		}
+
+		list.innerHTML = games.map((g) => {
+			const opponent = g.opponent.rating
+				? `${g.opponent.username} (${g.opponent.rating})`
+				: g.opponent.username;
+			const speedLabel = g.days !== undefined ? 'Correspondence' : g.speed;
+			const turnLabel  = g.isMyTurn ? 'Your turn' : 'Waiting';
+			return `<div class="playing-game-entry">
+				<span class="playing-opponent">${opponent}</span>
+				<span class="playing-speed">${speedLabel}</span>
+				<span class="playing-turn">${turnLabel}</span>
+				<button class="btn playing-resume-btn" onclick="Clvq.lichessResumeGame('${g.gameId}')">Resume</button>
+			</div>`;
+		}).join('');
+
+		container.style.display = '';
 	}
 
 	private getLichessGame(): LichessGame {

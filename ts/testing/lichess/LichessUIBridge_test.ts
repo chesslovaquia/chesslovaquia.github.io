@@ -5,8 +5,13 @@ import { vi, test, expect, beforeEach, afterEach, describe } from 'vitest';
 
 import { LichessUIBridge } from '../../lichess/LichessUIBridge';
 import { LichessAuth     } from '../../lichess/LichessAuth';
+import { ClvqLocalStorage } from '../../clvq/ClvqLocalStorage';
 
 import { mockLichessAuth, mockLichessGame, setupLichessTestDOM } from '../../testing/testing';
+
+function makeBridge(auth: LichessAuth): LichessUIBridge {
+	return new LichessUIBridge(auth, new ClvqLocalStorage());
+}
 
 beforeEach(() => {
 	setupLichessTestDOM();
@@ -23,7 +28,7 @@ afterEach(() => {
 describe('LichessUIBridge seek modal', () => {
 	test('showSeekModal sets time control text and adds .active class', () => {
 		const auth = mockLichessAuth();
-		const bridge = new LichessUIBridge(auth);
+		const bridge = makeBridge(auth);
 		bridge.showSeekModal('15+10');
 		expect(document.getElementById('lichessSeekTimeCtrl')?.textContent).toBe('15+10');
 		expect(document.getElementById('lichessSeekModal')?.classList.contains('active')).toBe(true);
@@ -31,7 +36,7 @@ describe('LichessUIBridge seek modal', () => {
 
 	test('hideSeekModal removes .active class', () => {
 		const auth = mockLichessAuth();
-		const bridge = new LichessUIBridge(auth);
+		const bridge = makeBridge(auth);
 		bridge.showSeekModal('3+2');
 		bridge.hideSeekModal();
 		expect(document.getElementById('lichessSeekModal')?.classList.contains('active')).toBe(false);
@@ -39,7 +44,7 @@ describe('LichessUIBridge seek modal', () => {
 
 	test('onGameStart hides seek modal', () => {
 		const auth = mockLichessAuth();
-		const bridge = new LichessUIBridge(auth);
+		const bridge = makeBridge(auth);
 		const { game, cbs } = mockLichessGame();
 		bridge.setup(game);
 		bridge.showSeekModal('10+0');
@@ -51,7 +56,7 @@ describe('LichessUIBridge seek modal', () => {
 
 	test('onGameStart navigates to /play/', () => {
 		const auth = mockLichessAuth();
-		const bridge = new LichessUIBridge(auth);
+		const bridge = makeBridge(auth);
 		const { game, cbs } = mockLichessGame();
 		bridge.setup(game);
 		const assignFn = vi.fn();
@@ -67,7 +72,7 @@ describe('LichessUIBridge seek modal', () => {
 describe('LichessUIBridge challenge callback', () => {
 	test('sets pendingChallengeId', () => {
 		const auth = mockLichessAuth();
-		const bridge = new LichessUIBridge(auth);
+		const bridge = makeBridge(auth);
 		const { game, cbs } = mockLichessGame();
 		bridge.setup(game);
 		cbs.challenge!({
@@ -83,7 +88,7 @@ describe('LichessUIBridge challenge callback', () => {
 
 	test('populates challenger name element', () => {
 		const auth = mockLichessAuth();
-		const bridge = new LichessUIBridge(auth);
+		const bridge = makeBridge(auth);
 		const { game, cbs } = mockLichessGame();
 		bridge.setup(game);
 		cbs.challenge!({
@@ -99,7 +104,7 @@ describe('LichessUIBridge challenge callback', () => {
 
 	test('populates challenger rating element', () => {
 		const auth = mockLichessAuth();
-		const bridge = new LichessUIBridge(auth);
+		const bridge = makeBridge(auth);
 		const { game, cbs } = mockLichessGame();
 		bridge.setup(game);
 		cbs.challenge!({
@@ -115,7 +120,7 @@ describe('LichessUIBridge challenge callback', () => {
 
 	test('formats clock time control as M+I', () => {
 		const auth = mockLichessAuth();
-		const bridge = new LichessUIBridge(auth);
+		const bridge = makeBridge(auth);
 		const { game, cbs } = mockLichessGame();
 		bridge.setup(game);
 		cbs.challenge!({
@@ -131,7 +136,7 @@ describe('LichessUIBridge challenge callback', () => {
 
 	test('falls back to type string for non-clock time control', () => {
 		const auth = mockLichessAuth();
-		const bridge = new LichessUIBridge(auth);
+		const bridge = makeBridge(auth);
 		const { game, cbs } = mockLichessGame();
 		bridge.setup(game);
 		cbs.challenge!({
@@ -151,7 +156,7 @@ describe('LichessUIBridge challenge callback', () => {
 describe('LichessUIBridge game start/finish', () => {
 	test('sets activeGameId on game start', () => {
 		const auth = mockLichessAuth();
-		const bridge = new LichessUIBridge(auth);
+		const bridge = makeBridge(auth);
 		const { game, cbs } = mockLichessGame();
 		bridge.setup(game);
 		cbs.gameStart!('game-abc');
@@ -160,7 +165,7 @@ describe('LichessUIBridge game start/finish', () => {
 
 	test('shows actions bar on game start', () => {
 		const auth = mockLichessAuth();
-		const bridge = new LichessUIBridge(auth);
+		const bridge = makeBridge(auth);
 		const { game, cbs } = mockLichessGame();
 		bridge.setup(game);
 		cbs.gameStart!('game-live');
@@ -169,7 +174,7 @@ describe('LichessUIBridge game start/finish', () => {
 
 	test('clears activeGameId on game finish', () => {
 		const auth = mockLichessAuth();
-		const bridge = new LichessUIBridge(auth);
+		const bridge = makeBridge(auth);
 		const { game, cbs } = mockLichessGame();
 		bridge.setup(game);
 		cbs.gameStart!('game-abc');
@@ -179,7 +184,7 @@ describe('LichessUIBridge game start/finish', () => {
 
 	test('hides actions bar on game finish', () => {
 		const auth = mockLichessAuth();
-		const bridge = new LichessUIBridge(auth);
+		const bridge = makeBridge(auth);
 		const { game, cbs } = mockLichessGame();
 		bridge.setup(game);
 		cbs.gameStart!('game-live');
@@ -193,7 +198,7 @@ describe('LichessUIBridge game start/finish', () => {
 describe('LichessUIBridge gameFull callback', () => {
 	test('sets white player name and rating', () => {
 		const auth = mockLichessAuth();
-		const bridge = new LichessUIBridge(auth);
+		const bridge = makeBridge(auth);
 		const { game, cbs } = mockLichessGame();
 		bridge.setup(game);
 		cbs.gameFull!({
@@ -209,7 +214,7 @@ describe('LichessUIBridge gameFull callback', () => {
 
 	test('sets black player name and rating', () => {
 		const auth = mockLichessAuth();
-		const bridge = new LichessUIBridge(auth);
+		const bridge = makeBridge(auth);
 		const { game, cbs } = mockLichessGame();
 		bridge.setup(game);
 		cbs.gameFull!({
@@ -229,7 +234,7 @@ describe('LichessUIBridge gameFull callback', () => {
 describe('LichessUIBridge.acceptChallenge', () => {
 	test('calls game.acceptChallenge with pending id', () => {
 		const auth = mockLichessAuth();
-		const bridge = new LichessUIBridge(auth);
+		const bridge = makeBridge(auth);
 		const { game, cbs } = mockLichessGame();
 		bridge.setup(game);
 		cbs.challenge!({
@@ -246,7 +251,7 @@ describe('LichessUIBridge.acceptChallenge', () => {
 
 	test('clears pendingChallengeId after accept', () => {
 		const auth = mockLichessAuth();
-		const bridge = new LichessUIBridge(auth);
+		const bridge = makeBridge(auth);
 		const { game, cbs } = mockLichessGame();
 		bridge.setup(game);
 		cbs.challenge!({
@@ -267,7 +272,7 @@ describe('LichessUIBridge.acceptChallenge', () => {
 describe('LichessUIBridge.declineChallenge', () => {
 	test('calls game.declineChallenge with pending id', () => {
 		const auth = mockLichessAuth();
-		const bridge = new LichessUIBridge(auth);
+		const bridge = makeBridge(auth);
 		const { game, cbs } = mockLichessGame();
 		bridge.setup(game);
 		cbs.challenge!({
@@ -284,7 +289,7 @@ describe('LichessUIBridge.declineChallenge', () => {
 
 	test('clears pendingChallengeId after decline', () => {
 		const auth = mockLichessAuth();
-		const bridge = new LichessUIBridge(auth);
+		const bridge = makeBridge(auth);
 		const { game, cbs } = mockLichessGame();
 		bridge.setup(game);
 		cbs.challenge!({
@@ -305,7 +310,7 @@ describe('LichessUIBridge.declineChallenge', () => {
 describe('LichessUIBridge.resign', () => {
 	test('calls game.resign with active game id', () => {
 		const auth = mockLichessAuth();
-		const bridge = new LichessUIBridge(auth);
+		const bridge = makeBridge(auth);
 		const { game, cbs } = mockLichessGame();
 		bridge.setup(game);
 		cbs.gameStart!('game-res');
@@ -317,7 +322,7 @@ describe('LichessUIBridge.resign', () => {
 describe('LichessUIBridge.abort', () => {
 	test('calls game.abort with active game id', () => {
 		const auth = mockLichessAuth();
-		const bridge = new LichessUIBridge(auth);
+		const bridge = makeBridge(auth);
 		const { game, cbs } = mockLichessGame();
 		bridge.setup(game);
 		cbs.gameStart!('game-abt');
@@ -329,7 +334,7 @@ describe('LichessUIBridge.abort', () => {
 describe('LichessUIBridge.offerDraw', () => {
 	test('calls game.offerOrAcceptDraw with active game id', () => {
 		const auth = mockLichessAuth();
-		const bridge = new LichessUIBridge(auth);
+		const bridge = makeBridge(auth);
 		const { game, cbs } = mockLichessGame();
 		bridge.setup(game);
 		cbs.gameStart!('game-drw');
@@ -343,7 +348,7 @@ describe('LichessUIBridge.offerDraw', () => {
 describe('LichessUIBridge.updateUI', () => {
 	test('shows login button when not logged in', () => {
 		const auth = mockLichessAuth(false);
-		const bridge = new LichessUIBridge(auth);
+		const bridge = makeBridge(auth);
 		bridge.updateUI();
 		expect(document.getElementById('lichessLogin')?.style.display).toBe('');
 		expect(document.getElementById('lichessLogout')?.style.display).toBe('none');
@@ -354,7 +359,7 @@ describe('LichessUIBridge.updateUI', () => {
 			isLoggedIn: vi.fn(() => true),
 			getUser:    vi.fn(() => ({ username: 'TestUser', rating: 1500, title: null })),
 		} as unknown as LichessAuth;
-		const bridge = new LichessUIBridge(auth);
+		const bridge = makeBridge(auth);
 		bridge.updateUI();
 		expect(document.getElementById('lichessLogin')?.style.display).toBe('none');
 		expect(document.getElementById('lichessLogout')?.style.display).toBe('');
@@ -365,7 +370,7 @@ describe('LichessUIBridge.updateUI', () => {
 			isLoggedIn: vi.fn(() => true),
 			getUser:    vi.fn(() => ({ username: 'Magnus', rating: 2882, title: null })),
 		} as unknown as LichessAuth;
-		const bridge = new LichessUIBridge(auth);
+		const bridge = makeBridge(auth);
 		bridge.updateUI();
 		expect(document.getElementById('lichessUser')?.textContent).toBe('Magnus (2882)');
 	});
@@ -375,8 +380,62 @@ describe('LichessUIBridge.updateUI', () => {
 			isLoggedIn: vi.fn(() => true),
 			getUser:    vi.fn(() => ({ username: 'Carlsen', rating: 2882, title: 'GM' })),
 		} as unknown as LichessAuth;
-		const bridge = new LichessUIBridge(auth);
+		const bridge = makeBridge(auth);
 		bridge.updateUI();
 		expect(document.getElementById('lichessUser')?.textContent).toBe('GM Carlsen (2882)');
+	});
+});
+
+// --- game ID persistence ---
+
+describe('LichessUIBridge game ID persistence', () => {
+	test('persists game ID to localStorage on gameStart', () => {
+		const auth = mockLichessAuth();
+		const bridge = makeBridge(auth);
+		const { game, cbs } = mockLichessGame();
+		bridge.setup(game);
+		vi.stubGlobal('location', { assign: vi.fn() });
+		cbs.gameStart!('persist-game-1');
+		expect(localStorage.getItem('lichess_game_id')).toBe('persist-game-1');
+		vi.unstubAllGlobals();
+	});
+
+	test('removes game ID from localStorage on gameFinish', () => {
+		const auth = mockLichessAuth();
+		const bridge = makeBridge(auth);
+		const { game, cbs } = mockLichessGame();
+		bridge.setup(game);
+		vi.stubGlobal('location', { assign: vi.fn() });
+		cbs.gameStart!('persist-game-2');
+		vi.unstubAllGlobals();
+		cbs.gameFinish!('persist-game-2');
+		expect(localStorage.getItem('lichess_game_id')).toBeNull();
+	});
+
+	test('restores activeGameId from localStorage on construction', () => {
+		localStorage.setItem('lichess_game_id', 'restored-game-id');
+		const auth = mockLichessAuth();
+		const bridge = makeBridge(auth);
+		expect(bridge.activeGameId).toBe('restored-game-id');
+	});
+
+	test('hasActiveGame returns true when game ID is set', () => {
+		localStorage.setItem('lichess_game_id', 'active-game');
+		const auth = mockLichessAuth();
+		const bridge = makeBridge(auth);
+		expect(bridge.hasActiveGame()).toBe(true);
+	});
+
+	test('hasActiveGame returns false when no game ID', () => {
+		const auth = mockLichessAuth();
+		const bridge = makeBridge(auth);
+		expect(bridge.hasActiveGame()).toBe(false);
+	});
+
+	test('getActiveGameId returns stored game ID', () => {
+		localStorage.setItem('lichess_game_id', 'my-game-id');
+		const auth = mockLichessAuth();
+		const bridge = makeBridge(auth);
+		expect(bridge.getActiveGameId()).toBe('my-game-id');
 	});
 });

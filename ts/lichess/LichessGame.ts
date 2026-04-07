@@ -219,6 +219,10 @@ export class LichessGame {
 		await this.client.post(`/api/board/game/${gameId}/takeback/no`);
 	}
 
+	public async makeMove(gameId: string, uci: string): Promise<void> {
+		await this.client.post(`/api/board/game/${gameId}/move/${uci}`);
+	}
+
 	// --- Stream lifecycle ---
 
 	public startEventStream(): void {

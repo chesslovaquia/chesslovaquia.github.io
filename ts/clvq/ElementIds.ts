@@ -49,6 +49,9 @@ export const ElementIds = {
 	gameAbort:       'gameAbort',
 	gameOfferDraw:   'gameOfferDraw',
 	gamePlayerRating: 'gamePlayerRating',
+	// Lichess playing games panel
+	lichessPlayingGames:     'lichessPlayingGames',
+	lichessPlayingGamesList: 'lichessPlayingGamesList',
 	// System / error
 	clvqInternalError:        'clvqInternalError',
 	clvqInternalErrorMessage: 'clvqInternalErrorMessage',

@@ -251,6 +251,24 @@ describe('LichessGame.declineTakeback', () => {
 	});
 });
 
+// --- makeMove ---
+
+describe('LichessGame.makeMove', () => {
+	test('posts to correct path', async () => {
+		const client = mockClient();
+		const game = newGame(client);
+		await game.makeMove('gid1', 'e2e4');
+		expect(client.post).toHaveBeenCalledWith('/api/board/game/gid1/move/e2e4');
+	});
+
+	test('posts promotion move', async () => {
+		const client = mockClient();
+		const game = newGame(client);
+		await game.makeMove('gid2', 'e7e8q');
+		expect(client.post).toHaveBeenCalledWith('/api/board/game/gid2/move/e7e8q');
+	});
+});
+
 // --- stream lifecycle ---
 
 describe('LichessGame.startEventStream', () => {
