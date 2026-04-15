@@ -8,6 +8,9 @@
 
 - **Keep this file up to date.** Any time you discover a non-obvious pitfall, learn a project convention, or make a structural decision, add it to the relevant section of this file without waiting to be asked.
 - **How to apply:** Treat CLAUDE.md updates as part of the definition of done for every task, the same as running `make test`.
+- **Never run git commands.** The user owns all git operations — commits, branches, tags, pushes, merges, rebases, resets, stashes. Finish tasks at "code written to disk and verified"; do not stage or commit. If the user asks for a commit message, write it as text in the response, do not execute `git commit`. This applies to every task, without exception, even when a commit feels like the natural next step.
+- **Work on whatever branch is checked out.** A full rewrite of the app (Svelte + Vite + TypeScript, tayrax-style) is in progress — see `docs/plan.md`. Branch management (creating, renaming, merging, swapping `main`, archiving) is the user's decision, not the agent's; do not plan around future branch transitions or suggest them unprompted. The rest of this file describes the legacy Hugo-based app that lives in the git history; use it as historical reference, not as a guide for new work.
+- **Ask questions just-in-time, not in a big up-front batch.** When a decision meaningfully shapes the next piece of work and the user is likely to have a preference (tooling choices, naming, data-shape details, UX trade-offs, defer-vs-do-now), pause and ask one question at the moment of acting on it — then wait for the answer before proceeding. Do not batch 5-10 questions at the start of a phase; answers are better when the code around them is concrete, and many up-front questions evaporate by the time they'd matter. Filter: "would the user have a real preference here?" Yes → ask. No → just do it and mention it in the reply so they can push back.
 
 ---
 
