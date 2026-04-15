@@ -1,23 +1,19 @@
 {
   "name": "Chesslovaquia",
-  "short_name": "Chesslo",
-  "description": "One board to play them all.",
-  "start_url": "/?pwa=1",
+  "short_name": "Chesslovaquia",
+  "description": "One board to play them all",
+  "version": "0.1.0",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
-  "background_color": "#1a1a1a",
-  "theme_color": "#000000",
+  "background_color": "#111111",
+  "theme_color": "#111111",
   "icons": [
     {
-      "src": "/clvq-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "/clvq-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "src": "/chesslovaquia.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
     }
   ]
 }

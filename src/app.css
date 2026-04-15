@@ -1,0 +1,39 @@
+/* Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com> */
+/* See LICENSE file. */
+
+:root {
+  color-scheme: dark;
+
+  --clvq-bg: #111111;
+  --clvq-fg: #eeeeee;
+  --clvq-muted: #888888;
+  --clvq-accent-green: #4caf50;
+  --clvq-accent-red: #f44336;
+  --clvq-accent-blue: #2196f3;
+  --clvq-border: #333333;
+  --clvq-surface: #1e1e1e;
+  --clvq-surface-hover: #2a2a2a;
+
+  background: var(--clvq-bg);
+  color: var(--clvq-fg);
+  font-family: system-ui, sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+}
+
+a {
+  color: var(--clvq-accent-blue);
+}
+
+button {
+  cursor: pointer;
+}

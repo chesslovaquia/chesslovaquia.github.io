@@ -7,13 +7,13 @@ if ! test -s "${datadir}/claude.json"; then
 	touch "${datadir}/claude.json"
 fi
 exec docker run -it --rm -u devel \
-	--name clvq-hugo \
-	--hostname hugo.clvq.local \
+	--name clvq-vite \
+	--hostname vite.clvq.local \
 	-e "TERM=${TERM}" \
 	-v "${datadir}/claude:/home/devel/.claude" \
 	-v "${datadir}/claude.json:/home/devel/.claude.json" \
 	-v "${PWD}:/opt/clvq/site" \
 	--workdir /opt/clvq/site \
-	--entrypoint /opt/clvq/site/hugo/devel.sh \
-	-p 127.0.0.1:8045:8045 \
-	clvq/site
+	--entrypoint /usr/bin/npm \
+	-p 127.0.0.1:5173:5173 \
+	clvq/site run dev -- --host

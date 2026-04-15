@@ -13,7 +13,7 @@ ENV HOME=/root
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-ENV APT_INSTALL='bash openssl ca-certificates media-types less wget python3 npm make shellcheck zip unzip git'
+ENV APT_INSTALL='bash openssl ca-certificates media-types less wget python3 npm make git'
 
 RUN apt-get clean \
 	&& apt-get update -yy \
@@ -24,11 +24,6 @@ RUN apt-get clean \
 	&& rm -rf /var/lib/apt/lists/* \
 		/var/cache/apt/archives/*.deb \
 		/var/cache/apt/*cache.bin
-
-RUN mkdir -vp ./hugo
-COPY ./hugo/install.sh ./hugo/install.sh
-COPY ./hugo/VERSION ./hugo/VERSION
-RUN /bin/sh ./hugo/install.sh
 
 ARG DEVEL_UID=1000
 ARG DEVEL_GID=1000
@@ -48,9 +43,6 @@ RUN chmod -v 0755 /usr/local/bin/user-login.sh
 RUN install -v -m 0750 -o devel -g devel -d /opt/clvq
 RUN install -v -m 0750 -o devel -g devel -d /opt/clvq/site
 
-#RUN ln -vsf /home/devel/.local/bin/uvx /usr/local/bin/uvx \
-#	&& ln -vsf /home/devel/.local/bin/uv /usr/local/bin/uv
-
 RUN ln -vsf /home/devel/.local/npm/node_modules/.bin/claude /usr/local/bin/claude
 
 USER devel:devel
@@ -61,10 +53,6 @@ ENV HOME=/home/devel
 
 RUN npm version
 RUN npx --version
-RUN hugo version
-
-#RUN wget -q -O - https://astral.sh/uv/install.sh | sh
-#RUN .local/bin/uv --version
 
 ENV CLVQ_CLAUDE_UPGRADE=2.1.109
 
@@ -73,5 +61,4 @@ RUN install -v -d -m 0750 ${HOME}/.local/npm \
 	&& npm install @anthropic-ai/claude-code
 RUN /usr/local/bin/claude --version
 
-ENV CLVQ_ROOT=http://localhost:8000
 ENTRYPOINT ["/usr/local/bin/user-login.sh"]

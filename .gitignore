@@ -1,7 +1,6 @@
-/public
-/resources
+/dist
 /node_modules
 /coverage
 /docker/data
 
-.hugo_build.lock
+.vite

@@ -6,7 +6,7 @@ docker:
 
 .PHONY: clean
 clean:
-	@rm -rf public resources .hugo_build.lock coverage vendor/tmp
+	@rm -rf dist coverage .vite
 
 .PHONY: distclean
 distclean: clean
@@ -14,39 +14,28 @@ distclean: clean
 
 # container targets
 
-.PHONY: ci-deps
-ci-deps:
-	ts/ci-deps.sh
+.PHONY: ci-check
+ci-check:
+	@npm ci
+	@npm run check
+	@npm run test
 
-.PHONY: all
-all: deps build
+.PHONY: check
+check:
+	@npm run check
 
-.PHONY: deps
-deps:
-	ts/mkdeps.sh
+.PHONY: test
+test:
+	@npm run test
 
 .PHONY: build
 build:
-	hugo/build.sh
-	hugo/post-build.sh
+	@npm run build
 
-.PHONY: check
-check: build
-	shellcheck ./*.sh docker/*.sh hugo/*.sh ts/*.sh vendor/*.sh
-	ts/check.sh
-	@echo "node `node --version`"
-	ts/build-check.sh
-	hugo/check-build.sh
-
-.PHONY: test
-test: check
-	ts/test.sh
-
-.PHONY: vendor
-vendor:
-	./vendor/lila.sh
-	./vendor/fontawesome.sh
+.PHONY: dev
+dev:
+	@npm run dev
 
 .PHONY: upgrade
 upgrade:
-	ts/upgrade.sh
+	@python3 upgrade.py

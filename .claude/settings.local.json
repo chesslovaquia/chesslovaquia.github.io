@@ -52,7 +52,8 @@
       "Bash(find /opt/clvq/site -name *play* -type f)",
       "Bash(find /opt/clvq/site -path */js/game*.js -type f)",
       "Bash(grep -r \"game_ts\\\\|game_setup_ts\" /opt/clvq/site --include=*.toml --include=*.yaml --include=*.yml)",
-      "Bash(grep -r \"LichessUIBridge\\\\|gameStart\\\\|gameFull\" /opt/clvq/site/ts --include=*.ts)"
+      "Bash(grep -r \"LichessUIBridge\\\\|gameStart\\\\|gameFull\" /opt/clvq/site/ts --include=*.ts)",
+      "Bash(npm run *)"
     ]
   }
 }

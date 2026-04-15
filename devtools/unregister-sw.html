@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Unregister SW — Chesslovaquia devtools</title>
+    <style>
+      body { font-family: monospace; background: #111; color: #eee; padding: 2rem; }
+      button { background: #c33; color: #eee; border: none; padding: 0.5rem 1rem; cursor: pointer; font-size: 1rem; }
+      #log { margin-top: 1rem; white-space: pre; }
+    </style>
+  </head>
+  <body>
+    <h1>DevTools: Service Worker</h1>
+    <button id="btn">Unregister all service workers &amp; clear caches</button>
+    <div id="log"></div>
+    <script>
+      const log = document.getElementById('log');
+      document.getElementById('btn').addEventListener('click', async () => {
+        const lines = [];
+        const regs = await navigator.serviceWorker.getRegistrations();
+        for (const reg of regs) {
+          await reg.unregister();
+          lines.push('Unregistered: ' + reg.scope);
+        }
+        const keys = await caches.keys();
+        for (const key of keys) {
+          await caches.delete(key);
+          lines.push('Deleted cache: ' + key);
+        }
+        lines.push(regs.length === 0 && keys.length === 0 ? 'Nothing to clear.' : 'Done.');
+        log.textContent = lines.join('\n');
+      });
+    </script>
+  </body>
+</html>

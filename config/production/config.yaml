@@ -1,4 +1,0 @@
-# production config
-params:
-  debug: false
-  cdn: http://localhost:8000

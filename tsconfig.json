@@ -1,21 +1,22 @@
 {
-  "include": ["./ts"],
-  "exclude": [
-    "public",
-    "node_modules"
-  ],
+  "extends": "@tsconfig/svelte/tsconfig.json",
   "compilerOptions": {
-    /* Visit https://aka.ms/tsconfig to read more about this file */
-    "target": "es2019",
-    "module": "esnext",
-    "moduleResolution": "bundler",
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
+    "target": "ES2022",
+    "useDefineForClassFields": true,
+    "module": "ESNext",
+    "resolveJsonModule": true,
+    "allowJs": false,
+    "checkJs": false,
+    "isolatedModules": true,
+    "moduleDetection": "force",
     "strict": true,
-    "outDir": "./public",
-    "noImplicitAny": false,
-    "noImplicitOverride": true,
-    "declaration": false,
+    "noImplicitAny": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
     "skipLibCheck": true
-  }
+  },
+  "include": ["src/**/*.ts", "src/**/*.svelte"],
+  "exclude": ["src/sw.ts"],
+  "references": [{ "path": "./tsconfig.node.json" }]
 }
