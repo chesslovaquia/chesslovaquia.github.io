@@ -8,6 +8,12 @@ import { readFileSync } from 'fs';
 
 const pkg = JSON.parse(readFileSync(resolve(__dirname, 'package.json'), 'utf-8')) as { version: string };
 
+const _now = new Date();
+const _pad = (n: number, len = 2) => String(n).padStart(len, '0');
+const appBuild =
+  `${_now.getFullYear()}${_pad(_now.getMonth() + 1)}${_pad(_now.getDate())}` +
+  `.${_pad(_now.getHours())}${_pad(_now.getMinutes())}${_pad(_now.getSeconds())}`;
+
 const rawCdn = process.env.CLVQ_CDN ?? 'http://localhost:5173/';
 const cdnUrl = rawCdn.endsWith('/') ? rawCdn : rawCdn + '/';
 
@@ -16,6 +22,7 @@ export default defineConfig({
   plugins: [svelte({ configFile: resolve(__dirname, 'svelte.config.js') })],
   define: {
     __APP_VERSION__: JSON.stringify(pkg.version),
+    __APP_BUILD__: JSON.stringify(appBuild),
   },
   publicDir: resolve(__dirname, 'static'),
   build: {

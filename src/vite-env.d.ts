@@ -5,6 +5,7 @@
 /// <reference types="vite/client" />
 
 declare const __APP_VERSION__: string;
+declare const __APP_BUILD__: string;
 
 // Fallback for Svelte components without a <script lang="ts"> block.
 declare module '*.svelte' {

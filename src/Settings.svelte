@@ -103,6 +103,9 @@
     return 'chess.com';
   }
 
+  const appVersion: string = __APP_VERSION__;
+  const appBuild: string = __APP_BUILD__;
+
   $: otbAccounts = $accounts.filter((a) => a.network === 'otb');
   $: lichessAccounts = $accounts.filter((a) => a.network === 'lichess');
 </script>
@@ -182,6 +185,8 @@
       + Connect lichess account
     </button>
   </section>
+
+  <footer class="version">v{appVersion} · {appBuild}</footer>
 </main>
 
 <style>
@@ -349,5 +354,14 @@
     color: var(--clvq-accent-red);
     font-size: 0.85rem;
     margin: 0.5rem 0 0;
+  }
+
+  .version {
+    text-align: center;
+    color: var(--clvq-muted);
+    font-size: 0.75rem;
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--clvq-border);
   }
 </style>
