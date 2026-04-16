@@ -5,19 +5,12 @@
   export let onChoose: (piece: 'q' | 'r' | 'b' | 'n') => void;
   export let onCancel: () => void;
 
-  const pieces: { role: 'q' | 'r' | 'b' | 'n'; label: string }[] = [
-    { role: 'q', label: 'Queen' },
-    { role: 'r', label: 'Rook' },
-    { role: 'b', label: 'Bishop' },
-    { role: 'n', label: 'Knight' },
+  const pieces: { role: 'q' | 'r' | 'b' | 'n'; cgRole: string; label: string }[] = [
+    { role: 'q', cgRole: 'queen',  label: 'Queen' },
+    { role: 'r', cgRole: 'rook',   label: 'Rook' },
+    { role: 'b', cgRole: 'bishop', label: 'Bishop' },
+    { role: 'n', cgRole: 'knight', label: 'Knight' },
   ];
-
-  // piece image path in static/vendor/piece/cburnett/
-  function pieceImg(role: string): string {
-    const prefix = color === 'white' ? 'w' : 'b';
-    const upper = role.toUpperCase();
-    return `/vendor/piece/cburnett/${prefix}${upper}.svg`;
-  }
 </script>
 
 <div class="overlay" role="none">
@@ -29,9 +22,12 @@
   >
     <p class="title">Promote to:</p>
     <div class="pieces">
-      {#each pieces as { role, label }}
+      {#each pieces as { role, cgRole, label }}
         <button class="piece-btn" on:click={() => onChoose(role)} title={label}>
-          <img src={pieceImg(role)} alt={label} width="60" height="60" />
+          <!-- Use a .cg-wrap wrapper so chessground.cburnett.css selectors apply -->
+          <span class="cg-wrap piece-preview">
+            <piece class="{cgRole} {color}"></piece>
+          </span>
           <span>{label}</span>
         </button>
       {/each}
@@ -89,8 +85,22 @@
     border-color: var(--clvq-accent-green);
   }
 
-  img {
+  .piece-preview {
     display: block;
+    width: 60px;
+    height: 60px;
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  /* piece is absolutely positioned inside .cg-wrap; fill the preview box */
+  :global(.piece-preview piece) {
+    width: 100% !important;
+    height: 100% !important;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-size: cover;
   }
 
   .cancel-btn {

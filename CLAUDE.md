@@ -29,8 +29,8 @@ Current status: **Phase 1 complete** — full OTB play. chess.js + chessground i
 | Language | TypeScript (strict mode) |
 | UI framework | Svelte 4 |
 | Build tool | Vite 5 |
-| Chess logic | chess.js 1.x (Phase 1+) |
-| Board UI | Chessground 9.x (Phase 1+) |
+| Chess logic | chess.js 1.x |
+| Board UI | @lichess-org/chessground 10.x |
 | Styling | Plain CSS + custom properties, dark scheme |
 | App type | PWA (hand-written `sw.js`, no Workbox) |
 | Storage | IndexedDB (accounts, games, game state), localStorage (config, selection) |
@@ -159,7 +159,7 @@ Full data model (Game, GameState) is in `docs/plan.md`.
 - **`accounts` and `selectedAccount`** are module-level Svelte writable singletons — reset them with `.set([])` / `.set(null)` in `beforeEach` in addition to clearing the DB.
 - **Multi-page Vite config** — entry points for `/`, `/play/`, `/history/`, `/settings/` are in `vite.config.ts`. Each has its own `index.html`. The `sw` entry uses `entryFileNames` override so it emits to `dist/sw.js` instead of `dist/assets/sw-[hash].js`.
 - **chess.js 1.x en passant FEN** — after a double pawn push, chess.js only records the en passant square in the FEN if an opposing pawn is actually in position to capture. Don't assert `fen.contains('e3')` after 1.e4 without a black pawn on d4/f4.
-- **chessground CSS** — all three CSS files (`chessground.base.css`, `chessground.brown.css`, `chessground.cburnett.css`) ship inside `node_modules/chessground/assets/`. Import them from npm, not from `static/vendor/`. The `vendor.sh` script only pulls the cburnett SVGs needed by PromotionDialog.
+- **chessground package** — use `@lichess-org/chessground` (current: 10.1.1). The old unscoped `chessground` package is deprecated at 9.2.1. CSS files ship in `node_modules/@lichess-org/chessground/assets/`; import all three in `play.ts`. No `static/vendor/` directory — there is no vendor.sh. PromotionDialog renders pieces using chessground's own CSS classes (`.cg-wrap piece.queen.white`) so no external SVG files are needed.
 - **chessground `Key` and `Dests` types** — chessground is strict about its `Key` type (a union of all 64 square strings). `Map<string, string[]>` is not assignable to `Dests`; cast with `(map as Dests)`.
 - **Svelte 4, Vite 5, Vitest 2** — these three are pinned together. Vitest 3+ requires Vite 6+, which is incompatible with `@sveltejs/vite-plugin-svelte@3.x`. Do not upgrade any of the three independently.
 - **`noUnusedParameters`** — any callback parameter that must be present for API shape but is not used should be prefixed with `_` (e.g. `_event`).

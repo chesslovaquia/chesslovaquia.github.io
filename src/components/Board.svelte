@@ -2,10 +2,10 @@
 <!-- See LICENSE file. -->
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
-  import { Chessground } from 'chessground';
-  import type { Api } from 'chessground/api';
-  import type { Config } from 'chessground/config';
-  import type { Key, Dests } from 'chessground/types';
+  import { Chessground } from '@lichess-org/chessground';
+  import type { Api } from '@lichess-org/chessground/api';
+  import type { Config } from '@lichess-org/chessground/config';
+  import type { Key, Dests } from '@lichess-org/chessground/types';
   import PromotionDialog from './PromotionDialog.svelte';
   import { LS_BOARD_THEME, LS_BOARD_PIECES } from '../lib/config';
 

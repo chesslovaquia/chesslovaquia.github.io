@@ -93,7 +93,7 @@ No slogan. The description above stands on its own.
 | UI framework | Svelte 4 |
 | Build tool | Vite 5 |
 | Chess logic | chess.js 1.x |
-| Board UI | Chessground 9.x (wrapped in a thin Svelte component) |
+| Board UI | @lichess-org/chessground 10.x (wrapped in a thin Svelte component) |
 | Styling | Plain CSS + custom properties, dark color scheme |
 | App type | PWA (Service Worker + manifest) |
 | Storage | IndexedDB (games, accounts, game state), localStorage (config, last-used account) |
