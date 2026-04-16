@@ -8,7 +8,11 @@ import { readFileSync } from 'fs';
 
 const pkg = JSON.parse(readFileSync(resolve(__dirname, 'package.json'), 'utf-8')) as { version: string };
 
+const rawCdn = process.env.CLVQ_CDN ?? 'http://localhost:5173/';
+const cdnUrl = rawCdn.endsWith('/') ? rawCdn : rawCdn + '/';
+
 export default defineConfig({
+  base: cdnUrl,
   plugins: [svelte({ configFile: resolve(__dirname, 'svelte.config.js') })],
   define: {
     __APP_VERSION__: JSON.stringify(pkg.version),
