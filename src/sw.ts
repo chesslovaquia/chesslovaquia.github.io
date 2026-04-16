@@ -9,7 +9,7 @@
 declare const __APP_VERSION__: string;
 
 const CACHE = `clvq-v${__APP_VERSION__}`;
-const SHELL = ['/', '/manifest.json', '/chesslovaquia.svg'];
+const SHELL = ['/', '/manifest.json', '/favicon.ico', '/clvq-192.png', '/clvq-512.png'];
 
 self.addEventListener('install', (event: ExtendableEvent) => {
   event.waitUntil(

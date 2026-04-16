@@ -62,7 +62,7 @@ site/
 │   ├── app.css               # Dark scheme + CSS custom properties
 │   ├── vite-env.d.ts         # __APP_VERSION__ declaration + *.svelte module fallback
 │   └── test-setup.ts         # fake-indexeddb/auto + @testing-library/jest-dom
-├── static/                   # Vite publicDir — manifest.json, chesslovaquia.svg
+├── static/                   # Vite publicDir — manifest.json, favicon.ico, clvq-192.png, clvq-512.png
 ├── index.html, play/, history/, settings/
 ├── devtools/unregister-sw.html
 ├── vite.config.ts
