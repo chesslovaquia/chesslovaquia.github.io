@@ -24,12 +24,11 @@
   let showCustom = false;
   let customInitial = 10;
   let customIncrement = 0;
-  let noClock = false;
   let orientation: 'white' | 'black' = 'white';
 
-  // Reactive index so Svelte can track selectedTc/noClock/showCustom directly in the template.
+  // Reactive index so Svelte can track selectedTc/showCustom directly in the template.
   // Using a helper function hides closure deps from Svelte's compiler — it won't re-evaluate.
-  $: selectedIndex = noClock || showCustom
+  $: selectedIndex = showCustom
     ? -1
     : QUICK_SETUPS.findIndex(
         (s) => s.tc.initialSec === selectedTc?.initialSec && s.tc.incrementSec === selectedTc?.incrementSec,
@@ -37,19 +36,11 @@
 
   function selectPreset(tc: TimeControl) {
     selectedTc = tc;
-    noClock = false;
-    showCustom = false;
-  }
-
-  function selectNoClock() {
-    noClock = true;
-    selectedTc = null;
     showCustom = false;
   }
 
   function selectCustom() {
     showCustom = true;
-    noClock = false;
     selectedTc = { initialSec: customInitial * 60, incrementSec: customIncrement };
   }
 
@@ -62,7 +53,7 @@
     const bId = blackAccount?.id;
     if (!wId || !bId) return;
     dispatch('start', {
-      timeControl: noClock ? null : selectedTc,
+      timeControl: selectedTc,
       whiteAccountId: wId,
       blackAccountId: bId,
       orientation,
@@ -83,16 +74,11 @@
       {/each}
       <button
         class="preset"
-        class:selected={noClock}
-        on:click={selectNoClock}
-      >∞</button>
-      <button
-        class="preset"
-        class:selected={showCustom && !noClock}
+        class:selected={showCustom}
         on:click={selectCustom}
       >Custom</button>
     </div>
-    {#if showCustom && !noClock}
+    {#if showCustom}
       <div class="custom-tc">
         <label>
           <span>Minutes</span>
@@ -156,7 +142,7 @@
 
   .preset-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: 0.4rem;
   }
 
