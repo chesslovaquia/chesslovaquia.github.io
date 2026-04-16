@@ -2,10 +2,11 @@
 <!-- See LICENSE file. -->
 <script lang="ts">
   import QuickSetup from './components/QuickSetup.svelte';
+  import TimeControlPicker from './components/TimeControlPicker.svelte';
   import { accounts, selectedAccount } from './lib/accounts';
   import type { Account } from './lib/accounts';
   import { LS_ACTIVE_GAME } from './lib/config';
-  import type { TimeControl } from './lib/time-control';
+  import type { TimeControl, TimeControlBucket } from './lib/time-control';
   import { QUICK_SETUPS, classifyTimeControl } from './lib/time-control';
   import { LichessClient } from './lib/lichess/client';
   import { seekAndWait, persistActiveGame } from './lib/lichess/play';
@@ -27,24 +28,18 @@
   let seekError = '';
   let seekAbortController: AbortController | null = null;
   let selectedLichessAccount: Account | null = null;
-  let selectedLichessTc: TimeControl | null = null;
-
-  // Lichess-compatible presets: rapid and classical only (Board API restriction)
-  $: lichessPresets = QUICK_SETUPS.filter(({ tc }) => {
-    const bucket = classifyTimeControl(tc);
-    return bucket === 'rapid' || bucket === 'classical';
-  });
+  let selectedLichessTc: TimeControl | null = QUICK_SETUPS[6].tc; // 10+0 — first rapid preset
 
   $: lichessAccounts = $accounts.filter((a) => a.network === 'lichess');
+
+  $: lichessTcInvalid = selectedLichessTc
+    ? (['bullet', 'blitz'] as TimeControlBucket[]).includes(classifyTimeControl(selectedLichessTc))
+    : false;
 
   $: {
     // Auto-select first lichess account when switching to lichess mode
     if (playMode === 'lichess' && !selectedLichessAccount && lichessAccounts.length > 0) {
       selectedLichessAccount = lichessAccounts[0];
-    }
-    // Auto-select first compatible time control
-    if (playMode === 'lichess' && !selectedLichessTc && lichessPresets.length > 0) {
-      selectedLichessTc = lichessPresets[0].tc;
     }
   }
 
@@ -153,16 +148,16 @@
         <!-- Time control -->
         <div class="lich-section">
           <h2>Time Control</h2>
-          <div class="preset-grid">
-            {#each lichessPresets as { label, tc }}
-              <button
-                class="preset"
-                class:selected={selectedLichessTc?.initialSec === tc.initialSec && selectedLichessTc?.incrementSec === tc.incrementSec}
-                on:click={() => { selectedLichessTc = tc; }}
-              >{label}</button>
-            {/each}
-          </div>
+          <TimeControlPicker
+            bind:selected={selectedLichessTc}
+            disabledBuckets={['bullet', 'blitz']}
+            showCustom={true}
+          />
         </div>
+
+        {#if lichessTcInvalid}
+          <p class="tc-warning">Bullet and blitz not available for seeks — choose Rapid or longer.</p>
+        {/if}
 
         {#if seekError}
           <p class="seek-error">{seekError}</p>
@@ -171,7 +166,7 @@
         {#if seekState === 'idle'}
           <button
             class="seek-btn"
-            disabled={!selectedLichessAccount || !selectedLichessTc}
+            disabled={!selectedLichessAccount || !selectedLichessTc || lichessTcInvalid}
             on:click={handleLichessSeek}
           >Seek game</button>
         {:else}
@@ -293,32 +288,6 @@
     color: var(--clvq-accent-green);
   }
 
-  .preset-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0.4rem;
-  }
-
-  .preset {
-    padding: 0.4rem 0.25rem;
-    border: 1px solid var(--clvq-border);
-    border-radius: 4px;
-    background: var(--clvq-surface);
-    color: var(--clvq-fg);
-    cursor: pointer;
-    font-size: 0.85rem;
-    text-align: center;
-  }
-
-  .preset:hover {
-    background: var(--clvq-surface-hover);
-  }
-
-  .preset.selected {
-    border-color: var(--clvq-accent-green);
-    color: var(--clvq-accent-green);
-  }
-
   .seek-btn {
     padding: 0.65rem 1.5rem;
     background: none;
@@ -358,6 +327,12 @@
     padding: 0.35rem 0.75rem;
     cursor: pointer;
     font-size: 0.875rem;
+  }
+
+  .tc-warning {
+    color: var(--clvq-muted);
+    font-size: 0.85rem;
+    margin: 0 0 0.75rem;
   }
 
   .seek-error {

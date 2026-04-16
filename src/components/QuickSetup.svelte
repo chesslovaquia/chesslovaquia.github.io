@@ -5,6 +5,7 @@
   import { QUICK_SETUPS } from '../lib/time-control';
   import type { TimeControl } from '../lib/time-control';
   import AccountPicker from './AccountPicker.svelte';
+  import TimeControlPicker from './TimeControlPicker.svelte';
   import type { Account } from '../lib/accounts';
 
   export let accountList: Account[];
@@ -21,32 +22,7 @@
   }>();
 
   let selectedTc: TimeControl | null = QUICK_SETUPS[4].tc; // 5+0 default
-  let showCustom = false;
-  let customInitial = 10;
-  let customIncrement = 0;
   let orientation: 'white' | 'black' = 'white';
-
-  // Reactive index so Svelte can track selectedTc/showCustom directly in the template.
-  // Using a helper function hides closure deps from Svelte's compiler — it won't re-evaluate.
-  $: selectedIndex = showCustom
-    ? -1
-    : QUICK_SETUPS.findIndex(
-        (s) => s.tc.initialSec === selectedTc?.initialSec && s.tc.incrementSec === selectedTc?.incrementSec,
-      );
-
-  function selectPreset(tc: TimeControl) {
-    selectedTc = tc;
-    showCustom = false;
-  }
-
-  function selectCustom() {
-    showCustom = true;
-    selectedTc = { initialSec: customInitial * 60, incrementSec: customIncrement };
-  }
-
-  $: if (showCustom) {
-    selectedTc = { initialSec: customInitial * 60, incrementSec: customIncrement };
-  }
 
   function start() {
     const wId = whiteAccount?.id;
@@ -64,33 +40,7 @@
 <div class="quick-setup">
   <section class="section">
     <h2>Time Control</h2>
-    <div class="preset-grid">
-      {#each QUICK_SETUPS as { label, tc }, i}
-        <button
-          class="preset"
-          class:selected={i === selectedIndex}
-          on:click={() => selectPreset(tc)}
-        >{label}</button>
-      {/each}
-      <button
-        class="preset"
-        class:selected={showCustom}
-        on:click={selectCustom}
-      >Custom</button>
-    </div>
-    {#if showCustom}
-      <div class="custom-tc">
-        <label>
-          <span>Minutes</span>
-          <input type="number" min="0" max="180" bind:value={customInitial} />
-        </label>
-        <span>+</span>
-        <label>
-          <span>Increment (s)</span>
-          <input type="number" min="0" max="60" bind:value={customIncrement} />
-        </label>
-      </div>
-    {/if}
+    <TimeControlPicker bind:selected={selectedTc} showCustom={true} />
   </section>
 
   <section class="section">
@@ -138,61 +88,6 @@
     text-transform: uppercase;
     letter-spacing: 0.05em;
     margin: 0 0 0.5rem;
-  }
-
-  .preset-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0.4rem;
-  }
-
-  .preset {
-    padding: 0.4rem 0.25rem;
-    border: 1px solid var(--clvq-border);
-    border-radius: 4px;
-    background: var(--clvq-surface);
-    color: var(--clvq-fg);
-    cursor: pointer;
-    font-size: 0.85rem;
-    text-align: center;
-  }
-
-  .preset:hover {
-    background: var(--clvq-surface-hover);
-  }
-
-  .preset.selected {
-    border-color: var(--clvq-accent-green);
-    color: var(--clvq-accent-green);
-  }
-
-  .custom-tc {
-    display: flex;
-    align-items: flex-end;
-    gap: 0.5rem;
-    margin-top: 0.5rem;
-    font-size: 0.85rem;
-  }
-
-  .custom-tc label {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-  }
-
-  .custom-tc span {
-    color: var(--clvq-muted);
-    font-size: 0.8rem;
-  }
-
-  .custom-tc input {
-    width: 5rem;
-    background: var(--clvq-surface);
-    border: 1px solid var(--clvq-border);
-    border-radius: 4px;
-    color: var(--clvq-fg);
-    padding: 0.3rem 0.4rem;
-    font-size: 0.9rem;
   }
 
   .players {
