@@ -90,6 +90,11 @@ export function persistSelection(account: Account | null): void {
   }
 }
 
+/** Return all accounts from the store. */
+export async function getAllAccounts(): Promise<Account[]> {
+  return store.getAll();
+}
+
 /** Clear all accounts (used in tests). */
 export async function clearAll(): Promise<void> {
   await store.clear();

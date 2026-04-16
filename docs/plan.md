@@ -294,7 +294,7 @@ build` produces a working PWA that installs.
 
 **Completed:** 2026-04-16. Scaffold is up: Vite + Svelte + strict TS + Vitest, PWA manifest + hand-written sw.ts, multi-page config (/, /play/, /history/, /settings/), dark CSS custom properties, Account data model + accounts.ts + AccountPicker.svelte, Guest auto-creation, copyright headers, CI workflows.
 
-### Phase 1 — Over-the-Board Play
+### Phase 1 — Over-the-Board Play ✓ Complete
 
 **Goal:** A fully playable local chess app. No network, no lichess.
 
@@ -320,6 +320,8 @@ build` produces a working PWA that installs.
 reload, and appears in the (still-simple) history page afterward.
 Layout works on phone portrait and laptop landscape without visual
 regressions.
+
+**Completed:** 2026-04-16. chess.js + chessground installed; Engine, Clock, Board.svelte, Clock.svelte, MoveList.svelte, PromotionDialog.svelte, GameBar.svelte, QuickSetup.svelte implemented; games.ts + game-state.ts + clock.ts + color.ts + time-control.ts in lib/; Play.svelte responsive grid layout; App.svelte QuickSetup home; History.svelte game list; Settings.svelte OTB account management. vendor.sh pulls cburnett SVGs; chessground CSS imported from npm. 62/62 tests, 0 type errors.
 
 ### Phase 2 — Lichess
 

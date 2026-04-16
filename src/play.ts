@@ -2,6 +2,9 @@
 // See LICENSE file.
 
 import './app.css';
+import 'chessground/assets/chessground.base.css';
+import 'chessground/assets/chessground.brown.css';
+import 'chessground/assets/chessground.cburnett.css';
 import Play from './Play.svelte';
 
 const target = document.getElementById('app');
