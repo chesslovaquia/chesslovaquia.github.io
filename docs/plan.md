@@ -261,7 +261,7 @@ site/
 Built incrementally. Do not start a phase before the previous one is
 complete and stable. Each phase ends with a release tag.
 
-### Phase 0 — Scaffold
+### Phase 0 — Scaffold ✓ Complete
 
 **Goal:** Empty but correct foundation. No game logic yet.
 
@@ -291,6 +291,8 @@ complete and stable. Each phase ends with a release tag.
 **Done when:** app loads, renders an empty home page with an account
 picker listing "Guest", no console errors, all tests pass, `npm run
 build` produces a working PWA that installs.
+
+**Completed:** 2026-04-16. Scaffold is up: Vite + Svelte + strict TS + Vitest, PWA manifest + hand-written sw.ts, multi-page config (/, /play/, /history/, /settings/), dark CSS custom properties, Account data model + accounts.ts + AccountPicker.svelte, Guest auto-creation, copyright headers, CI workflows.
 
 ### Phase 1 — Over-the-Board Play
 

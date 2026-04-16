@@ -6,7 +6,7 @@ docker:
 
 .PHONY: clean
 clean:
-	@rm -rf dist coverage .vite
+	@rm -rf dist coverage .vite __pycache__
 
 .PHONY: distclean
 distclean: clean

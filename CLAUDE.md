@@ -18,7 +18,7 @@
 
 Chesslovaquia is a local-first chess PWA. It does two things: play chess (OTB, lichess, later chess.com) and consolidate game history across platforms. Full rewrite underway using Svelte + Vite + TypeScript (tayrax-style). See `docs/plan.md` for the full product description, data model, UI principles, and phase roadmap.
 
-Current status: **Phase 0 complete** — scaffold is up, no game logic yet.
+Current status: **Phase 1 in progress** — Phase 0 complete. Adding chess.js + chessground, Board.svelte, engine.ts, clock, game persistence, and full OTB play.
 
 ---
 
