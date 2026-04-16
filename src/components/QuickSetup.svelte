@@ -27,6 +27,14 @@
   let noClock = false;
   let orientation: 'white' | 'black' = 'white';
 
+  // Reactive index so Svelte can track selectedTc/noClock/showCustom directly in the template.
+  // Using a helper function hides closure deps from Svelte's compiler — it won't re-evaluate.
+  $: selectedIndex = noClock || showCustom
+    ? -1
+    : QUICK_SETUPS.findIndex(
+        (s) => s.tc.initialSec === selectedTc?.initialSec && s.tc.incrementSec === selectedTc?.incrementSec,
+      );
+
   function selectPreset(tc: TimeControl) {
     selectedTc = tc;
     noClock = false;
@@ -43,11 +51,6 @@
     showCustom = true;
     noClock = false;
     selectedTc = { initialSec: customInitial * 60, incrementSec: customIncrement };
-  }
-
-  function isSelected(tc: TimeControl): boolean {
-    if (!selectedTc || noClock) return false;
-    return selectedTc.initialSec === tc.initialSec && selectedTc.incrementSec === tc.incrementSec;
   }
 
   $: if (showCustom) {
@@ -71,10 +74,10 @@
   <section class="section">
     <h2>Time Control</h2>
     <div class="preset-grid">
-      {#each QUICK_SETUPS as { label, tc }}
+      {#each QUICK_SETUPS as { label, tc }, i}
         <button
           class="preset"
-          class:selected={isSelected(tc)}
+          class:selected={i === selectedIndex}
           on:click={() => selectPreset(tc)}
         >{label}</button>
       {/each}
