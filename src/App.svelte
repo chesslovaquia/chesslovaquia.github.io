@@ -177,19 +177,6 @@
 </main>
 
 <style>
-  main {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 1.5rem 1rem;
-  }
-
-  header {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    margin-bottom: 1.5rem;
-  }
-
   .mode-toggle {
     display: flex;
     gap: 0.4rem;

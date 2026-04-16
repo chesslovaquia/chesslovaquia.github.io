@@ -112,19 +112,6 @@
 </main>
 
 <style>
-  main {
-    max-width: 720px;
-    margin: 0 auto;
-    padding: 1.5rem 1rem;
-  }
-
-  header {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-  }
-
   h1 {
     font-size: 1.4rem;
     font-weight: 600;

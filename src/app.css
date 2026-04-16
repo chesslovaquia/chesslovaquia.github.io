@@ -4,6 +4,8 @@
 :root {
   color-scheme: dark;
 
+  --clvq-page-width: 600px;
+
   --clvq-bg: #111111;
   --clvq-fg: #eeeeee;
   --clvq-muted: #888888;
@@ -36,4 +38,17 @@ a {
 
 button {
   cursor: pointer;
+}
+
+main {
+  max-width: var(--clvq-page-width);
+  margin: 0 auto;
+  padding: 1.5rem 1rem;
+}
+
+main header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
 }
