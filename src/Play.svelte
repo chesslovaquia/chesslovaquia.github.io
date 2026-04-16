@@ -49,14 +49,24 @@
 
   $: boardFen = fenHistory[currentMoveIndex + 1] ?? engine.fen();
 
-  $: turn = engine.turn();
+  // turn and legalDests must be plain `let` — engine is a const object reference
+  // and Svelte cannot track mutations to it via reactive declarations.
+  // syncFromEngine() updates them explicitly after every engine mutation.
+  let turn: 'w' | 'b' = engine.turn();
+  let legalDests: Map<string, string[]> = engine.legalMoves();
+
+  function syncFromEngine() {
+    turn = engine.turn();
+    legalDests = gameStatus === 'in_progress' ? engine.legalMoves() : new Map();
+  }
+
   $: movableColor =
     gameStatus !== 'in_progress' || !atLivePosition
       ? null
       : cgColor(turn);
 
   $: dests = gameStatus === 'in_progress' && atLivePosition
-    ? engine.legalMoves()
+    ? legalDests
     : null;
 
   $: lastMovePair = currentMoveIndex >= 0
@@ -85,7 +95,7 @@
     if (clockInterval) clearInterval(clockInterval);
     clockInterval = setInterval(() => {
       if (!clockState || gameStatus !== 'in_progress') return;
-      const activeSide = cgColor(engine.turn());
+      const activeSide = cgColor(turn);
       const now = Date.now();
       clockState = tick(clockState, activeSide, now);
       if (isExpired(clockState, activeSide)) {
@@ -160,9 +170,9 @@
       lastMovePairs = [...lastMovePairs, [result.from, result.to]];
       moves = engine.history();
       fenHistory = [...fenHistory, engine.fen()];
-      currentMoveIndex = liveIndex;
+      currentMoveIndex = moves.length - 1;   // compute directly; liveIndex not yet recomputed
 
-      // Clock: apply increment to the side that just moved, then start for next side
+      // Clock: apply increment to the side that just moved
       if (clockState && timeControl) {
         const movedSide = result.color === 'w' ? 'white' : 'black';
         clockState = applyIncrement(clockState, movedSide, timeControl);
@@ -172,8 +182,10 @@
       const newStatus = engine.status();
       if (newStatus !== 'in_progress') {
         gameStatus = newStatus;
+        syncFromEngine();
         endGame(null, 'chess');
       } else {
+        syncFromEngine();
         persistGameState().catch((err: unknown) => logger.error('persist state', err));
       }
     } catch (err) {
@@ -186,15 +198,16 @@
   }
 
   async function handleResign() {
-    const side = cgColor(engine.turn());
-    engine.resign(side);
+    engine.resign(cgColor(turn));
     gameStatus = engine.status();
+    syncFromEngine();
     await endGame(null, 'resign');
   }
 
   async function handleAbort() {
     engine.abort();
     gameStatus = engine.status();
+    syncFromEngine();
     stopClock();
     await clearGameState();
   }
@@ -203,6 +216,7 @@
     if (window.confirm('Both players agree to a draw?')) {
       engine.agreeDraw();
       gameStatus = engine.status();
+      syncFromEngine();
       await endGame(null, 'draw');
     }
   }
@@ -224,9 +238,9 @@
         engine.move(san);
       }
       moves = engine.history();
-      // Rebuild fen history and lastMovePairs from PGN replay
       rebuildHistory();
-      currentMoveIndex = liveIndex;
+      currentMoveIndex = moves.length - 1;
+      syncFromEngine();
       if (saved.clock) {
         clockState = { ...saved.clock, lastTickAt: Date.now() };
       } else if (timeControl) {
@@ -253,6 +267,7 @@
     fenHistory = [engine.fen()];
     lastMovePairs = [];
     currentMoveIndex = -1;
+    syncFromEngine();
     if (timeControl) {
       clockState = createClock(timeControl);
       startClock();
@@ -306,7 +321,7 @@
   <div class="top-player">
     <span class="player-name">{topLabel}</span>
     {#if topClockMs !== null}
-      <Clock ms={topClockMs} active={clockActive && cgColor(engine.turn()) === topColor} label="" />
+      <Clock ms={topClockMs} active={clockActive && cgColor(turn) === topColor} label="" />
     {/if}
   </div>
 
@@ -333,7 +348,7 @@
   <div class="bottom-player">
     <span class="player-name">{bottomLabel}</span>
     {#if bottomClockMs !== null}
-      <Clock ms={bottomClockMs} active={clockActive && cgColor(engine.turn()) === bottomColor} label="" />
+      <Clock ms={bottomClockMs} active={clockActive && cgColor(turn) === bottomColor} label="" />
     {/if}
   </div>
 
