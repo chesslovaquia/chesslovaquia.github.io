@@ -22,10 +22,12 @@ ci-check:
 
 .PHONY: check
 check:
-	@npm run check
+	@git ls-files | grep -F .sh | xargs shellcheck
+	@python3 -m py_compile upgrade.py && rm -rf __pycache__
 
 .PHONY: test
 test:
+	@npm run check
 	@npm run test
 
 .PHONY: build

@@ -4,8 +4,7 @@ upgrade.py - Check and update hardcoded software versions in this project.
 
 Targets:
   - Debian forky slim -> Dockerfile
-  - Hugo              -> hugo/VERSION
-  - FontAwesome       -> vendor/fontawesome.sh
+  - Claude Code       -> Dockerfile (CLVQ_CLAUDE_UPGRADE)
 
 Usage:
   python3 upgrade.py
@@ -19,11 +18,8 @@ import urllib.error
 import urllib.request
 from pathlib import Path
 
-WORKSPACE = Path(__file__).parent
-
-DOCKERFILE        = WORKSPACE / "Dockerfile"
-HUGO_VERSION_FILE = WORKSPACE / "hugo" / "VERSION"
-FONTAWESOME_SH    = WORKSPACE / "vendor" / "fontawesome.sh"
+WORKSPACE  = Path(__file__).parent
+DOCKERFILE = WORKSPACE / "Dockerfile"
 
 
 # ---------------------------------------------------------------------------
@@ -64,30 +60,10 @@ def get_latest_debian_forky_slim():
     return candidates[0][1]  # e.g. "forky-20260223-slim"
 
 
-def get_latest_hugo():
-    """Return the latest Hugo release version from GitHub."""
-    data = fetch_json(
-        "https://api.github.com/repos/gohugoio/hugo/releases/latest",
-        headers={"Accept": "application/vnd.github+json"},
-    )
-    tag = data["tag_name"]  # e.g. "v0.150.0"
-    return tag.lstrip("v")
-
-
 def get_latest_claude_code():
     """Return the latest @anthropic-ai/claude-code version from the npm registry."""
     data = fetch_json("https://registry.npmjs.org/@anthropic-ai/claude-code/latest")
     return data["version"]  # e.g. "1.2.3"
-
-
-def get_latest_fontawesome():
-    """Return the latest Font Awesome release version from GitHub."""
-    data = fetch_json(
-        "https://api.github.com/repos/FortAwesome/Font-Awesome/releases/latest",
-        headers={"Accept": "application/vnd.github+json"},
-    )
-    tag = data["tag_name"]  # e.g. "7.0.1" or "v7.0.1"
-    return tag.lstrip("v")
 
 
 # ---------------------------------------------------------------------------
@@ -149,32 +125,6 @@ def run_debian_forky():
     return changed
 
 
-def run_hugo():
-    print("[hugo]")
-    current = HUGO_VERSION_FILE.read_text().strip()
-    latest  = get_latest_hugo()
-    if current == latest:
-        print(f"  ok        {current}")
-        return False
-    print(f"  outdated  {current} -> {latest}")
-    HUGO_VERSION_FILE.write_text(latest + "\n")
-    print(f"  updated   {HUGO_VERSION_FILE.relative_to(WORKSPACE)}")
-    return True
-
-
-def run_fontawesome():
-    print("[fontawesome]")
-    current = read_current(FONTAWESOME_SH, r"fa_version='([^']+)'")
-    latest  = get_latest_fontawesome()
-    # fa_version appears in the variable assignment and hardcoded in the URL path
-    return check(
-        "fontawesome", current, latest,
-        FONTAWESOME_SH,
-        r"fa_version='[^']+'",
-        f"fa_version='{latest}'",
-    )
-
-
 def run_claude_code():
     print("[claude-code]")
     current = read_current(DOCKERFILE, r"ENV CLVQ_CLAUDE_UPGRADE=(\S+)")
@@ -193,8 +143,6 @@ def run_claude_code():
 
 CHECKS = [
     run_debian_forky,
-    run_hugo,
-    run_fontawesome,
     run_claude_code,
 ]
 

@@ -1,9 +1,9 @@
 FROM debian:forky-20260406-slim
 
 LABEL maintainer="Jeremías Casteglione <jrmsdev@gmail.com>"
-LABEL version="260407"
+LABEL version="260415"
 
-ENV CLVQ_UPGRADE=260407
+ENV CLVQ_UPGRADE=260415
 
 USER root:root
 WORKDIR /root
@@ -54,11 +54,12 @@ ENV HOME=/home/devel
 RUN npm version
 RUN npx --version
 
-ENV CLVQ_CLAUDE_UPGRADE=2.1.109
+ENV CLVQ_CLAUDE_UPGRADE=2.1.110
 
 RUN install -v -d -m 0750 ${HOME}/.local/npm \
 	&& cd ${HOME}/.local/npm \
 	&& npm install @anthropic-ai/claude-code
+
 RUN /usr/local/bin/claude --version
 
 ENTRYPOINT ["/usr/local/bin/user-login.sh"]

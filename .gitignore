@@ -4,3 +4,4 @@
 /docker/data
 
 .vite
+__pycache__
