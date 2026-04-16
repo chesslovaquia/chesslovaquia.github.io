@@ -74,9 +74,7 @@ site/
 ├── Dockerfile
 ├── docker/
 └── docs/
-    ├── plan.md               # Full rewrite plan and phase roadmap
-    ├── lichess.md            # Lichess API reference (Phase 2)
-    └── lichess-game.md       # Lichess reconnect reference (Phase 2)
+    └── plan.md               # Full rewrite plan and phase roadmap
 ```
 
 ---
