@@ -221,7 +221,7 @@ site/
 │   │   │   ├── auth.ts            # OAuth PKCE, multi-account
 │   │   │   ├── client.ts          # HTTP client, token per account
 │   │   │   ├── stream.ts          # NDJSON reader w/ reconnect
-│   │   │   ├── play.ts            # Seek, challenge, live game
+│   │   │   ├── play.ts            # Seek, live game
 │   │   │   └── history.ts         # Archive fetch
 │   │   ├── chesscom/              # Phase 3
 │   │   │   ├── client.ts          # Public archives API
@@ -325,7 +325,7 @@ regressions.
 
 ### Phase 2 — Lichess
 
-**Goal:** Play on lichess, multiple accounts supported.
+**Goal:** Play on lichess via random seek, multiple accounts supported.
 
 - `lichess/auth.ts` — OAuth PKCE, token per account. Uses lichess's
   **public OAuth client mode**: `client_id` is a self-chosen string
@@ -335,9 +335,8 @@ regressions.
   — works in dev (`localhost:5173`), preview (`localhost:4173`), and
   production without configuration. PKCE (`crypto.getRandomValues` +
   `crypto.subtle.digest('SHA-256', ...)`) handles the security side
-  entirely client-side. Scope stays minimal (`board:play`; add
-  `challenge:read challenge:write` only if/when needed). The logic in
-  current `ts/lichess/LichessAuth.ts` is a good reference for the
+  entirely client-side. Scope stays minimal (`board:play`). The logic
+  in current `ts/lichess/LichessAuth.ts` is a good reference for the
   PKCE/callback mechanics — port verbatim to Svelte, don't redesign.
   **Multi-account storage:** token + user info live in the `Account`
   record (IndexedDB), not in singleton localStorage keys. The
@@ -351,26 +350,30 @@ regressions.
   non-fatal (local record is gone, user can revoke at lichess.org if
   they care). No paste-token fallback.
 - `lichess/client.ts` — HTTP client, bearer token injected per call
-  based on active account, 429 handling with backoff.
+  based on active account, 429 handling with one retry.
 - `lichess/stream.ts` — NDJSON stream reader with exponential-backoff
   reconnect (capped at 30s, reconnect counter reset only after ≥10s
-  of stable connection — same guardrail tayrax uses for its
-  WebSockets).
-- `lichess/play.ts` — seek (incl. correspondence), challenge, live
-  game streaming, resign, draw, takeback, move send.
-- Reconnect: active lichess game ID + account ID persisted in
-  localStorage. On reload of `/play/`, if found and that account is
-  still logged in, rejoin the game; otherwise clear and fall back.
+  of stable connection).
+- `lichess/play.ts` — seek (random opponent only), live game streaming,
+  resign, abort, move send. Challenges are out of scope — not planned.
+- Reconnect: active lichess game ID + account ID + color persisted in
+  localStorage (`clvq.lichess.active`). On reload of `/play/`, if found
+  and that account is still logged in, rejoin the game; otherwise clear
+  and fall back to OTB flow.
 - `lichess/history.ts` — import finished games from
-  `/api/games/user/{username}` per-account. Games land in `games.ts`
-  with `source: 'lichess'`.
-- Home quick-setup gains a "play on lichess" toggle; the account
-  picker filters to lichess accounts when on.
-- Challenge flow UI: pick opponent (friend username or random).
+  `/api/games/user/{username}` per-account, PGN format. Games land in
+  `games.ts` with `source: 'lichess'`. Opponent accounts stored as
+  pseudo-IDs (`lichess:<handle>`). Idempotent.
+- Home quick-setup gains a "Play on lichess" mode toggle; filters to
+  lichess accounts and rapid/classical time controls only (Board API
+  restriction — no bullet/blitz).
+- No challenges. No draw negotiation in Phase 2. No correspondence.
 
 **Done when:** a user can add two lichess accounts, play a game as
-either one, reconnect after a reload, and see both accounts' full
-imported history in one combined list.
+either one via random seek, reconnect after a reload, and see both
+accounts' full imported history in one combined list.
+
+**Completed:** 2026-04-16. OAuth PKCE multi-account (`lichess/auth.ts`); HTTP client with 429 retry (`lichess/client.ts`); NDJSON reconnecting stream with exponential backoff (`lichess/stream.ts`); seek + live game stream + resign/abort + active-game reconnect (`lichess/play.ts`); PGN archive import with idempotency (`lichess/history.ts`). Home page has OTB/lichess mode toggle, filters to rapid/classical presets. Settings handles OAuth callback, per-account history sync. Play.svelte extended for lichess mode: stream-driven opponent moves, server-authoritative clocks, board locked on opponent's turn. Challenges removed from scope entirely. 109/109 tests, 0 type errors.
 
 ### Phase 3 — Chess.com (Import Only)
 

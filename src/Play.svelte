@@ -18,6 +18,20 @@
   import { LS_ACTIVE_GAME } from './lib/config';
   import type { Account } from './lib/accounts';
   import { logger } from './lib/logger';
+  import { LichessClient } from './lib/lichess/client';
+  import {
+    getActiveGame,
+    clearActiveGame,
+    persistActiveGame,
+    streamGame,
+    makeMove as lichessMakeMove,
+    resign as lichessResign,
+    abort as lichessAbort,
+    parseUci,
+    toUci,
+    isTerminalStatus,
+  } from './lib/lichess/play';
+  import type { LichessGameFull, LichessGameStateEvent, LichessPlayer } from './lib/lichess/play';
 
   interface ActiveGameConfig {
     whiteAccountId: string;
@@ -35,23 +49,34 @@
   let clockState: ClockState | null = null;
   let moves: string[] = [];
   let fenHistory: string[] = [engine.fen()];
-  let currentMoveIndex = -1;   // -1 = before game start
+  let currentMoveIndex = -1;
   let gameStatus: GameStatus = 'in_progress';
 
-  // Account display names (loaded on mount)
+  // Account display names
   let accounts = new Map<string, Account>();
 
   // Clock interval handle
   let clockInterval: ReturnType<typeof setInterval> | null = null;
 
+  // --- Lichess mode ---
+  let lichessMode = false;
+  let lichessClient: LichessClient | null = null;
+  let lichessGameId = '';
+  /** Our color in a lichess game. */
+  let playerColor: 'white' | 'black' = 'white';
+  /** Opponent info from gameFull. */
+  let opponent: LichessPlayer | null = null;
+  /** Space-separated UCI moves as received from the lichess game stream. */
+  let lichessUciMoves: string[] = [];
+  /** Cancel function for the game stream. */
+  let cancelStream: (() => void) | null = null;
+  /** True while we're waiting for the gameFull event on reconnect. */
+  let lichessConnecting = true;
+
   $: liveIndex = moves.length - 1;
   $: atLivePosition = currentMoveIndex === liveIndex;
-
   $: boardFen = fenHistory[currentMoveIndex + 1] ?? engine.fen();
 
-  // turn and legalDests must be plain `let` — engine is a const object reference
-  // and Svelte cannot track mutations to it via reactive declarations.
-  // syncFromEngine() updates them explicitly after every engine mutation.
   let turn: 'w' | 'b' = engine.turn();
   let legalDests: Map<string, string[]> = engine.legalMoves();
 
@@ -60,21 +85,19 @@
     legalDests = gameStatus === 'in_progress' ? engine.legalMoves() : new Map();
   }
 
-  $: movableColor =
-    gameStatus !== 'in_progress' || !atLivePosition
-      ? null
-      : cgColor(turn);
+  // In lichess mode, only allow moving our own pieces on our turn.
+  $: movableColor = (() => {
+    if (gameStatus !== 'in_progress' || !atLivePosition) return null;
+    if (lichessMode) {
+      return cgColor(turn) === playerColor ? playerColor : null;
+    }
+    return cgColor(turn);
+  })();
 
-  $: dests = gameStatus === 'in_progress' && atLivePosition
-    ? legalDests
-    : null;
+  $: dests = gameStatus === 'in_progress' && atLivePosition ? legalDests : null;
 
   $: lastMovePair = currentMoveIndex >= 0
-    ? ((): [string, string] | null => {
-        // Get last move as [from, to] from verbose history at this index.
-        // We track this separately.
-        return lastMovePairs[currentMoveIndex] ?? null;
-      })()
+    ? (lastMovePairs[currentMoveIndex] ?? null)
     : null;
 
   let lastMovePairs: Array<[string, string]> = [];
@@ -83,12 +106,28 @@
   $: bottomColor = orientation;
   $: topAccountId = topColor === 'white' ? whiteAccountId : blackAccountId;
   $: bottomAccountId = bottomColor === 'white' ? whiteAccountId : blackAccountId;
-  $: topLabel = accounts.get(topAccountId)?.displayName ?? topColor;
-  $: bottomLabel = accounts.get(bottomAccountId)?.displayName ?? bottomColor;
+
+  // In lichess mode, show opponent's name from the game stream for the top player.
+  $: topLabel = (() => {
+    if (lichessMode && opponent) {
+      const opponentIsTop = topColor !== playerColor;
+      if (opponentIsTop) return opponent.rating ? `${opponent.name} (${opponent.rating})` : opponent.name;
+    }
+    return accounts.get(topAccountId)?.displayName ?? topColor;
+  })();
+  $: bottomLabel = (() => {
+    if (lichessMode) {
+      const account = accounts.get(bottomAccountId);
+      return account?.displayName ?? bottomColor;
+    }
+    return accounts.get(bottomAccountId)?.displayName ?? bottomColor;
+  })();
 
   $: topClockMs = clockState ? (topColor === 'white' ? clockState.white : clockState.black) : null;
   $: bottomClockMs = clockState ? (bottomColor === 'white' ? clockState.white : clockState.black) : null;
   $: clockActive = gameStatus === 'in_progress';
+
+  // --- Clock ---
 
   function startClock() {
     if (!timeControl || !clockState) return;
@@ -102,7 +141,10 @@
         clockState = activeSide === 'white'
           ? { ...clockState, white: 0 }
           : { ...clockState, black: 0 };
-        endGame(activeSide === 'white' ? 'black' : 'white', 'flag');
+        if (!lichessMode) {
+          // Local flag only in OTB mode; lichess manages time in online mode
+          endGame(activeSide === 'white' ? 'black' : 'white', 'flag');
+        }
       }
     }, 100);
   }
@@ -116,25 +158,24 @@
 
   function endGame(winner: 'white' | 'black' | null, _reason: string) {
     stopClock();
-    if (winner === null) {
-      // draw — status set by caller
-    } else if (_reason === 'flag') {
-      // The side that flagged lost
+    if (winner !== null && _reason === 'flag') {
       const loser = winner === 'white' ? 'black' : 'white';
       engine.resign(loser);
     }
     gameStatus = engine.status();
-    persistAndSaveGame();
+    if (!lichessMode) {
+      persistAndSaveGame().catch((err: unknown) => logger.error('persist game', err));
+    }
   }
 
   async function persistAndSaveGame() {
     await clearGameState();
     const result = engine.result();
-    if (result === '*') return; // aborted — don't save
+    if (result === '*') return;
     await saveGame({
       id: crypto.randomUUID(),
-      source: 'otb',
-      sourceGameId: null,
+      source: lichessMode ? 'lichess' : 'otb',
+      sourceGameId: lichessMode ? lichessGameId : null,
       whiteAccountId,
       blackAccountId,
       pgn: engine.pgn(),
@@ -161,6 +202,8 @@
     });
   }
 
+  // --- Move handling ---
+
   function handleMove(orig: string, dest: string, promotion?: string) {
     if (gameStatus !== 'in_progress') return;
     try {
@@ -170,13 +213,21 @@
       lastMovePairs = [...lastMovePairs, [result.from, result.to]];
       moves = engine.history();
       fenHistory = [...fenHistory, engine.fen()];
-      currentMoveIndex = moves.length - 1;   // compute directly; liveIndex not yet recomputed
+      currentMoveIndex = moves.length - 1;
 
       // Clock: apply increment to the side that just moved
-      if (clockState && timeControl) {
+      if (clockState && timeControl && !lichessMode) {
         const movedSide = result.color === 'w' ? 'white' : 'black';
         clockState = applyIncrement(clockState, movedSide, timeControl);
         clockState = { ...clockState, lastTickAt: Date.now() };
+      }
+
+      if (lichessMode && lichessClient) {
+        const uci = toUci(result.from, result.to, result.promotion);
+        lichessUciMoves = [...lichessUciMoves, uci];
+        lichessMakeMove(lichessClient, lichessGameId, uci).catch((err: unknown) =>
+          logger.error('lichess make move', err)
+        );
       }
 
       const newStatus = engine.status();
@@ -186,33 +237,143 @@
         endGame(null, 'chess');
       } else {
         syncFromEngine();
-        persistGameState().catch((err: unknown) => logger.error('persist state', err));
+        if (!lichessMode) {
+          persistGameState().catch((err: unknown) => logger.error('persist state', err));
+        }
       }
     } catch (err) {
       logger.error('illegal move', err);
     }
   }
 
+  // --- Lichess game stream handlers ---
+
+  function handleGameFull(event: LichessGameFull) {
+    lichessConnecting = false;
+
+    // Derive our account placement (white or black)
+    const savedActive = getActiveGame();
+    if (savedActive) {
+      playerColor = savedActive.color;
+    } else {
+      playerColor = 'white'; // fallback
+    }
+    orientation = playerColor;
+
+    // Set account IDs for display / save
+    const ourAccountId = accounts.size > 0
+      ? [...accounts.values()].find((a) => a.network === 'lichess')?.id ?? ''
+      : '';
+    if (playerColor === 'white') {
+      whiteAccountId = ourAccountId;
+      blackAccountId = `lichess:${event.black.name}`;
+      opponent = event.black;
+    } else {
+      whiteAccountId = `lichess:${event.white.name}`;
+      blackAccountId = ourAccountId;
+      opponent = event.white;
+    }
+
+    // Set time control from game clock
+    if (event.clock) {
+      timeControl = {
+        initialSec: Math.round(event.clock.initial / 1000),
+        incrementSec: Math.round(event.clock.increment / 1000),
+      };
+    }
+
+    // Replay all moves from the game state
+    handleGameState(event.state);
+  }
+
+  function handleGameState(event: LichessGameStateEvent) {
+    const uciList = event.moves ? event.moves.split(' ') : [];
+
+    // Apply any moves not yet in our engine
+    const newUci = uciList.slice(lichessUciMoves.length);
+    for (const uci of newUci) {
+      try {
+        const parsed = parseUci(uci);
+        const result = engine.move(parsed);
+        lastMovePairs = [...lastMovePairs, [result.from, result.to]];
+        fenHistory = [...fenHistory, engine.fen()];
+      } catch (err) {
+        logger.error('lichess apply move', uci, err);
+      }
+    }
+    if (newUci.length > 0) {
+      lichessUciMoves = uciList;
+      moves = engine.history();
+      currentMoveIndex = moves.length - 1;
+      syncFromEngine();
+    }
+
+    // Sync server-authoritative clock
+    if (event.wc !== undefined && event.bc !== undefined) {
+      clockState = { white: event.wc, black: event.bc, lastTickAt: Date.now() };
+      if (gameStatus === 'in_progress' && timeControl) startClock();
+    }
+
+    // Handle terminal status
+    if (isTerminalStatus(event.status)) {
+      stopClock();
+      gameStatus = engine.status();
+      if (gameStatus === 'in_progress') {
+        // Lichess ended the game but our local engine doesn't reflect it yet.
+        // Force a resigned status based on server winner.
+        if (event.winner) {
+          engine.resign(event.winner === 'white' ? 'black' : 'white');
+        } else {
+          engine.agreeDraw();
+        }
+        gameStatus = engine.status();
+      }
+      syncFromEngine();
+      clearActiveGame();
+      persistAndSaveGame().catch((err: unknown) => logger.error('persist lichess game', err));
+    }
+  }
+
+  // --- Game actions ---
+
   function handleNavigate(index: number) {
     currentMoveIndex = Math.max(-1, Math.min(index, liveIndex));
   }
 
   async function handleResign() {
-    engine.resign(cgColor(turn));
-    gameStatus = engine.status();
-    syncFromEngine();
-    await endGame(null, 'resign');
+    if (lichessMode && lichessClient) {
+      try {
+        await lichessResign(lichessClient, lichessGameId);
+        // Stream will deliver the terminal gameState — don't update local state here
+      } catch (err) {
+        logger.error('lichess resign', err);
+      }
+    } else {
+      engine.resign(cgColor(turn));
+      gameStatus = engine.status();
+      syncFromEngine();
+      await endGame(null, 'resign');
+    }
   }
 
   async function handleAbort() {
-    engine.abort();
-    gameStatus = engine.status();
-    syncFromEngine();
-    stopClock();
-    await clearGameState();
+    if (lichessMode && lichessClient) {
+      try {
+        await lichessAbort(lichessClient, lichessGameId);
+      } catch (err) {
+        logger.error('lichess abort', err);
+      }
+    } else {
+      engine.abort();
+      gameStatus = engine.status();
+      syncFromEngine();
+      stopClock();
+      await clearGameState();
+    }
   }
 
   async function handleOfferDraw() {
+    if (lichessMode) return; // draw negotiation not yet implemented for online games
     if (window.confirm('Both players agree to a draw?')) {
       engine.agreeDraw();
       gameStatus = engine.status();
@@ -222,11 +383,60 @@
   }
 
   function handleNewGame() {
+    if (lichessMode) {
+      clearActiveGame();
+    }
     window.location.href = '/';
   }
 
+  // --- Load / init ---
+
+  function rebuildHistory() {
+    const tmp = new Engine();
+    fenHistory = [tmp.fen()];
+    lastMovePairs = [];
+    for (const san of moves) {
+      const m = tmp.move(san);
+      fenHistory = [...fenHistory, tmp.fen()];
+      lastMovePairs = [...lastMovePairs, [m.from, m.to]];
+    }
+  }
+
   async function loadGame() {
-    // Try to restore in-progress game
+    // Check for active lichess game first
+    const active = getActiveGame();
+    if (active) {
+      const account = [...accounts.values()].find((a) => a.id === active.accountId);
+      if (account?.credentials?.accessToken) {
+        lichessMode = true;
+        lichessGameId = active.gameId;
+        playerColor = active.color;
+        orientation = playerColor;
+        lichessClient = new LichessClient(account.credentials.accessToken);
+
+        // Persist again to keep the active game alive (handles page refreshes)
+        persistActiveGame(active);
+
+        cancelStream = streamGame(
+          lichessClient,
+          lichessGameId,
+          (e: LichessGameFull | LichessGameStateEvent) => {
+            if (e.type === 'gameFull') {
+              handleGameFull(e as LichessGameFull);
+            } else if (e.type === 'gameState') {
+              handleGameState(e as LichessGameStateEvent);
+            }
+          },
+          (err: unknown) => logger.error('game stream error', err)
+        );
+        return;
+      } else {
+        // Active game found but account missing/no credentials — clear and fall through to OTB
+        clearActiveGame();
+      }
+    }
+
+    // Try to restore in-progress OTB game
     const saved = await loadGameState();
     if (saved) {
       orientation = saved.orientation;
@@ -250,7 +460,7 @@
       return;
     }
 
-    // Fresh game from config
+    // Fresh OTB game from config
     const raw = localStorage.getItem(LS_ACTIVE_GAME);
     if (!raw) {
       window.location.href = '/';
@@ -274,17 +484,6 @@
     }
   }
 
-  function rebuildHistory() {
-    const tmp = new Engine();
-    fenHistory = [tmp.fen()];
-    lastMovePairs = [];
-    for (const san of moves) {
-      const m = tmp.move(san);
-      fenHistory = [...fenHistory, tmp.fen()];
-      lastMovePairs = [...lastMovePairs, [m.from, m.to]];
-    }
-  }
-
   async function loadAccounts() {
     const { getAllAccounts } = await import('./lib/accounts');
     const all = await getAllAccounts();
@@ -298,6 +497,7 @@
 
   onDestroy(() => {
     stopClock();
+    cancelStream?.();
   });
 
   function resultLabel(status: GameStatus): string {
@@ -327,6 +527,9 @@
 
   <!-- Board -->
   <div class="board-area">
+    {#if lichessMode && lichessConnecting}
+      <div class="connecting-overlay">Connecting to lichess…</div>
+    {/if}
     <Board
       fen={boardFen}
       {orientation}
@@ -479,5 +682,18 @@
     cursor: pointer;
     font-size: 0.85rem;
     white-space: nowrap;
+  }
+
+  .connecting-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+    z-index: 10;
+    border-radius: 4px;
   }
 </style>

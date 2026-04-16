@@ -12,3 +12,8 @@ export const LS_SELECTED_ACCOUNT = 'clvq.selectedAccount';
 export const LS_ACTIVE_GAME = 'clvq.activeGame';
 export const LS_BOARD_THEME = 'clvq.board.theme';
 export const LS_BOARD_PIECES = 'clvq.board.pieces';
+
+/** Lichess OAuth PKCE — transient verifier key prefix (appended with pending auth ID). */
+export const LS_LICHESS_PENDING_PREFIX = 'clvq.lichess.pending.';
+/** Lichess active game — JSON-serialised { gameId, accountId, color } for reconnect. */
+export const LS_LICHESS_ACTIVE = 'clvq.lichess.active';
