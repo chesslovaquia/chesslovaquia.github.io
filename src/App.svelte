@@ -1,6 +1,7 @@
 <!-- Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com> -->
 <!-- See LICENSE file. -->
 <script lang="ts">
+  import NavMenu from './components/NavMenu.svelte';
   import QuickSetup from './components/QuickSetup.svelte';
   import TimeControlPicker from './components/TimeControlPicker.svelte';
   import { accounts, selectedAccount } from './lib/accounts';
@@ -90,26 +91,20 @@
 
 <main>
   <header>
-    <h1>Chesslovaquia</h1>
-    <nav>
-      <a href="/history/">History</a>
-      <a href="/settings/">Settings</a>
-    </nav>
+    <NavMenu />
+    <div class="mode-toggle">
+      <button
+        class="mode-btn"
+        class:active={playMode === 'otb'}
+        on:click={() => { playMode = 'otb'; }}
+      >Over the board</button>
+      <button
+        class="mode-btn"
+        class:active={playMode === 'lichess'}
+        on:click={() => { playMode = 'lichess'; }}
+      >Play on lichess</button>
+    </div>
   </header>
-
-  <!-- Play mode toggle -->
-  <div class="mode-toggle">
-    <button
-      class="mode-btn"
-      class:active={playMode === 'otb'}
-      on:click={() => { playMode = 'otb'; }}
-    >Over the board</button>
-    <button
-      class="mode-btn"
-      class:active={playMode === 'lichess'}
-      on:click={() => { playMode = 'lichess'; }}
-    >Play on lichess</button>
-  </div>
 
   {#if playMode === 'otb'}
     <section class="setup-section">
@@ -191,35 +186,13 @@
   header {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    gap: 0.75rem;
     margin-bottom: 1.5rem;
-  }
-
-  h1 {
-    font-size: 1.4rem;
-    font-weight: 600;
-    margin: 0;
-  }
-
-  nav {
-    display: flex;
-    gap: 1rem;
-    font-size: 0.9rem;
-  }
-
-  nav a {
-    color: var(--clvq-muted);
-    text-decoration: none;
-  }
-
-  nav a:hover {
-    color: var(--clvq-fg);
   }
 
   .mode-toggle {
     display: flex;
     gap: 0.4rem;
-    margin-bottom: 1.5rem;
   }
 
   .mode-btn {

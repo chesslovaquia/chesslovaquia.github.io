@@ -2,6 +2,7 @@
 <!-- See LICENSE file. -->
 <script lang="ts">
   import { onMount } from 'svelte';
+  import NavMenu from './components/NavMenu.svelte';
   import { getAllGames } from './lib/games';
   import type { Game } from './lib/games';
   import { getAllAccounts } from './lib/accounts';
@@ -62,7 +63,7 @@
 
 <main>
   <header>
-    <a href="/" class="back">← Home</a>
+    <NavMenu />
     <h1>History</h1>
   </header>
 
@@ -128,12 +129,6 @@
     font-size: 1.4rem;
     font-weight: 600;
     margin: 0;
-  }
-
-  .back {
-    color: var(--clvq-muted);
-    text-decoration: none;
-    font-size: 0.9rem;
   }
 
   .sync-section {

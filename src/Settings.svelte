@@ -2,6 +2,7 @@
 <!-- See LICENSE file. -->
 <script lang="ts">
   import { onMount } from 'svelte';
+  import NavMenu from './components/NavMenu.svelte';
   import { accounts, init, saveAccount, removeAccount } from './lib/accounts';
   import type { Account } from './lib/accounts';
   import { logger } from './lib/logger';
@@ -112,7 +113,7 @@
 
 <main>
   <header>
-    <a href="/" class="back">← Home</a>
+    <NavMenu />
     <h1>Settings</h1>
   </header>
 
@@ -207,12 +208,6 @@
     font-size: 1.4rem;
     font-weight: 600;
     margin: 0;
-  }
-
-  .back {
-    color: var(--clvq-muted);
-    text-decoration: none;
-    font-size: 0.9rem;
   }
 
   .section {
