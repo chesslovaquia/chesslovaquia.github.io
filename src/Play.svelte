@@ -4,8 +4,6 @@
   import { onMount, onDestroy } from 'svelte';
   import Board from './components/Board.svelte';
   import Clock from './components/Clock.svelte';
-  import MoveList from './components/MoveList.svelte';
-  import GameBar from './components/GameBar.svelte';
   import { Engine } from './lib/engine';
   import type { GameStatus } from './lib/engine';
   import { createClock, tick, applyIncrement, isExpired } from './lib/clock';
@@ -571,37 +569,28 @@
     {/if}
   </div>
 
-  <!-- Info panel: move list + game bar -->
+  <!-- Action bar: all buttons in one row (portrait) or column (landscape) -->
   <div class="info-panel">
     {#if gameStatus !== 'in_progress'}
-      <div class="game-over-banner">
-        <span>{resultLabel(gameStatus)}</span>
-        <button on:click={handleNewGame}>New Game</button>
-      </div>
+      <span class="result-text">{resultLabel(gameStatus)}</span>
+      <button class="action-btn action-btn-primary" on:click={handleNewGame} title="New Game">↺</button>
+    {:else}
+      {#if moves.length < 2}
+        <button class="action-btn action-btn-danger" on:click={handleAbort} title="Abort">✕</button>
+      {:else}
+        <button class="action-btn action-btn-danger" on:click={handleResign} title="Resign">⚑</button>
+      {/if}
+      {#if confirmingDraw}
+        <button class="action-btn action-btn-primary" on:click={handleOfferDraw} title="Confirm draw">✓</button>
+        <button class="action-btn" on:click={handleCancelDraw} title="Cancel">✕</button>
+      {:else}
+        <button class="action-btn" on:click={handleOfferDraw} title="Offer Draw">½</button>
+      {/if}
     {/if}
-    <div class="move-list-wrap">
-      <MoveList
-        {moves}
-        currentIndex={currentMoveIndex}
-        on:select={(e) => handleNavigate(e.detail)}
-      />
-    </div>
-    <GameBar
-      status={gameStatus}
-      moveCount={moves.length}
-      {confirmingDraw}
-      on:resign={handleResign}
-      on:offerdraw={handleOfferDraw}
-      on:canceldraw={handleCancelDraw}
-      on:abort={handleAbort}
-      on:newgame={handleNewGame}
-    />
-    <div class="nav-row">
-      <button on:click={() => handleNavigate(-1)} disabled={currentMoveIndex <= -1}>⏮</button>
-      <button on:click={() => handleNavigate(currentMoveIndex - 1)} disabled={currentMoveIndex <= -1}>◀</button>
-      <button on:click={() => handleNavigate(currentMoveIndex + 1)} disabled={atLivePosition}>▶</button>
-      <button on:click={() => handleNavigate(liveIndex)} disabled={atLivePosition}>⏭</button>
-    </div>
+    <button class="action-btn" on:click={() => handleNavigate(-1)} disabled={currentMoveIndex <= -1}>⏮</button>
+    <button class="action-btn" on:click={() => handleNavigate(currentMoveIndex - 1)} disabled={currentMoveIndex <= -1}>◀</button>
+    <button class="action-btn" on:click={() => handleNavigate(currentMoveIndex + 1)} disabled={atLivePosition}>▶</button>
+    <button class="action-btn" on:click={() => handleNavigate(liveIndex)} disabled={atLivePosition}>⏭</button>
   </div>
 </div>
 
@@ -622,23 +611,32 @@
     box-sizing: border-box;
   }
 
+  .top-player    { grid-area: top; }
+  .board-area    { grid-area: board; position: relative; container-type: size; display: flex; align-items: center; justify-content: center; }
+  .bottom-player { grid-area: bottom; }
+  .info-panel    { grid-area: info; display: flex; flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: center; gap: 0.4rem; border-top: 1px solid var(--clvq-border); padding: 0.3rem 0; }
+
   @media (orientation: landscape) and (min-width: 700px) {
     .play-layout {
       grid-template-areas:
         "top    info"
         "board  info"
         "bottom info";
-      grid-template-columns: 1fr 280px;
+      grid-template-columns: 1fr auto;
       grid-template-rows: auto 1fr auto;
       max-width: none;
       height: 100dvh;
     }
-  }
 
-  .top-player    { grid-area: top; }
-  .board-area    { grid-area: board; position: relative; container-type: size; display: flex; align-items: center; justify-content: center; }
-  .bottom-player { grid-area: bottom; }
-  .info-panel    { grid-area: info; display: flex; flex-direction: column; gap: 0.25rem; min-height: 0; }
+    .info-panel {
+      flex-direction: column;
+      flex-wrap: nowrap;
+      justify-content: center;
+      border-top: none;
+      border-left: 1px solid var(--clvq-border);
+      padding: 0 0.35rem;
+    }
+  }
 
   .top-player,
   .bottom-player {
@@ -656,55 +654,47 @@
     white-space: nowrap;
   }
 
-  .move-list-wrap {
-    flex: 1;
-    min-height: 0;
-    overflow-y: auto;
-  }
 
-  .nav-row {
-    display: flex;
-    gap: 0.25rem;
-  }
-
-  .nav-row button {
-    padding: 0.3rem 0.5rem;
+  .action-btn {
+    width: 2.2rem;
+    height: 2.2rem;
+    padding: 0;
     background: var(--clvq-surface);
     border: 1px solid var(--clvq-border);
     border-radius: 4px;
     color: var(--clvq-fg);
     cursor: pointer;
-    font-size: 0.9rem;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
   }
 
-  .nav-row button:disabled {
+  .action-btn:hover {
+    background: var(--clvq-surface-hover);
+  }
+
+  .action-btn:disabled {
     opacity: 0.3;
     cursor: default;
   }
 
-  .game-over-banner {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.5rem 0.75rem;
-    background: var(--clvq-surface);
-    border: 1px solid var(--clvq-border);
-    border-radius: var(--clvq-radius-md);
-    font-size: 0.9rem;
-    gap: 0.75rem;
-    flex-shrink: 0;
+  .action-btn-primary {
+    border-color: var(--clvq-accent);
+    color: var(--clvq-accent);
   }
 
-  .game-over-banner button {
-    background: none;
-    border: 1px solid var(--clvq-accent);
-    border-radius: 4px;
-    color: var(--clvq-accent);
-    padding: 0.3rem 0.75rem;
-    cursor: pointer;
-    font-size: 0.85rem;
-    white-space: nowrap;
+  .action-btn-danger {
+    border-color: var(--clvq-accent-red);
+    color: var(--clvq-accent-red);
   }
+
+  .result-text {
+    font-size: 0.75rem;
+    color: var(--clvq-muted);
+  }
+
 
   .connecting-overlay {
     position: absolute;

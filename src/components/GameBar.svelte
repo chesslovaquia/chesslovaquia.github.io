@@ -27,18 +27,18 @@
     <button class="btn btn-primary" on:click={() => dispatch('newgame')}>New Game</button>
   {:else}
     {#if canAbort}
-      <button class="btn btn-danger" on:click={() => dispatch('abort')}>Abort</button>
+      <button class="btn btn-icon btn-danger" title="Abort" on:click={() => dispatch('abort')}>✕</button>
     {/if}
     {#if canResign}
-      <button class="btn btn-danger" on:click={() => dispatch('resign')}>Resign</button>
+      <button class="btn btn-icon btn-danger" title="Resign" on:click={() => dispatch('resign')}>⚑</button>
     {/if}
     {#if inProgress}
       {#if confirmingDraw}
-        <span class="draw-confirm-label">Both players agree?</span>
-        <button class="btn btn-primary" on:click={() => dispatch('offerdraw')}>Confirm</button>
-        <button class="btn" on:click={() => dispatch('canceldraw')}>Cancel</button>
+        <span class="draw-confirm-label">Agree?</span>
+        <button class="btn btn-icon btn-primary" title="Confirm draw" on:click={() => dispatch('offerdraw')}>✓</button>
+        <button class="btn btn-icon" title="Cancel" on:click={() => dispatch('canceldraw')}>✕</button>
       {:else}
-        <button class="btn" on:click={() => dispatch('offerdraw')}>Offer Draw</button>
+        <button class="btn btn-icon" title="Offer Draw" on:click={() => dispatch('offerdraw')}>½</button>
       {/if}
     {/if}
   {/if}
@@ -66,6 +66,16 @@
     background: var(--clvq-surface-hover);
   }
 
+  .btn-icon {
+    width: 2.2rem;
+    height: 2.2rem;
+    padding: 0;
+    font-size: 1rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   .btn-primary {
     border-color: var(--clvq-accent);
     color: var(--clvq-accent);
@@ -77,8 +87,30 @@
   }
 
   .draw-confirm-label {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     color: var(--clvq-muted);
     align-self: center;
+  }
+
+  @media (orientation: landscape) and (min-width: 700px) {
+    .game-bar {
+      flex-direction: column;
+      flex-wrap: nowrap;
+      align-items: center;
+      padding: 0.5rem 0;
+      gap: 0.4rem;
+    }
+
+    .draw-confirm-label {
+      display: none;
+    }
+
+    .btn-primary:not(.btn-icon) {
+      writing-mode: vertical-rl;
+      padding: 0.6rem 0.3rem;
+      font-size: 0.8rem;
+      height: auto;
+      width: 2.2rem;
+    }
   }
 </style>
