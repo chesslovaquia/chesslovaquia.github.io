@@ -105,13 +105,13 @@
             <span class="vs">vs</span>
             <span class="player">{accountName(game.blackAccountId)}</span>
           </span>
-          <span class="result result-{resultClass(game.result)}">
-            {resultLabel(game.result)}
-          </span>
           <span class="tc">{game.timeControlBucket}</span>
           {#if game.source !== 'otb'}
             <span class="source">{game.source}</span>
           {/if}
+          <span class="result result-{resultClass(game.result)}">
+            {resultLabel(game.result)}
+          </span>
         </li>
       {/each}
     </ul>
@@ -229,6 +229,7 @@
     font-weight: 700;
     font-size: 0.75rem;
     flex-shrink: 0;
+    margin-left: auto;
     color: #fff;
   }
 
