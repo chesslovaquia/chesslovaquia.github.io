@@ -50,6 +50,7 @@
   let currentMoveIndex = -1;
   let gameStatus: GameStatus = 'in_progress';
   let confirmingDraw = false;
+  let confirmingResign = false;
 
   // Account display names
   let accounts = new Map<string, Account>();
@@ -160,6 +161,7 @@
 
   function endGame(winner: 'white' | 'black' | null, _reason: string) {
     confirmingDraw = false;
+    confirmingResign = false;
     stopClock();
     if (winner !== null && _reason === 'flag') {
       const loser = winner === 'white' ? 'black' : 'white';
@@ -355,6 +357,12 @@
   }
 
   async function handleResign() {
+    if (!confirmingResign) {
+      confirmingResign = true;
+      confirmingDraw = false;
+      return;
+    }
+    confirmingResign = false;
     if (lichessMode && lichessClient) {
       try {
         await lichessResign(lichessClient, lichessGameId);
@@ -368,6 +376,10 @@
       syncFromEngine();
       await endGame(null, 'resign');
     }
+  }
+
+  function handleCancelResign() {
+    confirmingResign = false;
   }
 
   async function handleAbort() {
@@ -390,6 +402,7 @@
     if (lichessMode) return;
     if (!confirmingDraw) {
       confirmingDraw = true;
+      confirmingResign = false;
       return;
     }
     confirmingDraw = false;
@@ -586,6 +599,9 @@
     {:else}
       {#if moves.length < 2}
         <button class="action-btn action-btn-danger" on:click={handleAbort} title="Abort">✕</button>
+      {:else if confirmingResign}
+        <button class="action-btn action-btn-danger" on:click={handleResign} title="Confirm resign">✓</button>
+        <button class="action-btn" on:click={handleCancelResign} title="Cancel">✕</button>
       {:else}
         <button class="action-btn action-btn-danger" on:click={handleResign} title="Resign">⚑</button>
       {/if}
