@@ -158,7 +158,9 @@ Full data model (Game, GameState) is in `docs/plan.md`.
 
 ## UI Conventions
 
-- **CSS custom properties** defined in `src/app.css` under `:root` — `--clvq-bg`, `--clvq-fg`, `--clvq-muted`, `--clvq-accent-green`, `--clvq-accent-red`, `--clvq-accent-blue`, `--clvq-border`, `--clvq-surface`, `--clvq-surface-hover`, `--clvq-radius-sm` (4px), `--clvq-radius-md` (6px).
+- **CSS custom properties** defined in `src/app.css` under `:root` — `--clvq-bg`, `--clvq-fg`, `--clvq-muted`, `--clvq-accent` (warm amber `#c9a14e`, primary interactive), `--clvq-accent-green`, `--clvq-accent-red`, `--clvq-accent-blue`, `--clvq-border`, `--clvq-surface`, `--clvq-surface-hover`, `--clvq-radius-sm` (4px), `--clvq-radius-md` (6px).
+- **`--clvq-accent` vs `--clvq-accent-green`:** `--clvq-accent` (warm amber) is the primary interactive color — active tabs, selected states, primary action buttons, nav highlights, clock active border. `--clvq-accent-green` is semantically reserved for win result badges only (`History.svelte`). Never use `--clvq-accent-green` for interactive chrome.
+- **Board highlight theme:** `src/board-wood4.css` overrides chessground's default green move highlights with amber (`rgba(201, 161, 78, ...)`) to match the UI accent palette. Imported in `play.ts` after `chessground.brown.css`.
 - **Border radius hierarchy:** Use `--clvq-radius-sm: 4px` for small controls (buttons, inputs, chips). Use `--clvq-radius-md: 6px` for large card-level surfaces (`.account-row`, `.game-row`, `.game-over-banner`, dialogs). This creates visual hierarchy without introducing arbitrary values.
 - **Piece color indicators:** Use `#f0d9b5` (light square) for white and `#b58863` (dark square) for black. These match chessground's default colors and `QuickSetup.svelte` for consistency across the app.
 - **Confirmations instead of `window.confirm()`:** Replace modal confirms with inline two-step UIs (e.g., draw offer, account removal). First click sets a `confirming` state, second click executes. Add a `cancel` handler to reset the state. This is more discoverable and consistent with mobile UX.

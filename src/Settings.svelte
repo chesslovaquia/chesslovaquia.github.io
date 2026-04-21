@@ -336,14 +336,14 @@
   }
 
   .add-form input:focus-visible {
-    border-color: var(--clvq-accent-green);
+    border-color: var(--clvq-accent);
   }
 
   .add-form button {
     background: none;
-    border: 1px solid var(--clvq-accent-green);
+    border: 1px solid var(--clvq-accent);
     border-radius: 4px;
-    color: var(--clvq-accent-green);
+    color: var(--clvq-accent);
     padding: 0.4rem 0.9rem;
     cursor: pointer;
     font-size: 0.9rem;

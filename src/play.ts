@@ -5,6 +5,7 @@ import './app.css';
 import '@lichess-org/chessground/assets/chessground.base.css';
 import '@lichess-org/chessground/assets/chessground.brown.css';
 import '@lichess-org/chessground/assets/chessground.cburnett.css';
+import './board-wood4.css';
 import Play from './Play.svelte';
 
 const target = document.getElementById('app');

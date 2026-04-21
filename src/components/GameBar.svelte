@@ -67,8 +67,8 @@
   }
 
   .btn-primary {
-    border-color: var(--clvq-accent-green);
-    color: var(--clvq-accent-green);
+    border-color: var(--clvq-accent);
+    color: var(--clvq-accent);
   }
 
   .btn-danger {

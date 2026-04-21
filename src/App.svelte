@@ -206,8 +206,8 @@
   }
 
   .mode-btn.active {
-    border-color: var(--clvq-accent-green);
-    color: var(--clvq-accent-green);
+    border-color: var(--clvq-accent);
+    color: var(--clvq-accent);
   }
 
   .mode-btn:hover:not(.active) {
@@ -257,16 +257,16 @@
   }
 
   .account-pill.selected {
-    border-color: var(--clvq-accent-green);
-    color: var(--clvq-accent-green);
+    border-color: var(--clvq-accent);
+    color: var(--clvq-accent);
   }
 
   .seek-btn {
     padding: 0.65rem 1.5rem;
     background: none;
-    border: 1px solid var(--clvq-accent-green);
+    border: 1px solid var(--clvq-accent);
     border-radius: 4px;
-    color: var(--clvq-accent-green);
+    color: var(--clvq-accent);
     font-size: 1rem;
     cursor: pointer;
   }

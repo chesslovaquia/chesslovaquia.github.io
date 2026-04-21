@@ -31,7 +31,7 @@
   }
 
   .clock.active {
-    border-color: var(--clvq-accent-green);
+    border-color: var(--clvq-accent);
   }
 
   @keyframes clock-pulse {

@@ -699,9 +699,9 @@
 
   .game-over-banner button {
     background: none;
-    border: 1px solid var(--clvq-accent-green);
+    border: 1px solid var(--clvq-accent);
     border-radius: 4px;
-    color: var(--clvq-accent-green);
+    color: var(--clvq-accent);
     padding: 0.3rem 0.75rem;
     cursor: pointer;
     font-size: 0.85rem;

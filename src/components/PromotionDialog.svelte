@@ -82,7 +82,7 @@
 
   .piece-btn:hover {
     background: var(--clvq-surface-hover);
-    border-color: var(--clvq-accent-green);
+    border-color: var(--clvq-accent);
   }
 
   .piece-preview {

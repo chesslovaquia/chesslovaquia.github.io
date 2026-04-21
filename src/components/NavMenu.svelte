@@ -92,11 +92,11 @@
 
   .dropdown a:hover {
     background: var(--clvq-surface-hover);
-    color: var(--clvq-accent-green);
+    color: var(--clvq-accent);
   }
 
   .dropdown a[aria-current='page'] {
-    color: var(--clvq-accent-green);
+    color: var(--clvq-accent);
     font-weight: 600;
     background: var(--clvq-surface-hover);
   }

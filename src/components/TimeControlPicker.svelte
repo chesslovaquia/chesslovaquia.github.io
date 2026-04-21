@@ -156,8 +156,8 @@
   }
 
   .preset.selected {
-    border-color: var(--clvq-accent-green);
-    color: var(--clvq-accent-green);
+    border-color: var(--clvq-accent);
+    color: var(--clvq-accent);
   }
 
   .preset:disabled {

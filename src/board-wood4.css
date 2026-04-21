@@ -1,0 +1,33 @@
+/* Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com> */
+/* See LICENSE file. */
+
+/*
+ * Board highlight overrides to match the warm amber palette used throughout
+ * the UI. Loaded after chessground.brown.css so these take precedence.
+ * Square colors (#f0d9b5 light / #b58863 dark) come from brown.css unchanged.
+ */
+
+/* Last move: warm amber glow instead of yellow-green */
+cg-board square.last-move {
+  background-color: rgba(201, 161, 78, 0.45);
+}
+
+/* Selected square: same amber family */
+cg-board square.selected {
+  background-color: rgba(201, 161, 78, 0.5);
+}
+
+/* Move destinations: warm amber dots instead of green */
+cg-board square.move-dest {
+  background: radial-gradient(rgba(201, 161, 78, 0.55) 22%, rgba(201, 161, 78, 0.8) 0, rgba(0, 0, 0, 0.25) 0, rgba(0, 0, 0, 0) 0);
+}
+
+/* Capture destinations: amber ring */
+cg-board square.oc.move-dest {
+  background: radial-gradient(transparent 0%, transparent 80%, rgba(201, 161, 78, 0.45) 80%);
+}
+
+cg-board square.move-dest:hover,
+cg-board square.move-dest.hover {
+  background: rgba(201, 161, 78, 0.35);
+}
