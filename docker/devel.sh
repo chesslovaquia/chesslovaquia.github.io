@@ -1,6 +1,6 @@
 #!/bin/sh
 set -eu
-datadir="${PWD}/Docker/claude"
+datadir="${HOME}/Docker/claude"
 install -v -d -m 0750 "${datadir}"
 install -v -d -m 0750 "${datadir}/config"
 if ! test -s "${datadir}/claude.json"; then
