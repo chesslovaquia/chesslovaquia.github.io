@@ -45,9 +45,9 @@ cg-board square.current-premove {
 
 /** Alternating colors in rank/file/square labels */
 /** Light squares (golden honey) — dark warm-brown text */
-.orientation-white .ranks :nth-child(odd),
+.orientation-white .ranks :nth-child(even),
 .orientation-white .files :nth-child(even),
-.orientation-black .ranks :nth-child(even),
+.orientation-black .ranks :nth-child(odd),
 .orientation-black .files :nth-child(odd),
 coords.squares:nth-of-type(odd) :nth-child(even),
 coords.squares:nth-of-type(even) :nth-child(odd) {
@@ -55,9 +55,9 @@ coords.squares:nth-of-type(even) :nth-child(odd) {
 }
 
 /** Dark squares (walnut brown) — warm cream text */
-.orientation-white .ranks :nth-child(even),
+.orientation-white .ranks :nth-child(odd),
 .orientation-white .files :nth-child(odd),
-.orientation-black .ranks :nth-child(odd),
+.orientation-black .ranks :nth-child(even),
 .orientation-black .files :nth-child(even),
 coords.squares:nth-of-type(odd) :nth-child(odd),
 coords.squares:nth-of-type(even) :nth-child(even) {
