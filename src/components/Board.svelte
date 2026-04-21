@@ -14,6 +14,7 @@
   export let movableColor: 'white' | 'black' | null;
   export let dests: Map<string, string[]> | null;
   export let lastMove: [string, string] | null = null;
+  export let check: 'white' | 'black' | false = false;
   export let viewOnly: boolean = false;
   export let onMove: (orig: string, dest: string, promotion?: string) => void;
 
@@ -78,6 +79,7 @@
           }
         },
       },
+      check,
       highlight: { lastMove: true, check: true },
       animation: { enabled: true, duration: 150 },
     };
@@ -100,6 +102,7 @@
       turnColor: movableColor ?? 'white',
       viewOnly: viewOnly || pendingPromo !== null,
       lastMove: lastMove ? (lastMove as Key[]) : undefined,
+      check,
       movable: {
         free: false,
         color: movableColor ?? 'both',

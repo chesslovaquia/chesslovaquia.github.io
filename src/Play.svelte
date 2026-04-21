@@ -79,9 +79,12 @@
   let turn: 'w' | 'b' = engine.turn();
   let legalDests: Map<string, string[]> = engine.legalMoves();
 
+  let inCheck: boolean = false;
+
   function syncFromEngine() {
     turn = engine.turn();
     legalDests = gameStatus === 'in_progress' ? engine.legalMoves() : new Map();
+    inCheck = engine.isCheck();
   }
 
   // In lichess mode, only allow moving our own pieces on our turn.
@@ -555,6 +558,7 @@
       {movableColor}
       {dests}
       lastMove={lastMovePair}
+      check={atLivePosition && inCheck ? cgColor(turn) : false}
       viewOnly={!atLivePosition || gameStatus !== 'in_progress'}
       onMove={handleMove}
     />
