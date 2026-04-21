@@ -348,7 +348,7 @@
     if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'BUTTON') return;
     if (e.key === 'ArrowLeft')  { e.preventDefault(); handleNavigate(currentMoveIndex - 1); }
     if (e.key === 'ArrowRight') { e.preventDefault(); handleNavigate(currentMoveIndex + 1); }
-    if (e.key === 'Home')       { e.preventDefault(); handleNavigate(-1); }
+    if (e.key === 'Home' || e.key === '0') { e.preventDefault(); handleNavigate(-1); }
     if (e.key === 'End')        { e.preventDefault(); handleNavigate(liveIndex); }
   }
 

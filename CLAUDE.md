@@ -166,7 +166,7 @@ Full data model (Game, GameState) is in `docs/plan.md`.
 - **Focus-visible for keyboard users:** Use `:focus-visible` (not `:focus`) for all interactive elements. This shows focus rings only for keyboard navigation, not mouse clicks. Remove `outline: none` from any `:focus` rule so the global style applies.
 - **Animation durations:** Use 120ms for content transitions (fade between modes), 0.8s for pulsing alerts (clock low-time), 1.4s for loading states (seeking ellipsis). Keep transitions snappy; avoid long delays.
 - **Loading state animations:** Use CSS `@keyframes` with `steps(4, end)` for discrete animations (e.g., ellipsis dots). This avoids JavaScript polling and scales well.
-- **History result badges:** Map PGN result codes directly to display text and CSS classes (1-0 → "Win" + `.result-win` green, 0-1 → "Loss" + `.result-loss` red, 1/2-1/2 → "Draw" muted). Do not compute relative win/loss — always show from White's perspective for consistency with chess.com/lichess conventions.
+- **History result badges:** Small filled square badges (`1.1rem × 1.1rem`, `border-radius: var(--clvq-radius-sm)`, white text). Map PGN result codes to single characters: `+` on green (`.result-win`), `−` on red (`.result-loss`), `=` on muted gray (`.result-draw`), `×` on muted gray (`.result-aborted`). Always from White's perspective, consistent with chess.com/lichess conventions.
 
 ---
 

@@ -61,10 +61,10 @@
   }
 
   function resultLabel(result: Game['result']): string {
-    if (result === '1-0')     return 'Win';
-    if (result === '0-1')     return 'Loss';
-    if (result === '1/2-1/2') return 'Draw';
-    return 'Aborted';
+    if (result === '1-0')     return '+';
+    if (result === '0-1')     return '−';
+    if (result === '1/2-1/2') return '=';
+    return '×';
   }
 </script>
 
@@ -220,16 +220,22 @@
   }
 
   .result {
-    font-weight: 600;
-    font-size: 0.8rem;
-    min-width: 3.5rem;
-    text-align: center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.1rem;
+    height: 1.1rem;
+    border-radius: var(--clvq-radius-sm);
+    font-weight: 700;
+    font-size: 0.75rem;
+    flex-shrink: 0;
+    color: #fff;
   }
 
-  .result-win   { color: var(--clvq-accent-green); }
-  .result-loss  { color: var(--clvq-accent-red); }
-  .result-draw  { color: var(--clvq-muted); }
-  .result-aborted { color: var(--clvq-muted); }
+  .result-win     { background: var(--clvq-accent-green); }
+  .result-loss    { background: var(--clvq-accent-red); }
+  .result-draw    { background: var(--clvq-muted); }
+  .result-aborted { background: var(--clvq-muted); }
 
   .tc {
     color: var(--clvq-muted);
