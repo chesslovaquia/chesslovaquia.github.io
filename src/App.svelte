@@ -147,7 +147,6 @@
 
         <!-- Time control -->
         <div class="lich-section">
-          <h2>Time Control</h2>
           <TimeControlPicker
             bind:selected={selectedLichessTc}
             disabledBuckets={['bullet', 'blitz']}

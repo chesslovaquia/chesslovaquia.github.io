@@ -39,7 +39,6 @@
 
 <div class="quick-setup">
   <section class="section">
-    <h2>Time Control</h2>
     <TimeControlPicker bind:selected={selectedTc} showCustom={true} />
   </section>
 
