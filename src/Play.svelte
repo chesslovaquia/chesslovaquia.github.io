@@ -638,7 +638,7 @@
   }
 
   .top-player    { grid-area: top; }
-  .board-area    { grid-area: board; position: relative; }
+  .board-area    { grid-area: board; position: relative; container-type: size; display: flex; align-items: center; justify-content: center; }
   .bottom-player { grid-area: bottom; }
   .info-panel    { grid-area: info; display: flex; flex-direction: column; gap: 0.25rem; min-height: 0; }
 

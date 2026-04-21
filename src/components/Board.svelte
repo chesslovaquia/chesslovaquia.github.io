@@ -139,8 +139,8 @@
 <style>
   .board-wrap {
     position: relative;
-    width: 100%;
-    aspect-ratio: 1;
+    width: 100cqmin;
+    height: 100cqmin;
   }
 
   .cg-wrap {
