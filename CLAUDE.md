@@ -14,6 +14,14 @@
 
 ---
 
+## Tool Use
+
+- Prefer `Grep`, `Glob`, and `Read` directly for targeted searches — do not spawn subagents just to look something up
+- Only use the `Agent` tool when the task genuinely requires unpredictable multi-step exploration (3+ search rounds that depend on each other)
+- Subagent sessions multiply token costs; the default should always be direct tools first
+
+---
+
 ## Project Overview
 
 Chesslovaquia is a local-first chess PWA. It does two things: play chess (OTB, lichess, later chess.com) and consolidate game history across platforms. Full rewrite underway using Svelte + Vite + TypeScript (tayrax-style). See `docs/plan.md` for the full product description, data model, UI principles, and phase roadmap.
