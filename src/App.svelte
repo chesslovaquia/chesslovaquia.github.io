@@ -1,6 +1,7 @@
 <!-- Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com> -->
 <!-- See LICENSE file. -->
 <script lang="ts">
+  import { fade } from 'svelte/transition';
   import NavMenu from './components/NavMenu.svelte';
   import QuickSetup from './components/QuickSetup.svelte';
   import TimeControlPicker from './components/TimeControlPicker.svelte';
@@ -92,6 +93,7 @@
 <main>
   <header>
     <NavMenu />
+    <h1 class="app-title">Chesslovaquia</h1>
     <div class="mode-toggle">
       <button
         class="mode-btn"
@@ -107,24 +109,27 @@
   </header>
 
   {#if playMode === 'otb'}
-    <section class="setup-section">
-      <QuickSetup
-        accountList={$accounts}
-        bind:whiteAccount={$selectedAccount}
-        blackAccount={$accounts.find((a) => a.id !== $selectedAccount?.id) ?? $selectedAccount ?? null}
-        on:start={handleStart}
-      />
-    </section>
+    <div class="mode-content" transition:fade={{ duration: 120 }}>
+      <section class="setup-section">
+        <QuickSetup
+          accountList={$accounts}
+          bind:whiteAccount={$selectedAccount}
+          blackAccount={$accounts.find((a) => a.id !== $selectedAccount?.id) ?? $selectedAccount ?? null}
+          on:start={handleStart}
+        />
+      </section>
+    </div>
 
   {:else}
-    <!-- Lichess mode -->
-    {#if lichessAccounts.length === 0}
-      <div class="lichess-no-accounts">
-        <p>No lichess accounts connected.</p>
-        <a href="/settings/" class="connect-link">Connect a lichess account in Settings →</a>
-      </div>
-    {:else}
-      <section class="setup-section">
+    <div class="mode-content" transition:fade={{ duration: 120 }}>
+      <!-- Lichess mode -->
+      {#if lichessAccounts.length === 0}
+        <div class="lichess-no-accounts">
+          <p>No lichess accounts connected.</p>
+          <a href="/settings/" class="connect-link">Connect a lichess account in Settings →</a>
+        </div>
+      {:else}
+        <section class="setup-section">
 
         <!-- Account selector -->
         <div class="lich-section">
@@ -166,17 +171,25 @@
           >Seek game</button>
         {:else}
           <div class="seeking-row">
-            <span class="seeking-label">Seeking opponent…</span>
+            <span class="seeking-label">Seeking opponent<span class="seeking-dots" aria-hidden="true"></span></span>
             <button class="cancel-btn" on:click={cancelSeek}>Cancel</button>
           </div>
         {/if}
 
       </section>
     {/if}
+    </div>
   {/if}
 </main>
 
 <style>
+  .app-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0;
+    flex: 1;
+  }
+
   .mode-toggle {
     display: flex;
     gap: 0.4rem;
@@ -276,7 +289,22 @@
   .seeking-label {
     color: var(--clvq-muted);
     font-size: 0.9rem;
-    font-style: italic;
+    display: flex;
+    align-items: baseline;
+    gap: 0;
+  }
+
+  .seeking-dots::after {
+    content: '';
+    animation: seeking-ellipsis 1.4s steps(4, end) infinite;
+  }
+
+  @keyframes seeking-ellipsis {
+    0%   { content: ''; }
+    25%  { content: '.'; }
+    50%  { content: '..'; }
+    75%  { content: '...'; }
+    100% { content: ''; }
   }
 
   .cancel-btn {

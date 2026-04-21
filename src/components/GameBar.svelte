@@ -6,10 +6,12 @@
 
   export let status: GameStatus;
   export let moveCount: number;
+  export let confirmingDraw = false;
 
   const dispatch = createEventDispatcher<{
     resign: void;
     offerdraw: void;
+    canceldraw: void;
     abort: void;
     newgame: void;
   }>();
@@ -31,7 +33,13 @@
       <button class="btn btn-danger" on:click={() => dispatch('resign')}>Resign</button>
     {/if}
     {#if inProgress}
-      <button class="btn" on:click={() => dispatch('offerdraw')}>Offer Draw</button>
+      {#if confirmingDraw}
+        <span class="draw-confirm-label">Both players agree?</span>
+        <button class="btn btn-primary" on:click={() => dispatch('offerdraw')}>Confirm</button>
+        <button class="btn" on:click={() => dispatch('canceldraw')}>Cancel</button>
+      {:else}
+        <button class="btn" on:click={() => dispatch('offerdraw')}>Offer Draw</button>
+      {/if}
     {/if}
   {/if}
 </div>
@@ -66,5 +74,11 @@
   .btn-danger {
     border-color: var(--clvq-accent-red);
     color: var(--clvq-accent-red);
+  }
+
+  .draw-confirm-label {
+    font-size: 0.85rem;
+    color: var(--clvq-muted);
+    align-self: center;
   }
 </style>

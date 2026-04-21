@@ -12,6 +12,22 @@
   let customIncrement = 0;
   let isCustom = false;
 
+  const BUCKET_ORDER: TimeControlBucket[] = ['bullet', 'blitz', 'rapid', 'classical', 'correspondence'];
+
+  const BUCKET_LABEL: Record<TimeControlBucket, string> = {
+    bullet: 'Bullet',
+    blitz: 'Blitz',
+    rapid: 'Rapid',
+    classical: 'Classical',
+    correspondence: 'Correspondence',
+  };
+
+  interface BucketGroup {
+    bucket: TimeControlBucket;
+    label: string;
+    setups: { label: string; tc: TimeControl; index: number }[];
+  }
+
   function isDisabled(tc: TimeControl): boolean {
     if (disabledBuckets.length === 0) return false;
     return disabledBuckets.includes(classifyTimeControl(tc));
@@ -36,23 +52,46 @@
   $: if (isCustom) {
     selected = { initialSec: customInitial * 60, incrementSec: customIncrement };
   }
+
+  $: groups = BUCKET_ORDER.reduce<BucketGroup[]>((acc, bucket) => {
+    const setups = QUICK_SETUPS
+      .map((s, i) => ({ ...s, index: i }))
+      .filter((s) => classifyTimeControl(s.tc) === bucket);
+    if (setups.length > 0) acc.push({ bucket, label: BUCKET_LABEL[bucket], setups });
+    return acc;
+  }, []);
 </script>
 
-<div class="preset-grid">
-  {#each QUICK_SETUPS as { label, tc }, i}
-    <button
-      class="preset"
-      class:selected={i === selectedIndex}
-      disabled={isDisabled(tc)}
-      on:click={() => selectPreset(tc)}
-    >{label}</button>
+<div class="preset-groups">
+  {#each groups as group}
+    <div
+      class="preset-group"
+      class:disabled-group={disabledBuckets.includes(group.bucket)}
+    >
+      <span class="bucket-label">{group.label}</span>
+      <div class="preset-row">
+        {#each group.setups as { label: presetLabel, tc, index }}
+          <button
+            class="preset"
+            class:selected={index === selectedIndex}
+            disabled={isDisabled(tc)}
+            on:click={() => selectPreset(tc)}
+          >{presetLabel}</button>
+        {/each}
+      </div>
+    </div>
   {/each}
   {#if showCustom}
-    <button
-      class="preset"
-      class:selected={isCustom}
-      on:click={selectCustom}
-    >Custom</button>
+    <div class="preset-group">
+      <span class="bucket-label">Custom</span>
+      <div class="preset-row">
+        <button
+          class="preset"
+          class:selected={isCustom}
+          on:click={selectCustom}
+        >Custom</button>
+      </div>
+    </div>
   {/if}
 </div>
 {#if showCustom && isCustom}
@@ -70,14 +109,38 @@
 {/if}
 
 <style>
-  .preset-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
+  .preset-groups {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .preset-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .bucket-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--clvq-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .disabled-group .bucket-label {
+    opacity: 0.4;
+  }
+
+  .preset-row {
+    display: flex;
     gap: 0.4rem;
+    flex-wrap: wrap;
   }
 
   .preset {
-    padding: 0.4rem 0.25rem;
+    padding: 0.4rem 0.6rem;
     border: 1px solid var(--clvq-border);
     border-radius: 4px;
     background: var(--clvq-surface);
@@ -85,6 +148,7 @@
     cursor: pointer;
     font-size: 0.85rem;
     text-align: center;
+    min-width: 4rem;
   }
 
   .preset:hover:not(:disabled) {

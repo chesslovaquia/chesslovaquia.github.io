@@ -153,7 +153,20 @@ Full data model (Game, GameState) is in `docs/plan.md`.
 - **One responsibility per file.** Don't mix accounts with game state.
 - **All logging** goes through `logger` from `src/lib/logger.ts`. Never call `console.*` directly. `logger.debug()` is gated on `localStorage.setItem('clvq.debug', '1')`. Only `logger.warn()` and `logger.error()` always output.
 - **Storage keys are versioned:** DB name = `clvq.accounts.v1`, etc. localStorage keys in `src/lib/config.ts`. Bump DB name on schema change.
-- **CSS custom properties** defined in `src/app.css` under `:root` — `--clvq-bg`, `--clvq-fg`, `--clvq-muted`, `--clvq-accent-green`, `--clvq-accent-red`, `--clvq-accent-blue`, `--clvq-border`, `--clvq-surface`, `--clvq-surface-hover`.
+
+---
+
+## UI Conventions
+
+- **CSS custom properties** defined in `src/app.css` under `:root` — `--clvq-bg`, `--clvq-fg`, `--clvq-muted`, `--clvq-accent-green`, `--clvq-accent-red`, `--clvq-accent-blue`, `--clvq-border`, `--clvq-surface`, `--clvq-surface-hover`, `--clvq-radius-sm` (4px), `--clvq-radius-md` (6px).
+- **Border radius hierarchy:** Use `--clvq-radius-sm: 4px` for small controls (buttons, inputs, chips). Use `--clvq-radius-md: 6px` for large card-level surfaces (`.account-row`, `.game-row`, `.game-over-banner`, dialogs). This creates visual hierarchy without introducing arbitrary values.
+- **Piece color indicators:** Use `#f0d9b5` (light square) for white and `#b58863` (dark square) for black. These match chessground's default colors and `QuickSetup.svelte` for consistency across the app.
+- **Confirmations instead of `window.confirm()`:** Replace modal confirms with inline two-step UIs (e.g., draw offer, account removal). First click sets a `confirming` state, second click executes. Add a `cancel` handler to reset the state. This is more discoverable and consistent with mobile UX.
+- **Keyboard shortcuts guard:** When adding keyboard handlers to `svelte:window`, guard against INPUT/TEXTAREA/BUTTON targets to avoid hijacking browser focus. Check `(e.target as HTMLElement).tagName` and return early if focused on a form element.
+- **Focus-visible for keyboard users:** Use `:focus-visible` (not `:focus`) for all interactive elements. This shows focus rings only for keyboard navigation, not mouse clicks. Remove `outline: none` from any `:focus` rule so the global style applies.
+- **Animation durations:** Use 120ms for content transitions (fade between modes), 0.8s for pulsing alerts (clock low-time), 1.4s for loading states (seeking ellipsis). Keep transitions snappy; avoid long delays.
+- **Loading state animations:** Use CSS `@keyframes` with `steps(4, end)` for discrete animations (e.g., ellipsis dots). This avoids JavaScript polling and scales well.
+- **History result badges:** Map PGN result codes directly to display text and CSS classes (1-0 → "Win" + `.result-win` green, 0-1 → "Loss" + `.result-loss` red, 1/2-1/2 → "Draw" muted). Do not compute relative win/loss — always show from White's perspective for consistency with chess.com/lichess conventions.
 
 ---
 

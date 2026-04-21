@@ -34,9 +34,15 @@
     border-color: var(--clvq-accent-green);
   }
 
+  @keyframes clock-pulse {
+    0%, 100% { border-color: var(--clvq-accent-red); }
+    50%       { border-color: transparent; }
+  }
+
   .clock.low-time {
     border-color: var(--clvq-accent-red);
     color: var(--clvq-accent-red);
+    animation: clock-pulse 0.8s ease-in-out infinite;
   }
 
   .clock-label {

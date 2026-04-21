@@ -14,6 +14,7 @@
   let error = '';
   let authError = '';
   let syncStatus = new Map<string, string>(); // accountId → status message
+  let confirmingRemove: string | null = null;
 
   const redirectUri = window.location.origin + window.location.pathname;
 
@@ -65,8 +66,12 @@
     }
   }
 
-  async function handleRemove(account: Account) {
-    if (!window.confirm(`Remove "${account.displayName}"?`)) return;
+  function startRemove(account: Account) {
+    confirmingRemove = account.id;
+  }
+
+  async function confirmRemove(account: Account) {
+    confirmingRemove = null;
     try {
       if (account.network === 'lichess') {
         await revokeToken(account);
@@ -75,6 +80,10 @@
     } catch (err) {
       logger.error('remove account', err);
     }
+  }
+
+  function cancelRemove() {
+    confirmingRemove = null;
   }
 
   async function connectLichess() {
@@ -128,7 +137,12 @@
           <li class="account-row">
             <span class="display-name">{account.displayName}</span>
             <span class="network">{networkLabel(account.network)}</span>
-            <button class="remove-btn" on:click={() => handleRemove(account)}>Remove</button>
+            {#if confirmingRemove === account.id}
+              <button class="remove-btn danger" on:click={() => confirmRemove(account)}>Confirm remove</button>
+              <button class="remove-btn" on:click={cancelRemove}>Cancel</button>
+            {:else}
+              <button class="remove-btn" on:click={() => startRemove(account)}>Remove</button>
+            {/if}
           </li>
         {/each}
       </ul>
@@ -177,7 +191,12 @@
                 Sync history
               {/if}
             </button>
-            <button class="remove-btn" on:click={() => handleRemove(account)}>Remove</button>
+            {#if confirmingRemove === account.id}
+              <button class="remove-btn danger" on:click={() => confirmRemove(account)}>Confirm remove</button>
+              <button class="remove-btn" on:click={cancelRemove}>Cancel</button>
+            {:else}
+              <button class="remove-btn" on:click={() => startRemove(account)}>Remove</button>
+            {/if}
           </li>
         {/each}
       </ul>
@@ -231,7 +250,7 @@
     padding: 0.5rem 0.75rem;
     background: var(--clvq-surface);
     border: 1px solid var(--clvq-border);
-    border-radius: 4px;
+    border-radius: var(--clvq-radius-md);
     font-size: 0.9rem;
     flex-wrap: wrap;
   }
@@ -260,6 +279,10 @@
   }
 
   .remove-btn:hover {
+    border-color: var(--clvq-accent-red);
+  }
+
+  .remove-btn.danger {
     border-color: var(--clvq-accent-red);
   }
 
@@ -312,8 +335,7 @@
     font-size: 0.9rem;
   }
 
-  .add-form input:focus {
-    outline: none;
+  .add-form input:focus-visible {
     border-color: var(--clvq-accent-green);
   }
 

@@ -52,12 +52,19 @@
     return new Date(ts).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
   }
 
-  function resultClass(result: Game['result'], accountId: string, whiteId: string): string {
+  function resultClass(result: Game['result']): string {
     if (result === '1/2-1/2') return 'draw';
     if (result === '*') return 'aborted';
-    const whiteWon = result === '1-0';
-    const isWhite = accountId === whiteId;
-    return whiteWon === isWhite ? 'win' : 'loss';
+    if (result === '1-0') return 'win';
+    if (result === '0-1') return 'loss';
+    return 'aborted';
+  }
+
+  function resultLabel(result: Game['result']): string {
+    if (result === '1-0')     return 'Win';
+    if (result === '0-1')     return 'Loss';
+    if (result === '1/2-1/2') return 'Draw';
+    return 'Aborted';
   }
 </script>
 
@@ -98,8 +105,8 @@
             <span class="vs">vs</span>
             <span class="player">{accountName(game.blackAccountId)}</span>
           </span>
-          <span class="result result-{resultClass(game.result, game.whiteAccountId, game.whiteAccountId)}">
-            {game.result}
+          <span class="result result-{resultClass(game.result)}">
+            {resultLabel(game.result)}
           </span>
           <span class="tc">{game.timeControlBucket}</span>
           {#if game.source !== 'otb'}
@@ -126,7 +133,7 @@
     padding: 0.6rem 0.75rem;
     background: var(--clvq-surface);
     border: 1px solid var(--clvq-border);
-    border-radius: 4px;
+    border-radius: var(--clvq-radius-md);
   }
 
   .sync-row {
@@ -181,7 +188,7 @@
     padding: 0.5rem 0.75rem;
     background: var(--clvq-surface);
     border: 1px solid var(--clvq-border);
-    border-radius: 4px;
+    border-radius: var(--clvq-radius-md);
     font-size: 0.875rem;
     flex-wrap: wrap;
   }

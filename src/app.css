@@ -16,6 +16,9 @@
   --clvq-surface: #1e1e1e;
   --clvq-surface-hover: #2a2a2a;
 
+  --clvq-radius-sm: 4px;
+  --clvq-radius-md: 6px;
+
   background: var(--clvq-bg);
   color: var(--clvq-fg);
   font-family: system-ui, sans-serif;
@@ -38,6 +41,11 @@ a {
 
 button {
   cursor: pointer;
+}
+
+:focus-visible {
+  outline: 2px solid var(--clvq-accent-blue);
+  outline-offset: 2px;
 }
 
 main {

@@ -2,6 +2,7 @@
 <!-- See LICENSE file. -->
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
+  import NavMenu from './components/NavMenu.svelte';
   import Board from './components/Board.svelte';
   import Clock from './components/Clock.svelte';
   import MoveList from './components/MoveList.svelte';
@@ -51,6 +52,7 @@
   let fenHistory: string[] = [engine.fen()];
   let currentMoveIndex = -1;
   let gameStatus: GameStatus = 'in_progress';
+  let confirmingDraw = false;
 
   // Account display names
   let accounts = new Map<string, Account>();
@@ -157,6 +159,7 @@
   }
 
   function endGame(winner: 'white' | 'black' | null, _reason: string) {
+    confirmingDraw = false;
     stopClock();
     if (winner !== null && _reason === 'flag') {
       const loser = winner === 'white' ? 'black' : 'white';
@@ -340,6 +343,15 @@
     currentMoveIndex = Math.max(-1, Math.min(index, liveIndex));
   }
 
+  function handleKeydown(e: KeyboardEvent) {
+    const tag = (e.target as HTMLElement).tagName;
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'BUTTON') return;
+    if (e.key === 'ArrowLeft')  { e.preventDefault(); handleNavigate(currentMoveIndex - 1); }
+    if (e.key === 'ArrowRight') { e.preventDefault(); handleNavigate(currentMoveIndex + 1); }
+    if (e.key === 'Home')       { e.preventDefault(); handleNavigate(-1); }
+    if (e.key === 'End')        { e.preventDefault(); handleNavigate(liveIndex); }
+  }
+
   async function handleResign() {
     if (lichessMode && lichessClient) {
       try {
@@ -373,13 +385,20 @@
   }
 
   async function handleOfferDraw() {
-    if (lichessMode) return; // draw negotiation not yet implemented for online games
-    if (window.confirm('Both players agree to a draw?')) {
-      engine.agreeDraw();
-      gameStatus = engine.status();
-      syncFromEngine();
-      await endGame(null, 'draw');
+    if (lichessMode) return;
+    if (!confirmingDraw) {
+      confirmingDraw = true;
+      return;
     }
+    confirmingDraw = false;
+    engine.agreeDraw();
+    gameStatus = engine.status();
+    syncFromEngine();
+    await endGame(null, 'draw');
+  }
+
+  function handleCancelDraw() {
+    confirmingDraw = false;
   }
 
   function handleNewGame() {
@@ -516,9 +535,13 @@
   }
 </script>
 
+<svelte:window on:keydown={handleKeydown} />
+
 <div class="play-layout">
   <!-- Top player (opponent) -->
   <div class="top-player">
+    <NavMenu />
+    <span class="color-dot" data-color={topColor}></span>
     <span class="player-name">{topLabel}</span>
     {#if topClockMs !== null}
       <Clock ms={topClockMs} active={clockActive && cgColor(turn) === topColor} label="" />
@@ -539,16 +562,11 @@
       viewOnly={!atLivePosition || gameStatus !== 'in_progress'}
       onMove={handleMove}
     />
-    {#if gameStatus !== 'in_progress'}
-      <div class="game-over-banner">
-        <span>{resultLabel(gameStatus)}</span>
-        <button on:click={handleNewGame}>New Game</button>
-      </div>
-    {/if}
   </div>
 
   <!-- Bottom player (self) -->
   <div class="bottom-player">
+    <span class="color-dot" data-color={bottomColor}></span>
     <span class="player-name">{bottomLabel}</span>
     {#if bottomClockMs !== null}
       <Clock ms={bottomClockMs} active={clockActive && cgColor(turn) === bottomColor} label="" />
@@ -557,6 +575,12 @@
 
   <!-- Info panel: move list + game bar -->
   <div class="info-panel">
+    {#if gameStatus !== 'in_progress'}
+      <div class="game-over-banner">
+        <span>{resultLabel(gameStatus)}</span>
+        <button on:click={handleNewGame}>New Game</button>
+      </div>
+    {/if}
     <div class="move-list-wrap">
       <MoveList
         {moves}
@@ -567,8 +591,10 @@
     <GameBar
       status={gameStatus}
       moveCount={moves.length}
+      {confirmingDraw}
       on:resign={handleResign}
       on:offerdraw={handleOfferDraw}
+      on:canceldraw={handleCancelDraw}
       on:abort={handleAbort}
       on:newgame={handleNewGame}
     />
@@ -659,18 +685,16 @@
   }
 
   .game-over-banner {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: rgba(0, 0, 0, 0.8);
-    color: #fff;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0.6rem 0.75rem;
+    padding: 0.5rem 0.75rem;
+    background: var(--clvq-surface);
+    border: 1px solid var(--clvq-border);
+    border-radius: var(--clvq-radius-md);
     font-size: 0.9rem;
     gap: 0.75rem;
+    flex-shrink: 0;
   }
 
   .game-over-banner button {
@@ -694,6 +718,22 @@
     justify-content: center;
     font-size: 0.95rem;
     z-index: 10;
-    border-radius: 4px;
+    border-radius: var(--clvq-radius-md);
+  }
+
+  .color-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 1px solid var(--clvq-border);
+    flex-shrink: 0;
+  }
+
+  .color-dot[data-color="white"] {
+    background: #f0d9b5;
+  }
+
+  .color-dot[data-color="black"] {
+    background: #b58863;
   }
 </style>

@@ -50,7 +50,7 @@
   .dialog {
     background: var(--clvq-surface);
     border: 1px solid var(--clvq-border);
-    border-radius: 6px;
+    border-radius: var(--clvq-radius-md);
     padding: 1rem;
   }
 
