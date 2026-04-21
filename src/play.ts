@@ -3,7 +3,7 @@
 
 import './app.css';
 import '@lichess-org/chessground/assets/chessground.base.css';
-import '../static/chessground.wood4.css';
+import './chessground.wood4.css';
 import '@lichess-org/chessground/assets/chessground.cburnett.css';
 import './board-wood4.css';
 import Play from './Play.svelte';
