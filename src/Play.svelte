@@ -351,7 +351,7 @@
     if (e.key === 'ArrowLeft')  { e.preventDefault(); handleNavigate(currentMoveIndex - 1); }
     if (e.key === 'ArrowRight') { e.preventDefault(); handleNavigate(currentMoveIndex + 1); }
     if (e.key === 'Home' || e.key === '0') { e.preventDefault(); handleNavigate(-1); }
-    if (e.key === 'End')        { e.preventDefault(); handleNavigate(liveIndex); }
+    if (e.key === 'End' || e.key === '$') { e.preventDefault(); handleNavigate(liveIndex); }
   }
 
   async function handleResign() {
