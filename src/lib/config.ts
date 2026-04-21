@@ -17,3 +17,5 @@ export const LS_BOARD_PIECES = 'clvq.board.pieces';
 export const LS_LICHESS_PENDING_PREFIX = 'clvq.lichess.pending.';
 /** Lichess active game — JSON-serialised { gameId, accountId, color } for reconnect. */
 export const LS_LICHESS_ACTIVE = 'clvq.lichess.active';
+/** Home page last-used setup (playMode, time controls, accounts, orientation). */
+export const LS_HOME_PREFS = 'clvq.home.prefs';

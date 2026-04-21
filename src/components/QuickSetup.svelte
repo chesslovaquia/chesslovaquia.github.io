@@ -21,8 +21,8 @@
     };
   }>();
 
-  let selectedTc: TimeControl | null = QUICK_SETUPS[4].tc; // 5+0 default
-  let orientation: 'white' | 'black' = 'white';
+  export let selectedTc: TimeControl | null = QUICK_SETUPS[4].tc; // 5+0 default
+  export let orientation: 'white' | 'black' = 'white';
 
   function start() {
     const wId = whiteAccount?.id;

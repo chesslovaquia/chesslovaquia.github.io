@@ -7,7 +7,7 @@
   import TimeControlPicker from './components/TimeControlPicker.svelte';
   import { accounts, selectedAccount } from './lib/accounts';
   import type { Account } from './lib/accounts';
-  import { LS_ACTIVE_GAME } from './lib/config';
+  import { LS_ACTIVE_GAME, LS_HOME_PREFS } from './lib/config';
   import type { TimeControl, TimeControlBucket } from './lib/time-control';
   import { QUICK_SETUPS, classifyTimeControl } from './lib/time-control';
   import { LichessClient } from './lib/lichess/client';
@@ -16,6 +16,15 @@
 
   type PlayMode = 'otb' | 'lichess';
 
+  interface HomePrefs {
+    playMode: PlayMode;
+    otbTc: TimeControl | null;
+    otbOrientation: 'white' | 'black';
+    otbBlackAccountId: string | null;
+    lichessAccountId: string | null;
+    lichessTc: TimeControl | null;
+  }
+
   interface StartEvent {
     timeControl: TimeControl | null;
     whiteAccountId: string;
@@ -23,14 +32,28 @@
     orientation: 'white' | 'black';
   }
 
-  let playMode: PlayMode = 'otb';
+  function loadPrefs(): HomePrefs | null {
+    try {
+      const raw = localStorage.getItem(LS_HOME_PREFS);
+      return raw ? (JSON.parse(raw) as HomePrefs) : null;
+    } catch {
+      return null;
+    }
+  }
+
+  const savedPrefs = loadPrefs();
+
+  let playMode: PlayMode = savedPrefs?.playMode ?? 'otb';
+  let otbTc: TimeControl | null = savedPrefs?.otbTc ?? QUICK_SETUPS[4].tc;
+  let otbOrientation: 'white' | 'black' = savedPrefs?.otbOrientation ?? 'white';
+  let otbBlackAccount: Account | null = null;
 
   // Lichess seek state
   let seekState: 'idle' | 'seeking' = 'idle';
   let seekError = '';
   let seekAbortController: AbortController | null = null;
   let selectedLichessAccount: Account | null = null;
-  let selectedLichessTc: TimeControl | null = QUICK_SETUPS[6].tc; // 10+0 — first rapid preset
+  let selectedLichessTc: TimeControl | null = savedPrefs?.lichessTc ?? QUICK_SETUPS[6].tc;
 
   $: lichessAccounts = $accounts.filter((a) => a.network === 'lichess');
 
@@ -38,11 +61,44 @@
     ? (['bullet', 'blitz'] as TimeControlBucket[]).includes(classifyTimeControl(selectedLichessTc))
     : false;
 
-  $: {
-    // Auto-select first lichess account when switching to lichess mode
-    if (playMode === 'lichess' && !selectedLichessAccount && lichessAccounts.length > 0) {
-      selectedLichessAccount = lichessAccounts[0];
-    }
+  // One-time init of account-dependent state once accounts are loaded
+  let initialized = false;
+  $: if (!initialized && $accounts.length > 0) {
+    const savedBlackId = savedPrefs?.otbBlackAccountId ?? null;
+    otbBlackAccount =
+      (savedBlackId ? $accounts.find((a) => a.id === savedBlackId) ?? null : null) ??
+      $accounts.find((a) => a.id !== $selectedAccount?.id) ??
+      $selectedAccount ??
+      null;
+
+    const savedLichessId = savedPrefs?.lichessAccountId ?? null;
+    const lichessNow = $accounts.filter((a) => a.network === 'lichess');
+    selectedLichessAccount =
+      (savedLichessId ? lichessNow.find((a) => a.id === savedLichessId) ?? null : null) ??
+      lichessNow[0] ??
+      null;
+
+    initialized = true;
+  }
+
+  // Auto-select first lichess account when switching to lichess mode (post-init)
+  $: if (initialized && playMode === 'lichess' && !selectedLichessAccount && lichessAccounts.length > 0) {
+    selectedLichessAccount = lichessAccounts[0];
+  }
+
+  // Persist prefs whenever any tracked state changes (after accounts are loaded)
+  $: if (initialized) {
+    localStorage.setItem(
+      LS_HOME_PREFS,
+      JSON.stringify({
+        playMode,
+        otbTc,
+        otbOrientation,
+        otbBlackAccountId: otbBlackAccount?.id ?? null,
+        lichessAccountId: selectedLichessAccount?.id ?? null,
+        lichessTc: selectedLichessTc,
+      } as HomePrefs),
+    );
   }
 
   function handleStart(e: CustomEvent<StartEvent>) {
@@ -114,7 +170,9 @@
         <QuickSetup
           accountList={$accounts}
           bind:whiteAccount={$selectedAccount}
-          blackAccount={$accounts.find((a) => a.id !== $selectedAccount?.id) ?? $selectedAccount ?? null}
+          bind:blackAccount={otbBlackAccount}
+          bind:selectedTc={otbTc}
+          bind:orientation={otbOrientation}
           on:start={handleStart}
         />
       </section>

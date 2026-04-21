@@ -1,6 +1,7 @@
 <!-- Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com> -->
 <!-- See LICENSE file. -->
 <script lang="ts">
+  import { onMount } from 'svelte';
   import { QUICK_SETUPS, classifyTimeControl } from '../lib/time-control';
   import type { TimeControl, TimeControlBucket } from '../lib/time-control';
 
@@ -11,6 +12,18 @@
   let customInitial = 10;
   let customIncrement = 0;
   let isCustom = false;
+
+  onMount(() => {
+    if (!selected) return;
+    const matchesPreset = QUICK_SETUPS.some(
+      (s) => s.tc.initialSec === selected!.initialSec && s.tc.incrementSec === selected!.incrementSec,
+    );
+    if (!matchesPreset) {
+      isCustom = true;
+      customInitial = Math.round(selected.initialSec / 60);
+      customIncrement = selected.incrementSec;
+    }
+  });
 
   const BUCKET_ORDER: TimeControlBucket[] = ['bullet', 'blitz', 'rapid', 'classical', 'correspondence'];
 
