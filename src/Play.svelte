@@ -2,7 +2,6 @@
 <!-- See LICENSE file. -->
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
-  import NavMenu from './components/NavMenu.svelte';
   import Board from './components/Board.svelte';
   import Clock from './components/Clock.svelte';
   import MoveList from './components/MoveList.svelte';
@@ -540,7 +539,6 @@
 <div class="play-layout">
   <!-- Top player (opponent) -->
   <div class="top-player">
-    <NavMenu />
     <span class="color-dot" data-color={topColor}></span>
     <span class="player-name">{topLabel}</span>
     {#if topClockMs !== null}

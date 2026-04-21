@@ -169,6 +169,7 @@ Full data model (Game, GameState) is in `docs/plan.md`.
 - **Animation durations:** Use 120ms for content transitions (fade between modes), 0.8s for pulsing alerts (clock low-time), 1.4s for loading states (seeking ellipsis). Keep transitions snappy; avoid long delays.
 - **Loading state animations:** Use CSS `@keyframes` with `steps(4, end)` for discrete animations (e.g., ellipsis dots). This avoids JavaScript polling and scales well.
 - **History result badges:** Small filled square badges (`1.1rem × 1.1rem`, `border-radius: var(--clvq-radius-sm)`, white text). Map PGN result codes to single characters: `+` on green (`.result-win`), `−` on red (`.result-loss`), `=` on muted gray (`.result-draw`), `×` on muted gray (`.result-aborted`). Always from White's perspective, consistent with chess.com/lichess conventions.
+- **Play page has no global nav (`NavMenu`).** The play page maximizes board space — no nav bar, no home link. The only way to exit a game is through game actions: Abort (before move 2), Resign, or Offer Draw. Once the game ends, "New Game" returns to the home page. Never add navigation chrome (back links, home buttons, breadcrumbs) to `Play.svelte` or `GameBar.svelte`.
 
 ---
 
