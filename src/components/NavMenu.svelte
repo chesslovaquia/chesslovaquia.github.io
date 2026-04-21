@@ -3,6 +3,12 @@
 <script lang="ts">
   let open = false;
   let menuEl: HTMLElement;
+  const path = window.location.pathname;
+
+  function isCurrent(href: string): boolean {
+    if (href === '/') return path === '/';
+    return path.startsWith(href);
+  }
 
   function toggle(e: MouseEvent) {
     e.stopPropagation();
@@ -28,9 +34,9 @@
   </button>
   {#if open}
     <ul class="dropdown" role="menu">
-      <li role="none"><a href="/" role="menuitem" on:click={close}>Home</a></li>
-      <li role="none"><a href="/history/" role="menuitem" on:click={close}>History</a></li>
-      <li role="none"><a href="/settings/" role="menuitem" on:click={close}>Settings</a></li>
+      <li role="none"><a href="/" role="menuitem" aria-current={isCurrent('/') ? 'page' : undefined} on:click={close}>Home</a></li>
+      <li role="none"><a href="/history/" role="menuitem" aria-current={isCurrent('/history/') ? 'page' : undefined} on:click={close}>History</a></li>
+      <li role="none"><a href="/settings/" role="menuitem" aria-current={isCurrent('/settings/') ? 'page' : undefined} on:click={close}>Settings</a></li>
     </ul>
   {/if}
 </div>
@@ -87,5 +93,11 @@
   .dropdown a:hover {
     background: var(--clvq-surface-hover);
     color: var(--clvq-accent-green);
+  }
+
+  .dropdown a[aria-current='page'] {
+    color: var(--clvq-accent-green);
+    font-weight: 600;
+    background: var(--clvq-surface-hover);
   }
 </style>
