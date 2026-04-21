@@ -1,6 +1,7 @@
 #!/bin/sh
 set -eu
-exec docker run -it --rm -u devel \
+_USER=$(id -un)
+exec docker run -it --rm -u "${_USER}" \
 	--name clvq-vite \
 	--hostname vite.clvq.local \
 	-v "${PWD}:/opt/clvq/site" \
