@@ -604,9 +604,6 @@
       "info";
     grid-template-rows: auto 1fr auto auto;
     height: 100dvh;
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 0.5rem;
     gap: 0.4rem;
     box-sizing: border-box;
   }
@@ -614,18 +611,25 @@
   .top-player    { grid-area: top; }
   .board-area    { grid-area: board; position: relative; container-type: size; display: flex; align-items: center; justify-content: center; }
   .bottom-player { grid-area: bottom; }
-  .info-panel    { grid-area: info; display: flex; flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: center; gap: 0.4rem; border-top: 1px solid var(--clvq-border); padding: 0.3rem 0; }
+  .info-panel    { grid-area: info; display: flex; flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: center; gap: 0.4rem; border-top: none; padding: 0.3rem 0; }
 
   @media (orientation: landscape) and (min-width: 700px) {
     .play-layout {
-      grid-template-areas:
-        "top    info"
-        "board  info"
-        "bottom info";
-      grid-template-columns: 1fr auto;
-      grid-template-rows: auto 1fr auto;
+      grid-template-areas: "top board bottom info";
+      grid-template-columns: auto 1fr auto auto;
+      grid-template-rows: 1fr;
       max-width: none;
       height: 100dvh;
+      padding: 0;
+    }
+
+    .top-player,
+    .bottom-player {
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 0 0.4rem;
+      gap: 0.4rem;
     }
 
     .info-panel {
@@ -633,7 +637,7 @@
       flex-wrap: nowrap;
       justify-content: center;
       border-top: none;
-      border-left: 1px solid var(--clvq-border);
+      border-left: none;
       padding: 0 0.35rem;
     }
   }
