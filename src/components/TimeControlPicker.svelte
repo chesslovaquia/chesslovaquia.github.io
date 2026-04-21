@@ -8,12 +8,21 @@
   export let selected: TimeControl | null;
   export let disabledBuckets: TimeControlBucket[] = [];
   export let showCustom: boolean = false;
+  export let showPresets: boolean = true;
 
   let customInitial = 10;
   let customIncrement = 0;
-  let isCustom = false;
+  let isCustom = !showPresets;
 
   onMount(() => {
+    if (!showPresets) {
+      isCustom = true;
+      if (selected) {
+        customInitial = Math.round(selected.initialSec / 60);
+        customIncrement = selected.incrementSec;
+      }
+      return;
+    }
     if (!selected) return;
     const matchesPreset = QUICK_SETUPS.some(
       (s) => s.tc.initialSec === selected!.initialSec && s.tc.incrementSec === selected!.incrementSec,
@@ -75,6 +84,7 @@
   }, []);
 </script>
 
+{#if showPresets}
 <div class="preset-groups">
   {#each groups as group}
     <div
@@ -107,7 +117,8 @@
     </div>
   {/if}
 </div>
-{#if showCustom && isCustom}
+{/if}
+{#if showCustom && isCustom || !showPresets}
   <div class="custom-tc">
     <label>
       <span>Minutes</span>
