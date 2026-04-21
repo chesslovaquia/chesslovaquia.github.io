@@ -75,16 +75,15 @@
   $: liveIndex = moves.length - 1;
   $: atLivePosition = currentMoveIndex === liveIndex;
   $: boardFen = fenHistory[currentMoveIndex + 1] ?? engine.fen();
+  $: boardCheck = checkHistory[currentMoveIndex + 1] ?? false;
+  $: boardTurn = (boardFen.split(' ')[1] ?? 'w') as 'w' | 'b';
 
   let turn: 'w' | 'b' = engine.turn();
   let legalDests: Map<string, string[]> = engine.legalMoves();
 
-  let inCheck: boolean = false;
-
   function syncFromEngine() {
     turn = engine.turn();
     legalDests = gameStatus === 'in_progress' ? engine.legalMoves() : new Map();
-    inCheck = engine.isCheck();
   }
 
   // In lichess mode, only allow moving our own pieces on our turn.
@@ -103,6 +102,7 @@
     : null;
 
   let lastMovePairs: Array<[string, string]> = [];
+  let checkHistory: boolean[] = [false];
 
   $: topColor = orientation === 'white' ? 'black' : 'white';
   $: bottomColor = orientation;
@@ -216,6 +216,7 @@
       lastMovePairs = [...lastMovePairs, [result.from, result.to]];
       moves = engine.history();
       fenHistory = [...fenHistory, engine.fen()];
+      checkHistory = [...checkHistory, engine.isCheck()];
       currentMoveIndex = moves.length - 1;
 
       // Clock: apply increment to the side that just moved
@@ -300,6 +301,7 @@
         const result = engine.move(parsed);
         lastMovePairs = [...lastMovePairs, [result.from, result.to]];
         fenHistory = [...fenHistory, engine.fen()];
+        checkHistory = [...checkHistory, engine.isCheck()];
       } catch (err) {
         logger.error('lichess apply move', uci, err);
       }
@@ -413,10 +415,12 @@
   function rebuildHistory() {
     const tmp = new Engine();
     fenHistory = [tmp.fen()];
+    checkHistory = [false];
     lastMovePairs = [];
     for (const san of moves) {
       const m = tmp.move(san);
       fenHistory = [...fenHistory, tmp.fen()];
+      checkHistory = [...checkHistory, tmp.isCheck()];
       lastMovePairs = [...lastMovePairs, [m.from, m.to]];
     }
   }
@@ -494,6 +498,7 @@
     engine.reset();
     moves = [];
     fenHistory = [engine.fen()];
+    checkHistory = [false];
     lastMovePairs = [];
     currentMoveIndex = -1;
     syncFromEngine();
@@ -558,7 +563,7 @@
       {movableColor}
       {dests}
       lastMove={lastMovePair}
-      check={atLivePosition && inCheck ? cgColor(turn) : false}
+      check={boardCheck ? cgColor(boardTurn) : false}
       viewOnly={!atLivePosition || gameStatus !== 'in_progress'}
       onMove={handleMove}
     />
