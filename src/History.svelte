@@ -105,12 +105,14 @@
             <span class="vs">vs</span>
             <span class="player">{accountName(game.blackAccountId)}</span>
           </span>
-          <span class="tc">{game.timeControlBucket}</span>
-          {#if game.source !== 'otb'}
-            <span class="source">{game.source}</span>
-          {/if}
-          <span class="result result-{resultClass(game.result)}">
-            {resultLabel(game.result)}
+          <span class="game-meta">
+            {#if game.source !== 'otb'}
+              <span class="source">{game.source}</span>
+            {/if}
+            <span class="tc">{game.timeControlBucket}</span>
+            <span class="result result-{resultClass(game.result)}">
+              {resultLabel(game.result)}
+            </span>
           </span>
         </li>
       {/each}
@@ -219,6 +221,14 @@
     flex-shrink: 0;
   }
 
+  .game-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-left: auto;
+    flex-shrink: 0;
+  }
+
   .result {
     display: inline-flex;
     align-items: center;
@@ -228,8 +238,6 @@
     border-radius: var(--clvq-radius-sm);
     font-weight: 700;
     font-size: 0.75rem;
-    flex-shrink: 0;
-    margin-left: auto;
     color: #fff;
   }
 
