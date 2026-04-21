@@ -54,7 +54,7 @@ ENV HOME=/home/devel
 RUN npm version
 RUN npx --version
 
-ENV CLVQ_CLAUDE_UPGRADE=2.1.111
+ENV CLVQ_CLAUDE_UPGRADE=2.1.116
 
 RUN install -v -d -m 0750 ${HOME}/.local/npm \
 	&& cd ${HOME}/.local/npm \
