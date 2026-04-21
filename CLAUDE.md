@@ -122,6 +122,20 @@ Always verify with `npm run check && npm run test` before calling a task done.
 
 ---
 
+## Test Conventions
+
+- **Keep tests in sync with source.** Every `src/lib/*.ts` file should have a matching `*.test.ts`. When adding a new exported function, add tests for it in the same PR. When removing or renaming an export, remove the corresponding tests.
+- **One test file per source file, co-located.** Tests live next to the file they test (`src/lib/foo.ts` → `src/lib/foo.test.ts`). Do not consolidate tests across files.
+- **What to skip.** `config.ts` (only constants) and `logger.ts` (thin `console.*` wrapper) are intentionally untested — no logic to exercise. Do not add tests for them unless logic is added.
+- **`Store<T>` (db.ts) is tested directly.** `src/lib/db.test.ts` covers `get`, `getAll`, `put`, `delete`, `clear` including edge cases (missing id, overwrite, no-op delete). Higher-level stores (`accounts`, `games`, `game-state`) test their own API, not `Store` internals — avoid re-testing `Store` behaviour through wrapper modules.
+- **`beforeEach` isolation for IndexedDB tests.** Any test file that writes to a store must call the store's `clear()` or `clearAll()` in `beforeEach`. For `accounts.ts` tests, also reset the Svelte writable singletons (`accounts.set([])`, `selectedAccount.set(null)`) — they are module-level and persist across tests in the same file.
+- **Test behavior, not implementation.** Assert on return values, thrown errors, and observable state changes. Do not reach into private fields or spy on internal methods unless there is no other observable way to verify the behavior.
+- **Edge cases worth covering by default:** missing/not-found lookups return `undefined`; overwrite/upsert semantics; operations on empty stores are no-ops (no throws); state resets (e.g. `Engine.load()` clears `_status` set by `resign()`/`abort()`).
+- **FEN assertions in engine tests** — prefer `toContain` on a known substring of the FEN over a full FEN equality check; full FENs are brittle because the half-move clock and full-move number change.
+- **chess.js en passant FEN caveat** — chess.js only records the en passant square in the FEN when an opposing pawn is actually in position to capture. Do not assert `fen.includes('e3')` after `1.e4` without a black pawn on d4/f4.
+
+---
+
 ## Data Model (Phase 0 — Accounts only)
 
 ```

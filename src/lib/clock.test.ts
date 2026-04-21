@@ -25,6 +25,14 @@ describe('tick', () => {
     expect(updated.black).toBe(300_000);
   });
 
+  it('deducts elapsed time from the black side', () => {
+    const start = Date.now();
+    const c = createClock(TC_5_0);
+    const updated = tick(c, 'black', start + 3000);
+    expect(updated.black).toBe(297_000);
+    expect(updated.white).toBe(300_000);
+  });
+
   it('does not go below zero', () => {
     const start = Date.now();
     const c = createClock(TC_5_0);

@@ -109,6 +109,79 @@ describe('Engine', () => {
     expect(engine2.history()).toEqual(['e4', 'e5']);
   });
 
+  it('moves(square) returns only moves from that square', () => {
+    const e2moves = engine.moves('e2');
+    expect(e2moves).toContain('e4');
+    expect(e2moves).toContain('e3');
+    expect(e2moves.every(m => m.includes('e'))).toBe(true);
+  });
+
+  it('moves(square) returns empty array for an empty square', () => {
+    expect(engine.moves('e4')).toEqual([]);
+  });
+
+  describe('chessStatus', () => {
+    it('returns in_progress at the start', () => {
+      expect(engine.chessStatus()).toBe('in_progress');
+    });
+
+    it('returns checkmate after fool\'s mate', () => {
+      engine.move('f3');
+      engine.move('e5');
+      engine.move('g4');
+      engine.move('Qh4');
+      expect(engine.chessStatus()).toBe('checkmate');
+    });
+
+    it('returns stalemate from a stalemate position', () => {
+      engine.load('7k/5Q2/6K1/8/8/8/8/8 b - - 0 1');
+      expect(engine.chessStatus()).toBe('stalemate');
+    });
+
+    it('is not affected by resign — status() is, chessStatus() is not', () => {
+      engine.resign('white');
+      expect(engine.chessStatus()).toBe('in_progress');
+      expect(engine.status()).toBe('resigned');
+    });
+  });
+
+  describe('agreeDraw', () => {
+    it('sets status to draw and result to 1/2-1/2', () => {
+      engine.move('e4');
+      engine.agreeDraw();
+      expect(engine.status()).toBe('draw');
+      expect(engine.result()).toBe('1/2-1/2');
+    });
+  });
+
+  describe('load resets external status', () => {
+    it('clears resigned status after load', () => {
+      engine.resign('white');
+      expect(engine.status()).toBe('resigned');
+      engine.load('rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1');
+      expect(engine.status()).toBe('in_progress');
+    });
+
+    it('clears aborted status after load', () => {
+      engine.abort();
+      engine.load('rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1');
+      expect(engine.status()).toBe('in_progress');
+    });
+  });
+
+  describe('loadPgn resets external status', () => {
+    it('clears resigned status after loadPgn', () => {
+      engine.resign('black');
+      engine.move('e4');
+      engine.move('e5');
+      const pgn = engine.pgn();
+      const e2 = new Engine();
+      e2.resign('white');
+      e2.loadPgn(pgn);
+      expect(e2.status()).toBe('in_progress');
+    });
+  });
+
   describe('isCheck', () => {
     it('returns false at the starting position', () => {
       expect(engine.isCheck()).toBe(false);
