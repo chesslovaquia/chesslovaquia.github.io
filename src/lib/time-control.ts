@@ -26,17 +26,12 @@ export function classifyTimeControl(tc: TimeControl): TimeControlBucket {
   return 'correspondence';
 }
 
-/** Common time controls shown in QuickSetup (3×4 grid, 11 presets + Custom). */
+/** Common time controls shown in QuickSetup (3×2 grid, 6 presets + Custom). */
 export const QUICK_SETUPS: { label: string; tc: TimeControl }[] = [
-  { label: '1+0',   tc: { initialSec:   60, incrementSec:  0 } },
-  { label: '2+1',   tc: { initialSec:  120, incrementSec:  1 } },
-  { label: '3+0',   tc: { initialSec:  180, incrementSec:  0 } },
-  { label: '3+2',   tc: { initialSec:  180, incrementSec:  2 } },
-  { label: '5+0',   tc: { initialSec:  300, incrementSec:  0 } },
-  { label: '5+3',   tc: { initialSec:  300, incrementSec:  3 } },
   { label: '10+0',  tc: { initialSec:  600, incrementSec:  0 } },
   { label: '10+5',  tc: { initialSec:  600, incrementSec:  5 } },
   { label: '15+10', tc: { initialSec:  900, incrementSec: 10 } },
   { label: '30+0',  tc: { initialSec: 1800, incrementSec:  0 } },
   { label: '30+20', tc: { initialSec: 1800, incrementSec: 20 } },
+  { label: '45+0',  tc: { initialSec: 2700, incrementSec:  0 } },
 ];
