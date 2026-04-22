@@ -219,9 +219,11 @@
             on:click={handleLichessSeek}
           >Seek game</button>
         {:else}
-          <div class="seeking-row">
-            <span class="seeking-label">Seeking opponent<span class="seeking-dots" aria-hidden="true"></span></span>
-            <button class="cancel-btn" on:click={cancelSeek}>Cancel</button>
+          <div class="seeking-modal-overlay">
+            <div class="seeking-modal">
+              <p class="seeking-label">Seeking opponent<span class="seeking-dots" aria-hidden="true"></span></p>
+              <button class="cancel-btn" on:click={cancelSeek}>Cancel</button>
+            </div>
           </div>
         {/if}
 
@@ -329,18 +331,31 @@
     cursor: not-allowed;
   }
 
-  .seeking-row {
+  .seeking-modal-overlay {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    justify-content: center;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 1000;
+  }
+
+  .seeking-modal {
+    background: var(--clvq-bg);
+    border: 1px solid var(--clvq-border);
+    border-radius: var(--clvq-radius-md);
+    padding: 1.5rem;
+    text-align: center;
+    min-width: 300px;
   }
 
   .seeking-label {
-    color: var(--clvq-muted);
-    font-size: 0.9rem;
-    display: flex;
-    align-items: baseline;
-    gap: 0;
+    color: var(--clvq-fg);
+    font-size: 0.95rem;
+    margin: 0 0 1rem;
+    white-space: nowrap;
+    display: block;
   }
 
   .seeking-dots::after {
