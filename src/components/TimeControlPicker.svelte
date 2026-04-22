@@ -6,7 +6,7 @@
   import type { TimeControl, TimeControlBucket } from '../lib/time-control';
 
   export let selected: TimeControl | null;
-  export let disabledBuckets: TimeControlBucket[] = [];
+  export let hiddenBuckets: TimeControlBucket[] = [];
   export let showCustom: boolean = false;
   export let showPresets: boolean = true;
 
@@ -50,11 +50,6 @@
     setups: { label: string; tc: TimeControl; index: number }[];
   }
 
-  function isDisabled(tc: TimeControl): boolean {
-    if (disabledBuckets.length === 0) return false;
-    return disabledBuckets.includes(classifyTimeControl(tc));
-  }
-
   $: selectedIndex = isCustom
     ? -1
     : QUICK_SETUPS.findIndex(
@@ -76,6 +71,7 @@
   }
 
   $: groups = BUCKET_ORDER.reduce<BucketGroup[]>((acc, bucket) => {
+    if (hiddenBuckets.includes(bucket)) return acc;
     const setups = QUICK_SETUPS
       .map((s, i) => ({ ...s, index: i }))
       .filter((s) => classifyTimeControl(s.tc) === bucket);
@@ -87,17 +83,13 @@
 {#if showPresets}
 <div class="preset-groups">
   {#each groups as group}
-    <div
-      class="preset-group"
-      class:disabled-group={disabledBuckets.includes(group.bucket)}
-    >
+    <div class="preset-group">
       <span class="bucket-label">{group.label}</span>
       <div class="preset-row">
         {#each group.setups as { label: presetLabel, tc, index }}
           <button
             class="preset"
             class:selected={index === selectedIndex}
-            disabled={isDisabled(tc)}
             on:click={() => selectPreset(tc)}
           >{presetLabel}</button>
         {/each}
@@ -153,10 +145,6 @@
     letter-spacing: 0.05em;
   }
 
-  .disabled-group .bucket-label {
-    opacity: 0.4;
-  }
-
   .preset-row {
     display: flex;
     gap: 0.4rem;
@@ -175,18 +163,13 @@
     min-width: 4rem;
   }
 
-  .preset:hover:not(:disabled) {
+  .preset:hover {
     background: var(--clvq-surface-hover);
   }
 
   .preset.selected {
     border-color: var(--clvq-accent);
     color: var(--clvq-accent);
-  }
-
-  .preset:disabled {
-    opacity: 0.35;
-    cursor: not-allowed;
   }
 
   .custom-tc {

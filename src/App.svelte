@@ -8,8 +8,8 @@
   import { accounts, selectedAccount } from './lib/accounts';
   import type { Account } from './lib/accounts';
   import { LS_ACTIVE_GAME, LS_HOME_PREFS } from './lib/config';
-  import type { TimeControl, TimeControlBucket } from './lib/time-control';
-  import { QUICK_SETUPS, classifyTimeControl } from './lib/time-control';
+  import type { TimeControl } from './lib/time-control';
+  import { QUICK_SETUPS } from './lib/time-control';
   import { LichessClient } from './lib/lichess/client';
   import { seekAndWait, persistActiveGame } from './lib/lichess/play';
   import { logger } from './lib/logger';
@@ -56,10 +56,6 @@
   let selectedLichessTc: TimeControl | null = savedPrefs?.lichessTc ?? QUICK_SETUPS[6].tc;
 
   $: lichessAccounts = $accounts.filter((a) => a.network === 'lichess');
-
-  $: lichessTcInvalid = selectedLichessTc
-    ? (['bullet', 'blitz'] as TimeControlBucket[]).includes(classifyTimeControl(selectedLichessTc))
-    : false;
 
   // One-time init of account-dependent state once accounts are loaded
   let initialized = false;
@@ -207,14 +203,10 @@
         <div class="lich-section">
           <TimeControlPicker
             bind:selected={selectedLichessTc}
-            disabledBuckets={['bullet', 'blitz']}
+            hiddenBuckets={['bullet', 'blitz']}
             showCustom={true}
           />
         </div>
-
-        {#if lichessTcInvalid}
-          <p class="tc-warning">Bullet and blitz not available for seeks — choose Rapid or longer.</p>
-        {/if}
 
         {#if seekError}
           <p class="seek-error">{seekError}</p>
@@ -223,7 +215,7 @@
         {#if seekState === 'idle'}
           <button
             class="seek-btn"
-            disabled={!selectedLichessAccount || !selectedLichessTc || lichessTcInvalid}
+            disabled={!selectedLichessAccount || !selectedLichessTc}
             on:click={handleLichessSeek}
           >Seek game</button>
         {:else}
@@ -374,11 +366,6 @@
     font-size: 0.875rem;
   }
 
-  .tc-warning {
-    color: var(--clvq-muted);
-    font-size: 0.85rem;
-    margin: 0 0 0.75rem;
-  }
 
   .seek-error {
     color: var(--clvq-accent-red);
