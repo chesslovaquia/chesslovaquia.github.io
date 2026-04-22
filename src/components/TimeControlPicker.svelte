@@ -116,7 +116,7 @@
       <span>Minutes</span>
       <input type="number" min="0" max="180" bind:value={customInitial} />
     </label>
-    <span>+</span>
+    <span class="plus-sep">+</span>
     <label>
       <span>Increment (s)</span>
       <input type="number" min="0" max="60" bind:value={customIncrement} />
@@ -189,6 +189,14 @@
   .custom-tc span {
     color: var(--clvq-muted);
     font-size: 0.8rem;
+  }
+
+  .custom-tc .plus-sep {
+    display: flex;
+    align-items: center;
+    height: 2.3rem;
+    color: var(--clvq-fg);
+    font-size: 1rem;
   }
 
   .custom-tc input {
