@@ -26,7 +26,7 @@ export function classifyTimeControl(tc: TimeControl): TimeControlBucket {
   return 'correspondence';
 }
 
-/** Common time controls shown in QuickSetup (6 presets: 2 blitz, 1 rapid, 3 classical). */
+/** Common time controls shown in QuickSetup (6 presets: 3 rapid, 3 classical). */
 export const QUICK_SETUPS: { label: string; tc: TimeControl }[] = [
   { label: '10+0',  tc: { initialSec:  600, incrementSec:  0 } },
   { label: '10+5',  tc: { initialSec:  600, incrementSec:  5 } },
