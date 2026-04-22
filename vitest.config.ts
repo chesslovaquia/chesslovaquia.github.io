@@ -13,5 +13,7 @@ export default defineConfig({
     environment: 'jsdom',
     include: ['src/**/*.test.ts'],
     setupFiles: ['src/test-setup.ts'],
+    warnOnUnhandledRejection: false,
+    logHeapUsage: false,
   },
 });

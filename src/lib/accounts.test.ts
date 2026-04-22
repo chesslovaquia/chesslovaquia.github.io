@@ -6,51 +6,69 @@ import { get } from 'svelte/store';
 import {
   accounts,
   selectedAccount,
-  ensureGuest,
+  ensureOtbAccounts,
   init,
   saveAccount,
   removeAccount,
   clearAll,
   type Account,
 } from './accounts';
+import { OTB_GUEST_ID, OTB_USER_ID } from './config';
 
 beforeEach(async () => {
   await clearAll();
 });
 
-describe('ensureGuest', () => {
-  it('creates a Guest account when none exist', async () => {
-    await ensureGuest();
+describe('ensureOtbAccounts', () => {
+  it('creates both Guest and User accounts', async () => {
+    await ensureOtbAccounts();
     const list = get(accounts);
-    expect(list).toHaveLength(1);
-    expect(list[0].displayName).toBe('Guest');
-    expect(list[0].network).toBe('otb');
-    expect(list[0].handle).toBeNull();
-    expect(list[0].credentials).toBeNull();
+    expect(list).toHaveLength(2);
+    const guest = list.find((a) => a.id === OTB_GUEST_ID);
+    const user = list.find((a) => a.id === OTB_USER_ID);
+    expect(guest?.displayName).toBe('Guest');
+    expect(user?.displayName).toBe('User');
   });
 
-  it('sets selected account to Guest', async () => {
-    await ensureGuest();
+  it('creates only Guest the first time if User is missing', async () => {
+    await ensureOtbAccounts();
+    let list = get(accounts);
+    expect(list).toHaveLength(2);
+
+    // Remove User and call again
+    const user = list.find((a) => a.id === OTB_USER_ID);
+    if (user) {
+      await removeAccount(user.id);
+    }
+    await ensureOtbAccounts();
+    list = get(accounts);
+    expect(list).toHaveLength(2);
+    expect(list.find((a) => a.id === OTB_USER_ID)?.displayName).toBe('User');
+  });
+
+  it('is idempotent — calling twice creates no duplicates', async () => {
+    await ensureOtbAccounts();
+    await ensureOtbAccounts();
+    const list = get(accounts);
+    expect(list).toHaveLength(2);
+  });
+
+  it('sets User as the selected account', async () => {
+    await ensureOtbAccounts();
     const sel = get(selectedAccount);
-    expect(sel?.displayName).toBe('Guest');
-  });
-
-  it('is idempotent — does not create a second account', async () => {
-    await ensureGuest();
-    await ensureGuest();
-    const list = get(accounts);
-    expect(list).toHaveLength(1);
+    expect(sel?.id).toBe(OTB_USER_ID);
+    expect(sel?.displayName).toBe('User');
   });
 });
 
 describe('init', () => {
   it('loads accounts from the store', async () => {
-    await ensureGuest();
+    await ensureOtbAccounts();
     accounts.set([]);
     selectedAccount.set(null);
     await init();
-    expect(get(accounts)).toHaveLength(1);
-    expect(get(selectedAccount)?.displayName).toBe('Guest');
+    expect(get(accounts)).toHaveLength(2);
+    expect(get(selectedAccount)?.id).toBe(OTB_USER_ID);
   });
 
   it('selects nothing when the store is empty', async () => {
@@ -94,17 +112,19 @@ describe('saveAccount', () => {
 
 describe('removeAccount', () => {
   it('removes the account from the list', async () => {
-    await ensureGuest();
+    await ensureOtbAccounts();
     const id = get(accounts)[0].id;
     await removeAccount(id);
-    expect(get(accounts)).toHaveLength(0);
+    expect(get(accounts)).toHaveLength(1);
   });
 
   it('clears selected account when it is removed', async () => {
-    await ensureGuest();
-    const id = get(accounts)[0].id;
-    selectedAccount.set(get(accounts)[0]);
-    await removeAccount(id);
-    expect(get(selectedAccount)).toBeNull();
+    await ensureOtbAccounts();
+    const user = get(accounts).find((a) => a.id === OTB_USER_ID);
+    if (user) {
+      selectedAccount.set(user);
+      await removeAccount(user.id);
+      expect(get(selectedAccount)).toBeNull();
+    }
   });
 });

@@ -19,3 +19,7 @@ export const LS_LICHESS_PENDING_PREFIX = 'clvq.lichess.pending.';
 export const LS_LICHESS_ACTIVE = 'clvq.lichess.active';
 /** Home page last-used setup (playMode, time controls, accounts, orientation). */
 export const LS_HOME_PREFS = 'clvq.home.prefs';
+
+/** Fixed OTB account IDs — canonical identifiers for 'Guest' and 'User' accounts. */
+export const OTB_GUEST_ID = 'clvq-otb-guest';
+export const OTB_USER_ID = 'clvq-otb-user';

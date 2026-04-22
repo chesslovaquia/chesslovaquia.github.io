@@ -4,35 +4,25 @@
   import { createEventDispatcher } from 'svelte';
   import { QUICK_SETUPS } from '../lib/time-control';
   import type { TimeControl } from '../lib/time-control';
-  import AccountPicker from './AccountPicker.svelte';
   import TimeControlPicker from './TimeControlPicker.svelte';
-  import type { Account } from '../lib/accounts';
-
-  export let accountList: Account[];
-  export let whiteAccount: Account | null;
-  export let blackAccount: Account | null;
 
   const dispatch = createEventDispatcher<{
     start: {
       timeControl: TimeControl | null;
-      whiteAccountId: string;
-      blackAccountId: string;
       orientation: 'white' | 'black';
     };
   }>();
 
-  export let selectedTc: TimeControl | null = QUICK_SETUPS[4].tc; // 5+0 default
-  export let orientation: 'white' | 'black' = 'white';
+  export let selectedTc: TimeControl | null = QUICK_SETUPS[4].tc; // 30+20 default
+  export let orientation: 'white' | 'black' | 'random' = 'white';
 
   function start() {
-    const wId = whiteAccount?.id;
-    const bId = blackAccount?.id;
-    if (!wId || !bId) return;
+    const actualOrientation = orientation === 'random'
+      ? (Math.random() < 0.5 ? 'white' : 'black')
+      : orientation;
     dispatch('start', {
       timeControl: selectedTc,
-      whiteAccountId: wId,
-      blackAccountId: bId,
-      orientation,
+      orientation: actualOrientation,
     });
   }
 </script>
@@ -43,32 +33,26 @@
   </section>
 
   <section class="section">
-    <h2>Players</h2>
-    <div class="players">
-      <div class="player-row">
-        <span class="player-color white-dot">White</span>
-        <AccountPicker accountList={accountList} bind:selected={whiteAccount} />
-      </div>
-      <div class="player-row">
-        <span class="player-color black-dot">Black</span>
-        <AccountPicker accountList={accountList} bind:selected={blackAccount} />
-      </div>
-    </div>
+    <h2>Orientation</h2>
     <div class="orientation-row">
       <label class="orient-label">
         <input type="radio" bind:group={orientation} value="white" />
-        View as White
+        Play as White
       </label>
       <label class="orient-label">
         <input type="radio" bind:group={orientation} value="black" />
-        View as Black
+        Play as Black
+      </label>
+      <label class="orient-label">
+        <input type="radio" bind:group={orientation} value="random" />
+        Random
       </label>
     </div>
   </section>
 
   <button
     class="start-btn"
-    disabled={!whiteAccount || !blackAccount}
+    disabled={!selectedTc}
     on:click={start}
   >Start Game</button>
 </div>
@@ -89,48 +73,9 @@
     margin: 0 0 0.5rem;
   }
 
-  .players {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .player-row {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-  }
-
-  .player-color {
-    font-size: 0.85rem;
-    min-width: 3.5rem;
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-  }
-
-  .player-color::before {
-    content: '';
-    display: inline-block;
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    border: 1px solid var(--clvq-border);
-    flex-shrink: 0;
-  }
-
-  .white-dot::before {
-    background: #f0d9b5;
-  }
-
-  .black-dot::before {
-    background: #b58863;
-  }
-
   .orientation-row {
     display: flex;
     gap: 1rem;
-    margin-top: 0.5rem;
     font-size: 0.85rem;
   }
 

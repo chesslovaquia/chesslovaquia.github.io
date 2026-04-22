@@ -7,6 +7,7 @@
   import type { Game } from './lib/games';
   import { getAllAccounts } from './lib/accounts';
   import type { Account } from './lib/accounts';
+  import { OTB_USER_ID } from './lib/config';
   import { importUserGames } from './lib/lichess/history';
   import { logger } from './lib/logger';
 
@@ -53,6 +54,11 @@
   }
 
   function playerColor(game: Game): 'white' | 'black' {
+    // For OTB games, check if we (User account) played white
+    if (game.source === 'otb') {
+      return game.whiteAccountId === OTB_USER_ID ? 'white' : 'black';
+    }
+    // For online games (Lichess, chess.com), check if white is our account
     return accounts.has(game.whiteAccountId) ? 'white' : 'black';
   }
 

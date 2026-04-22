@@ -5,16 +5,16 @@
   import NavMenu from './components/NavMenu.svelte';
   import { accounts, init, saveAccount, removeAccount } from './lib/accounts';
   import type { Account } from './lib/accounts';
+  import { OTB_USER_ID } from './lib/config';
   import { logger } from './lib/logger';
   import { startAuth, completeAuth, revokeToken } from './lib/lichess/auth';
   import { importUserGames } from './lib/lichess/history';
 
-  let newName = '';
-  let adding = false;
-  let error = '';
   let authError = '';
   let syncStatus = new Map<string, string>(); // accountId → status message
   let confirmingRemove: string | null = null;
+  let editingUserId: string | null = null;
+  let editingUserName = '';
 
   const redirectUri = window.location.origin + window.location.pathname;
 
@@ -42,28 +42,28 @@
     }
   }
 
-  async function addAccount() {
-    const name = newName.trim();
-    if (!name) { error = 'Name is required.'; return; }
-    error = '';
-    adding = true;
-    try {
-      const account: Account = {
-        id: crypto.randomUUID(),
-        network: 'otb',
-        displayName: name,
-        handle: null,
-        credentials: null,
-        createdAt: Date.now(),
-      };
-      await saveAccount(account);
-      newName = '';
-    } catch (err) {
-      logger.error('add account', err);
-      error = 'Failed to add account.';
-    } finally {
-      adding = false;
+  function startEditUser(account: Account) {
+    editingUserId = account.id;
+    editingUserName = account.displayName;
+  }
+
+  async function confirmEditUser() {
+    if (!editingUserId) return;
+    const account = $accounts.find((a) => a.id === editingUserId);
+    if (!account) {
+      editingUserId = null;
+      return;
     }
+    try {
+      await saveAccount({ ...account, displayName: editingUserName });
+    } catch (err) {
+      logger.error('update user account', err);
+    }
+    editingUserId = null;
+  }
+
+  function cancelEditUser() {
+    editingUserId = null;
   }
 
   function startRemove(account: Account) {
@@ -107,16 +107,10 @@
     }
   }
 
-  function networkLabel(network: Account['network']): string {
-    if (network === 'otb') return 'OTB';
-    if (network === 'lichess') return 'lichess';
-    return 'chess.com';
-  }
-
   const appVersion: string = __APP_VERSION__;
   const appBuild: string = __APP_BUILD__;
 
-  $: otbAccounts = $accounts.filter((a) => a.network === 'otb');
+  $: otbUser = $accounts.find((a) => a.id === OTB_USER_ID);
   $: lichessAccounts = $accounts.filter((a) => a.network === 'lichess');
 </script>
 
@@ -126,43 +120,25 @@
     <h1>Settings</h1>
   </header>
 
-  <!-- OTB Accounts -->
+  <!-- OTB Player -->
   <section class="section">
-    <h2>OTB Accounts</h2>
-    {#if otbAccounts.length === 0}
-      <p class="empty">No OTB accounts.</p>
-    {:else}
-      <ul class="account-list">
-        {#each otbAccounts as account (account.id)}
-          <li class="account-row">
-            <span class="display-name">{account.displayName}</span>
-            <span class="network">{networkLabel(account.network)}</span>
-            {#if confirmingRemove === account.id}
-              <button class="remove-btn danger" on:click={() => confirmRemove(account)}>Confirm remove</button>
-              <button class="remove-btn" on:click={cancelRemove}>Cancel</button>
-            {:else}
-              <button class="remove-btn" on:click={() => startRemove(account)}>Remove</button>
-            {/if}
-          </li>
-        {/each}
-      </ul>
-    {/if}
-  </section>
-
-  <section class="section">
-    <h2>Add OTB Account</h2>
-    <form class="add-form" on:submit|preventDefault={addAccount}>
-      <input
-        type="text"
-        placeholder="Display name"
-        bind:value={newName}
-        maxlength="40"
-        disabled={adding}
-      />
-      <button type="submit" disabled={adding || !newName.trim()}>Add</button>
-    </form>
-    {#if error}
-      <p class="error">{error}</p>
+    <h2>Your Name</h2>
+    {#if otbUser}
+      <div class="account-row edit-row">
+        {#if editingUserId === OTB_USER_ID}
+          <input
+            type="text"
+            class="edit-input"
+            bind:value={editingUserName}
+            maxlength="40"
+          />
+          <button class="save-btn" on:click={confirmEditUser}>Save</button>
+          <button class="cancel-btn" on:click={cancelEditUser}>Cancel</button>
+        {:else}
+          <span class="display-name">{otbUser.displayName}</span>
+          <button class="edit-btn" on:click={() => startEditUser(otbUser)}>Edit</button>
+        {/if}
+      </div>
     {/if}
   </section>
 
@@ -320,13 +296,13 @@
     background: var(--clvq-surface-hover);
   }
 
-  .add-form {
-    display: flex;
-    gap: 0.5rem;
+  .edit-row {
+    flex-wrap: wrap;
   }
 
-  .add-form input {
+  .edit-input {
     flex: 1;
+    min-width: 150px;
     background: var(--clvq-surface);
     border: 1px solid var(--clvq-border);
     border-radius: 4px;
@@ -335,23 +311,47 @@
     font-size: 0.9rem;
   }
 
-  .add-form input:focus-visible {
+  .edit-input:focus-visible {
     border-color: var(--clvq-accent);
   }
 
-  .add-form button {
+  .edit-btn {
+    background: none;
+    border: 1px solid var(--clvq-border);
+    border-radius: 4px;
+    color: var(--clvq-muted);
+    padding: 0.2rem 0.5rem;
+    cursor: pointer;
+    font-size: 0.8rem;
+  }
+
+  .edit-btn:hover {
+    border-color: var(--clvq-accent);
+    color: var(--clvq-accent);
+  }
+
+  .save-btn {
     background: none;
     border: 1px solid var(--clvq-accent);
     border-radius: 4px;
     color: var(--clvq-accent);
-    padding: 0.4rem 0.9rem;
+    padding: 0.2rem 0.5rem;
     cursor: pointer;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
   }
 
-  .add-form button:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
+  .cancel-btn {
+    background: none;
+    border: 1px solid var(--clvq-border);
+    border-radius: 4px;
+    color: var(--clvq-muted);
+    padding: 0.2rem 0.5rem;
+    cursor: pointer;
+    font-size: 0.8rem;
+  }
+
+  .cancel-btn:hover {
+    border-color: var(--clvq-muted);
   }
 
   .error {

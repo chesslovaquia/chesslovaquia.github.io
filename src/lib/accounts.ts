@@ -3,7 +3,7 @@
 
 import { writable } from 'svelte/store';
 import { Store } from './db';
-import { DB_ACCOUNTS, LS_SELECTED_ACCOUNT } from './config';
+import { DB_ACCOUNTS, LS_SELECTED_ACCOUNT, OTB_GUEST_ID, OTB_USER_ID } from './config';
 import { logger } from './logger';
 
 export type Network = 'otb' | 'lichess' | 'chesscom';
@@ -35,29 +35,54 @@ export async function init(): Promise<void> {
   accounts.set(all);
   const savedId = localStorage.getItem(LS_SELECTED_ACCOUNT);
   const saved = savedId ? all.find((a) => a.id === savedId) ?? null : null;
-  selectedAccount.set(saved ?? all[0] ?? null);
+  // Prefer User account if no saved selection; otherwise use first account
+  const userAccount = all.find((a) => a.id === OTB_USER_ID);
+  selectedAccount.set(saved ?? userAccount ?? all[0] ?? null);
   logger.debug('accounts init', all.length);
 }
 
 /**
- * Create a "Guest" OTB account if no accounts exist.
+ * Ensure both "Guest" and "User" OTB accounts exist with fixed IDs.
  * Idempotent — safe to call on every load.
  */
-export async function ensureGuest(): Promise<void> {
+export async function ensureOtbAccounts(): Promise<void> {
+  const guest = await store.get(OTB_GUEST_ID);
+  const user = await store.get(OTB_USER_ID);
+
+  if (!guest) {
+    const guestAccount: Account = {
+      id: OTB_GUEST_ID,
+      network: 'otb',
+      displayName: 'Guest',
+      handle: null,
+      credentials: null,
+      createdAt: Date.now(),
+    };
+    await store.put(guestAccount);
+    logger.debug('created Guest account');
+  }
+
+  if (!user) {
+    const userAccount: Account = {
+      id: OTB_USER_ID,
+      network: 'otb',
+      displayName: 'User',
+      handle: null,
+      credentials: null,
+      createdAt: Date.now(),
+    };
+    await store.put(userAccount);
+    logger.debug('created User account');
+  }
+
+  // Refresh accounts store to ensure both are present
   const all = await store.getAll();
-  if (all.length > 0) return;
-  const guest: Account = {
-    id: crypto.randomUUID(),
-    network: 'otb',
-    displayName: 'Guest',
-    handle: null,
-    credentials: null,
-    createdAt: Date.now(),
-  };
-  await store.put(guest);
-  accounts.set([guest]);
-  selectedAccount.set(guest);
-  logger.debug('created Guest account', guest.id);
+  accounts.set(all);
+  // Set User as selected if no account is currently selected
+  const currentSelected = all.find((a) => a.id === OTB_USER_ID);
+  if (currentSelected) {
+    selectedAccount.set(currentSelected);
+  }
 }
 
 /** Persist a new or updated account. */

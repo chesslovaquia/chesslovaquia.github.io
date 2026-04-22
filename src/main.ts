@@ -3,7 +3,7 @@
 
 import './app.css';
 import App from './App.svelte';
-import { ensureGuest, init } from './lib/accounts';
+import { ensureOtbAccounts, init } from './lib/accounts';
 import { logger } from './lib/logger';
 
 const target = document.getElementById('app');
@@ -11,7 +11,7 @@ if (!target) throw new Error('#app root not found');
 
 const app = new App({ target });
 
-ensureGuest()
+ensureOtbAccounts()
   .then(() => init())
   .catch((err: unknown) => logger.error('startup error', err));
 
