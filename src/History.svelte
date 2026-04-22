@@ -52,19 +52,24 @@
     return new Date(ts).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
   }
 
-  function resultClass(result: Game['result']): string {
-    if (result === '1/2-1/2') return 'draw';
-    if (result === '*') return 'aborted';
-    if (result === '1-0') return 'win';
-    if (result === '0-1') return 'loss';
-    return 'aborted';
+  function playerColor(game: Game): 'white' | 'black' {
+    return accounts.has(game.whiteAccountId) ? 'white' : 'black';
   }
 
-  function resultLabel(result: Game['result']): string {
-    if (result === '1-0')     return '+';
-    if (result === '0-1')     return '−';
+  function resultClass(result: Game['result'], color: 'white' | 'black'): string {
+    if (result === '1/2-1/2') return 'draw';
+    if (result === '*') return 'aborted';
+    const whiteWon = result === '1-0';
+    const playerWon = color === 'white' ? whiteWon : !whiteWon;
+    return playerWon ? 'win' : 'loss';
+  }
+
+  function resultLabel(result: Game['result'], color: 'white' | 'black'): string {
     if (result === '1/2-1/2') return '=';
-    return '×';
+    if (result === '*') return '×';
+    const whiteWon = result === '1-0';
+    const playerWon = color === 'white' ? whiteWon : !whiteWon;
+    return playerWon ? '+' : '−';
   }
 </script>
 
@@ -110,8 +115,8 @@
               <span class="source">{game.source}</span>
             {/if}
             <span class="tc">{game.timeControlBucket}</span>
-            <span class="result result-{resultClass(game.result)}">
-              {resultLabel(game.result)}
+            <span class="result result-{resultClass(game.result, playerColor(game))}">
+              {resultLabel(game.result, playerColor(game))}
             </span>
           </span>
         </li>
