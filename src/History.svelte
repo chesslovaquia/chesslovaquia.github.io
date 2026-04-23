@@ -110,21 +110,23 @@
     <ul class="game-list">
       {#each games as game (game.id)}
         <li class="game-row">
-          <span class="date">{formatDate(game.playedAt)}</span>
-          <span class="players">
-            <span class="player">{accountName(game.whiteAccountId)}</span>
-            <span class="vs">vs</span>
-            <span class="player">{accountName(game.blackAccountId)}</span>
-          </span>
-          <span class="game-meta">
-            {#if game.source !== 'otb'}
-              <span class="source">{game.source}</span>
-            {/if}
-            <span class="tc">{game.timeControlBucket}</span>
-            <span class="result result-{resultClass(game.result, playerColor(game))}">
-              {resultLabel(game.result, playerColor(game))}
+          <a class="game-row-link" href="/review/?id={game.id}">
+            <span class="date">{formatDate(game.playedAt)}</span>
+            <span class="players">
+              <span class="player">{accountName(game.whiteAccountId)}</span>
+              <span class="vs">vs</span>
+              <span class="player">{accountName(game.blackAccountId)}</span>
             </span>
-          </span>
+            <span class="game-meta">
+              {#if game.source !== 'otb'}
+                <span class="source">{game.source}</span>
+              {/if}
+              <span class="tc">{game.timeControlBucket}</span>
+              <span class="result result-{resultClass(game.result, playerColor(game))}">
+                {resultLabel(game.result, playerColor(game))}
+              </span>
+            </span>
+          </a>
         </li>
       {/each}
     </ul>
@@ -162,16 +164,17 @@
 
   .sync-btn {
     background: none;
-    border: 1px solid var(--clvq-accent-blue);
+    border: 1px solid var(--clvq-border);
     border-radius: 4px;
-    color: var(--clvq-accent-blue);
-    padding: 0.2rem 0.6rem;
+    color: var(--clvq-muted);
+    padding: 0.2rem 0.5rem;
     cursor: pointer;
     font-size: 0.8rem;
   }
 
   .sync-btn:hover:not(:disabled) {
-    background: var(--clvq-surface-hover);
+    border-color: var(--clvq-accent-blue);
+    color: var(--clvq-accent-blue);
   }
 
   .sync-btn:disabled {
@@ -195,16 +198,25 @@
   }
 
   .game-row {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.5rem 0.75rem;
     background: var(--clvq-surface);
     border: 1px solid var(--clvq-border);
     border-radius: var(--clvq-radius-md);
     font-size: 0.875rem;
-    flex-wrap: wrap;
   }
+
+  .game-row-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 0.75rem;
+    text-decoration: none;
+    color: inherit;
+    flex-wrap: wrap;
+    border-radius: var(--clvq-radius-md);
+  }
+
+  .game-row-link:hover { background: var(--clvq-surface-hover); }
+  .game-row-link:focus-visible { outline: 2px solid var(--clvq-accent); outline-offset: -2px; }
 
   .date {
     color: var(--clvq-muted);
