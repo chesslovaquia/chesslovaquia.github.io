@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-release.py - Set the release version in package.json and static/manifest.json.
+release.py - Set the release version in package.json, package-lock.json, and static/manifest.json.
 
 Usage:
   python3 release.py [<version>]
@@ -19,8 +19,9 @@ from pathlib import Path
 
 WORKSPACE = Path(__file__).parent
 
-PACKAGE_JSON  = WORKSPACE / "package.json"
-MANIFEST_JSON = WORKSPACE / "static" / "manifest.json"
+PACKAGE_JSON      = WORKSPACE / "package.json"
+PACKAGE_LOCK_JSON = WORKSPACE / "package-lock.json"
+MANIFEST_JSON     = WORKSPACE / "static" / "manifest.json"
 
 VERSION_RE = re.compile(r"^\d+\.\d+(\.\d+)?(-\d+)?$")
 
@@ -34,6 +35,24 @@ def update_package_json(version):
     data["version"] = version
     PACKAGE_JSON.write_text(json.dumps(data, indent=2) + "\n")
     print(f"  updated    package.json  {current} -> {version}")
+
+
+def update_package_lock_json(version):
+    data = json.loads(PACKAGE_LOCK_JSON.read_text())
+    changed = False
+    current = data.get("version", "")
+    if current != version:
+        data["version"] = version
+        changed = True
+    root_pkg = data.get("packages", {}).get("", {})
+    if root_pkg.get("version", "") != version:
+        root_pkg["version"] = version
+        changed = True
+    if not changed:
+        print(f"  unchanged  package-lock.json ({version})")
+        return
+    PACKAGE_LOCK_JSON.write_text(json.dumps(data, indent=2) + "\n")
+    print(f"  updated    package-lock.json  {current} -> {version}")
 
 
 def update_manifest_json(version):
@@ -88,6 +107,7 @@ def main():
         sys.exit(1)
 
     update_package_json(version)
+    update_package_lock_json(version)
     update_manifest_json(version)
 
 
