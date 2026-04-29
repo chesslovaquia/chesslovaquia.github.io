@@ -60,7 +60,17 @@ site/
 │   │   ├── db.ts            # Generic IndexedDB Store<T> wrapper
 │   │   └── accounts.ts      # Account type, CRUD, Svelte stores, ensureGuest
 │   ├── components/
-│   │   └── AccountPicker.svelte
+│   │   ├── Board.svelte
+│   │   ├── BottomTabs.svelte   # Persistent bottom nav (Home / History / Settings); hidden on /play/
+│   │   ├── Clock.svelte
+│   │   ├── MoveList.svelte
+│   │   ├── PromotionDialog.svelte
+│   │   ├── Wordmark.svelte     # Stacked-emblem brand mark (knight glyph + amber rule + name)
+│   │   └── home/
+│   │       ├── BoardStrip.svelte     # Decorative blurred chequer behind the wordmark
+│   │       ├── ModeSegmented.svelte  # OTB / Lichess mode toggle
+│   │       ├── OrientationPicker.svelte  # Play as White / Random / Black
+│   │       └── TimePresets.svelte    # Bucket-grouped time control chips
 │   ├── App.svelte            # Home page
 │   ├── Play.svelte           # /play/ (Phase 1)
 │   ├── History.svelte        # /history/ (Phase 1)
@@ -176,17 +186,20 @@ Full data model (Game, GameState) is in `docs/plan.md`.
 - **`--clvq-accent` vs `--clvq-accent-green`:** `--clvq-accent` (warm amber) is the primary interactive color — active tabs, selected states, primary action buttons, nav highlights, clock active border. `--clvq-accent-green` is semantically reserved for win result badges only (`History.svelte`). Never use `--clvq-accent-green` for interactive chrome.
 - **Board highlight theme:** `src/board-wood4.css` overrides chessground's last-move and selected-square highlights with amber (`rgba(201, 161, 78, ...)`) to match the UI accent palette. Move-destination dots (`.move-dest`, `.oc.move-dest`) are intentionally left at the chessground default green — the default reads clearly on both the golden light squares and walnut dark squares of wood4, and custom colors (amber, steel blue, periwinkle) were tried and rejected. Imported in `play.ts` after `src/chessground.wood4.css` (the project's board theme file, which replaces `chessground.brown.css`).
 - **Border radius hierarchy:** Use `--clvq-radius-sm: 4px` for small controls (buttons, inputs, chips). Use `--clvq-radius-md: 6px` for large card-level surfaces (`.account-row`, `.game-row`, `.game-over-banner`, dialogs). This creates visual hierarchy without introducing arbitrary values.
-- **Piece color indicators:** Use `#f0d9b5` (light square) for white and `#b58863` (dark square) for black. These match chessground's default colors and `QuickSetup.svelte` for consistency across the app.
+- **Piece color indicators:** Use `#f0d9b5` (light square) for white and `#b58863` (dark square) for black. These match chessground's default colors across the app.
 - **Confirmations instead of `window.confirm()`:** Replace modal confirms with inline two-step UIs (e.g., draw offer, account removal). First click sets a `confirming` state, second click executes. Add a `cancel` handler to reset the state. This is more discoverable and consistent with mobile UX.
 - **Keyboard shortcuts guard:** When adding keyboard handlers to `svelte:window`, guard against INPUT/TEXTAREA/BUTTON targets to avoid hijacking browser focus. Check `(e.target as HTMLElement).tagName` and return early if focused on a form element.
 - **Focus-visible for keyboard users:** Use `:focus-visible` (not `:focus`) for all interactive elements. This shows focus rings only for keyboard navigation, not mouse clicks. Remove `outline: none` from any `:focus` rule so the global style applies.
 - **Animation durations:** Use 120ms for content transitions (fade between modes), 0.8s for pulsing alerts (clock low-time), 1.4s for loading states (seeking ellipsis). Keep transitions snappy; avoid long delays.
 - **Loading state animations:** Use CSS `@keyframes` with `steps(4, end)` for discrete animations (e.g., ellipsis dots). This avoids JavaScript polling and scales well.
 - **History result badges:** Small filled square badges (`1.1rem × 1.1rem`, `border-radius: var(--clvq-radius-sm)`, white text). Map PGN result codes to single characters: `+` on green (`.result-win`), `−` on red (`.result-loss`), `=` on muted gray (`.result-draw`), `×` on muted gray (`.result-aborted`). Always from White's perspective, consistent with chess.com/lichess conventions.
-- **Play page has no global nav (`NavMenu`).** The play page maximizes board space — no nav bar, no home link. The only way to exit a game is through game actions: Abort (before move 2), Resign, or Offer Draw. Once the game ends, "New Game" returns to the home page. Never add navigation chrome (back links, home buttons, breadcrumbs) to `Play.svelte` or `GameBar.svelte`.
-- **Play page action bar — single flat flex container.** All in-game buttons (abort/resign/draw + nav) live as direct children of `.info-panel` — no nested wrappers or sub-components. All buttons are `.action-btn` (2.2rem square icons). The `GameBar` component has been removed; its logic is inlined in `Play.svelte`. Do not reintroduce a wrapper component or nested flex containers.
-- **Play page layout — portrait:** Four-row grid: `[opponent info] / [board] / [bottom player info] / [action bar]`. No `max-width` constraint — the board fills the full screen width edge-to-edge. No padding on `.play-layout`. Bottom player info and action bar blend together with no dividing border. `grid-template-rows: auto 1fr auto auto`.
-- **Play page layout — landscape:** Four-column grid: `[opponent info] | [board] | [our info] | [action bar]`. `grid-template-columns: auto 1fr auto auto`. Board fills `100dvh` height. All four columns are vertical flex containers. Player info columns are narrow; action bar is a stacked column of buttons. No borders between columns — blended appearance consistent with portrait. The landscape rule applies at `@media (orientation: landscape) and (min-width: 700px)`.
+- **Bottom tab bar (`BottomTabs.svelte`):** Persistent bottom nav shown on Home, History, and Settings — never on `/play/`. Each page that uses it wraps content in a `.page-shell { height: 100dvh; display: grid; grid-template-rows: 1fr auto }` div, with `main { min-height: 0; overflow-y: auto }` to keep the tab bar pinned at the bottom. Active tab color is `--clvq-accent`; inactive is `--clvq-muted`. No SvelteKit `$app/stores` — active detection uses `window.location.pathname` (set once per page load).
+- **Home page structure:** `.app-shell` (100dvh grid with 1fr + auto rows) wraps `.home-layout` (fills 1fr) and `<BottomTabs />` (auto). Inside `.home-layout`: `<BoardStrip />` is `position: absolute` (z-index 0); `.home-content` is the scrollable content column (z-index 1). The `<Wordmark>` sits in a 130px-tall `.home-header` at the top of `.home-content`. `BoardStrip` is 240px tall and fades to `--clvq-bg`.
+- **Wordmark component:** Always use `<Wordmark>` for the app name display. Do not inline the knight glyph or wordmark text elsewhere. `size` prop scales all dimensions proportionally. `dropShadow` adds a text-shadow for legibility over the board strip.
+- **Play page has no global nav.** The play page maximizes board space — no nav bar, no home link. The only way to exit a game is through game actions: Abort (before move 2), Resign, or Offer Draw. Once the game ends, "New Game" returns to the home page. Never add navigation chrome to `Play.svelte`.
+- **Play page action bar — two groups.** Left group (`.action-bar__group`): game-state buttons (abort/resign, draw offer, or new-game after game ends). Right group: four nav buttons (first/prev/next/last). All buttons are `.action-bar__btn` (2.4rem square, inline SVG icons — no unicode glyphs). Confirm flows (resign, draw) temporarily replace the left group with `[label][✓][✕]`.
+- **Play page layout — portrait:** Four-row grid: `"top" "board" "bottom" "actions"`. Safe-area insets via `env(safe-area-inset-*)` on `.play-layout`. Board is in `.board-area` (container-type: size) containing `.board-square` (min(100cqw, 100cqh) square). `grid-template-rows: auto 1fr auto auto; gap: 0`.
+- **Play page layout — landscape:** Three-column × two-row grid: `"top board bottom" / "top board actions"`. Top player spans both rows of column 1; board spans both rows of column 2; bottom player in row 1 col 3; action bar in row 2 col 3. `grid-template-columns: minmax(120px, 18%) 1fr minmax(120px, 22%)`. Landscape rule applies at `@media (orientation: landscape)` (no min-width guard).
 
 ---
 

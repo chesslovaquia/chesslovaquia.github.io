@@ -2,7 +2,7 @@
 <!-- See LICENSE file. -->
 <script lang="ts">
   import { onMount } from 'svelte';
-  import NavMenu from './components/NavMenu.svelte';
+  import BottomTabs from './components/BottomTabs.svelte';
   import { getAllGames } from './lib/games';
   import type { Game } from './lib/games';
   import { getAllAccounts } from './lib/accounts';
@@ -79,9 +79,9 @@
   }
 </script>
 
+<div class="page-shell">
 <main>
   <header>
-    <NavMenu />
     <h1>History</h1>
   </header>
 
@@ -132,8 +132,20 @@
     </ul>
   {/if}
 </main>
+<BottomTabs />
+</div>
 
 <style>
+  .page-shell {
+    height: 100dvh;
+    display: grid;
+    grid-template-rows: 1fr auto;
+    overflow: hidden;
+  }
+  main {
+    min-height: 0;
+    overflow-y: auto;
+  }
   h1 {
     font-size: 1.4rem;
     font-weight: 600;

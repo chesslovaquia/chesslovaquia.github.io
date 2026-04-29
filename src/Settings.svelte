@@ -2,7 +2,7 @@
 <!-- See LICENSE file. -->
 <script lang="ts">
   import { onMount } from 'svelte';
-  import NavMenu from './components/NavMenu.svelte';
+  import BottomTabs from './components/BottomTabs.svelte';
   import { accounts, init, saveAccount, removeAccount } from './lib/accounts';
   import type { Account } from './lib/accounts';
   import { OTB_USER_ID } from './lib/config';
@@ -114,9 +114,9 @@
   $: lichessAccounts = $accounts.filter((a) => a.network === 'lichess');
 </script>
 
+<div class="page-shell">
 <main>
   <header>
-    <NavMenu />
     <h1>Settings</h1>
   </header>
 
@@ -184,8 +184,20 @@
 
   <footer class="version">v{appVersion} · {appBuild}</footer>
 </main>
+<BottomTabs />
+</div>
 
 <style>
+  .page-shell {
+    height: 100dvh;
+    display: grid;
+    grid-template-rows: 1fr auto;
+    overflow: hidden;
+  }
+  main {
+    min-height: 0;
+    overflow-y: auto;
+  }
   h1 {
     font-size: 1.4rem;
     font-weight: 600;

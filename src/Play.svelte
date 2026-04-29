@@ -556,10 +556,12 @@
 <svelte:window on:keydown={handleKeydown} />
 
 <div class="play-layout">
-  <!-- Top player (opponent) -->
-  <div class="top-player">
-    <span class="color-dot" data-color={topColor}></span>
-    <span class="player-name">{topLabel}</span>
+  <!-- Top player row -->
+  <div class="player-row player-row--top">
+    <span class="player-row__name">
+      <span class="color-dot" data-color={topColor}></span>
+      {topLabel}
+    </span>
     {#if topClockMs !== null}
       <Clock ms={topClockMs} active={clockActive && cgColor(turn) === topColor} label="" />
     {/if}
@@ -567,163 +569,256 @@
 
   <!-- Board -->
   <div class="board-area">
-    {#if lichessMode && lichessConnecting}
-      <div class="connecting-overlay">Connecting to lichess…</div>
-    {/if}
-    <Board
-      fen={boardFen}
-      {orientation}
-      {movableColor}
-      {dests}
-      lastMove={lastMovePair}
-      check={boardCheck ? cgColor(boardTurn) : false}
-      viewOnly={!atLivePosition || gameStatus !== 'in_progress'}
-      onMove={handleMove}
-    />
+    <div class="board-square">
+      {#if lichessMode && lichessConnecting}
+        <div class="connecting-overlay">Connecting to lichess…</div>
+      {/if}
+      <Board
+        fen={boardFen}
+        {orientation}
+        {movableColor}
+        {dests}
+        lastMove={lastMovePair}
+        check={boardCheck ? cgColor(boardTurn) : false}
+        viewOnly={!atLivePosition || gameStatus !== 'in_progress'}
+        onMove={handleMove}
+      />
+    </div>
   </div>
 
-  <!-- Bottom player (self) -->
-  <div class="bottom-player">
-    <span class="color-dot" data-color={bottomColor}></span>
-    <span class="player-name">{bottomLabel}</span>
+  <!-- Bottom player row -->
+  <div class="player-row player-row--bottom">
+    <span class="player-row__name">
+      <span class="color-dot" data-color={bottomColor}></span>
+      {bottomLabel}
+    </span>
     {#if bottomClockMs !== null}
       <Clock ms={bottomClockMs} active={clockActive && cgColor(turn) === bottomColor} label="" />
     {/if}
   </div>
 
-  <!-- Action bar: all buttons in one row (portrait) or column (landscape) -->
-  <div class="info-panel">
-    {#if gameStatus !== 'in_progress'}
-      <span class="result-text">{resultLabel(gameStatus)}</span>
-      <button class="action-btn action-btn-primary" on:click={handleNewGame} title="New Game">↺</button>
-    {:else}
-      {#if moves.length < 2}
-        <button class="action-btn action-btn-danger" on:click={handleAbort} title="Abort">✕</button>
+  <!-- Action bar -->
+  <div class="action-bar">
+    <div class="action-bar__group">
+      {#if gameStatus !== 'in_progress'}
+        <span class="result-text">{resultLabel(gameStatus)}</span>
+        <button class="action-bar__btn" on:click={handleNewGame} aria-label="New game">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 11l9-8 9 8" /><path d="M5 10v10h14V10" />
+          </svg>
+        </button>
       {:else if confirmingResign}
-        <button class="action-btn action-btn-danger" on:click={handleResign} title="Confirm resign">✓</button>
-        <button class="action-btn" on:click={handleCancelResign} title="Cancel">✕</button>
+        <span class="action-bar__confirm-label">Resign?</span>
+        <button class="action-bar__btn action-bar__btn--danger" on:click={handleResign} aria-label="Confirm resign">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 13l4 4L19 7" />
+          </svg>
+        </button>
+        <button class="action-bar__btn" on:click={handleCancelResign} aria-label="Cancel">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 6l12 12M18 6l-12 12" />
+          </svg>
+        </button>
+      {:else if confirmingDraw}
+        <span class="action-bar__confirm-label">Draw?</span>
+        <button class="action-bar__btn" on:click={handleOfferDraw} aria-label="Confirm draw">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 13l4 4L19 7" />
+          </svg>
+        </button>
+        <button class="action-bar__btn" on:click={handleCancelDraw} aria-label="Cancel">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 6l12 12M18 6l-12 12" />
+          </svg>
+        </button>
       {:else}
-        <button class="action-btn action-btn-danger" on:click={handleResign} title="Resign">⚑</button>
+        {#if moves.length < 2}
+          <button class="action-bar__btn action-bar__btn--danger" on:click={handleAbort} aria-label="Abort">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 6l12 12M18 6l-12 12" />
+            </svg>
+          </button>
+        {:else}
+          <button class="action-bar__btn action-bar__btn--danger" on:click={handleResign} aria-label="Resign">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 21V4M4 4h11l-2 4 2 4H4" />
+            </svg>
+          </button>
+        {/if}
+        <button class="action-bar__btn" on:click={handleOfferDraw} aria-label="Offer draw" disabled={lichessMode}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 8h16M4 16h16" />
+          </svg>
+        </button>
       {/if}
-      {#if confirmingDraw}
-        <button class="action-btn action-btn-primary" on:click={handleOfferDraw} title="Confirm draw">✓</button>
-        <button class="action-btn" on:click={handleCancelDraw} title="Cancel">✕</button>
-      {:else}
-        <button class="action-btn" on:click={handleOfferDraw} title="Offer Draw">½</button>
-      {/if}
-    {/if}
-    <button class="action-btn" on:click={() => handleNavigate(-1)} disabled={currentMoveIndex <= -1}>⏮</button>
-    <button class="action-btn" on:click={() => handleNavigate(currentMoveIndex - 1)} disabled={currentMoveIndex <= -1}>◀</button>
-    <button class="action-btn" on:click={() => handleNavigate(currentMoveIndex + 1)} disabled={atLivePosition}>▶</button>
-    <button class="action-btn" on:click={() => handleNavigate(liveIndex)} disabled={atLivePosition}>⏭</button>
+    </div>
+
+    <div class="action-bar__group">
+      <button class="action-bar__btn" on:click={() => handleNavigate(-1)} disabled={currentMoveIndex <= -1} aria-label="First move">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 5l-9 7 9 7M5 5v14" />
+        </svg>
+      </button>
+      <button class="action-bar__btn" on:click={() => handleNavigate(currentMoveIndex - 1)} disabled={currentMoveIndex <= -1} aria-label="Previous move">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M15 5l-7 7 7 7" />
+        </svg>
+      </button>
+      <button class="action-bar__btn" on:click={() => handleNavigate(currentMoveIndex + 1)} disabled={atLivePosition} aria-label="Next move">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
+      <button class="action-bar__btn" on:click={() => handleNavigate(liveIndex)} disabled={atLivePosition} aria-label="Last move">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 5l9 7-9 7M19 5v14" />
+        </svg>
+      </button>
+    </div>
   </div>
 </div>
 
 <style>
   .play-layout {
+    height: 100dvh;
+    width: 100vw;
+    background: var(--clvq-bg);
+    color: var(--clvq-fg);
     display: grid;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0);
+    padding-bottom: env(safe-area-inset-bottom, 0);
+    padding-left: env(safe-area-inset-left, 0);
+    padding-right: env(safe-area-inset-right, 0);
+    overflow: hidden;
+    grid-template-rows: auto 1fr auto auto;
+    grid-template-columns: 1fr;
     grid-template-areas:
       "top"
       "board"
       "bottom"
-      "info";
-    grid-template-rows: auto 1fr auto auto;
-    height: 100dvh;
-    gap: 0.4rem;
-    box-sizing: border-box;
+      "actions";
+    gap: 0;
   }
 
-  .top-player    { grid-area: top; }
-  .board-area    { grid-area: board; position: relative; container-type: size; display: flex; align-items: center; justify-content: center; }
-  .bottom-player { grid-area: bottom; }
-  .info-panel    { grid-area: info; display: flex; flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: center; gap: 0.4rem; border-top: none; padding: 0.3rem 0; }
-
-  @media (orientation: landscape) and (min-width: 700px) {
+  @media (orientation: landscape) {
     .play-layout {
-      grid-template-areas: "top board bottom info";
-      grid-template-columns: auto 1fr auto auto;
-      grid-template-rows: 1fr;
-      max-width: none;
-      height: 100dvh;
-      padding: 0;
-    }
-
-    .top-player,
-    .bottom-player {
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      padding: 0 0.4rem;
-      gap: 0.4rem;
-    }
-
-    .info-panel {
-      flex-direction: column;
-      flex-wrap: nowrap;
-      justify-content: center;
-      border-top: none;
-      border-left: none;
-      padding: 0 0.35rem;
+      grid-template-rows: 1fr auto;
+      grid-template-columns: minmax(120px, 18%) 1fr minmax(120px, 22%);
+      grid-template-areas:
+        "top    board  bottom"
+        "top    board  actions";
     }
   }
 
-  .top-player,
-  .bottom-player {
+  .player-row--top    { grid-area: top; }
+  .player-row--bottom { grid-area: bottom; }
+  .board-area         { grid-area: board; min-height: 0; min-width: 0; }
+  .action-bar         { grid-area: actions; }
+
+  .player-row {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.95rem;
   }
 
-  .player-name {
-    font-size: 0.9rem;
+  .player-row__name {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--clvq-fg);
     font-weight: 500;
-    flex: 1;
+    min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    flex: 1;
   }
 
+  @media (orientation: landscape) {
+    .player-row { flex-direction: column; align-items: flex-start; gap: 0.4rem; }
+    .player-row__name { flex: unset; }
+  }
 
-  .action-btn {
-    width: 2.2rem;
-    height: 2.2rem;
-    padding: 0;
-    background: var(--clvq-surface);
-    border: 1px solid var(--clvq-border);
-    border-radius: 4px;
-    color: var(--clvq-fg);
-    cursor: pointer;
-    font-size: 1rem;
+  .board-area {
     display: flex;
     align-items: center;
     justify-content: center;
+    container-type: size;
+    overflow: hidden;
+  }
+
+  .board-square {
+    width: min(100cqw, 100cqh);
+    height: min(100cqw, 100cqh);
+    position: relative;
+  }
+
+  .action-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 0.75rem;
+    gap: 0.4rem;
+  }
+
+  .action-bar__group {
+    display: flex;
+    gap: 0.4rem;
+    align-items: center;
+  }
+
+  .action-bar__btn {
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: var(--clvq-radius-sm);
+    border: 1px solid var(--clvq-border);
+    background: var(--clvq-surface);
+    color: var(--clvq-fg);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
     flex-shrink: 0;
   }
 
-  .action-btn:hover {
+  .action-bar__btn svg { width: 1.1rem; height: 1.1rem; }
+
+  .action-bar__btn:hover:not(:disabled) {
     background: var(--clvq-surface-hover);
   }
 
-  .action-btn:disabled {
-    opacity: 0.3;
-    cursor: default;
+  .action-bar__btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .action-bar__btn--danger { color: var(--clvq-accent-red); border-color: var(--clvq-accent-red); }
+
+  .action-bar__confirm-label {
+    font-size: 0.8rem;
+    color: var(--clvq-muted);
+    white-space: nowrap;
   }
 
-  .action-btn-primary {
-    border-color: var(--clvq-accent);
-    color: var(--clvq-accent);
-  }
-
-  .action-btn-danger {
-    border-color: var(--clvq-accent-red);
-    color: var(--clvq-accent-red);
+  @media (orientation: landscape) {
+    .action-bar {
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: stretch;
+      gap: 0.5rem;
+    }
+    .action-bar__group {
+      flex-direction: row;
+      justify-content: space-around;
+    }
   }
 
   .result-text {
     font-size: 0.75rem;
     color: var(--clvq-muted);
+    white-space: nowrap;
   }
-
 
   .connecting-overlay {
     position: absolute;
@@ -746,11 +841,6 @@
     flex-shrink: 0;
   }
 
-  .color-dot[data-color="white"] {
-    background: #f0d9b5;
-  }
-
-  .color-dot[data-color="black"] {
-    background: #b58863;
-  }
+  .color-dot[data-color="white"] { background: #f0d9b5; }
+  .color-dot[data-color="black"] { background: #b58863; }
 </style>

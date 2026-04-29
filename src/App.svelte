@@ -1,18 +1,19 @@
 <!-- Copyright (c) Jeremías Casteglione <jrmsdev@gmail.com> -->
 <!-- See LICENSE file. -->
 <script lang="ts">
-  import { fade } from 'svelte/transition';
-  import NavMenu from './components/NavMenu.svelte';
-  import QuickSetup from './components/QuickSetup.svelte';
-  import TimeControlPicker from './components/TimeControlPicker.svelte';
   import { accounts } from './lib/accounts';
   import type { Account } from './lib/accounts';
   import { LS_ACTIVE_GAME, LS_HOME_PREFS, OTB_GUEST_ID, OTB_USER_ID } from './lib/config';
   import type { TimeControl } from './lib/time-control';
-  import { QUICK_SETUPS } from './lib/time-control';
   import { LichessClient } from './lib/lichess/client';
   import { seekAndWait, persistActiveGame } from './lib/lichess/play';
   import { logger } from './lib/logger';
+  import Wordmark from './components/Wordmark.svelte';
+  import BoardStrip from './components/home/BoardStrip.svelte';
+  import ModeSegmented from './components/home/ModeSegmented.svelte';
+  import TimePresets from './components/home/TimePresets.svelte';
+  import OrientationPicker from './components/home/OrientationPicker.svelte';
+  import BottomTabs from './components/BottomTabs.svelte';
 
   type PlayMode = 'otb' | 'lichess';
 
@@ -24,11 +25,26 @@
     lichessTc: TimeControl | null;
   }
 
-  interface StartEvent {
-    timeControl: TimeControl | null;
-    whiteAccountId: string;
-    blackAccountId: string;
-    orientation: 'white' | 'black';
+  // All presets from the TimePresets component, mapped to TimeControl
+  const TC_PRESETS: { label: string; tc: TimeControl }[] = [
+    { label: '1+0',   tc: { initialSec:   60, incrementSec:  0 } },
+    { label: '2+1',   tc: { initialSec:  120, incrementSec:  1 } },
+    { label: '3+0',   tc: { initialSec:  180, incrementSec:  0 } },
+    { label: '5+0',   tc: { initialSec:  300, incrementSec:  0 } },
+    { label: '5+3',   tc: { initialSec:  300, incrementSec:  3 } },
+    { label: '10+0',  tc: { initialSec:  600, incrementSec:  0 } },
+    { label: '10+5',  tc: { initialSec:  600, incrementSec:  5 } },
+    { label: '15+10', tc: { initialSec:  900, incrementSec: 10 } },
+    { label: '30+0',  tc: { initialSec: 1800, incrementSec:  0 } },
+    { label: '30+20', tc: { initialSec: 1800, incrementSec: 20 } },
+    { label: '45+0',  tc: { initialSec: 2700, incrementSec:  0 } },
+  ];
+
+  function tcToLabel(tc: TimeControl | null): string {
+    if (!tc) return '30+20';
+    return TC_PRESETS.find(
+      (p) => p.tc.initialSec === tc.initialSec && p.tc.incrementSec === tc.incrementSec
+    )?.label ?? '30+20';
   }
 
   function loadPrefs(): HomePrefs | null {
@@ -42,23 +58,22 @@
 
   const savedPrefs = loadPrefs();
 
-  let playMode: PlayMode = savedPrefs?.playMode ?? 'otb';
-  let otbTc: TimeControl | null = savedPrefs?.otbTc ?? QUICK_SETUPS[4].tc; // 30+20 default
-  let otbOrientation: 'white' | 'black' | 'random' = savedPrefs?.otbOrientation ?? 'white';
+  let mode: PlayMode = savedPrefs?.playMode ?? 'otb';
+  let otbTc: TimeControl = savedPrefs?.otbTc ?? { initialSec: 1800, incrementSec: 20 };
+  let otbTcLabel: string = tcToLabel(otbTc);
+  let orient: 'white' | 'random' | 'black' = savedPrefs?.otbOrientation ?? 'random';
+  let lichessTc: TimeControl = savedPrefs?.lichessTc ?? { initialSec: 2700, incrementSec: 0 };
+  let lichessTcLabel: string = tcToLabel(lichessTc);
 
-  // Lichess seek state
   let seekState: 'idle' | 'seeking' = 'idle';
   let seekError = '';
   let seekAbortController: AbortController | null = null;
   let selectedLichessAccount: Account | null = null;
-  let selectedLichessTc: TimeControl | null = savedPrefs?.lichessTc ?? QUICK_SETUPS[5].tc;
 
   $: lichessAccounts = $accounts.filter((a) => a.network === 'lichess');
-
   $: otbUserAccount = $accounts.find((a) => a.id === OTB_USER_ID) ?? null;
   $: otbGuestAccount = $accounts.find((a) => a.id === OTB_GUEST_ID) ?? null;
 
-  // One-time init of lichess-dependent state once accounts are loaded
   let initialized = false;
   $: if (!initialized && $accounts.length > 0) {
     const savedLichessId = savedPrefs?.lichessAccountId ?? null;
@@ -67,64 +82,60 @@
       (savedLichessId ? lichessNow.find((a) => a.id === savedLichessId) ?? null : null) ??
       lichessNow[0] ??
       null;
-
     initialized = true;
   }
 
-  // Auto-select first lichess account when switching to lichess mode (post-init)
-  $: if (initialized && playMode === 'lichess' && !selectedLichessAccount && lichessAccounts.length > 0) {
+  $: if (initialized && mode === 'lichess' && !selectedLichessAccount && lichessAccounts.length > 0) {
     selectedLichessAccount = lichessAccounts[0];
   }
 
-  // Persist prefs whenever any tracked state changes (after accounts are loaded)
   $: if (initialized) {
     localStorage.setItem(
       LS_HOME_PREFS,
       JSON.stringify({
-        playMode,
+        playMode: mode,
         otbTc,
-        otbOrientation,
+        otbOrientation: orient,
         lichessAccountId: selectedLichessAccount?.id ?? null,
-        lichessTc: selectedLichessTc,
+        lichessTc,
       } as HomePrefs),
     );
   }
 
-  function handleStart(e: CustomEvent<{ timeControl: TimeControl | null; orientation: 'white' | 'black' }>) {
-    const { timeControl, orientation } = e.detail;
+  function handleOtbTcChange(e: CustomEvent<{ label: string; tc: { i: number; inc: number } }>) {
+    otbTcLabel = e.detail.label;
+    otbTc = { initialSec: e.detail.tc.i, incrementSec: e.detail.tc.inc };
+  }
+
+  function handleLichessTcChange(e: CustomEvent<{ label: string; tc: { i: number; inc: number } }>) {
+    lichessTcLabel = e.detail.label;
+    lichessTc = { initialSec: e.detail.tc.i, incrementSec: e.detail.tc.inc };
+  }
+
+  function startOtbGame() {
     if (!otbUserAccount || !otbGuestAccount) return;
-
-    const whiteAccountId = orientation === 'white' ? otbUserAccount.id : otbGuestAccount.id;
-    const blackAccountId = orientation === 'white' ? otbGuestAccount.id : otbUserAccount.id;
-
-    const config: StartEvent = {
-      timeControl,
-      whiteAccountId,
-      blackAccountId,
-      orientation,
-    };
-    localStorage.setItem(LS_ACTIVE_GAME, JSON.stringify(config));
+    const actualOrientation: 'white' | 'black' =
+      orient === 'random' ? (Math.random() < 0.5 ? 'white' : 'black') : orient;
+    const whiteAccountId = actualOrientation === 'white' ? otbUserAccount.id : otbGuestAccount.id;
+    const blackAccountId = actualOrientation === 'white' ? otbGuestAccount.id : otbUserAccount.id;
+    localStorage.setItem(
+      LS_ACTIVE_GAME,
+      JSON.stringify({ timeControl: otbTc, whiteAccountId, blackAccountId, orientation: actualOrientation }),
+    );
     window.location.href = '/play/';
   }
 
-  async function handleLichessSeek() {
+  async function startLichessSeek() {
     if (!selectedLichessAccount?.credentials?.accessToken) {
       seekError = 'No lichess account selected.';
       return;
     }
-    if (!selectedLichessTc) {
-      seekError = 'Select a time control.';
-      return;
-    }
-
     seekError = '';
     seekState = 'seeking';
     seekAbortController = new AbortController();
-
     const client = new LichessClient(selectedLichessAccount.credentials.accessToken);
-
     try {
-      const { gameId, color } = await seekAndWait(client, selectedLichessTc, seekAbortController.signal);
+      const { gameId, color } = await seekAndWait(client, lichessTc, seekAbortController.signal);
       persistActiveGame({ gameId, accountId: selectedLichessAccount.id, color });
       window.location.href = '/play/';
     } catch (err) {
@@ -146,68 +157,30 @@
   }
 </script>
 
-<main>
-  <header>
-    <NavMenu />
-    <h1 class="app-title">Chesslovaquia</h1>
-    <div class="mode-toggle">
-      <button
-        class="mode-btn"
-        class:active={playMode === 'otb'}
-        on:click={() => { playMode = 'otb'; }}
-      >Over the board</button>
-      <button
-        class="mode-btn"
-        class:active={playMode === 'lichess'}
-        on:click={() => { playMode = 'lichess'; }}
-      >Play on lichess</button>
-    </div>
-  </header>
+<div class="app-shell">
+  <div class="home-layout">
+    <BoardStrip />
 
-  {#if playMode === 'otb'}
-    <div class="mode-content" transition:fade={{ duration: 120 }}>
-      <section class="setup-section">
-        <QuickSetup
-          bind:selectedTc={otbTc}
-          bind:orientation={otbOrientation}
-          on:start={handleStart}
-        />
-      </section>
-    </div>
+    <div class="home-content">
+      <div class="home-header">
+        <Wordmark size={1} dropShadow />
+      </div>
 
-  {:else}
-    <div class="mode-content" transition:fade={{ duration: 120 }}>
-      <!-- Lichess mode -->
-      {#if lichessAccounts.length === 0}
-        <div class="lichess-no-accounts">
-          <p>No lichess accounts connected.</p>
-          <a href="/settings/" class="connect-link">Connect a lichess account in Settings →</a>
-        </div>
+      <ModeSegmented value={mode} on:change={(e) => (mode = e.detail)} />
+
+      {#if mode === 'otb'}
+        <TimePresets value={otbTcLabel} on:change={handleOtbTcChange} />
+        <OrientationPicker value={orient} on:change={(e) => (orient = e.detail)} />
+        <button class="primary-btn" on:click={startOtbGame}>Start game</button>
       {:else}
-        <section class="setup-section">
-
-        <!-- Account selector -->
-        <div class="lich-section">
-          <h2>Account</h2>
-          <div class="account-pills">
-            {#each lichessAccounts as account (account.id)}
-              <button
-                class="account-pill"
-                class:selected={selectedLichessAccount?.id === account.id}
-                on:click={() => { selectedLichessAccount = account; }}
-              >{account.displayName}</button>
-            {/each}
-          </div>
+        <div class="lich-acct">
+          <div class="lich-acct__label">Account</div>
+          <button class="chip chip--acct" on:click={() => { window.location.href = '/settings/'; }}>
+            {selectedLichessAccount?.displayName ?? 'Sign in'}
+          </button>
         </div>
 
-        <!-- Time control -->
-        <div class="lich-section">
-          <TimeControlPicker
-            bind:selected={selectedLichessTc}
-            hiddenBuckets={['bullet', 'blitz']}
-            showCustom={true}
-          />
-        </div>
+        <TimePresets value={lichessTcLabel} on:change={handleLichessTcChange} hideBullet hideBlitz />
 
         {#if seekError}
           <p class="seek-error">{seekError}</p>
@@ -215,9 +188,9 @@
 
         {#if seekState === 'idle'}
           <button
-            class="seek-btn"
-            disabled={!selectedLichessAccount || !selectedLichessTc}
-            on:click={handleLichessSeek}
+            class="primary-btn"
+            on:click={startLichessSeek}
+            disabled={!selectedLichessAccount}
           >Seek game</button>
         {:else}
           <div class="seeking-modal-overlay">
@@ -227,110 +200,84 @@
             </div>
           </div>
         {/if}
-
-      </section>
-    {/if}
+      {/if}
     </div>
-  {/if}
-</main>
+  </div>
+  <BottomTabs />
+</div>
 
 <style>
-  .app-title {
-    font-size: 1.1rem;
-    font-weight: 600;
-    margin: 0;
-    flex: 1;
+  .app-shell {
+    height: 100dvh;
+    display: grid;
+    grid-template-rows: 1fr auto;
+    overflow: hidden;
   }
 
-  .mode-toggle {
-    display: flex;
-    gap: 0.4rem;
-  }
-
-  .mode-btn {
-    padding: 0.35rem 0.85rem;
-    background: var(--clvq-surface);
-    border: 1px solid var(--clvq-border);
-    border-radius: 4px;
-    color: var(--clvq-muted);
-    cursor: pointer;
-    font-size: 0.875rem;
-  }
-
-  .mode-btn.active {
-    border-color: var(--clvq-accent);
-    color: var(--clvq-accent);
-  }
-
-  .mode-btn:hover:not(.active) {
+  .home-layout {
+    background: var(--clvq-bg);
     color: var(--clvq-fg);
+    height: 100%;
+    width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+    position: relative;
+    display: grid;
+    grid-template-rows: 1fr;
+    min-height: 0;
   }
 
-  /* Lichess mode */
-  .lichess-no-accounts {
-    color: var(--clvq-muted);
-    font-size: 0.9rem;
+  .home-content {
+    padding: 8px 18px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    overflow-y: auto;
+    position: relative;
+    z-index: 1;
+    min-height: 0;
   }
 
-  .connect-link {
-    color: var(--clvq-accent-blue);
-    text-decoration: none;
-    display: inline-block;
-    margin-top: 0.5rem;
+  .home-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 130px;
+    margin-bottom: 4px;
   }
 
-  .lich-section {
-    margin-bottom: 1.5rem;
-  }
-
-  h2 {
-    font-size: 0.85rem;
-    font-weight: 500;
-    color: var(--clvq-muted);
+  .lich-acct { display: flex; flex-direction: column; gap: 4px; }
+  .lich-acct__label {
+    font-size: 0.72rem;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin: 0 0 0.5rem;
+    letter-spacing: 0.08em;
+    color: var(--clvq-muted);
   }
 
-  .account-pills {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem;
-  }
-
-  .account-pill {
-    padding: 0.35rem 0.75rem;
+  .chip--acct {
+    padding: 0.4rem 0.85rem;
     background: var(--clvq-surface);
-    border: 1px solid var(--clvq-border);
-    border-radius: 4px;
-    color: var(--clvq-fg);
-    cursor: pointer;
-    font-size: 0.875rem;
-  }
-
-  .account-pill.selected {
-    border-color: var(--clvq-accent);
-    color: var(--clvq-accent);
-  }
-
-  .seek-btn {
-    padding: 0.65rem 1.5rem;
-    background: none;
     border: 1px solid var(--clvq-accent);
-    border-radius: 4px;
+    border-radius: var(--clvq-radius-sm);
     color: var(--clvq-accent);
+    font-size: 0.9rem;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    cursor: pointer;
+    align-self: flex-start;
+  }
+
+  .primary-btn {
+    padding: 0.85rem 1rem;
+    background: var(--clvq-accent);
+    color: #1a1208;
+    font-weight: 600;
     font-size: 1rem;
+    border: 0;
+    border-radius: var(--clvq-radius-md);
     cursor: pointer;
   }
 
-  .seek-btn:hover:not(:disabled) {
-    background: var(--clvq-surface-hover);
-  }
-
-  .seek-btn:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-  }
+  .primary-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
   .seeking-modal-overlay {
     display: flex;
@@ -382,10 +329,9 @@
     font-size: 0.875rem;
   }
 
-
   .seek-error {
     color: var(--clvq-accent-red);
     font-size: 0.85rem;
-    margin: 0 0 0.75rem;
+    margin: 0;
   }
 </style>
