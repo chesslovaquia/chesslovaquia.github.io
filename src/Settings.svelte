@@ -189,7 +189,7 @@
 
 <style>
   .page-shell {
-    height: 100dvh;
+    height: var(--clvq-vh);
     display: grid;
     grid-template-rows: 1fr auto;
     overflow: hidden;

@@ -5,6 +5,9 @@ import './app.css';
 import App from './App.svelte';
 import { ensureOtbAccounts, init } from './lib/accounts';
 import { logger } from './lib/logger';
+import { initViewportHeight } from './lib/viewport';
+
+initViewportHeight();
 
 const target = document.getElementById('app');
 if (!target) throw new Error('#app root not found');

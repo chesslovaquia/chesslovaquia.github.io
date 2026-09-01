@@ -7,6 +7,9 @@ import './chessground.wood4.css';
 import '@lichess-org/chessground/assets/chessground.cburnett.css';
 import './board-wood4.css';
 import Play from './Play.svelte';
+import { initViewportHeight } from './lib/viewport';
+
+initViewportHeight();
 
 const target = document.getElementById('app');
 if (!target) throw new Error('#app root not found');

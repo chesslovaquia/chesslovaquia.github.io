@@ -178,7 +178,7 @@
       "bottom"
       "info";
     grid-template-rows: auto 1fr auto auto;
-    height: 100dvh;
+    height: var(--clvq-vh);
     gap: 0.4rem;
     box-sizing: border-box;
   }
@@ -304,7 +304,7 @@
       grid-template-columns: auto 1fr auto auto;
       grid-template-rows: 1fr;
       max-width: none;
-      height: 100dvh;
+      height: var(--clvq-vh);
       padding: 0;
     }
 

@@ -3,6 +3,9 @@
 
 import './app.css';
 import Settings from './Settings.svelte';
+import { initViewportHeight } from './lib/viewport';
+
+initViewportHeight();
 
 const target = document.getElementById('app');
 if (!target) throw new Error('#app root not found');

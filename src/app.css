@@ -20,6 +20,8 @@
   --clvq-radius-sm: 4px;
   --clvq-radius-md: 6px;
 
+  --clvq-vh: 100vh;
+
   background: var(--clvq-bg);
   color: var(--clvq-fg);
   font-family: system-ui, sans-serif;

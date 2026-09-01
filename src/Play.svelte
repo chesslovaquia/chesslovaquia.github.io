@@ -680,7 +680,7 @@
 
 <style>
   .play-layout {
-    height: 100dvh;
+    height: var(--clvq-vh);
     width: 100vw;
     background: var(--clvq-bg);
     color: var(--clvq-fg);
