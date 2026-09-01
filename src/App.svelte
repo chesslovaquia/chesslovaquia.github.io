@@ -228,7 +228,11 @@
   }
 
   .home-content {
+    width: 100%;
+    max-width: var(--clvq-page-width);
+    margin: 0 auto;
     padding: 8px 18px 16px;
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
     gap: 18px;

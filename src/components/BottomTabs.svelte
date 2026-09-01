@@ -33,6 +33,10 @@
   .tabs {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
+    width: 100%;
+    max-width: var(--clvq-page-width);
+    margin: 0 auto;
+    box-sizing: border-box;
     border-top: 1px solid var(--clvq-border);
     background: var(--clvq-bg);
     padding-bottom: env(safe-area-inset-bottom, 0);
