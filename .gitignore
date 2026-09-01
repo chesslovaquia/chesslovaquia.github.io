@@ -1,6 +1,7 @@
 /dist
 /node_modules
 /coverage
+/temp
 
 .vite
 __pycache__
