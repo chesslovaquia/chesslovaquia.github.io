@@ -1,9 +1,9 @@
-FROM debian:forky-20260623-slim
+FROM debian:forky-20260824-slim
 
 LABEL maintainer="Jeremías Casteglione <jrmsdev@gmail.com>"
-LABEL version="260709"
+LABEL version="260901"
 
-ENV CLVQ_UPGRADE=260709
+ENV CLVQ_UPGRADE=260901
 
 USER root:root
 WORKDIR /root
@@ -56,7 +56,7 @@ ENV HOME=/home/${DEVEL_USER}
 RUN npm version
 RUN npx --version
 
-ENV CLVQ_CLAUDE_UPGRADE=2.1.205
+ENV CLVQ_CLAUDE_UPGRADE=2.1.257
 
 RUN install -v -d -m 0750 ${HOME}/.local/npm \
 	&& cd ${HOME}/.local/npm \
