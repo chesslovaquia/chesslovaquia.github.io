@@ -6,16 +6,20 @@
   import { getAllGames } from './lib/games';
   import type { Game } from './lib/games';
   import { getAllAccounts } from './lib/accounts';
-  import type { Account } from './lib/accounts';
+  import type { Account, Network } from './lib/accounts';
   import { OTB_USER_ID } from './lib/config';
-  import { importUserGames } from './lib/lichess/history';
+  import { importUserGames as importLichessGames } from './lib/lichess/history';
+  import { importUserGames as importChesscomGames } from './lib/chesscom/import';
   import { logger } from './lib/logger';
 
-  let games: Game[] = [];
+  let allGames: Game[] = [];
   let accounts = new Map<string, Account>();
-  let lichessAccounts: Account[] = [];
+  let syncableAccounts: Account[] = [];
   let loading = true;
   let syncStatus = new Map<string, string>(); // accountId → message
+
+  let filterNetwork: 'all' | Network = 'all';
+  let filterAccountId = 'all';
 
   onMount(async () => {
     await reload();
@@ -23,21 +27,23 @@
 
   async function reload() {
     loading = true;
-    const [allGames, allAccounts] = await Promise.all([getAllGames(), getAllAccounts()]);
+    const [games, allAccounts] = await Promise.all([getAllGames(), getAllAccounts()]);
     accounts = new Map(allAccounts.map((a) => [a.id, a]));
-    games = allGames.sort((a, b) => b.playedAt - a.playedAt);
-    lichessAccounts = allAccounts.filter((a) => a.network === 'lichess' && !!a.credentials);
+    allGames = games.sort((a, b) => b.playedAt - a.playedAt);
+    syncableAccounts = allAccounts.filter(
+      (a) => (a.network === 'lichess' && !!a.credentials) || (a.network === 'chesscom' && !!a.handle)
+    );
     loading = false;
   }
 
   async function syncAccount(account: Account) {
     syncStatus = new Map(syncStatus).set(account.id, 'Syncing…');
     try {
-      const count = await importUserGames(account);
+      const count = account.network === 'chesscom'
+        ? await importChesscomGames(account)
+        : await importLichessGames(account);
       syncStatus = new Map(syncStatus).set(account.id, `${count} game${count === 1 ? '' : 's'} imported`);
-      // Refresh game list
-      const allGames = await getAllGames();
-      games = allGames.sort((a, b) => b.playedAt - a.playedAt);
+      allGames = (await getAllGames()).sort((a, b) => b.playedAt - a.playedAt);
     } catch (err) {
       logger.error('history sync', err);
       syncStatus = new Map(syncStatus).set(account.id, 'Sync failed');
@@ -46,8 +52,17 @@
 
   function accountName(id: string): string {
     if (id.startsWith('lichess:')) return id.slice('lichess:'.length);
+    if (id.startsWith('chesscom:')) return id.slice('chesscom:'.length);
     return accounts.get(id)?.displayName ?? '?';
   }
+
+  $: games = allGames.filter((game) => {
+    if (filterNetwork !== 'all' && game.source !== filterNetwork) return false;
+    if (filterAccountId !== 'all' && game.whiteAccountId !== filterAccountId && game.blackAccountId !== filterAccountId) {
+      return false;
+    }
+    return true;
+  });
 
   function formatDate(ts: number): string {
     return new Date(ts).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
@@ -85,11 +100,11 @@
     <h1>History</h1>
   </header>
 
-  {#if lichessAccounts.length > 0}
+  {#if syncableAccounts.length > 0}
     <section class="sync-section">
-      {#each lichessAccounts as account (account.id)}
+      {#each syncableAccounts as account (account.id)}
         <div class="sync-row">
-          <span class="sync-label">lichess / {account.displayName}</span>
+          <span class="sync-label">{account.network} / {account.displayName}</span>
           <button
             class="sync-btn"
             on:click={() => syncAccount(account)}
@@ -102,10 +117,29 @@
     </section>
   {/if}
 
+  {#if allGames.length > 0}
+    <section class="filter-section">
+      <select class="filter-select" bind:value={filterNetwork} aria-label="Filter by network">
+        <option value="all">All networks</option>
+        <option value="otb">OTB</option>
+        <option value="lichess">Lichess</option>
+        <option value="chesscom">Chess.com</option>
+      </select>
+      <select class="filter-select" bind:value={filterAccountId} aria-label="Filter by account">
+        <option value="all">All accounts</option>
+        {#each [...accounts.values()] as account (account.id)}
+          <option value={account.id}>{account.network} / {account.displayName}</option>
+        {/each}
+      </select>
+    </section>
+  {/if}
+
   {#if loading}
     <p class="loading">Loading…</p>
-  {:else if games.length === 0}
+  {:else if allGames.length === 0}
     <p class="empty">No games yet. <a href="/">Play one!</a></p>
+  {:else if games.length === 0}
+    <p class="empty">No games match the selected filters.</p>
   {:else}
     <ul class="game-list">
       {#each games as game (game.id)}
@@ -192,6 +226,29 @@
   .sync-btn:disabled {
     opacity: 0.6;
     cursor: default;
+  }
+
+  .filter-section {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .filter-select {
+    background: var(--clvq-surface);
+    border: 1px solid var(--clvq-border);
+    border-radius: var(--clvq-radius-sm);
+    color: var(--clvq-fg);
+    padding: 0.35rem 0.5rem;
+    font-size: 0.8rem;
+    flex: 1;
+    min-width: 120px;
+  }
+
+  .filter-select:focus-visible {
+    outline: 2px solid var(--clvq-accent);
+    outline-offset: -2px;
   }
 
   .loading,

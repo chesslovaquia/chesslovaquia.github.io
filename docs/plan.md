@@ -399,6 +399,8 @@ Scope note: live play on chess.com is out — their public API does not
 support it, and the Partner API is not self-serve. If that ever
 changes, it'd be a future phase.
 
+**Completed:** 2026-09-02. `chesscom/client.ts` — `getArchives()` / `getArchiveGames()` against the public archives API (no auth), `ChessComError`, single fixed-backoff retry on 429. `chesscom/import.ts` — `importUserGames()` walks every monthly archive (full walk each sync, no incremental cursor — chess.com's API has none), dedupes by the game's chess.com URL as `sourceGameId`, derives `Result`/`ECO` from the embedded PGN via `parsePgnTag()`, buckets time control via `parseTimeControl()` + the shared `classifyTimeControl()` (daily games → `correspondence` with `timeControlRaw: null`), uses `end_time * 1000` for `playedAt` (game end, not start — chess.com doesn't expose start time as reliably as lichess's PGN headers do). Opponents stored as `chesscom:<handle>` pseudo-accounts, matching the `lichess:<handle>` pattern. `/settings/` gained a "Chess.com Accounts" section — username-only add (validated against `getArchives()` before saving, duplicate-handle check, no auth), sync/remove per account. `/history/` merges lichess + chess.com into one sync section, strips both pseudo-account prefixes in `accountName()`, and adds network + account filter dropdowns. 165/165 tests, 0 type errors.
+
 ### Phase 4 — Consolidated Stats
 
 **Goal:** Descriptive stats across all networks. No custom ratings

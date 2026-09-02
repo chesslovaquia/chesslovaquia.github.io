@@ -26,7 +26,7 @@
 
 Chesslovaquia is a local-first chess PWA. It does two things: play chess (OTB, lichess, later chess.com) and consolidate game history across platforms. Full rewrite underway using Svelte + Vite + TypeScript (tayrax-style). See `docs/plan.md` for the full product description, data model, UI principles, and phase roadmap.
 
-Current status: **Phase 2 complete** — lichess integration. OAuth PKCE multi-account (`lichess/auth.ts`); HTTP client with 429 retry (`lichess/client.ts`); NDJSON reconnecting stream (`lichess/stream.ts`); seek + live game + active-game reconnect (`lichess/play.ts`); game archive import (`lichess/history.ts`). Home page has OTB / lichess mode toggle. Settings page handles OAuth callback and history sync. Play.svelte handles both OTB and lichess modes. Phase 3 (chess.com import) is next.
+Current status: **Phase 3 complete** — chess.com import. `chesscom/client.ts` (public archives API, no auth, 429 retry); `chesscom/import.ts` (walks every monthly archive, idempotent by game URL). Settings has a "Chess.com Accounts" section (username-only, validated on add, no auth). History merges lichess + chess.com sync into one section and adds network/account filter dropdowns. Phase 4 (consolidated stats) is next.
 
 ---
 
@@ -58,11 +58,28 @@ site/
 │   │   ├── config.ts        # DB names, localStorage keys
 │   │   ├── logger.ts        # logger singleton (debug gated on clvq.debug=1)
 │   │   ├── db.ts            # Generic IndexedDB Store<T> wrapper
-│   │   └── accounts.ts      # Account type, CRUD, Svelte stores, ensureGuest
+│   │   ├── accounts.ts      # Account type, CRUD, Svelte stores, ensureOtbAccounts
+│   │   ├── games.ts         # Game type, IndexedDB store CRUD
+│   │   ├── game-state.ts    # In-progress game IndexedDB persistence
+│   │   ├── engine.ts        # chess.js wrapper (Engine class, GameStatus/GameResult)
+│   │   ├── clock.ts         # Time control clock logic
+│   │   ├── color.ts         # chess.js <-> chessground color conversion
+│   │   ├── time-control.ts  # TimeControl bucket classifier + QUICK_SETUPS
+│   │   ├── viewport.ts      # --clvq-vh tracking (100dvh Android workaround)
+│   │   ├── lichess/         # Phase 2 — lichess.org integration
+│   │   │   ├── auth.ts      # OAuth PKCE, multi-account
+│   │   │   ├── client.ts    # HTTP client, bearer token, 429 retry
+│   │   │   ├── stream.ts    # NDJSON reader w/ exponential-backoff reconnect
+│   │   │   ├── play.ts      # Seek, live game stream, resign/abort, reconnect
+│   │   │   └── history.ts   # PGN archive import, idempotent
+│   │   └── chesscom/        # Phase 3 — chess.com import (no auth, no live play)
+│   │       ├── client.ts    # Public archives API, 429 retry
+│   │       └── import.ts    # Walks every monthly archive, idempotent by game URL
 │   ├── components/
 │   │   ├── Board.svelte
 │   │   ├── BottomTabs.svelte   # Persistent bottom nav (Home / History / Settings); hidden on /play/
 │   │   ├── Clock.svelte
+│   │   ├── GameBar.svelte      # Resign / draw / abort action bar
 │   │   ├── MoveList.svelte
 │   │   ├── PromotionDialog.svelte
 │   │   ├── Wordmark.svelte     # Stacked-emblem brand mark (knight glyph + amber rule + name)
@@ -72,16 +89,17 @@ site/
 │   │       ├── OrientationPicker.svelte  # Play as White / Random / Black
 │   │       └── TimePresets.svelte    # Bucket-grouped time control chips
 │   ├── App.svelte            # Home page
-│   ├── Play.svelte           # /play/ (Phase 1)
-│   ├── History.svelte        # /history/ (Phase 1)
-│   ├── Settings.svelte       # /settings/
-│   ├── main.ts / play.ts / history.ts / settings.ts
+│   ├── Play.svelte           # /play/ — OTB + lichess live play
+│   ├── History.svelte        # /history/ — unified OTB/lichess/chesscom list + filters
+│   ├── Review.svelte         # /review/ — read-only game replay (?id=...)
+│   ├── Settings.svelte       # /settings/ — accounts (OTB name, lichess, chess.com) + sync
+│   ├── main.ts / play.ts / history.ts / review.ts / settings.ts
 │   ├── sw.ts                 # Service worker (Vite rollup input, excluded from tsconfig)
 │   ├── app.css               # Dark scheme + CSS custom properties
 │   ├── vite-env.d.ts         # __APP_VERSION__ declaration + *.svelte module fallback
 │   └── test-setup.ts         # fake-indexeddb/auto + @testing-library/jest-dom
 ├── static/                   # Vite publicDir — manifest.json, favicon.ico, clvq-192.png, clvq-512.png, lila/public/images/board/wood4.jpg
-├── index.html, play/, history/, settings/
+├── index.html, play/, history/, settings/, review/
 ├── devtools/unregister-sw.html
 ├── vite.config.ts
 ├── vitest.config.ts
@@ -240,6 +258,10 @@ Full data model (Game, GameState) is in `docs/plan.md`.
 - **Lichess opponent pseudo-account IDs** — for imported games (`lichess/history.ts`), the opponent is stored as `lichess:<handle>` in `whiteAccountId`/`blackAccountId` since we don't create Account records for opponents. `History.svelte`'s `accountName()` function handles this prefix by stripping it.
 - **Lichess `LichessClient.token` is public** — intentionally, so `lichess/stream.ts` functions (which take a bare token) can be called from `lichess/play.ts` without coupling. Do not move it back to private.
 - **Lichess game stream reconnect on reload** — `LS_LICHESS_ACTIVE` (`clvq.lichess.active`) stores `{ gameId, accountId, color }`. Play.svelte checks this on mount before trying OTB game state. Clear it with `clearActiveGame()` whenever the game ends (terminal gameState status) or the user navigates away from a finished game.
+- **Chess.com's `eco` field on a game object is a URL** (e.g. `https://www.chess.com/openings/...`), not a bare ECO code — don't put it in `Game.openingEco`. The real code is in the embedded PGN's `[ECO "..."]` tag; `chesscom/import.ts`'s `parsePgnTag()` reads it from there instead.
+- **Chess.com import does a full archive walk on every sync, by design** — the public archives API has no incremental cursor, so `chesscom/import.ts`'s `importUserGames()` re-fetches every monthly archive every time and dedupes by `sourceGameId` (the game's chess.com URL) against what's already stored. This was a deliberate simplicity-over-efficiency call (see `docs/plan.md` Phase 3) for a personal-scale game history — don't "optimize" it into a since-last-sync cursor without checking with the user first, since that trades correctness on backfilled/edited old games for fewer requests.
+- **Chess.com `playedAt` is the game's end time**, not start time (`g.end_time * 1000`) — unlike lichess's importer, which derives `playedAt` from the PGN's `UTCDate`/`UTCTime` (closer to game start). Minor cross-source semantic drift; chess.com doesn't expose a reliable start timestamp on the archive game object.
+- **Chess.com opponent pseudo-account IDs** — mirrors lichess: `chesscom:<handle>` in `whiteAccountId`/`blackAccountId` for opponents. `History.svelte`'s `accountName()` strips both `lichess:` and `chesscom:` prefixes.
 - **A grid item with `margin: 0 auto` shrinks to its content width instead of stretching.** Grid items default to `justify-self: stretch` (fill the track), but *any* auto margin in that axis disables stretch and switches the item to shrink-to-fit sizing — so `max-width: 600px; margin: 0 auto` on a grid item (e.g. `<main>` inside `.page-shell`'s `1fr auto` grid, or `BottomTabs.svelte`'s `.tabs`) centers a box shrunk to its content's natural width, not a box filling up to 600px. Symptom: a capped-width element renders narrower than, and misaligned with, sibling elements that use the same `max-width` value. Fix: always pair `max-width: var(--clvq-page-width)` + `margin: 0 auto` with an explicit `width: 100%` (see `main` in `app.css`, `.home-content` in `App.svelte`, `.tabs` in `BottomTabs.svelte`). This bites any *new* grid-item child of `.page-shell`/`.app-shell` too, not just the ones already fixed.
 - **`100dvh` is unreliable on some Android browsers/WebViews (e.g. MIUI).** Several devices compute `dvh` once against the largest possible viewport and don't recompute it live — page shells using `height: 100dvh` render taller than the actual visible screen on first paint, pushing `BottomTabs`/action bars off-screen until a scroll or resize forces a relayout. Fix: `src/lib/viewport.ts` (`initViewportHeight()`) tracks `window.innerHeight` in a `--clvq-vh` custom property, updated on `resize`, `orientationchange`, and `visualViewport` resize; called once per entry point (`main.ts`, `play.ts`, `history.ts`, `review.ts`, `settings.ts`) before mounting. All page-shell/layout rules use `height: var(--clvq-vh)` (fallback `100vh` defined in `app.css` `:root`) instead of `100dvh` directly. If you add a new full-height page shell, use `var(--clvq-vh)`, not `100dvh`.
 - **CSS media query overrides must come after the base rule.** In Svelte scoped styles, equal-specificity rules follow cascade order — the last one wins. If a `@media` block appears before the base class rule it's trying to override, the base rule will always win regardless of viewport. Always place `@media` overrides after the base rules they override.
