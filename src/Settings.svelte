@@ -8,13 +8,18 @@
   import { OTB_USER_ID } from './lib/config';
   import { logger } from './lib/logger';
   import { startAuth, completeAuth, revokeToken } from './lib/lichess/auth';
-  import { importUserGames } from './lib/lichess/history';
+  import { importUserGames as importLichessGames } from './lib/lichess/history';
+  import { getArchives, ChessComError } from './lib/chesscom/client';
+  import { importUserGames as importChesscomGames } from './lib/chesscom/import';
 
   let authError = '';
   let syncStatus = new Map<string, string>(); // accountId → status message
   let confirmingRemove: string | null = null;
   let editingUserId: string | null = null;
   let editingUserName = '';
+  let newChesscomHandle = '';
+  let chesscomError = '';
+  let addingChesscom = false;
 
   const redirectUri = window.location.origin + window.location.pathname;
 
@@ -99,11 +104,47 @@
   async function syncHistory(account: Account) {
     syncStatus = new Map(syncStatus).set(account.id, 'Syncing…');
     try {
-      const count = await importUserGames(account);
+      const count = account.network === 'chesscom'
+        ? await importChesscomGames(account)
+        : await importLichessGames(account);
       syncStatus = new Map(syncStatus).set(account.id, `${count} game${count === 1 ? '' : 's'} imported`);
     } catch (err) {
-      logger.error('lichess history sync', err);
+      logger.error(`${account.network} history sync`, err);
       syncStatus = new Map(syncStatus).set(account.id, 'Sync failed');
+    }
+  }
+
+  async function addChesscomAccount() {
+    const handle = newChesscomHandle.trim();
+    chesscomError = '';
+    if (!handle) return;
+
+    if (chesscomAccounts.some((a) => a.handle?.toLowerCase() === handle.toLowerCase())) {
+      chesscomError = 'That account is already added.';
+      return;
+    }
+
+    addingChesscom = true;
+    try {
+      await getArchives(handle);
+      await saveAccount({
+        id: crypto.randomUUID(),
+        network: 'chesscom',
+        displayName: handle,
+        handle,
+        credentials: null,
+        createdAt: Date.now(),
+      });
+      newChesscomHandle = '';
+    } catch (err) {
+      if (err instanceof ChessComError && err.status === 404) {
+        chesscomError = 'Username not found on chess.com.';
+      } else {
+        logger.error('add chess.com account', err);
+        chesscomError = 'Could not verify username. Please try again.';
+      }
+    } finally {
+      addingChesscom = false;
     }
   }
 
@@ -112,6 +153,7 @@
 
   $: otbUser = $accounts.find((a) => a.id === OTB_USER_ID);
   $: lichessAccounts = $accounts.filter((a) => a.network === 'lichess');
+  $: chesscomAccounts = $accounts.filter((a) => a.network === 'chesscom');
 </script>
 
 <div class="page-shell">
@@ -180,6 +222,56 @@
     <button class="connect-btn" on:click={connectLichess}>
       + Connect lichess account
     </button>
+  </section>
+
+  <!-- Chess.com Accounts -->
+  <section class="section">
+    <h2>Chess.com Accounts</h2>
+    {#if chesscomError}
+      <p class="error">{chesscomError}</p>
+    {/if}
+    {#if chesscomAccounts.length === 0}
+      <p class="empty">No chess.com accounts added.</p>
+    {:else}
+      <ul class="account-list">
+        {#each chesscomAccounts as account (account.id)}
+          <li class="account-row">
+            <span class="display-name">{account.displayName}</span>
+            <span class="network">chess.com</span>
+            <button
+              class="sync-btn"
+              on:click={() => syncHistory(account)}
+              disabled={syncStatus.get(account.id) === 'Syncing…'}
+            >
+              {#if syncStatus.has(account.id)}
+                {syncStatus.get(account.id)}
+              {:else}
+                Sync history
+              {/if}
+            </button>
+            {#if confirmingRemove === account.id}
+              <button class="remove-btn danger" on:click={() => confirmRemove(account)}>Confirm remove</button>
+              <button class="remove-btn" on:click={cancelRemove}>Cancel</button>
+            {:else}
+              <button class="remove-btn" on:click={() => startRemove(account)}>Remove</button>
+            {/if}
+          </li>
+        {/each}
+      </ul>
+    {/if}
+    <div class="add-row">
+      <input
+        type="text"
+        class="edit-input"
+        placeholder="chess.com username"
+        bind:value={newChesscomHandle}
+        maxlength="40"
+        on:keydown={(e) => e.key === 'Enter' && addChesscomAccount()}
+      />
+      <button class="connect-btn" on:click={addChesscomAccount} disabled={addingChesscom}>
+        {addingChesscom ? 'Checking…' : '+ Add account'}
+      </button>
+    </div>
   </section>
 
   <footer class="version">v{appVersion} · {appBuild}</footer>
@@ -310,6 +402,22 @@
 
   .edit-row {
     flex-wrap: wrap;
+  }
+
+  .add-row {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .add-row .edit-input {
+    flex: 1;
+    min-width: 150px;
+  }
+
+  .add-row .connect-btn:disabled {
+    opacity: 0.6;
+    cursor: default;
   }
 
   .edit-input {

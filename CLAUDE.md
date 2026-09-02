@@ -204,6 +204,21 @@ Full data model (Game, GameState) is in `docs/plan.md`.
 
 ---
 
+## Agent Environment Constraints
+
+- **No browser available.** The agent runs in a minimal Docker container with no
+  Chromium/Playwright binary and no display — do not attempt to install one
+  (`playwright install`, `apt-get install chromium`, etc.) or try browser-automation
+  skills (`chromium-cli`, `claude-in-chrome`) to visually verify UI changes. Verify
+  frontend changes via `npm run check` + `npm run test`, and by reading the rendered
+  component/markup change carefully. If a change genuinely needs visual/interactive
+  confirmation, say so explicitly and let the user check it themselves — don't spend
+  time trying to work around the missing browser.
+- **Minimal shell.** Common process-inspection tools (`ps`, `pgrep`, `pkill`, `lsof`)
+  are not installed. To find/stop a background process (e.g. a dev server started for
+  a quick check), scan `/proc/[0-9]*/cmdline` for the command and `kill` the PID
+  directly.
+
 ## Common Pitfalls
 
 - **`src/sw.ts` is excluded from `tsconfig.json`** (WebWorker globals conflict with DOM lib). It has `/// <reference lib="webworker" />` for IDE support and is built by Vite as a separate rollup input that emits `dist/sw.js`. `__APP_VERSION__` is substituted by Vite's `define`. Register in `main.ts` with `{ type: 'module' }`.
