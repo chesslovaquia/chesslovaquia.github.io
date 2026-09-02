@@ -34,7 +34,6 @@ export interface ChessComGame {
   rules: string;
   white: ChessComPlayerResult;
   black: ChessComPlayerResult;
-  eco?: string;
 }
 
 interface ArchivesResponse {
