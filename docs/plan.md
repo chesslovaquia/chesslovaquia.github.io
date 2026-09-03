@@ -401,7 +401,7 @@ changes, it'd be a future phase.
 
 **Completed:** 2026-09-02. `chesscom/client.ts` — `getArchives()` / `getArchiveGames()` against the public archives API (no auth), `ChessComError`, single fixed-backoff retry on 429. `chesscom/import.ts` — `importUserGames()` walks every monthly archive (full walk each sync, no incremental cursor — chess.com's API has none), dedupes by the game's chess.com URL as `sourceGameId`, derives `Result`/`ECO` from the embedded PGN via `parsePgnTag()`, buckets time control via `parseTimeControl()` + the shared `classifyTimeControl()` (daily games → `correspondence` with `timeControlRaw: null`), uses `end_time * 1000` for `playedAt` (game end, not start — chess.com doesn't expose start time as reliably as lichess's PGN headers do). Opponents stored as `chesscom:<handle>` pseudo-accounts, matching the `lichess:<handle>` pattern. `/settings/` gained a "Chess.com Accounts" section — username-only add (validated against `getArchives()` before saving, duplicate-handle check, no auth), sync/remove per account. `/history/` merges lichess + chess.com into one sync section, strips both pseudo-account prefixes in `accountName()`, and adds network + account filter dropdowns. 165/165 tests, 0 type errors.
 
-### Phase 4 — Consolidated Stats
+### Phase 4 — Consolidated Stats ✓ Complete
 
 **Goal:** Descriptive stats across all networks. No custom ratings
 yet.
@@ -420,6 +420,8 @@ yet.
 
 **Done when:** all the above slices render correctly and the page
 stays responsive with a few thousand games in the store.
+
+**Completed:** 2026-09-03. `lib/stats.ts` — pure functions over `Game[]`, no store access, fully unit-testable: `tally()` gives `{ wins, losses, draws, aborted, total, winRate }`; `outcomeFor()`/`perspectiveColor()`/`sideForAccount()`/`toPerspective()` handle the "which color did I play" question (mirrors `History.svelte`'s inline `playerColor()` logic — OTB games are attributed to the fixed `OTB_USER_ID`, not Guest; online games to whichever side is a locally-stored account); `recordByBucket`/`recordByColor`/`recordByNetwork`/`openingFrequency`/`byDayOfWeek`/`byHourOfDay`/`rollingWindow` are thin groupings over `tally()`. `Stats.svelte` — tabbed page (Overview/Openings/Patterns/Trends) at `/stats/`, filters mirror `History.svelte`'s network/account dropdowns plus new time-control-bucket and since/until date filters. `components/BarChart.svelte` — small reusable horizontal bar chart (inline SVG rects, no library) used for openings/day-of-week/hour-of-day/rolling-trend visuals; overview tab uses plain tables instead of bars (5 or fewer rows per group — a table is clearer than a chart at that size). Opening frequency groups by bare ECO code only, no name lookup table (decision: keep to "no dependencies beyond the essentials"; OTB games have no ECO at all and fall in an "unknown" bucket). `BottomTabs.svelte` gained a 4th tab (Home/History/Stats/Settings). 184/184 tests, 0 type errors.
 
 ### Phase 5+ — Future (Not Planned In Detail)
 

@@ -26,7 +26,7 @@
 
 Chesslovaquia is a local-first chess PWA. It does two things: play chess (OTB, lichess, later chess.com) and consolidate game history across platforms. Full rewrite underway using Svelte + Vite + TypeScript (tayrax-style). See `docs/plan.md` for the full product description, data model, UI principles, and phase roadmap.
 
-Current status: **Phase 3 complete** — chess.com import. `chesscom/client.ts` (public archives API, no auth, 429 retry); `chesscom/import.ts` (walks every monthly archive, idempotent by game URL). Settings has a "Chess.com Accounts" section (username-only, validated on add, no auth). History merges lichess + chess.com sync into one section and adds network/account filter dropdowns. Phase 4 (consolidated stats) is next.
+Current status: **Phase 4 complete** — consolidated stats. `lib/stats.ts` (pure functions over `Game[]`: `tally`, `recordByBucket`, `recordByColor`, `recordByNetwork`, `recordForAccount`, `openingFrequency`, `byDayOfWeek`, `byHourOfDay`, `rollingWindow`); `Stats.svelte` (tabbed Overview/Openings/Patterns/Trends page at `/stats/`, filterable by network/account/time-bucket/date-range); `components/BarChart.svelte` (small reusable SVG bar chart). `BottomTabs.svelte` is now a 4-column grid (Home/History/Stats/Settings). Opening frequency groups by bare ECO code only — no ECO→name table (OTB games have no ECO at all; a name lookup was deliberately deferred, see Common Pitfalls).
 
 ---
 
@@ -66,6 +66,7 @@ site/
 │   │   ├── color.ts         # chess.js <-> chessground color conversion
 │   │   ├── time-control.ts  # TimeControl bucket classifier + QUICK_SETUPS
 │   │   ├── viewport.ts      # --clvq-vh tracking (100dvh Android workaround)
+│   │   ├── stats.ts         # Phase 4 — pure W/L/D/opening/pattern/trend functions over Game[]
 │   │   ├── lichess/         # Phase 2 — lichess.org integration
 │   │   │   ├── auth.ts      # OAuth PKCE, multi-account
 │   │   │   ├── client.ts    # HTTP client, bearer token, 429 retry
@@ -76,8 +77,9 @@ site/
 │   │       ├── client.ts    # Public archives API, 429 retry
 │   │       └── import.ts    # Walks every monthly archive, idempotent by game URL
 │   ├── components/
+│   │   ├── BarChart.svelte     # Phase 4 — reusable horizontal bar chart (inline SVG, no library)
 │   │   ├── Board.svelte
-│   │   ├── BottomTabs.svelte   # Persistent bottom nav (Home / History / Settings); hidden on /play/
+│   │   ├── BottomTabs.svelte   # Persistent bottom nav (Home / History / Stats / Settings); hidden on /play/
 │   │   ├── Clock.svelte
 │   │   ├── GameBar.svelte      # Resign / draw / abort action bar
 │   │   ├── MoveList.svelte
@@ -93,13 +95,14 @@ site/
 │   ├── History.svelte        # /history/ — unified OTB/lichess/chesscom list + filters
 │   ├── Review.svelte         # /review/ — read-only game replay (?id=...)
 │   ├── Settings.svelte       # /settings/ — accounts (OTB name, lichess, chess.com) + sync
-│   ├── main.ts / play.ts / history.ts / review.ts / settings.ts
+│   ├── Stats.svelte          # /stats/ — tabbed W/L/D + openings + patterns + trends, filterable
+│   ├── main.ts / play.ts / history.ts / review.ts / settings.ts / stats.ts
 │   ├── sw.ts                 # Service worker (Vite rollup input, excluded from tsconfig)
 │   ├── app.css               # Dark scheme + CSS custom properties
 │   ├── vite-env.d.ts         # __APP_VERSION__ declaration + *.svelte module fallback
 │   └── test-setup.ts         # fake-indexeddb/auto + @testing-library/jest-dom
 ├── static/                   # Vite publicDir — manifest.json, favicon.ico, clvq-192.png, clvq-512.png, lila/public/images/board/wood4.jpg
-├── index.html, play/, history/, settings/, review/
+├── index.html, play/, history/, settings/, review/, stats/
 ├── devtools/unregister-sw.html
 ├── vite.config.ts
 ├── vitest.config.ts
@@ -265,3 +268,5 @@ Full data model (Game, GameState) is in `docs/plan.md`.
 - **A grid item with `margin: 0 auto` shrinks to its content width instead of stretching.** Grid items default to `justify-self: stretch` (fill the track), but *any* auto margin in that axis disables stretch and switches the item to shrink-to-fit sizing — so `max-width: 600px; margin: 0 auto` on a grid item (e.g. `<main>` inside `.page-shell`'s `1fr auto` grid, or `BottomTabs.svelte`'s `.tabs`) centers a box shrunk to its content's natural width, not a box filling up to 600px. Symptom: a capped-width element renders narrower than, and misaligned with, sibling elements that use the same `max-width` value. Fix: always pair `max-width: var(--clvq-page-width)` + `margin: 0 auto` with an explicit `width: 100%` (see `main` in `app.css`, `.home-content` in `App.svelte`, `.tabs` in `BottomTabs.svelte`). This bites any *new* grid-item child of `.page-shell`/`.app-shell` too, not just the ones already fixed.
 - **`100dvh` is unreliable on some Android browsers/WebViews (e.g. MIUI).** Several devices compute `dvh` once against the largest possible viewport and don't recompute it live — page shells using `height: 100dvh` render taller than the actual visible screen on first paint, pushing `BottomTabs`/action bars off-screen until a scroll or resize forces a relayout. Fix: `src/lib/viewport.ts` (`initViewportHeight()`) tracks `window.innerHeight` in a `--clvq-vh` custom property, updated on `resize`, `orientationchange`, and `visualViewport` resize; called once per entry point (`main.ts`, `play.ts`, `history.ts`, `review.ts`, `settings.ts`) before mounting. All page-shell/layout rules use `height: var(--clvq-vh)` (fallback `100vh` defined in `app.css` `:root`) instead of `100dvh` directly. If you add a new full-height page shell, use `var(--clvq-vh)`, not `100dvh`.
 - **CSS media query overrides must come after the base rule.** In Svelte scoped styles, equal-specificity rules follow cascade order — the last one wins. If a `@media` block appears before the base class rule it's trying to override, the base rule will always win regardless of viewport. Always place `@media` overrides after the base rules they override.
+- **"Which color did I play?" is ambiguous and centralized in `lib/stats.ts`.** A `Game` only stores `whiteAccountId`/`blackAccountId`, not "which side is me." For OTB games, "me" is hardcoded to the fixed `OTB_USER_ID` account, never `Guest` — self-play games (Guest vs. User) would otherwise be ambiguous. For online games, "me" is whichever side is a locally-stored `Account` (the opponent is always a `lichess:<handle>`/`chesscom:<handle>` pseudo-account, never in the accounts store). `stats.ts`'s `perspectiveColor()`/`sideForAccount()`/`toPerspective()` implement this once; `History.svelte`'s inline `playerColor()` predates `stats.ts` and duplicates the same OTB/online logic — if you touch one, check whether the other needs the same fix.
+- **Opening frequency has no ECO-to-name lookup, by design (Phase 4).** `stats.ts`'s `openingFrequency()` groups by bare ECO code (e.g. "C50") with an "unknown" bucket for games with no code — all OTB games, since `Play.svelte` always saves `openingEco: null`. Adding a name table was considered and deliberately deferred to keep to "no dependencies beyond the essentials"; revisit only if the user asks for opening names in the UI.

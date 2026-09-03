@@ -33,6 +33,7 @@ export default defineConfig({
         play: resolve(__dirname, 'play/index.html'),
         history: resolve(__dirname, 'history/index.html'),
         review: resolve(__dirname, 'review/index.html'),
+        stats: resolve(__dirname, 'stats/index.html'),
         settings: resolve(__dirname, 'settings/index.html'),
         sw: resolve(__dirname, 'src/sw.ts'),
       },
